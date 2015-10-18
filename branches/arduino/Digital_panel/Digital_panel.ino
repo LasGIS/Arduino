@@ -30,7 +30,7 @@ void setup() {
 void loop() {
   //viewAllSignParallel();
   for (int i = 0; i < 32767; i++) {
-    //Serial.println(i, HEX);
+    Serial.println(i, HEX);
     for (int tim = 0; tim < 100; tim++) {
       viewHexable(i);
     }
@@ -59,8 +59,8 @@ void viewAllSignParallel() {
 
 void viewHexable(int hex) {
   for (int i = 0; i < 4; i++) {
-    int dig = digit[i];
     resetAllDigit();
+    int dig = digit[i];
     int tetrad = hex & 15;
     Serial.print(tetrad, HEX);
     setNumber(tetrad);
