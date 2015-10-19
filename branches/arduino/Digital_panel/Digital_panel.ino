@@ -48,12 +48,8 @@ void viewAllDecable() {//Вывод всей панели
   int count = 1;
   for (int i = 0; i < 10000; i += count) {//кол-во секунд
    Serial.println(i, DEC);
-    for (int tim = 0; tim < 5; tim++) { //1 цифра в 1 секунду
+    for (int tim = 0; tim < 50; tim++) { //1 цифра в 1 секунду
       viewDecimal(i);
-    }
-    //delay(500);
-    if (i >= 100) {
-      count = 100;
     }
   }
 }
