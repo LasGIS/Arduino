@@ -11,7 +11,7 @@ int segment[8] = {2,3,4,5,6,7,8,9};
 int segmentMap[16] = {119,  96,  62, 124, 105,  93,  95, 100, 127, 125, 111,  91,  23, 122,  31,  15};
 
 void initPanel() {
-    for (int i = 0; i < 4; i++) { 
+  for (int i = 0; i < 4; i++) { 
     pinMode(digit[i], OUTPUT);
   }
   for (int i = 0; i < 8; i++) { 
@@ -23,10 +23,11 @@ void initPanel() {
 void showPanel() {
   static int place = 0;
   static int chars = 0;
+  static String panelValueLocal = panelValue;
   resetAllDigit();
-  if (chars < panelValue.length()) {
-    char chr = panelValue[chars];
-    if (chars + 1 < panelValue.length() && panelValue[chars + 1] == '.') {
+  if (chars < panelValueLocal.length()) {
+    char chr = panelValueLocal[chars];
+    if (chars + 1 < panelValueLocal.length() && panelValueLocal[chars + 1] == '.') {
       setChar(chr, true);
       chars++;
     } else {
@@ -36,9 +37,10 @@ void showPanel() {
   }
   place++;
   chars++;
-  if (!(place < 4 && chars < panelValue.length())) {
+  if (!(place < 4 && chars < panelValueLocal.length())) {
     place = 0;
     chars = 0;
+    panelValueLocal = panelValue;
   }
 }
 
