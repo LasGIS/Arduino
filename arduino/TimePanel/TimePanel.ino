@@ -1,12 +1,10 @@
-#include <MsTimer2.h>
-
+/**  */
 String panelValue = "";
 
 void setup() {
   Serial.begin(9600);
   initPanel();
-  MsTimer2::set(5, showPanel);
-  MsTimer2::start();
+  //initIRControl();
 }
 
 void loop() {
@@ -18,6 +16,7 @@ void loop() {
   } else {
     count++;
   }
+  //checkIRControl();
   delay(100);
 }
 
