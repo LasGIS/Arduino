@@ -1,22 +1,35 @@
+#include <MsTimer2.h>
+
 #define DIGIT_ON  HIGH
 #define DIGIT_OFF LOW
 
-#define SEGMENT_ON  LOW
-#define SEGMENT_OFF HIGH
 #define MINUS_MASK 8
 
-int digit[4] = {13,12,11,10};
-int segment[8] = {2,3,4,5,6,7,8,9};
-//                    -0-  -1-  -2-  -3-  -4-  -5-  -6-  -7-  -8-  -9-  -A-  -B-  -C-  -D-  -E-  -F-  
-int segmentMap[16] = {119,  96,  62, 124, 105,  93,  95, 100, 127, 125, 111,  91,  23, 122,  31,  15};
+//Пин подключен к ST_CP входу 74HC595
+int latchPin = 8;
+//Пин подключен к SH_CP входу 74HC595
+int clockPin = 12;
+//Пин подключен к DS входу 74HC595
+int dataPin = 11;
+
+int digit[4] = {10,9,7,6};
+
+//                        -0-        -1-        -2-        -3-        -4-        -5-        -6-        -7-    
+byte segmentMap[16] = {B01110111, B01100000, B00111110, B01111100, B01101001, B01011101, B01011111, B01100100,
+//                        -8-        -9-        -A-        -B-        -C-        -D-        -E-        -F-
+                       B01111111, B01111101, B01101111, B01011011, B00010111, B01111010, B00011111, B00001111};
 
 void initPanel() {
+  //устанавливаем режим OUTPUT
+  pinMode(latchPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(dataPin, OUTPUT);
+
   for (int i = 0; i < 4; i++) { 
     pinMode(digit[i], OUTPUT);
   }
-  for (int i = 0; i < 8; i++) { 
-    pinMode(segment[i], OUTPUT);
-  }
+  MsTimer2::set(5, showPanel);
+  MsTimer2::start();
 }
 
 /** показываем очередной сегмент. */
@@ -42,6 +55,7 @@ void showPanel() {
     chars = 0;
     panelValueLocal = panelValue;
   }
+  //checkIRControl();
 }
 
 /** Сбрасываем все цифры. */
@@ -74,9 +88,11 @@ void setChar(char chr, boolean isPnt) {
 
 /** Выводит маску символа в сегменты */
 void setNumBit(int mask) {
-  for (int i = 0; i < 8; i++) {
-    digitalWrite(segment[i], (mask & 1) ? SEGMENT_ON : SEGMENT_OFF);
-    mask = mask >> 1;
-  }
+  // устанавливаем синхронизацию "защелки" на LOW
+  digitalWrite(latchPin, LOW);
+  // передаем последовательно на dataPin
+  shiftOut(dataPin, clockPin, MSBFIRST, mask ^ 0xFF);
+  //"защелкиваем" регистр, тем самым устанавливая значения на выходах
+  digitalWrite(latchPin, HIGH);
 }
 

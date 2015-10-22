@@ -43,9 +43,12 @@ void loop() {
    
       //"защелкиваем" регистр, тем самым устанавливая значения на выходах
       digitalWrite(latchPin, HIGH);
+      unsigned long time = millis();
       if (irrecv.decode(&results)) { // если данные пришли
         Serial.println(results.value, HEX); // печатаем данные
         irrecv.resume(); // принимаем следующую команду
+        Serial.print("dTime = ");
+        Serial.println(millis() - time);
       }
       // пауза перед следующей итерацией
       delay(100);
