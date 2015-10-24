@@ -5,6 +5,7 @@ void setup() {
   Serial.begin(9600);
   initPanel();
   //initIRControl();
+  initIRTest();
 }
 
 void loop() {
@@ -28,6 +29,8 @@ void serialEvent() {
   }
   panelValue = String(buf);
   Serial.println("\"" + panelValue + "\"");
+  delay(500);
+  IRTestEvent();
   delay(5000);
 }
 

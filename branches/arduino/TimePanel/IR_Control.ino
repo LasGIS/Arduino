@@ -1,3 +1,4 @@
+/*
 #include <IRremote.h>
 #include <IRremoteInt.h>
 
@@ -26,4 +27,4 @@ unsigned long checkIRControl() {
     irrecv.resume(); // принимаем следующую команду
   }
 }
-
+*/
