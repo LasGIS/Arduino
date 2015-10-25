@@ -29,8 +29,7 @@ void serialEvent() {
   }
   panelValue = String(buf);
   Serial.println("\"" + panelValue + "\"");
-  delay(500);
-  IRTestEvent();
+  IRTestCheck();
   delay(5000);
 }
 

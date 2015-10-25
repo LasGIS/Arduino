@@ -2,12 +2,50 @@
   IRTest()
 };*/
 #define READ_BUF_SIZE 100
+#define IR_INTERRUPT_BUF_SIZE 80
+
 const int irPin = 2;
 short readBuf[READ_BUF_SIZE];
 
+int IRTestCount = 0;
+long IRTestStartTime = 0;
+long IRTestTimes[IR_INTERRUPT_BUF_SIZE];
+byte IRTestValues[IR_INTERRUPT_BUF_SIZE];
+
 void initIRTest() {
   pinMode(irPin, INPUT);
-  attachInterrupt(digitalPinToInterrupt(irPin), IRTestEvent, LOW);
+  attachInterrupt(digitalPinToInterrupt(irPin), IRTestInterrupt, CHANGE);
+}
+
+void IRTestInterrupt() {
+  long time = micros() - IRTestStartTime;
+  byte value = digitalRead(irPin);
+  IRTestStartTime += time;
+  if (value == HIGH && time > 3000 && time < 20000) {
+    IRTestCount = 0;
+  }
+  IRTestTimes[IRTestCount] = time;
+  IRTestValues[IRTestCount] = value;
+  IRTestCount++;
+  if (IRTestCount >= IR_INTERRUPT_BUF_SIZE) {
+    IRTestCount = 0;
+    //IRTestCheck();
+  }
+}
+
+void IRTestCheck() {
+    Serial.print("----- IRTestCount = ");
+    Serial.print(IRTestCount);
+    Serial.println(" -----");
+    for (int i = 0; i < IR_INTERRUPT_BUF_SIZE; i++) {
+      Serial.print(i);
+      Serial.print(": time = ");
+      Serial.print(IRTestTimes[i], DEC);
+      Serial.print("; value = ");
+      Serial.print(IRTestValues[i], DEC);
+      Serial.println("; | ");
+    }
+    Serial.println("-------");
 }
 
 void IRTestEvent() {
