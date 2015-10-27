@@ -36,6 +36,7 @@ void initPanel() {
 
 /** показываем очередной сегмент. */
 void showPanel() {
+  //return;
   static int place = 0;
   static int chars = 0;
   static String panelValueLocal = panelValue;

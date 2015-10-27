@@ -30,6 +30,8 @@ void serialEvent() {
   panelValue = String(buf);
   Serial.println("\"" + panelValue + "\"");
   IRTestCheck();
+  //IRTestRead();
+  //IRTestEvent();
   delay(5000);
 }
 

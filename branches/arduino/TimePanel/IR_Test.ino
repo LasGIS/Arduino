@@ -1,16 +1,15 @@
-/*namespace IRTest {
-  IRTest()
-};*/
-#define READ_BUF_SIZE 100
-#define IR_INTERRUPT_BUF_SIZE 80
-
-const int irPin = 2;
+/*
+#define READ_BUF_SIZE 400
 short readBuf[READ_BUF_SIZE];
+*/
+const int irPin = 2;
 
-int IRTestCount = 0;
-long IRTestStartTime = 0;
-long IRTestTimes[IR_INTERRUPT_BUF_SIZE];
-byte IRTestValues[IR_INTERRUPT_BUF_SIZE];
+#define IR_INTERRUPT_BUF_SIZE 66
+
+volatile int IRTestCount = 0;
+volatile long IRTestStartTime = 0;
+volatile long IRTestTimes[IR_INTERRUPT_BUF_SIZE];
+volatile byte IRTestValues[IR_INTERRUPT_BUF_SIZE];
 
 void initIRTest() {
   pinMode(irPin, INPUT);
@@ -19,17 +18,22 @@ void initIRTest() {
 
 void IRTestInterrupt() {
   long time = micros() - IRTestStartTime;
-  byte value = digitalRead(irPin);
   IRTestStartTime += time;
+  if (time < 200) {
+    return;
+  }
+  byte value = digitalRead(irPin);
   if (value == HIGH && time > 3000 && time < 20000) {
     IRTestCount = 0;
   }
   IRTestTimes[IRTestCount] = time;
   IRTestValues[IRTestCount] = value;
   IRTestCount++;
-  if (IRTestCount >= IR_INTERRUPT_BUF_SIZE) {
+  if (IRTestCount > IR_INTERRUPT_BUF_SIZE) {
     IRTestCount = 0;
-    //IRTestCheck();
+    noInterrupts();
+    IRTestCheck();
+    interrupts();
   }
 }
 
@@ -47,7 +51,7 @@ void IRTestCheck() {
     }
     Serial.println("-------");
 }
-
+/*
 void IRTestEvent() {
   long time = millis();
   for (int i = 0; i < READ_BUF_SIZE; i++) {
@@ -55,7 +59,7 @@ void IRTestEvent() {
     for (int k = 0; k < 16; k++) {
       val = val << 1;
       val |= digitalRead(irPin);
-      delayMicroseconds(100);
+      delayMicroseconds(10);
     }
     readBuf[i] = val;
   }
@@ -80,7 +84,7 @@ void IRTestEvent() {
   Serial.print(time);
   Serial.println(" ------------------------");
 }
-
+*/
 /*
 void IRTestRead() {
   char outChars[30];
@@ -110,4 +114,5 @@ void IRTestRead() {
   Serial.println(" ------------------------");
 }
 */
+
 
