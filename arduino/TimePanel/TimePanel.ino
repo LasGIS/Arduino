@@ -1,5 +1,6 @@
 /**  */
 String panelValue = "";
+volatile long timePanel = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -19,6 +20,7 @@ void loop() {
   }
   //checkIRControl();
   delay(100);
+  startIRTest();
 }
 
 void serialEvent() {
@@ -74,4 +76,3 @@ void showDoubleOut() {
   panelValue = "B.0.b.a.";
   delay(10000);
 }
-
