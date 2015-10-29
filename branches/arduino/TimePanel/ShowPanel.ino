@@ -30,13 +30,24 @@ void initPanel() {
   for (int i = 0; i < 4; i++) { 
     pinMode(digit[i], OUTPUT);
   }
-  MsTimer2::set(5, showPanel);
+  MsTimer2::set(10, showPanel);
   MsTimer2::start();
 }
 
 /** показываем очередной сегмент. */
+void showPanel2() {
+  static int chars = 0;
+  resetAllDigit();
+  setChar('a' + chars, true);
+  digitalWrite(digit[chars], DIGIT_ON);
+  chars++;
+  if (!(chars < 4)) {
+    chars = 0;
+  }
+}
+
+/** показываем очередной сегмент. */
 void showPanel() {
-  noInterrupts();
   static int place = 0;
   static int chars = 0;
   static String panelValueLocal = panelValue;
@@ -58,7 +69,6 @@ void showPanel() {
     chars = 0;
     panelValueLocal = panelValue;
   }
-  interrupts();
 }
 
 /** Сбрасываем все цифры. */
@@ -90,7 +100,7 @@ void setChar(char chr, boolean isPnt) {
 }
 
 /** Выводит маску символа в сегменты */
-void setNumBit(int mask) {
+void setNumBit(uint8_t mask) {
   // устанавливаем синхронизацию "защелки" на LOW
   digitalWrite(latchPin, LOW);
   // передаем последовательно на dataPin

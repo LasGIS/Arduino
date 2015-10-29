@@ -13,12 +13,19 @@ volatile byte IRTestValues[IR_INTERRUPT_BUF_SIZE];
 
 void initIRTest() {
   pinMode(irPin, INPUT);
+  startIRTest();
+}
+void startIRTest() {
   attachInterrupt(digitalPinToInterrupt(irPin), IRTestInterrupt, CHANGE);
+}
+void stopIRTest() {
+  detachInterrupt(digitalPinToInterrupt(irPin));
 }
 
 void IRTestInterrupt() {
   long time = micros() - IRTestStartTime;
   IRTestStartTime += time;
+  timePanel++;
   if (time < 200) {
     return;
   }
@@ -31,25 +38,30 @@ void IRTestInterrupt() {
   IRTestCount++;
   if (IRTestCount > IR_INTERRUPT_BUF_SIZE) {
     IRTestCount = 0;
-    noInterrupts();
     IRTestCheck();
-    interrupts();
   }
 }
 
 void IRTestCheck() {
-    Serial.print("----- IRTestCount = ");
-    Serial.print(IRTestCount);
-    Serial.println(" -----");
-    for (int i = 0; i < IR_INTERRUPT_BUF_SIZE; i++) {
-      Serial.print(i);
-      Serial.print(": time = ");
-      Serial.print(IRTestTimes[i], DEC);
-      Serial.print("; value = ");
-      Serial.print(IRTestValues[i], DEC);
-      Serial.println("; | ");
-    }
-    Serial.println("-------");
+  Serial.print("----- timePanel = ");
+  Serial.print(timePanel);
+  Serial.print("; IRTestCount = ");
+  Serial.print(IRTestCount);
+  Serial.println("; -----");
+  for (int i = 0; i < IR_INTERRUPT_BUF_SIZE; i++) {
+    Serial.print(i);
+    Serial.print(": time = ");
+    Serial.print(IRTestTimes[i], DEC);
+    Serial.print("; value = ");
+    Serial.print(IRTestValues[i], DEC);
+    Serial.println("; | ");
+  }
+  Serial.print("----- timePanel = ");
+  Serial.print(timePanel);
+  Serial.print("; IRTestCount = ");
+  Serial.print(IRTestCount);
+  Serial.println("; -----");
+  timePanel=0;
 }
 /*
 void IRTestEvent() {
@@ -114,5 +126,3 @@ void IRTestRead() {
   Serial.println(" ------------------------");
 }
 */
-
-
