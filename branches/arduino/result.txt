@@ -361,6 +361,7 @@ hour = 0; min = 1; sec = 0;
 60: time = 536; value = 1; | 61: time = 1708; value = 0; | 
 62: time = 536; value = 1; | 63: time = 612; value = 0; | 
 64: time = 536; value = 1; | 65: time = 1704; value = 0; | 
+
 66: time = 540; value = 1; | 67: time = 39716; value = 0; | 
 68: time = 16; value = 1; | 
 69: time = 20; value = 1; | 
@@ -375,3 +376,12 @@ hour = 0; min = 1; sec = 0;
 78: time = 20; value = 1; | 
 79: time = 20; value = 1; | 
 -------
+
+key = FFA25D
+key = FFA25D
+key = FF22DD
+key = FF22DD
+key = FF22DD
+key = FF22DD
+key = FF02FD
+
