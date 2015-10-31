@@ -6,6 +6,10 @@ const int irPin = 2;
 
 #define IR_INTERRUPT_BUF_SIZE 66
 
+#define IR_TEST_MINIMAL_TIME 200
+#define IR_TEST_MAXIMAL_TIME 20000
+#define IR_TEST_BOUND_TIME 1200
+
 volatile int IRTestCount = 0;
 volatile long IRTestStartTime = 0;
 volatile long IRTestTimes[IR_INTERRUPT_BUF_SIZE];
@@ -26,11 +30,11 @@ void IRTestInterrupt() {
   long time = micros() - IRTestStartTime;
   IRTestStartTime += time;
   timePanel++;
-  if (time < 200) {
+  if (time < IR_TEST_MINIMAL_TIME || time > IR_TEST_MAXIMAL_TIME) {
     return;
   }
   byte value = digitalRead(irPin);
-  if (value == HIGH && time > 3000 && time < 20000) {
+  if (value == HIGH && time > 3000 && time <= IR_TEST_MAXIMAL_TIME) {
     IRTestCount = 0;
   }
   IRTestTimes[IRTestCount] = time;
@@ -38,8 +42,27 @@ void IRTestInterrupt() {
   IRTestCount++;
   if (IRTestCount > IR_INTERRUPT_BUF_SIZE) {
     IRTestCount = 0;
-    IRTestCheck();
+    IRTestDecode();
+    //IRTestCheck();
   }
+}
+
+boolean IRTestDecode() {
+  long value = 0;
+  for (int i = 2; i < IR_INTERRUPT_BUF_SIZE; i += 2) {
+    long time = IRTestTimes[i + 1];
+    if (IRTestValues[i] == HIGH && IRTestValues[i + 1] == LOW) {
+      value <<= 1;
+      value |= (time > IR_TEST_BOUND_TIME) ? 1 : 0;
+    } else {
+      Serial.println("false " + i);
+      return false;
+    }
+  }
+  IRTestValue = value;
+  IRTestHasValue = true;
+  //Serial.println(IRTestValue, HEX);
+  return true;
 }
 
 void IRTestCheck() {

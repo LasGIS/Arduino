@@ -1,6 +1,8 @@
 /**  */
 String panelValue = "";
 volatile long timePanel = 0;
+volatile long IRTestValue = 0;
+volatile boolean IRTestHasValue = false;
 
 void setup() {
   Serial.begin(9600);
@@ -18,9 +20,21 @@ void loop() {
   } else {
     count++;
   }
-  //checkIRControl();
-  delay(100);
-  startIRTest();
+  if (IRTestHasValue) {
+    IRTestHasValue = false;
+    String value = String(IRTestValue, HEX);
+    int len = value.length();
+    if (len > 4) {
+      panelValue = value.substring(len - 4, len);
+    } else {
+      panelValue = value;
+    }
+    Serial.print("key = ");
+    Serial.println(IRTestValue, HEX);
+    delay(2000);
+  } else {
+    delay(100);
+  }
 }
 
 void serialEvent() {
@@ -34,7 +48,7 @@ void serialEvent() {
   IRTestCheck();
   //IRTestRead();
   //IRTestEvent();
-  delay(5000);
+  delay(2000);
 }
 
 String timeToString(boolean isSerialPrint) {

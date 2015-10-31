@@ -30,7 +30,7 @@ void initPanel() {
   for (int i = 0; i < 4; i++) { 
     pinMode(digit[i], OUTPUT);
   }
-  MsTimer2::set(10, showPanel);
+  MsTimer2::set(5, showPanel);
   MsTimer2::start();
 }
 
