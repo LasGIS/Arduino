@@ -1,3 +1,13 @@
+#include <Servo.h>
+
+// create servo object to control a servo
+Servo myservo;
+
+//Пин подключен к резистору
+const int resistorPin = A0;
+//Пин подключен к резистору
+const int motorPin = 5;
+
 /**  */
 String panelValue = "";
 volatile long timePanel = 0;
@@ -7,20 +17,18 @@ volatile boolean IRTestHasValue = false;
 
 void setup() {
   Serial.begin(9600);
+  myservo.attach(motorPin);  
   initPanel();
   //initIRControl();
   initIRTest();
 }
 
 void loop() {
-  static int count = 0;
-  panelValue = timeToString(count == 0);
-  if (count >= 600) {
-    //showDoubleOut();
-    count = 0;
-  } else {
-    count++;
-  }
+  //setTimeToPanel();
+  int resistorValue = analogRead(resistorPin);
+  panelValue = String((resistorValue * 180.0) / 1023, 2);
+  myservo.write(map(resistorValue, 0, 1023, 0, 180));
+
   if (IRTestHasValue) {
     IRTestHasValue = false;
     String value = String(IRTestValue, HEX);
@@ -30,13 +38,33 @@ void loop() {
     } else {
       panelValue = value;
     }
+    if (IRTestValue == 0xFFA857) {
+      shimmiDamse();
+    } else if (IRTestValue == 0xFFE01F) {
+      myservo.write(180);      
+    } else if (IRTestValue == 0xFF02FD) {
+      myservo.write(90);      
+    } else if (IRTestValue == 0xFF906F) {
+      myservo.write(0);      
+    }
 /*    Serial.print("bit = ");
     Serial.print(IRTestCount);*/
     Serial.print("key = ");
     Serial.println(IRTestValue, HEX);
-    delay(1000);
+    delay(2000);
   }
-  delay(100);
+  delay(200);
+}
+
+void setTimeToPanel() {
+  static int count = 0;
+  panelValue = timeToString(count == 0);
+  if (count >= 600) {
+    //showDoubleOut();
+    count = 0;
+  } else {
+    count++;
+  }
 }
 
 void serialEvent() {
@@ -50,7 +78,51 @@ void serialEvent() {
   //IRTestCheck();
   //IRTestRead();
   //IRTestEvent();
+  boolean isDigits = true;
+  for (int i = 0; i < cnt; i++) {
+    if (!isDigit(buf[i])) {
+      isDigits = false;
+    }
+  }
+  if (isDigits) {
+    int degre = panelValue.toInt();
+    if (degre >= 0 && degre <= 180) {
+      myservo.write(degre);
+    }
+  } else {
+    shimmiDamse();
+  }
+
   delay(2000);
+}
+
+void shimmiDamse() {
+  int i = myservo.read();
+  for (int j = 0; j < 3; j++) {
+    for (; i <= 180; i++) {
+      panelValue = String(i, DEC);
+      myservo.write(i);        
+      if (i % 90 == 0) {
+        delay(1000);
+      } else if (i % 30 == 0) {
+        delay(300);
+      } else {
+        delay(30);
+      }
+    }
+    for (; i > 0; i--) {
+      panelValue = String(i, DEC);
+      myservo.write(i);
+      if (i % 90 == 0) {
+        delay(1000);
+      } else if (i % 30 == 0) {
+        delay(300);
+      } else {
+        delay(30);
+      }
+    }
+        delay(1000);
+  }
 }
 
 String timeToString(boolean isSerialPrint) {
