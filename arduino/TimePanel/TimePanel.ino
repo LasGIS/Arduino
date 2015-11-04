@@ -14,6 +14,7 @@ volatile long timePanel = 0;
 //volatile int IRTestCount = -1;
 volatile long IRTestValue = 0;
 volatile boolean IRTestHasValue = false;
+int showCom = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -24,37 +25,57 @@ void setup() {
 }
 
 void loop() {
-  //setTimeToPanel();
   int resistorValue = analogRead(resistorPin);
-  panelValue = String((resistorValue * 180.0) / 1023, 2);
   myservo.write(map(resistorValue, 0, 1023, 0, 180));
+
+  switch (showCom) {
+    case 0:
+      setTimeToPanel();
+      break;
+    case 1:
+      panelValue = String((resistorValue * 180.0) / 1023, 2);
+      break;
+    case 2:
+      panelValue = "-02-";
+      //setIRTestToPanel();
+      break;
+    case 3:
+      panelValue = "-03-";
+      break;
+    case 4:
+      panelValue = "-04-";
+      break;
+    default:
+     panelValue = "defa";
+     break;
+  }
 
   if (IRTestHasValue) {
     IRTestHasValue = false;
-    String value = String(IRTestValue, HEX);
-    int len = value.length();
-    if (len > 4) {
-      panelValue = value.substring(len - 4, len);
-    } else {
-      panelValue = value;
-    }
+    setIRTestToPanel();
 
-/*    Serial.print("bit = ");
-    Serial.print(IRTestCount);*/
+/*    
+    Serial.print("bit = ");
+    Serial.print(IRTestCount);
+*/
     Serial.print("key = ");
     Serial.println(IRTestValue, HEX);
 
     if (IRTestValue == 0xFFA857) {
       shimmiDance();
     } else if (IRTestValue == 0xFFE01F) {
-      myservo.write(180);      
+      myservo.write(180);
     } else if (IRTestValue == 0xFF02FD) {
-      myservo.write(90);      
+      myservo.write(90);
     } else if (IRTestValue == 0xFF906F) {
-      myservo.write(0);      
+      myservo.write(0);
+    } else if (IRTestValue == 0xFFC23D) {
+      showCom++;
+      if (showCom > 3) {
+        showCom = 0;
+      }
     }
-
-    delay(2000);
+    delay(1000);
   }
   delay(200);
 }
@@ -67,6 +88,16 @@ void setTimeToPanel() {
     count = 0;
   } else {
     count++;
+  }
+}
+
+void setIRTestToPanel() {
+  String value = String(IRTestValue, HEX);
+  int len = value.length();
+  if (len > 4) {
+    panelValue = value.substring(len - 4, len);
+  } else {
+    panelValue = value;
   }
 }
 
