@@ -38,8 +38,14 @@ void loop() {
     } else {
       panelValue = value;
     }
+
+/*    Serial.print("bit = ");
+    Serial.print(IRTestCount);*/
+    Serial.print("key = ");
+    Serial.println(IRTestValue, HEX);
+
     if (IRTestValue == 0xFFA857) {
-      shimmiDamse();
+      shimmiDance();
     } else if (IRTestValue == 0xFFE01F) {
       myservo.write(180);      
     } else if (IRTestValue == 0xFF02FD) {
@@ -47,10 +53,7 @@ void loop() {
     } else if (IRTestValue == 0xFF906F) {
       myservo.write(0);      
     }
-/*    Serial.print("bit = ");
-    Serial.print(IRTestCount);*/
-    Serial.print("key = ");
-    Serial.println(IRTestValue, HEX);
+
     delay(2000);
   }
   delay(200);
@@ -90,18 +93,19 @@ void serialEvent() {
       myservo.write(degre);
     }
   } else {
-    shimmiDamse();
+    shimmiDance();
   }
 
   delay(2000);
 }
 
-void shimmiDamse() {
+void shimmiDance() {
   int i = myservo.read();
   for (int j = 0; j < 3; j++) {
-    for (; i <= 180; i++) {
+    for (i++; i <= 180; i++) {
       panelValue = String(i, DEC);
       myservo.write(i);        
+      //Serial.println(i);
       if (i % 90 == 0) {
         delay(1000);
       } else if (i % 30 == 0) {
@@ -110,9 +114,10 @@ void shimmiDamse() {
         delay(30);
       }
     }
-    for (; i > 0; i--) {
+    for (i--; i >= 0; i--) {
       panelValue = String(i, DEC);
       myservo.write(i);
+      //Serial.println(i);
       if (i % 90 == 0) {
         delay(1000);
       } else if (i % 30 == 0) {
@@ -121,7 +126,6 @@ void shimmiDamse() {
         delay(30);
       }
     }
-        delay(1000);
   }
 }
 
