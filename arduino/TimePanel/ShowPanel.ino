@@ -12,7 +12,7 @@ const int clockPin = 12;
 //Пин подключен к DS входу 74HC595
 const int dataPin = 11;
 
-const int digit[4] = {10,9,7,6};
+const int digit[4] = {10,9,7,4};
 
 const byte segmentMap[16] = {
 //   -0-        -1-        -2-        -3-        -4-        -5-        -6-        -7-    
@@ -50,6 +50,13 @@ void showPanel2() {
 void showPanel() {
   static int place = 0;
   static int chars = 0;
+  static int paused = 0;
+  paused++;
+  if (paused < 5) {
+    return;
+  } else if (paused > 400) {
+    paused = 0;
+  }
   static String panelValueLocal = panelValue;
   resetAllDigit();
   if (chars < panelValueLocal.length()) {

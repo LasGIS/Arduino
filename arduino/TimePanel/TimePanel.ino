@@ -36,8 +36,7 @@ void loop() {
       panelValue = String((resistorValue * 180.0) / 1023, 2);
       break;
     case 2:
-      panelValue = "-02-";
-      //setIRTestToPanel();
+      setIRTestToPanel();
       break;
     case 3:
       panelValue = "-03-";
@@ -52,7 +51,7 @@ void loop() {
 
   if (IRTestHasValue) {
     IRTestHasValue = false;
-    setIRTestToPanel();
+    //setIRTestToPanel();
 
 /*    
     Serial.print("bit = ");
@@ -65,19 +64,21 @@ void loop() {
       shimmiDance();
     } else if (IRTestValue == 0xFFE01F) {
       myservo.write(180);
+      delay(1000);
     } else if (IRTestValue == 0xFF02FD) {
       myservo.write(90);
+      delay(1000);
     } else if (IRTestValue == 0xFF906F) {
       myservo.write(0);
+      delay(1000);
     } else if (IRTestValue == 0xFFC23D) {
       showCom++;
       if (showCom > 3) {
         showCom = 0;
       }
     }
-    delay(1000);
   }
-  delay(200);
+  delay(100);
 }
 
 void setTimeToPanel() {
