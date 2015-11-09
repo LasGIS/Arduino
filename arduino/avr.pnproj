@@ -1,1 +1,1 @@
-<Project name="avr"><File path="libraries\MsTimer2\MsTimer2.cpp"></File><File path="libraries\MsTimer2\MsTimer2.h"></File></Project>
+<Project name="avr"><Folder name="IrControl"><File path="libraries\IrControl\IrControl.cpp"></File><File path="libraries\IrControl\IrControl.h"></File></Folder><Folder name="MsTimer2"><File path="libraries\MsTimer2\MsTimer2.cpp"></File><File path="libraries\MsTimer2\MsTimer2.h"></File></Folder></Project>
