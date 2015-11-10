@@ -2,40 +2,41 @@
  * IrControl - модуль для подключения ИК пульта
  */
 
-/*
-#define READ_BUF_SIZE 400
-short readBuf[READ_BUF_SIZE];
-*/
-const int irPin = 2;
+#include <IrControl.h>
 
-#define IR_INTERRUPT_BUF_SIZE 66
+//volatile int IrControl::count = -1;
+//volatile long IrControl::times[IR_INTERRUPT_BUF_SIZE];
+//volatile byte IrControl::values[IR_INTERRUPT_BUF_SIZE];
 
-#define IR_CONTROL_MINIMAL_TIME 200
-#define IR_CONTROL_MAXIMAL_TIME 20000
-#define IR_CONTROL_MINIMAL_COUNT 14
-#define IR_CONTROL_MAXIMAL_COUNT 1300
-#define IR_CONTROL_BOUND_COUNT 80
+IrControl* IrControl::_activeObject=0;
 
-//volatile int IRTestCount = -1;
-volatile long IRTestStartTime = 0;
-//volatile long IRTestTimes[IR_INTERRUPT_BUF_SIZE];
-//volatile byte IRTestValues[IR_INTERRUPT_BUF_SIZE];
-
-void initIRTest() {
+IrControl::IrControl(int pin) {
+  irPin = pin;
+  startTime = 0;
   pinMode(irPin, INPUT);
-  startIRTest();
-}
-void startIRTest() {
-  attachInterrupt(digitalPinToInterrupt(irPin), IRTestInterrupt, CHANGE);
-}
-void stopIRTest() {
-  detachInterrupt(digitalPinToInterrupt(irPin));
+  
+  //start();
 }
 
-void IRTestInterrupt() {
-  long time = micros() - IRTestStartTime;
-  IRTestStartTime += time;
-  timePanel++;
+void IrControl::start() {
+  attachInterrupt(digitalPinToInterrupt(irPin), IrControl::handle_interrupt, CHANGE);
+  _activeObject=this;
+}
+
+void IrControl::stop() {
+  detachInterrupt(digitalPinToInterrupt(irPin));
+  _activeObject=0;
+}
+
+void IrControl::handle_interrupt() {
+  if (_activeObject) {
+	_activeObject->interrupt();
+  }
+}
+
+void IrControl::interrupt() {
+  long time = micros() - startTime;
+  startTime += time;
   if (time < IR_CONTROL_MINIMAL_TIME || time > IR_CONTROL_MAXIMAL_TIME) {
     return;
   }
@@ -44,42 +45,52 @@ void IRTestInterrupt() {
     noInterrupts();
     int count = IR_CONTROL_MAXIMAL_COUNT;
     if (
-      //(count = IRTestWhite(LOW)) < IR_CONTROL_MAXIMAL_COUNT &&
-      (count = IRTestWhite(HIGH)) < IR_CONTROL_MAXIMAL_COUNT
+      //(count = wait(LOW)) < IR_CONTROL_MAXIMAL_COUNT &&
+      (count = wait(HIGH)) < IR_CONTROL_MAXIMAL_COUNT
     ) {
-      IRTestDecode();
+      decode();
     }
     interrupts();
   }
 }
 
-boolean IRTestDecode() {
+bool IrControl::decode() {
   long value = 0;
   for (int i = 0; i < 32; i++) {
-    int count = IRTestWhite(LOW);
+    int count = wait(LOW);
     if (count < IR_CONTROL_MINIMAL_COUNT || count >= IR_CONTROL_BOUND_COUNT) {
-      /* IRTestCount = i;
-      IRTestValue = count;
-      IRTestHasValue = true; */
+      /* IrControl::count = i;
+      code = count;
+      _hasCode = true; */
       return false;
     }
-    count = IRTestWhite(HIGH);
+    count = wait(HIGH);
     if (count < IR_CONTROL_MINIMAL_COUNT || count >= IR_CONTROL_MAXIMAL_COUNT) {
-      /*IRTestCount = i + 1000;
-      IRTestValue = count;
-      IRTestHasValue = true;*/
+      /*IrControl::count = i + 1000;
+      code = count;
+      _hasCode = true;*/
       return false;
     }
     value <<= 1;
     value |= (count > IR_CONTROL_BOUND_COUNT) ? 1 : 0;
   }
-  IRTestValue = value;
-  IRTestHasValue = true;
+  code = value;
+  _hasCode = true;
   return true;
 }
 
-/** пропускаем пока и считаем время */
-int IRTestWhite(byte val) {
+bool IrControl::hasCode() {
+	return _hasCode;
+}
+
+unsigned long IrControl::getCode() {
+	return code;
+}
+
+/**
+ * пропускаем пока соответствует val и считаем время
+ */
+int IrControl::wait(byte val) {
   int count = 0;
   while (digitalRead(irPin) == val && count < IR_CONTROL_MAXIMAL_COUNT) {
     delayMicroseconds(10);
@@ -89,16 +100,16 @@ int IRTestWhite(byte val) {
 }
 
 /*
-void IRTestCheck() {
+void IrControl:check() {
   Serial.print("----- timePanel = ");
   Serial.print(timePanel);
   Serial.println("; -----");
   for (int i = 0; i < IR_INTERRUPT_BUF_SIZE; i++) {
     Serial.print(i);
     Serial.print(": time = ");
-    Serial.print(IRTestTimes[i], DEC);
+    Serial.print(IrControl:times[i], DEC);
     Serial.print("; value = ");
-    Serial.print(IRTestValues[i], DEC);
+    Serial.print(IrControl:values[i], DEC);
     Serial.println("; | ");
   }
   Serial.print("----- timePanel = ");
@@ -106,7 +117,7 @@ void IRTestCheck() {
   Serial.println("; -----");
   timePanel=0;
 }
-void IRTestEvent() {
+void IrControl::event() {
   long time = millis();
   for (int i = 0; i < READ_BUF_SIZE; i++) {
     short val = 0;
@@ -140,7 +151,7 @@ void IRTestEvent() {
 }
 */
 /*
-void IRTestRead() {
+void IrControl::read() {
   char outChars[30];
   long time = millis();
   for (int i = 0; i < READ_BUF_SIZE; i++) {

@@ -18,7 +18,7 @@ int showCom = 0;
 
 void setup() {
   Serial.begin(9600);
-  myservo.attach(motorPin);  
+  myservo.attach(motorPin);
   initPanel();
   //initIRControl();
   initIRTest();
@@ -45,18 +45,18 @@ void loop() {
       panelValue = "-04-";
       break;
     default:
-     panelValue = "defa";
-     break;
+      panelValue = "defa";
+      break;
   }
 
   if (IRTestHasValue) {
     IRTestHasValue = false;
     //setIRTestToPanel();
 
-/*    
-    Serial.print("bit = ");
-    Serial.print(IRTestCount);
-*/
+    /*
+        Serial.print("bit = ");
+        Serial.print(IRTestCount);
+    */
     Serial.print("key = ");
     Serial.println(IRTestValue, HEX);
 
@@ -136,7 +136,7 @@ void shimmiDance() {
   for (int j = 0; j < 3; j++) {
     for (i++; i <= 180; i++) {
       panelValue = String(i, DEC);
-      myservo.write(i);        
+      myservo.write(i);
       //Serial.println(i);
       if (i % 90 == 0) {
         delay(1000);

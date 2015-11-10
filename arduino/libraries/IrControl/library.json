@@ -1,0 +1,20 @@
+{
+  "name": "IrControl",
+  "keywords": "timer, callback",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LasGIS/IrControl.git"
+  },
+  "authors": [{
+    "name": "Paul Stoffregen",
+    "url": "https://www.pjrc.com/about/",
+    "maintainer": true
+  }],
+  "frameworks": [
+    "arduino"
+  ],
+  "platforms": [
+    "atmelavr"
+  ]
+}
