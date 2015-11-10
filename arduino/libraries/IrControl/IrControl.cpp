@@ -80,11 +80,12 @@ bool IrControl::decode() {
 }
 
 bool IrControl::hasCode() {
-	return _hasCode;
+    return _hasCode;
 }
 
 unsigned long IrControl::getCode() {
-	return code;
+    _hasCode = false;
+    return code;
 }
 
 /**
