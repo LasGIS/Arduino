@@ -1,10 +1,9 @@
 /**
  * IrControl - модуль для подключения ИК пульта
  */
-
 #include <IrControl.h>
 
-IrControl* IrControl::_activeObject=0;
+IrControl* IrControl::_activeIrControlObject = 0;
 
 IrControl::IrControl(int pin) {
   irPin = pin;
@@ -16,17 +15,17 @@ IrControl::IrControl(int pin) {
 
 void IrControl::start() {
   attachInterrupt(digitalPinToInterrupt(irPin), IrControl::handle_interrupt, CHANGE);
-  _activeObject=this;
+  _activeIrControlObject = this;
 }
 
 void IrControl::stop() {
   detachInterrupt(digitalPinToInterrupt(irPin));
-  _activeObject=0;
+  _activeIrControlObject = 0;
 }
 
 void IrControl::handle_interrupt() {
-  if (_activeObject) {
-	_activeObject->interrupt();
+  if (_activeIrControlObject) {
+	_activeIrControlObject->interrupt();
   }
 }
 
