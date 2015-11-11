@@ -1,4 +1,3 @@
-#include <MsTimer2.h>
 #include <IrControl.h>
 
 // указываем пин для ИК датчика 
