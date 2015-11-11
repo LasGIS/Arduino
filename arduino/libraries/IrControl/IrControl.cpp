@@ -57,8 +57,17 @@ bool IrControl::decode() {
       return false;
     }
     count = wait(HIGH);
-    if (count < IR_CONTROL_MINIMAL_COUNT || count >= IR_CONTROL_MAXIMAL_COUNT) {
+    if (count < IR_CONTROL_MINIMAL_COUNT) {
       return false;
+    } else if (count >= IR_CONTROL_MAXIMAL_COUNT) {
+      if (i == 16) {
+        /* вариант с половинными пультами */
+        code = value;
+        _hasCode = true;
+        return true;
+      } else {
+        return false;
+      }
     }
     value <<= 1;
     value |= (count > IR_CONTROL_BOUND_COUNT) ? 1 : 0;

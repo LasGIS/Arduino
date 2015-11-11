@@ -25,15 +25,15 @@ void setup() {
 }
 
 void loop() {
-  int resistorValue = analogRead(resistorPin);
-  myservo.write(map(resistorValue, 0, 1023, 0, 180));
-
   switch (showCom) {
     case 0:
       setTimeToPanel();
       break;
-    case 1:
-      panelValue = String((resistorValue * 180.0) / 1023, 2);
+    case 1: {
+        int resistorValue = analogRead(resistorPin);
+        myservo.write(map(resistorValue, 0, 1023, 0, 180));
+        panelValue = String((resistorValue * 180.0) / 1023, 2);
+      }
       break;
     case 2:
       setIRTestToPanel();
