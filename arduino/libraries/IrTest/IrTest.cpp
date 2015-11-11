@@ -4,10 +4,6 @@
 
 #include <IrTest.h>
 
-//volatile int IrTest::count = -1;
-//volatile long IrTest::times[IR_TEST_INTERRUPT_BUF_SIZE];
-//volatile byte IrTest::values[IR_TEST_INTERRUPT_BUF_SIZE];
-
 IrTest* IrTest::_testActiveObject=0;
 
 IrTest::IrTest(int pin) {
@@ -52,7 +48,7 @@ void IrTest::interrupt() {
 
   if (count >= IR_TEST_INTERRUPT_BUF_SIZE) {
     count = 0;
-    //print();
+    print();
   }
 }
 
@@ -61,16 +57,26 @@ void IrTest::interrupt() {
  * Показываем содержимое.
  */
 void IrTest::print() {
-  Serial.println("; -----");
+  Serial.print("----- ");
+  Serial.print(count);
+  Serial.println(" -----");
+
   for (int i = 0; i < IR_TEST_INTERRUPT_BUF_SIZE; i++) {
+    byte value = points[i].val;
     Serial.print(i);
-    Serial.print(": time = ");
+    Serial.print(": ");
+    Serial.print(value, DEC);
+    Serial.print(" / ");
     Serial.print(points[i].time, DEC);
-    Serial.print("; value = ");
-    Serial.print(points[i].val, DEC);
-    Serial.println("; | ");
+    if (value == HIGH) {
+        Serial.print("; | ");
+    } else {
+        Serial.println("; |");
+    }
   }
-  Serial.println("; -----");
+  Serial.print("----- ");
+  Serial.print(count);
+  Serial.println(" -----");
 }
 
 /**

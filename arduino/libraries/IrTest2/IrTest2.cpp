@@ -49,21 +49,25 @@ void IrTest2::event() {
 
   Serial.print("------- ");
   Serial.print(time);
-  Serial.println(" ------------------------");
-  for (int i = 0; i < IR_TEST_READ_BUF_SIZE; i++) {
+  Serial.println(" -------");
+  int i;
+  for (i = 0; i < IR_TEST_READ_BUF_SIZE; i++) {
     short val = readBuf[i];
     //Serial.println(readBuf[i] & 0xffff, BIN);
     for (int k = 0; k < 16; k++) {
       Serial.print((val & 0x8000) ? '#' : '_');
       val = val << 1;
     }
-    if (i % 8 == 0) {
+    if (i % 8 == 7) {
       Serial.println(" |");
     }
   }
+  if (i % 8 != 0) {
+    Serial.println(" |");
+  }
   Serial.print("------- ");
   Serial.print(time);
-  Serial.println(" ------------------------");
+  Serial.println(" -------");
 }
 
 /*

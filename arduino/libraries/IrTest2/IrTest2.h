@@ -1,10 +1,9 @@
 #ifndef IrTest2_h
 #define IrTest2_h
 
-#include <MsTimer2.h>
 #include <Arduino.h>
 
-#define IR_TEST_READ_BUF_SIZE 800
+#define IR_TEST_READ_BUF_SIZE 700
 
 class IrTest2 {
 

@@ -1,12 +1,11 @@
 #ifndef IrTest_h
 #define IrTest_h
 
-#include <MsTimer2.h>
 #include <Arduino.h>
 
 #define IR_TEST_MINIMAL_TIME 200
 //#define IR_TEST_READ_BUF_SIZE 400
-#define IR_TEST_INTERRUPT_BUF_SIZE 66
+#define IR_TEST_INTERRUPT_BUF_SIZE 68
 
 class IrTestPoint {
 public:
@@ -28,11 +27,11 @@ public:
   IrTest(int pin);
   void start();
   void stop();
+  void print();
 
 private:
   static inline void handle_interrupt();
   void interrupt();
-  void print();
 };
 
 #endif
