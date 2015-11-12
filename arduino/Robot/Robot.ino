@@ -42,10 +42,10 @@ void loop() {
       setIRTestToPanel();
       break;
     case 3:
-      panel.setValue("-03-");
+      panel.setValue("-33-");
       break;
     case 4:
-      panel.setValue("-04-");
+      panel.setValue("-44-");
       break;
     default:
       panel.setValue("defa");
@@ -78,7 +78,7 @@ void loop() {
       break;
       case 'k':
         showCom++;
-        if (showCom > 3) {
+        if (showCom > 5) {
           showCom = 0;
         }
       break;
@@ -86,7 +86,6 @@ void loop() {
   }
   delay(100);
 }
-
 
 void setTimeToPanel() {
   static int count = 0;
