@@ -50,13 +50,6 @@ void showPanel2() {
 void showPanel() {
   static int place = 0;
   static int chars = 0;
-  static int paused = 0;
-  paused++;
-  if (paused < 5) {
-    return;
-  } else if (paused > 400) {
-    paused = 0;
-  }
   static String panelValueLocal = panelValue;
   resetAllDigit();
   if (chars < panelValueLocal.length()) {
