@@ -16,15 +16,13 @@ private:
   // 4 Пина для управления цифрами
   int digit[4] = {10,9,7,4};
 
-  int place = 0;
-  unsigned int chars = 0;
-  int paused = 0;
   String panelValue;
   static DigitPanel* _activeDigitPanelObject;
 
 public:
   DigitPanel(int _latchPin, int _clockPin, int _dataPin, int* _digits, int _count);
   void setValue(String value);
+  String getValue();
 
 private:
   static inline void handle_interrupt();

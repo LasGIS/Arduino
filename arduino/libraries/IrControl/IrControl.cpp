@@ -10,12 +10,7 @@ IrControlKey irControlKeyMap[] {
   IrControlKey('r', 0xFFE01F),
   IrControlKey('f', 0xFF02FD),
   IrControlKey('l', 0xFF906F),
-  IrControlKey('k', 0xFFC23D),
-
-  IrControlKey('s', 0xFFA857),
-  IrControlKey('r', 0xFFE01F),
-  IrControlKey('f', 0xFF02FD),
-  IrControlKey('l', 0xFF906F)
+  IrControlKey('k', 0xFFC23D)
 };
 
 IrControlKey::IrControlKey(char _key, long _code) {

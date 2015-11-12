@@ -38,7 +38,7 @@ DigitPanel::DigitPanel(int _latchPin, int _clockPin, int _dataPin, int* _digits,
   }
   
   DigitPanel::_activeDigitPanelObject = this;
-  MsTimer2::set(5, DigitPanel::handle_interrupt);
+  MsTimer2::set(3, DigitPanel::handle_interrupt);
   MsTimer2::start();
 }
 
@@ -49,21 +49,29 @@ void DigitPanel::handle_interrupt() {
 }
 
 void DigitPanel::setValue(String value) {
-	panelValue = value;
+  panelValue = value;
+}
+
+String DigitPanel::getValue() {
+  return panelValue;
 }
 
 /** показываем очередной сегмент. */
 void DigitPanel::showSegment() {
+  static int place = 0;
+  static unsigned int chars = 0;
+/*  static int paused = 0;
   paused++;
   if (paused < 5) {
     return;
   } else if (paused > 400) {
     paused = 0;
-  }
+  }*/
+  static String panelValueLocal = panelValue;
   resetAllDigit();
-  if (chars < panelValue.length()) {
-    char chr = panelValue[chars];
-    if (chars + 1 < panelValue.length() && panelValue[chars + 1] == '.') {
+  if (chars < panelValueLocal.length()) {
+    char chr = panelValueLocal[chars];
+    if (chars + 1 < panelValueLocal.length() && panelValueLocal[chars + 1] == '.') {
       setChar(chr, true);
       chars++;
     } else {
@@ -73,9 +81,10 @@ void DigitPanel::showSegment() {
   }
   place++;
   chars++;
-  if (!(place < 4 && chars < panelValue.length())) {
+  if (!(place < 4 && chars < panelValueLocal.length())) {
     place = 0;
     chars = 0;
+    panelValueLocal = panelValue;
   }
 }
 

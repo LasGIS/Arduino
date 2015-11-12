@@ -18,11 +18,13 @@ public:
 
 class IrControl {
 	
+  public:
+        unsigned long code = 0l;
+
   private:
 	int irPin;
 	long startTime;
 	bool _hasCode = false;
-	unsigned long code = 0l;
 	static IrControl* _activeIrControlObject;
 
   public:
