@@ -9,6 +9,13 @@
 #define IR_CONTROL_MAXIMAL_COUNT 1300
 #define IR_CONTROL_BOUND_COUNT 80
 
+class IrControlKey {
+public:
+  char key;
+  long code;
+  IrControlKey(char key, long code);
+};
+
 class IrControl {
 	
   private:
@@ -24,12 +31,14 @@ class IrControl {
 	unsigned long getCode();
 	void start();
 	void stop();
+	char toKey(long code);
 
   private:
 	static inline void handle_interrupt();
 	void interrupt();
-	boolean decode();
 	int wait(byte val);
+	boolean decode();
+	
 };
 
 #endif

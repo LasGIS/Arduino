@@ -5,12 +5,29 @@
 
 IrControl* IrControl::_activeIrControlObject = 0;
 
+IrControlKey irControlKeyMap[] {
+  IrControlKey('s', 0xFFA857),
+  IrControlKey('r', 0xFFE01F),
+  IrControlKey('f', 0xFF02FD),
+  IrControlKey('l', 0xFF906F),
+  IrControlKey('k', 0xFFC23D),
+
+  IrControlKey('s', 0xFFA857),
+  IrControlKey('r', 0xFFE01F),
+  IrControlKey('f', 0xFF02FD),
+  IrControlKey('l', 0xFF906F)
+};
+
+IrControlKey::IrControlKey(char _key, long _code) {
+  key = _key;
+  code = _code;
+}
+
 IrControl::IrControl(int pin) {
   irPin = pin;
   startTime = 0;
   pinMode(irPin, INPUT);
-  
-  //start();
+  start();
 }
 
 void IrControl::start() {
@@ -96,5 +113,17 @@ int IrControl::wait(byte val) {
     count ++;
   }
   return count;
+}
+
+/**
+ * получаем ключь из кода
+ */
+char IrControl::toKey(long code) {
+  for (unsigned int i = 0; i < sizeof(irControlKeyMap) / sizeof(IrControlKey); i++) {
+    if (irControlKeyMap[i].code == code) {
+	  return irControlKeyMap[i].key;
+	}
+  }
+  return 0;
 }
 

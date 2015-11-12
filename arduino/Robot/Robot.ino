@@ -18,7 +18,10 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   if (control.hasCode()) {
+    long code = control.getCode();
     Serial.print("IR key = ");
+    Serial.println(control.toKey(code));
+    Serial.print("; code = ");
     Serial.println(control.getCode(), HEX);
   }
   delay(100);
