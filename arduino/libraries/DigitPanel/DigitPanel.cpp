@@ -26,38 +26,44 @@ DigitPanel::DigitPanel(int _latchPin, int _clockPin, int _dataPin, int* _digits,
   clockPin = _clockPin;
   dataPin = _dataPin;
   for (int i = 0; i < 4 && i < _count; i++) {
-    digits[i] = _digits[i];
+    digit[i] = _digits[i];
   }
-  digit = _digit;
 
   //устанавливаем режим OUTPUT
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
-
   for (int i = 0; i < 4; i++) { 
     pinMode(digit[i], OUTPUT);
   }
-  MsTimer2::set(5, DigitPanel);
+  
+  DigitPanel::_activeDigitPanelObject = this;
+  MsTimer2::set(5, DigitPanel::handle_interrupt);
   MsTimer2::start();
 }
 
+void DigitPanel::handle_interrupt() {
+  if (_activeDigitPanelObject) {
+	_activeDigitPanelObject->showSegment();
+  }
+}
+
+void DigitPanel::setValue(String value) {
+	panelValue = value;
+}
+
 /** показываем очередной сегмент. */
-void DigitPanel() {
-  static int place = 0;
-  static int chars = 0;
-  static int paused = 0;
+void DigitPanel::showSegment() {
   paused++;
   if (paused < 5) {
     return;
   } else if (paused > 400) {
     paused = 0;
   }
-  static String panelValueLocal = panelValue;
   resetAllDigit();
-  if (chars < panelValueLocal.length()) {
-    char chr = panelValueLocal[chars];
-    if (chars + 1 < panelValueLocal.length() && panelValueLocal[chars + 1] == '.') {
+  if (chars < panelValue.length()) {
+    char chr = panelValue[chars];
+    if (chars + 1 < panelValue.length() && panelValue[chars + 1] == '.') {
       setChar(chr, true);
       chars++;
     } else {
@@ -67,15 +73,14 @@ void DigitPanel() {
   }
   place++;
   chars++;
-  if (!(place < 4 && chars < panelValueLocal.length())) {
+  if (!(place < 4 && chars < panelValue.length())) {
     place = 0;
     chars = 0;
-    panelValueLocal = panelValue;
   }
 }
 
 /** Сбрасываем все цифры. */
-void resetAllDigit() {
+void DigitPanel::resetAllDigit() {
   for (int digInd = 0; digInd < 4; digInd++) {
     int dig = digit[digInd];
     digitalWrite(dig, DIGIT_OFF);
@@ -83,7 +88,7 @@ void resetAllDigit() {
 }
 
 /** Находим маску по номеру знака(цифры) и выводим маску в сегменты */ 
-void setChar(char chr, boolean isPnt) {
+void DigitPanel::setChar(char chr, boolean isPnt) {
   int bits;
   if (chr == '-') {
     bits = MINUS_MASK;
@@ -103,7 +108,7 @@ void setChar(char chr, boolean isPnt) {
 }
 
 /** Выводит маску символа в сегменты */
-void setNumBit(uint8_t mask) {
+void DigitPanel::setNumBit(uint8_t mask) {
   // устанавливаем синхронизацию "защелки" на LOW
   digitalWrite(latchPin, LOW);
   // передаем последовательно на dataPin
