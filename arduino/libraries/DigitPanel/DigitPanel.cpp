@@ -16,6 +16,7 @@ const byte DP_SegmentMap[16] = {
 };
 
 DigitPanel* DigitPanel::_activeDigitPanelObject = 0;
+volatile byte DigitPanel::panel[4] = {0,0,0,0};
 
 /**
  * Конструктор с инициализатором
@@ -49,6 +50,16 @@ void DigitPanel::handle_interrupt() {
 }
 
 void DigitPanel::setValue(String value) {
+  for (unsigned int i = 0, place = 0; i < value.length() && place < 4; i++, place++) {
+    char chr = value[i];
+    if (i + 1 < value.length() && value[i + 1] == '.') {
+      DigitPanel::panel[place] = getChar(chr, true);
+      i++;
+    } else {
+      DigitPanel::panel[place] = getChar(chr, true);
+    }
+    digitalWrite(digit[place], DIGIT_ON);
+  }
   panelValue = value;
 }
 
@@ -59,25 +70,11 @@ String DigitPanel::getValue() {
 /** показываем очередной сегмент. */
 void DigitPanel::showSegment() {
   static int place = 0;
-  static unsigned int chars = 0;
-  static String panelValueLocal = panelValue;
   resetAllDigit();
-  if (chars < panelValueLocal.length()) {
-    char chr = panelValueLocal[chars];
-    if (chars + 1 < panelValueLocal.length() && panelValueLocal[chars + 1] == '.') {
-      setChar(chr, true);
-      chars++;
-    } else {
-      setChar(chr, false);
-    }
-    digitalWrite(digit[place], DIGIT_ON);
-  }
-  place++;
-  chars++;
-  if (!(place < 4 && chars < panelValueLocal.length())) {
+  setNumBit(DigitPanel::panel[place++]);
+  digitalWrite(digit[place], DIGIT_ON);
+  if (place >= 4) {
     place = 0;
-    chars = 0;
-    panelValueLocal = panelValue;
   }
 }
 
@@ -90,7 +87,7 @@ void DigitPanel::resetAllDigit() {
 }
 
 /** Находим маску по номеру знака(цифры) и выводим маску в сегменты */ 
-void DigitPanel::setChar(char chr, boolean isPnt) {
+byte DigitPanel::getChar(char chr, boolean isPnt) {
   int bits;
   if (chr == '-') {
     bits = MINUS_MASK;
@@ -106,7 +103,7 @@ void DigitPanel::setChar(char chr, boolean isPnt) {
   if (isPnt) {
     bits |= 128;
   }
-  setNumBit(bits);
+  return bits;
 }
 
 /** Выводит маску символа в сегменты */

@@ -18,6 +18,7 @@ private:
 
   String panelValue;
   static DigitPanel* _activeDigitPanelObject;
+  static volatile byte panel[4];
 
 public:
   DigitPanel(int _latchPin, int _clockPin, int _dataPin, int* _digits, int _count);
@@ -28,7 +29,7 @@ private:
   static inline void handle_interrupt();
   void showSegment();
   void resetAllDigit();
-  void setChar(char chr, boolean isPnt);
+  byte getChar(char chr, boolean isPnt);
   void setNumBit(uint8_t mask);
 };
 
