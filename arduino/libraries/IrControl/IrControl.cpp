@@ -6,11 +6,12 @@
 IrControl* IrControl::_activeIrControlObject = 0;
 
 IrControlKey irControlKeyMap[] {
-  IrControlKey('s', 0xFFA857),
-  IrControlKey('r', 0xFFE01F),
-  IrControlKey('f', 0xFF02FD),
-  IrControlKey('l', 0xFF906F),
-  IrControlKey('k', 0xFFC23D)
+  {'s', 0xFFA857},
+  {'r', 0xFFE01F},
+  {'f', 0xFF02FD},
+  {'l', 0xFF906F},
+  {'b', 0xFFC23D},
+  {'t', 0xFF22DD}
 };
 
 IrControlKey::IrControlKey(char _key, long _code) {

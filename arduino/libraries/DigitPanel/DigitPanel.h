@@ -6,6 +6,9 @@
 
 class DigitPanel {
 
+public:
+  static volatile byte panel[4];
+
 private:
   //Пин подключен к ST_CP входу 74HC595
   int latchPin = 8;
@@ -18,7 +21,6 @@ private:
 
   String panelValue;
   static DigitPanel* _activeDigitPanelObject;
-  static volatile byte panel[4];
 
 public:
   DigitPanel(int _latchPin, int _clockPin, int _dataPin, int* _digits, int _count);

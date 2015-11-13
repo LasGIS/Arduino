@@ -16,7 +16,7 @@ DigitPanel panel(
 
 // Пин подключен к резистору
 const int resistorPin = A0;
-// Пин подключен к резистору
+// Пин подключен к сервоприводу
 const int motorPin = 5;
 // текущая команда
 int showCom = 0;
@@ -42,7 +42,7 @@ void loop() {
       setIRTestToPanel();
       break;
     case 3:
-      panel.setValue("-33-");
+      showBox();
       break;
     case 4:
       panel.setValue("-44-");
@@ -76,10 +76,20 @@ void loop() {
         myservo.write(0);
         delay(1000);
       break;
-      case 'k':
+      case 'b':
         showCom++;
         if (showCom > 5) {
           showCom = 0;
+        } else if (showCom == 3) {
+          for (int i = 0; i < 4; i++) DigitPanel::panel[i] = 0;
+        }
+      break;
+      case 't':
+        showCom--;
+        if (showCom < 0) {
+          showCom = 5;
+        } else if (showCom == 3) {
+          for (int i = 0; i < 4; i++) DigitPanel::panel[i] = 0;
         }
       break;
     }
@@ -161,6 +171,29 @@ void shimmiDance() {
         delay(30);
       }
     }
+  }
+}
+
+const byte showBoxData[] = {
+  0, B00000100, 1, B00000100, 2, B00000100, 3, B00000100, 3, B00100000, 3, B01000000, 
+  3, B00010000, 2, B00010000, 1, B00010000, 0, B00010000, 0, B00000010,
+  0, B00001000, 1, B00001000, 2, B00001000, 3, B00001000
+};
+
+void showBox() {
+  static int pos = 0;
+  static bool sets = true;
+  byte b = DigitPanel::panel[showBoxData[pos]];
+  if (sets) {
+    b = b | (showBoxData[pos + 1] & B11111111);
+  } else {
+    b = b ^ (showBoxData[pos + 1] & B11111111);
+  }
+  DigitPanel::panel[showBoxData[pos]] = b;  
+  pos += 2;
+  if (pos == 30) {
+    pos = 0;
+    sets = sets ? false : true;
   }
 }
 

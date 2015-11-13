@@ -45,22 +45,25 @@ DigitPanel::DigitPanel(int _latchPin, int _clockPin, int _dataPin, int* _digits,
 
 void DigitPanel::handle_interrupt() {
   if (_activeDigitPanelObject) {
-	_activeDigitPanelObject->showSegment();
+    _activeDigitPanelObject->showSegment();
   }
 }
 
 void DigitPanel::setValue(String value) {
-  for (unsigned int i = 0, place = 0; i < value.length() && place < 4; i++, place++) {
+  panelValue = value;
+  unsigned int i = 0, place = 0;
+  for (; i < value.length() && place < 4; i++, place++) {
     char chr = value[i];
     if (i + 1 < value.length() && value[i + 1] == '.') {
       DigitPanel::panel[place] = getChar(chr, true);
       i++;
     } else {
-      DigitPanel::panel[place] = getChar(chr, true);
+      DigitPanel::panel[place] = getChar(chr, false);
     }
-    digitalWrite(digit[place], DIGIT_ON);
   }
-  panelValue = value;
+  for (; place < 4; place++) {
+    DigitPanel::panel[place] = 0;
+  }
 }
 
 String DigitPanel::getValue() {
@@ -70,9 +73,13 @@ String DigitPanel::getValue() {
 /** показываем очередной сегмент. */
 void DigitPanel::showSegment() {
   static int place = 0;
+
   resetAllDigit();
-  setNumBit(DigitPanel::panel[place++]);
+  //delayMicroseconds(10);
+  setNumBit(DigitPanel::panel[place]);
   digitalWrite(digit[place], DIGIT_ON);
+
+  place++;
   if (place >= 4) {
     place = 0;
   }
@@ -80,9 +87,8 @@ void DigitPanel::showSegment() {
 
 /** Сбрасываем все цифры. */
 void DigitPanel::resetAllDigit() {
-  for (int digInd = 0; digInd < 4; digInd++) {
-    int dig = digit[digInd];
-    digitalWrite(dig, DIGIT_OFF);
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(digit[i], DIGIT_OFF);
   }
 }
 
