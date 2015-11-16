@@ -17,30 +17,30 @@ public:
 };
 
 class IrControl {
-	
-  public:
-        unsigned long code = 0l;
+  
+public:
+  unsigned long code = 0l;
 
-  private:
-	int irPin;
-	long startTime;
-	bool _hasCode = false;
-	static IrControl* _activeIrControlObject;
+private:
+  int irPin;
+  long startTime;
+  bool _hasCode = false;
+  static IrControl* _activeIrControlObject;
 
-  public:
-	IrControl(int pin);
-	bool hasCode();
-	unsigned long getCode();
-	void start();
-	void stop();
-	char toKey(long code);
+public:
+  IrControl(int pin);
+  bool hasCode();
+  unsigned long getCode();
+  void start();
+  void stop();
+  char toKey(long code);
 
-  private:
-	static inline void handle_interrupt();
-	void interrupt();
-	int wait(byte val);
-	boolean decode();
-	
+private:
+  static inline void handle_interrupt();
+  void interrupt();
+  int wait(byte val);
+  boolean decode();
+  
 };
 
 #endif

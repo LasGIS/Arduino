@@ -1,0 +1,15 @@
+#######################################
+# Syntax Coloring Map IrControl
+
+# Datatypes (KEYWORD1)
+IrControl	KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+getCode	KEYWORD2
+hasCode	KEYWORD2
+start	KEYWORD2
+stop	KEYWORD2
+toKey	KEYWORD2
+
+# Constants (LITERAL2)
+code	LITERAL2
