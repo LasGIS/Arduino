@@ -1,6 +1,7 @@
 #include <Servo.h>
-#include <IrControl.h>
-#include <DigitPanel.h>
+#include "IrControl.h"
+#include "DigitPanel.h"
+#include "DHT.h"
 
 // create servo object to control a servo
 Servo myservo;
@@ -13,6 +14,8 @@ DigitPanel panel(
   // 4 Пина для управления цифрами
   new int[4]{10,9,7,4}, 4
 );
+/** настраиваем измеритель влажности */
+DHT dht(3, DHT11);
 
 // Пин подключен к резистору
 const int resistorPin = A0;
@@ -24,6 +27,7 @@ int showCom = 0;
 void setup() {
   Serial.begin(9600);
   myservo.attach(motorPin);
+  dht.begin();
 }
 
 void loop() {
@@ -45,7 +49,10 @@ void loop() {
       showBox();
       break;
     case 4:
-      panel.setValue("-44-");
+      temperatureHumidity(true);
+      break;
+    case 5:
+      temperatureHumidity(false);
       break;
     default:
       panel.setValue("defa");
@@ -77,24 +84,38 @@ void loop() {
         delay(1000);
       break;
       case 'b':
+        beforeCommandSet();
         showCom++;
         if (showCom > 5) {
           showCom = 0;
-        } else if (showCom == 3) {
-          for (int i = 0; i < 4; i++) DigitPanel::panel[i] = 0;
         }
+        afterCommandSet();
       break;
       case 't':
+        beforeCommandSet();
         showCom--;
         if (showCom < 0) {
           showCom = 5;
-        } else if (showCom == 3) {
-          for (int i = 0; i < 4; i++) DigitPanel::panel[i] = 0;
         }
+        afterCommandSet();
       break;
     }
   }
   delay(100);
+}
+
+void beforeCommandSet() {
+  if (showCom == 4 || showCom == 5) {
+    myservo.attach(motorPin);
+  }
+}
+
+void afterCommandSet() {
+  if (showCom == 3) {
+    for (int i = 0; i < 4; i++) DigitPanel::panel[i] = 0;
+  } else if (showCom == 4 || showCom == 5) {
+    myservo.detach();
+  }
 }
 
 void setTimeToPanel() {
@@ -236,3 +257,29 @@ void showDoubleOut() {
   panel.setValue("B.0.b.a.");
   delay(10000);
 }
+
+void temperatureHumidity(bool isTemper) {
+  static int puls = 0;
+  if (puls++ == 20) {
+    puls = 0;
+    delay(100);
+    float h = dht.readHumidity();
+    float t = dht.readTemperature();
+    float hic = dht.computeHeatIndex(t, h, false);
+    if (isTemper) {
+      panel.setValue(String(t, DEC));
+    } else {
+      panel.setValue(String(h, DEC));
+    }
+    Serial.print("Humidity: ");
+    Serial.print(h);
+    Serial.print(" %\t");
+    Serial.print("Temperature: ");
+    Serial.print(t);
+    Serial.print(" *C ");
+    Serial.print("Heat index: ");
+    Serial.print(hic);
+    Serial.println(" *C ");
+  }
+}
+
