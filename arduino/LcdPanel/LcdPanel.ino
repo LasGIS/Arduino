@@ -40,8 +40,8 @@
 #include <LiquidCrystal.h>
 
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(10, 11, 12,
-	9, 8, 7, 6, 5, 4, 3, 2);
+LiquidCrystal lcd(12, 11, 10,
+	2, 3, 4, 5, 6, 7, 8, 9);
 
 void setup() {
   // set up the LCD's number of columns and rows:
@@ -49,20 +49,26 @@ void setup() {
 }
 
 void loop() {
-  // set the cursor to (0,0):
-  lcd.setCursor(0, 0);
-  // print from 0 to 9:
-  for (int thisChar = 0; thisChar < 10; thisChar++) {
-    lcd.print(thisChar);
-    delay(500);
+  int thisChar = 0;
+  for (int row = 0; row < 16; row++) {
+    lcd.setCursor(0, row % 2);
+    for (int col = 0; col < 16; col++) {
+      lcd.write(thisChar++);
+    }
+    if (row % 2 == 1) {
+      delay(5000);
+    }
   }
 
   // set the cursor to (16,1):
-  lcd.setCursor(16, 1);
+  lcd.setCursor(0, 1);
+  lcd.print("thisChar = ");
+  lcd.print(3.1415);
+  delay(2000);
   // set the display to automatically scroll:
-  lcd.autoscroll();
   // print from 0 to 9:
-  for (int thisChar = 0; thisChar < 10; thisChar++) {
+  lcd.autoscroll();
+  for (int thisChar = 0; thisChar < 9; thisChar++) {
     lcd.print(thisChar);
     delay(500);
   }
