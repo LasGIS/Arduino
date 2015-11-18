@@ -5,7 +5,7 @@
 
 #define IR_TEST_MINIMAL_TIME 200
 //#define IR_TEST_READ_BUF_SIZE 400
-#define IR_TEST_INTERRUPT_BUF_SIZE 68
+#define IR_TEST_INTERRUPT_BUF_SIZE 66
 
 class IrTestPoint {
 public:

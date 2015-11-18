@@ -1,14 +1,23 @@
-#include <IrTest2.h>
+#include <IrControl.h>
 
 // указываем пин для ИК датчика 
-IrTest2 control(2);
+IrControl control(2);
 
 void setup() {
   Serial.begin(9600);
-  control.start();
 }
 
 void loop() {
+  if (control.hasCode()) {
+    Serial.println("hasCode");
+    //lcd.setCursor(0, 0);
+    long code = control.getCode();
+    char key = control.toKey(code);
+    Serial.print("IR key = ");
+    Serial.print(key);
+    Serial.print("; code = ");
+    Serial.println(control.code, HEX);
+  }
   delay(100);
 }
 

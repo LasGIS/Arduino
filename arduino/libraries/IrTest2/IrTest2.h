@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-#define IR_TEST_READ_BUF_SIZE 700
+#define IR_TEST_READ_BUF_SIZE 600
 
 class IrTest2 {
 

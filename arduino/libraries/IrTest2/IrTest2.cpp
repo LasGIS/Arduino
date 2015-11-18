@@ -41,7 +41,7 @@ void IrTest2::event() {
     for (int k = 0; k < 16; k++) {
       val = val << 1;
       val |= digitalRead(irPin);
-      delayMicroseconds(10);
+      delayMicroseconds(50);
     }
     readBuf[i] = val;
   }
