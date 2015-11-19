@@ -50,7 +50,7 @@ void loop() {
     lcd.print("code = ");
     lcd.print(control.code, HEX);
     lcd.print("       ");
-    delay(1000);
+//    delay(1000);
   }
   delay(100);
 /*    }
