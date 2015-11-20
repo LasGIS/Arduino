@@ -22,7 +22,7 @@ const int resistorPin = A0;
 // Пин подключен к сервоприводу
 const int motorPin = 5;
 // текущая команда
-int showCom = 0;
+int curCommand = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -32,7 +32,7 @@ void setup() {
 
 void loop() {
 
-  switch (showCom) {
+  switch (curCommand) {
     case 0:
       setTimeToPanel();
       break;
@@ -85,17 +85,17 @@ void loop() {
       break;
       case 'b':
         beforeCommandSet();
-        showCom++;
-        if (showCom > 5) {
-          showCom = 0;
+        curCommand++;
+        if (curCommand > 5) {
+          curCommand = 0;
         }
         afterCommandSet();
       break;
       case 't':
         beforeCommandSet();
-        showCom--;
-        if (showCom < 0) {
-          showCom = 5;
+        curCommand--;
+        if (curCommand < 0) {
+          curCommand = 5;
         }
         afterCommandSet();
       break;
@@ -105,15 +105,15 @@ void loop() {
 }
 
 void beforeCommandSet() {
-  if (showCom == 4 || showCom == 5) {
+  if (curCommand == 4 || curCommand == 5) {
     myservo.attach(motorPin);
   }
 }
 
 void afterCommandSet() {
-  if (showCom == 3) {
+  if (curCommand == 3) {
     for (int i = 0; i < 4; i++) DigitPanel::panel[i] = 0;
-  } else if (showCom == 4 || showCom == 5) {
+  } else if (curCommand == 4 || curCommand == 5) {
     myservo.detach();
   }
 }
