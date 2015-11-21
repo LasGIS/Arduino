@@ -11,6 +11,7 @@ LiquidCrystal lcd(12, 10, 6, 7, 8, 9);
 int curCommand = 0;
 // время в миллисекундах
 unsigned long milliSec;
+int charsRow = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -34,7 +35,6 @@ void loop() {
     //  }
     //  break;
     case 1:
-      lcdShowChars();
       break;
     case 2:
       break;
@@ -57,29 +57,39 @@ void loop() {
     }
 
     switch (key) {
-      case 's':
+    case '>':
+      lcd.scrollDisplayLeft();
       break;
-      case 'r':
+    case '<':
+      lcd.scrollDisplayRight();
       break;
-      case 'f':
+    case '+':
+      if (curCommand == 1) {
+        charsRow++;
+        lcdShowChars();
+      }
       break;
-      case 'l':
+    case '-':
+      if (curCommand == 1) {
+        charsRow--;
+        lcdShowChars();
+      }
       break;
-      case 'b':
-        beforeCommandSet();
-        curCommand++;
-        if (curCommand > 2) {
-          curCommand = 0;
-        }
-        afterCommandSet();
+    case 'm':
+      beforeCommandSet();
+      curCommand++;
+      if (curCommand > 2) {
+        curCommand = 0;
+      }
+      afterCommandSet();
       break;
-      case 't':
-        beforeCommandSet();
-        curCommand--;
-        if (curCommand < 0) {
-          curCommand = 2;
-        }
-        afterCommandSet();
+    case 'b':
+      beforeCommandSet();
+      curCommand--;
+      if (curCommand < 0) {
+        curCommand = 2;
+      }
+      afterCommandSet();
       break;
     }
   }
@@ -91,6 +101,29 @@ void beforeCommandSet() {
 }
 
 void afterCommandSet() {
+  if (curCommand == 1) {
+//    charsRow = 0;
+    lcdShowChars();
+  }
+}
+
+void serialEvent() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  char buf[10];
+  int j = 0;
+  while (Serial.available() > 0) {
+    int cnt = Serial.readBytes(buf, 10);
+    for (int i = 0; i < cnt; i++, j++) {
+      if (j == 15 || buf[i] == '\n') {
+       lcd.setCursor(0, 1);
+       j = 0;
+      } else {
+        lcd.write(buf[i]);
+      }
+    }
+  }
+  delay(12000);
 }
 
 /** Показываем время */
@@ -106,15 +139,21 @@ void lcdShowTime() {
 
 /** Показываем последовательно раскладку */
 void lcdShowChars() {
-  static int row = 0;
-  for (int col = 0; col < 2; col++, row++) {
-    lcd.setCursor(0, row % 2);
+  if (charsRow > 15) {
+    charsRow = 0;
+  }
+  if (charsRow < 0) {
+    charsRow = 15;
+  }
+  int row = charsRow;
+  for (int i = 0; i < 2; i++, row++) {
+    lcd.setCursor(0, i);
+    if (row > 16) {
+      row = 0;
+    }
     for (int col = 0; col < 16; col++) {
       lcd.write(row * 16 + col);
     }
-  }
-  if (row > 16) {
-    row = 0;
   }
 }
 
@@ -125,7 +164,7 @@ void serIRkey(long code, char key) {
   } else {
     Serial.print(key);
   }
-  Serial.print("; code = ");
+  Serial.print("; code = 0x");
   Serial.println(code, HEX);
 }
 

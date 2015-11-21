@@ -6,12 +6,28 @@
 IrControl* IrControl::_activeIrControlObject = 0;
 
 IrControlKey irControlKeyMap[] {
-  {'s', 0xFFA857},
-  {'r', 0xFFE01F},
-  {'f', 0xFF02FD},
-  {'l', 0xFF906F},
-  {'b', 0xFFC23D},
-  {'t', 0xFF22DD}
+  {'q', 0xFFA25D}, // quit
+  {'m', 0xFFE21D}, // menu
+  {'b', 0xFFC23D}, // back
+  {'t', 0xFF22DD}, // test
+  {'p', 0xFFA857}, // play
+
+  {'<', 0xFFE01F},
+  {'+', 0xFF02FD},
+  {'>', 0xFF906F},
+  {'-', 0xFF9867},
+
+  {'C', 0xFFB04F},
+  {'0', 0xFF6897},
+  {'1', 0xFF30CF},
+  {'2', 0xFF18E7},
+  {'3', 0xFF7A85},
+  {'4', 0xFF10EF},
+  {'5', 0xFF38C7},
+  {'6', 0xFF5AA5},
+  {'7', 0xFF42BD},
+  {'8', 0xFF4AB5},
+  {'9', 0xFF52AD}
 };
 
 IrControlKey::IrControlKey(char _key, long _code) {
