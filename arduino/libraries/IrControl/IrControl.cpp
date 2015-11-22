@@ -6,34 +6,33 @@
 IrControl* IrControl::_activeIrControlObject = 0;
 
 IrControlKey irControlKeyMap[] {
-  {'q', 0xFFA25D}, // quit
-  {'m', 0xFFE21D}, // menu
-  {'b', 0xFFC23D}, // back
-  {'t', 0xFF22DD}, // test
-  {'p', 0xFFA857}, // play
+  {'q', 0xFFA25D, 220}, // quit
+  {'m', 0xFFE21D, 233}, // menu
+  {'b', 0xFFC23D, 247}, // back
+  {'t', 0xFF22DD, 262}, // test
+  {'p', 0xFFA857, 277}, // play
 
-  {'<', 0xFFE01F},
-  {'+', 0xFF02FD},
-  {'>', 0xFF906F},
-  {'-', 0xFF9867},
-
-  {'C', 0xFFB04F},
-  {'0', 0xFF6897},
-  {'1', 0xFF30CF},
-  {'2', 0xFF18E7},
-  {'3', 0xFF7A85},
-  {'4', 0xFF10EF},
-  {'5', 0xFF38C7},
-  {'6', 0xFF5AA5},
-  {'7', 0xFF42BD},
-  {'8', 0xFF4AB5},
-  {'9', 0xFF52AD}
+  {'<', 0xFFE01F, 294},
+  {'+', 0xFF02FD, 311},
+  {'>', 0xFF906F, 330},
+  {'-', 0xFF9867, 349},
+  {'C', 0xFFB04F, 370},
+  {'0', 0xFF6897, 392},
+  {'1', 0xFF30CF, 415},
+  {'2', 0xFF18E7, 440},
+  {'3', 0xFF7A85, 466},
+  {'4', 0xFF10EF, 494},
+  {'5', 0xFF38C7, 523},
+  {'6', 0xFF5AA5, 554},
+  {'7', 0xFF42BD, 587},
+  {'8', 0xFF4AB5, 622},
+  {'9', 0xFF52AD, 659}
 };
 
-IrControlKey::IrControlKey(char _key, long _code) {
+/*IrControlKey::IrControlKey(char _key, long _code) {
   key = _key;
   code = _code;
-}
+}*/
 
 IrControl::IrControl(int pin) {
   irPin = pin;
@@ -139,3 +138,14 @@ char IrControl::toKey(long code) {
   return 0;
 }
 
+/**
+ * получаем ControlKey из кода
+ */
+IrControlKey* IrControl::toControlKey(long code) {
+  for (unsigned int i = 0; i < sizeof(irControlKeyMap) / sizeof(IrControlKey); i++) {
+    if (irControlKeyMap[i].code == code) {
+	  return irControlKeyMap + i;
+	}
+  }
+  return 0;
+}

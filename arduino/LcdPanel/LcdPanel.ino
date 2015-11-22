@@ -7,6 +7,9 @@
 IrControl control(2);
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 10, 6, 7, 8, 9);
+// пин для жужалки
+const int buzzerPin = A5;
+
 // текущая команда
 int curCommand = 0;
 // время в миллисекундах
@@ -21,6 +24,8 @@ void setup() {
   lcd.print("Start");
   control.start();
   milliSec = millis();
+  pinMode(buzzerPin, OUTPUT);
+//  buzzerOut(1000, 4000);
 }
 
 void loop() {
@@ -50,7 +55,13 @@ void loop() {
 
   if (control.hasCode()) {
     long code = control.getCode();
-    char key = control.toKey(code);
+    IrControlKey* controlKey = control.toControlKey(code);
+    char key = 0;
+    if (controlKey != NULL) {
+      key = controlKey->key;
+      buzzerOut(controlKey->tone, 200);
+    }
+
     serIRkey(code, key);
     if (curCommand == 2) {
       lcdIRkey(code, key);

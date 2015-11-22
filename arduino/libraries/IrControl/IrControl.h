@@ -13,7 +13,7 @@ class IrControlKey {
 public:
   char key;
   long code;
-  IrControlKey(char key, long code);
+  int tone;
 };
 
 class IrControl {
@@ -34,6 +34,7 @@ public:
   void start();
   void stop();
   char toKey(long code);
+  IrControlKey* toControlKey(long code);
 
 private:
   static inline void handle_interrupt();
