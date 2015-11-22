@@ -1,7 +1,9 @@
-/*
+/**
+ * 
  */
 #include <IrControl.h>
 #include <LiquidCrystal.h>
+#include <DS1302.h>
 
 // указываем пин для ИК датчика 
 IrControl control(2);
@@ -16,6 +18,12 @@ int curCommand = 0;
 unsigned long milliSec;
 int charsRow = 0;
 
+const int kCePin   = 3;  // Chip Enable
+const int kIoPin   = 4;  // Input/Output
+const int kSclkPin = 5;  // Serial Clock
+
+DS1302 rtc(kCePin, kIoPin, kSclkPin);
+
 void setup() {
   Serial.begin(9600);
   // set up the LCD's number of columns and rows:
@@ -25,7 +33,7 @@ void setup() {
   control.start();
   milliSec = millis();
   pinMode(buzzerPin, OUTPUT);
-//  buzzerOut(1000, 4000);
+  
 }
 
 void loop() {
@@ -115,6 +123,8 @@ void afterCommandSet() {
   if (curCommand == 1) {
 //    charsRow = 0;
     lcdShowChars();
+  } else if (curCommand == 2) {
+    lcd.print("Enter IR key");
   }
 }
 
@@ -142,9 +152,7 @@ void lcdShowTime() {
   unsigned long msec = millis();
   if ((msec - milliSec) / 1000 > 0) {
     milliSec = msec;
-    lcd.setCursor(0, 0);
-    lcd.print("Time = ");
-    lcd.print(timeToString(milliSec));
+    printTime();
   }
 }
 
@@ -192,21 +200,5 @@ void lcdIRkey(long code, char key) {
   lcd.print("code = ");
   lcd.print(code, HEX);
   lcd.print("       ");
-}
-
-String timeToString(unsigned long time) {
-  time /= 1000;
-  int sec = time % 60;
-  time /= 60;
-  int min = time % 60;
-  time /= 60;
-  int hour = time;
-  return toTwo(hour) + ":" + toTwo(min) + ":" + toTwo(sec);
-}
-
-String toTwo(int val) {
-  String str = "00";
-  str = str + val;
-  return str.substring(str.length() - 2);
 }
 
