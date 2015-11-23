@@ -4,6 +4,7 @@
 #include <IrControl.h>
 #include <LiquidCrystal.h>
 #include <DS1302.h>
+#include "DHT.h"
 
 // указываем пин для ИК датчика 
 IrControl control(2);
@@ -23,6 +24,8 @@ const int kIoPin   = 4;  // Input/Output
 const int kSclkPin = 5;  // Serial Clock
 
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
+/** настраиваем измеритель влажности */
+DHT dht(A4, DHT11);
 
 void setup() {
   Serial.begin(9600);
@@ -33,30 +36,20 @@ void setup() {
   control.start();
   milliSec = millis();
   pinMode(buzzerPin, OUTPUT);
-  
+  dht.begin();
 }
 
 void loop() {
+  static int showMode = 1;
   switch (curCommand) {
     case 0:
-      lcdShowTime();
+      lcdShowTime(showMode);
+      temperatureHumidity(showMode);
       break;
-    //case 1: {
-    //    int resistorValue = analogRead(resistorPin);
-    //    myservo.write(map(resistorValue, 0, 1023, 0, 180));
-    //    panel.setValue(String((resistorValue * 180.0) / 1023, 2));
-    //  }
-    //  break;
     case 1:
       break;
     case 2:
       break;
-    //case 4:
-    //  temperatureHumidity(true);
-    //  break;
-    //case 5:
-    //  temperatureHumidity(false);
-    //  break;
     default:
       break;
   }
@@ -83,13 +76,19 @@ void loop() {
       lcd.scrollDisplayRight();
       break;
     case '+':
-      if (curCommand == 1) {
+      if (curCommand == 0) {
+        lcd.clear();
+        showMode = showMode > 0 ? showMode - 1 : 0;
+      } else if (curCommand == 1) {
         charsRow++;
         lcdShowChars();
       }
       break;
     case '-':
-      if (curCommand == 1) {
+      if (curCommand == 0) {
+       lcd.clear();
+       showMode = showMode < 2 ? showMode + 1 : 2;
+      } else if (curCommand == 1) {
         charsRow--;
         lcdShowChars();
       }
@@ -148,11 +147,11 @@ void serialEvent() {
 }
 
 /** Показываем время */
-void lcdShowTime() {
+void lcdShowTime(int showMode) {
   unsigned long msec = millis();
   if ((msec - milliSec) / 1000 > 0) {
     milliSec = msec;
-    printTime();
+    printTime(showMode);
   }
 }
 
@@ -200,5 +199,49 @@ void lcdIRkey(long code, char key) {
   lcd.print("code = ");
   lcd.print(code, HEX);
   lcd.print("       ");
+}
+
+void temperatureHumidity(int showMode) {
+  static int puls = 0;
+  if (puls++ == 20) {
+    puls = 0;
+    delay(100);
+    double h = dht.readHumidity();
+    double t = dht.readTemperature();
+    double hic = dht.computeHeatIndex(t, h, false);
+
+    if (showMode == 1) {
+      lcd.setCursor(0, 1);
+      lcd.print("Temp ");
+      lcd.print(t, 0);
+      lcd.print("C ");
+      lcd.print("Hum ");
+      lcd.print(h, 0);
+      lcd.print("% ");
+      lcd.print("ind ");
+      lcd.print(hic, 2);
+      lcd.print("C ");
+    } else if (showMode == 2) {
+      lcd.setCursor(0, 0);
+      lcd.print("Temper ");
+      lcd.print(t, 0);
+      lcd.print("|");
+      lcd.print(hic, 2);
+      lcd.print("C ");
+      lcd.setCursor(0, 1);
+      lcd.print("Humidity ");
+      lcd.print(h, 0);
+      lcd.print("%    ");
+    }
+    Serial.print("Humidity: ");
+    Serial.print(h);
+    Serial.print(" %\t");
+    Serial.print("Temperature: ");
+    Serial.print(t);
+    Serial.print(" *C ");
+    Serial.print("Heat index: ");
+    Serial.print(hic);
+    Serial.println(" *C ");
+  }
 }
 
