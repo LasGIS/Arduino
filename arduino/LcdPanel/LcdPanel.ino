@@ -1,5 +1,6 @@
 /**
- * 
+ * Проверяем:
+ * real time часы + ик пульт + датчик влажности + жужалка
  */
 #include <IrControl.h>
 #include <LiquidCrystal.h>
@@ -17,14 +18,16 @@ const int buzzerPin = A5;
 int curCommand = 0;
 // время в миллисекундах
 unsigned long milliSec;
+// начальная страница для показа раскладки символов (0-15)
 int charsRow = 0;
 
+/** настраиваем real time clock. */
 const int kCePin   = 3;  // Chip Enable
 const int kIoPin   = 4;  // Input/Output
 const int kSclkPin = 5;  // Serial Clock
-
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
-/** настраиваем измеритель влажности */
+
+/** настраиваем измеритель влажности. */
 DHT dht(A4, DHT11);
 
 void setup() {
@@ -42,13 +45,13 @@ void setup() {
 void loop() {
   static int showMode = 1;
   switch (curCommand) {
-    case 0:
+    case 0: // показываем часы, температуру и влажность
       lcdShowTime(showMode);
       temperatureHumidity(showMode);
       break;
-    case 1:
+    case 1: // показываем раскладку LCD символов
       break;
-    case 2:
+    case 2: // показываем ключ и код ИК пульта
       break;
     default:
       break;
@@ -175,6 +178,9 @@ void lcdShowChars() {
   }
 }
 
+/**
+ * Показываем полученное значение ИК пульта в Serial
+ */
 void serIRkey(long code, char key) {
   Serial.print("IR key = ");
   if (key == 0) {
@@ -186,6 +192,9 @@ void serIRkey(long code, char key) {
   Serial.println(code, HEX);
 }
 
+/**
+ * Показываем полученное значение ИК пульта на дисплее
+ */
 void lcdIRkey(long code, char key) {
   lcd.setCursor(0, 0);
   lcd.print("IR key = ");
@@ -201,6 +210,9 @@ void lcdIRkey(long code, char key) {
   lcd.print("       ");
 }
 
+/**
+ * Показываем температуру и влажность
+ */
 void temperatureHumidity(int showMode) {
   static int puls = 0;
   if (puls++ == 20) {
