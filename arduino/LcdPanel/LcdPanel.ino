@@ -2,6 +2,7 @@
  * Проверяем:
  * real time часы + ик пульт + датчик влажности + жужалка
  */
+#include "LcdPanel.h"
 #include <IrControl.h>
 #include <LiquidCrystal.h>
 #include <DS1302.h>
@@ -14,18 +15,20 @@ LiquidCrystal lcd(12, 10, 6, 7, 8, 9);
 // пин для жужалки
 const int buzzerPin = A5;
 
-// текущая команда
-int curCommand = 0;
-// время в миллисекундах
-unsigned long milliSec;
-// начальная страница для показа раскладки символов (0-15)
-int charsRow = 0;
-
 /** настраиваем real time clock. */
 const int kCePin   = 3;  // Chip Enable
 const int kIoPin   = 4;  // Input/Output
 const int kSclkPin = 5;  // Serial Clock
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
+
+// текущая команда
+int curCommand = 0;
+// начальная страница для показа раскладки символов (0-15)
+int charsRow = 0;
+// 
+LPMode mode = show;
+// время в миллисекундах
+unsigned long milliSec;
 
 /** настраиваем измеритель влажности. */
 DHT dht(A4, DHT11);
@@ -46,8 +49,10 @@ void loop() {
   static int showMode = 1;
   switch (curCommand) {
     case 0: // показываем часы, температуру и влажность
-      lcdShowTime(showMode);
-      temperatureHumidity(showMode);
+      if (mode == show) {
+        lcdShowTime(showMode);
+        temperatureHumidity(showMode);
+      }
       break;
     case 1: // показываем раскладку LCD символов
       break;
@@ -65,7 +70,11 @@ void loop() {
       key = controlKey->key;
       buzzerOut(controlKey->tone, 200);
     }
-
+    if (mode == edit) {
+      mode = editTime(key);
+      return;
+    }
+    
     serIRkey(code, key);
     if (curCommand == 2) {
       lcdIRkey(code, key);
@@ -94,6 +103,11 @@ void loop() {
       } else if (curCommand == 1) {
         charsRow--;
         lcdShowChars();
+      }
+      break;
+    case 'p':
+      if (curCommand == 0) {
+        mode = editTime(1);
       }
       break;
     case 'm':

@@ -1,0 +1,4 @@
+enum LPMode {
+  show, edit
+};
+

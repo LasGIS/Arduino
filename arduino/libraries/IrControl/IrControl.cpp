@@ -60,7 +60,7 @@ void IrControl::handle_interrupt() {
 void IrControl::interrupt() {
   long time = micros() - startTime;
   startTime += time;
-  if (time < IR_CONTROL_MINIMAL_TIME || time > IR_CONTROL_MAXIMAL_TIME) {
+  if (time < IR_CONTROL_MINIMAL_TIME || time > IR_CONTROL_MAXIMAL_TIME || _hasCode) {
     return;
   }
   byte value = digitalRead(irPin);

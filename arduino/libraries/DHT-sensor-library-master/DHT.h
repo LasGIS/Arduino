@@ -37,13 +37,13 @@ written by Adafruit Industries
 
 class DHT {
   public:
-   DHT(uint8_t pin, uint8_t type, uint8_t count=6);
+   DHT(uint8_t pin, uint8_t type/*, uint8_t count=6*/);
    void begin(void);
    float readTemperature(bool S=false, bool force=false);
    float convertCtoF(float);
    float convertFtoC(float);
    float computeHeatIndex(float temperature, float percentHumidity, bool isFahrenheit=true);
-   float readHumidity(bool force=false);
+   float readHumidity(/*bool force=false*/);
    boolean read(bool force=false);
 
  private:

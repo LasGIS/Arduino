@@ -65,7 +65,7 @@ void setup() {
 
   // Make a new time object to set the date and time.
   // Sunday, September 22, 2013 at 01:38:50.
-  Time t(2015, 11, 23, 22, 07, 00, Time::kMonday);
+  Time t(2015, 11, 28, 3, 39, 00, Time::kSaturday);
 
   // Set the time and date on the chip.
   rtc.time(t);
