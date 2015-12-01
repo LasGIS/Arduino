@@ -13,7 +13,7 @@ IrControl control(2);
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 10, 6, 7, 8, 9);
 // пин для жужалки
-const int buzzerPin = A5;
+const int buzzerPin = A3;
 
 /** настраиваем real time clock. */
 const int kCePin   = 3;  // Chip Enable
@@ -31,7 +31,7 @@ LPMode mode = show;
 unsigned long milliSec;
 
 /** настраиваем измеритель влажности. */
-DHT dht(A4, DHT11);
+DHT dht(A2, DHT11);
 
 void setup() {
   Serial.begin(9600);
