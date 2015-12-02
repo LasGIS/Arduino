@@ -1,0 +1,124 @@
+/**
+ * Подключаем и работаем с панелью на 4 светодиодных цифры.
+ */
+#include <MotorShield.h>
+
+#define DIGIT_ON  HIGH
+#define DIGIT_OFF LOW
+
+#define MINUS_MASK 8
+
+const byte DP_SegmentMap[16] = {
+//   -0-        -1-        -2-        -3-        -4-        -5-        -6-        -7-    
+  B01110111, B01100000, B00111110, B01111100, B01101001, B01011101, B01011111, B01100100,
+//   -8-        -9-        -A-        -B-        -C-        -D-        -E-        -F-
+  B01111111, B01111101, B01101111, B01011011, B00010111, B01111010, B00011111, B00001111
+};
+
+MotorShield* MotorShield::_activeMotorShieldObject = 0;
+volatile byte MotorShield::panel[4] = {0,0,0,0};
+
+/**
+ * Конструктор с инициализатором
+ */
+MotorShield::MotorShield(int _latchPin, int _clockPin, int _dataPin, int* _digits, int _count) {
+
+  latchPin = _latchPin;
+  clockPin = _clockPin;
+  dataPin = _dataPin;
+  for (int i = 0; i < 4 && i < _count; i++) {
+    digit[i] = _digits[i];
+  }
+
+  //устанавливаем режим OUTPUT
+  pinMode(latchPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(dataPin, OUTPUT);
+  for (int i = 0; i < 4; i++) { 
+    pinMode(digit[i], OUTPUT);
+  }
+  
+  MotorShield::_activeMotorShieldObject = this;
+  MsTimer2::set(3, MotorShield::handle_interrupt);
+  MsTimer2::start();
+}
+
+void MotorShield::handle_interrupt() {
+  if (_activeMotorShieldObject) {
+    _activeMotorShieldObject->showSegment();
+  }
+}
+
+void MotorShield::setValue(String value) {
+  panelValue = value;
+  unsigned int i = 0, place = 0;
+  for (; i < value.length() && place < 4; i++, place++) {
+    char chr = value[i];
+    if (i + 1 < value.length() && value[i + 1] == '.') {
+      MotorShield::panel[place] = getChar(chr, true);
+      i++;
+    } else {
+      MotorShield::panel[place] = getChar(chr, false);
+    }
+  }
+  for (; place < 4; place++) {
+    MotorShield::panel[place] = 0;
+  }
+}
+
+String MotorShield::getValue() {
+  return panelValue;
+}
+
+/** показываем очередной сегмент. */
+void MotorShield::showSegment() {
+  static int place = 0;
+
+  resetAllDigit();
+  //delayMicroseconds(10);
+  setNumBit(MotorShield::panel[place]);
+  digitalWrite(digit[place], DIGIT_ON);
+
+  place++;
+  if (place >= 4) {
+    place = 0;
+  }
+}
+
+/** Сбрасываем все цифры. */
+void MotorShield::resetAllDigit() {
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(digit[i], DIGIT_OFF);
+  }
+}
+
+/** Находим маску по номеру знака(цифры) и выводим маску в сегменты */ 
+byte MotorShield::getChar(char chr, boolean isPnt) {
+  int bits;
+  if (chr == '-') {
+    bits = MINUS_MASK;
+  } else if (chr >= '0' && chr <= '9') {
+    bits = DP_SegmentMap[chr - '0'];
+  } else if (chr >= 'a' && chr <= 'f') {
+    bits = DP_SegmentMap[chr - 'a' + 10];
+  } else if (chr >= 'A' && chr <= 'F') {
+    bits = DP_SegmentMap[chr - 'A' + 10];
+  } else {
+    bits = 127;
+  }
+  if (isPnt) {
+    bits |= 128;
+  }
+  return bits;
+}
+
+/** Выводит маску символа в сегменты */
+void MotorShield::setNumBit(uint8_t mask) {
+  // устанавливаем синхронизацию "защелки" на LOW
+  digitalWrite(latchPin, LOW);
+  // передаем последовательно на dataPin
+  shiftOut(dataPin, clockPin, MSBFIRST, mask ^ 0xFF);
+  //"защелкиваем" регистр, тем самым устанавливая значения на выходах
+  digitalWrite(latchPin, HIGH);
+}
+
