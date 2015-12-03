@@ -1,7 +1,5 @@
 #include <Servo.h>
 #include "MotorShield.h"
-//#include "DigitPanel.h"
-//#include "DHT.h"
 
 Servo hSer;
 Servo vSer;
@@ -17,6 +15,20 @@ void setup() {
 }
 
 void loop() {
+  mShield.rightMotorForward();
+  delay(1000);
+  mShield.rightMotorBackward();
+  delay(1000);
+  mShield.leftMotorForward();
+  delay(1000);
+  mShield.leftMotorBackward();
+  delay(1000);
+  mShield.rightMotorPower(256);
+  delay(1000);
+  mShield.leftMotorPower(256);
+  delay(1000);
+  mShield.stopMotor();
+  delay(1000);
 }
 
 void serialEvent() {
@@ -25,8 +37,9 @@ void serialEvent() {
   if (cnt >= 0 && cnt < 10) {
     buf[cnt] = 0;
   }
-  panel.setValue(String(buf));
-  Serial.println("\"" + panel.getValue() + "\"");
+  Serial.print("\"");
+  Serial.print(buf);
+  Serial.print("\"");
   boolean isDigits = true;
   for (int i = 0; i < cnt; i++) {
     if (!isDigit(buf[i])) {
@@ -34,7 +47,7 @@ void serialEvent() {
     }
   }
   if (isDigits) {
-    int degre = panel.getValue().toInt();
+    int degre = int(buf);
     if (degre >= 0 && degre <= 180) {
       vSer.write(degre);
     }
@@ -49,7 +62,6 @@ void shimmiDance() {
   int i = vSer.read();
   for (int j = 0; j < 3; j++) {
     for (i++; i <= 180; i++) {
-      panel.setValue(String(i, DEC));
       vSer.write(i);
       //Serial.println(i);
       if (i % 90 == 0) {
@@ -61,7 +73,6 @@ void shimmiDance() {
       }
     }
     for (i--; i >= 0; i--) {
-      panel.setValue(String(i, DEC));
       vSer.write(i);
       //Serial.println(i);
       if (i % 90 == 0) {

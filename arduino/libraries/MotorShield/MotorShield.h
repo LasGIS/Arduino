@@ -15,50 +15,59 @@
 // Пин DIR_EN    / OE    / 13 входу 74HC595
 #define MSHLD_DIR_EN_PIN    7
 
-// Пин PWM0A
+// Пин PWM0A --- мощьность M4 (PIN 4, PIN 5)
 #define MSHLD_PWM0A_PIN     6
-// Пин PWM0B
+// Пин PWM0B --- мощьность M3 (PIN 1, PIN 2)
 #define MSHLD_PWM0B_PIN     5
 
-// Пин PWM1A
+// Пин PWM1A --- Сервомотор № 2
 #define MSHLD_PWM1A_PIN     9
-// Пин PWM1B
+// Пин PWM1B --- Сервомотор № 1
 #define MSHLD_PWM1B_PIN     10
 
-// Пин PWM2A
+// Пин PWM2A --- мощьность M1 (PIN 4, PIN 5)
 #define MSHLD_PWM2A_PIN     11
-// Пин PWM2B
+// Пин PWM2B --- мощьность M2 (PIN 1, PIN 2)
 #define MSHLD_PWM2B_PIN     3
+
+// маски моторов
+#define MSHLD_UP_M3A_MASK  B00000001
+#define MSHLD_UP_M2A_MASK  B00000010
+#define MSHLD_UP_M1A_MASK  B00000100
+#define MSHLD_UP_M1B_MASK  B00001000
+#define MSHLD_UP_M2B_MASK  B00010000
+#define MSHLD_UP_M4A_MASK  B00100000
+#define MSHLD_UP_M3B_MASK  B01000000
+#define MSHLD_UP_M4B_MASK  B10000000
+
+#define MSHLD_DOWN_M3A_MASK  B11111110
+#define MSHLD_DOWN_M2A_MASK  B11111101
+#define MSHLD_DOWN_M1A_MASK  B11111011
+#define MSHLD_DOWN_M1B_MASK  B11110111
+#define MSHLD_DOWN_M2B_MASK  B11101111
+#define MSHLD_DOWN_M4A_MASK  B11011111
+#define MSHLD_DOWN_M3B_MASK  B10111111
+#define MSHLD_DOWN_M4B_MASK  B01111111
 
 class MotorShield {
 
 public:
-  static volatile byte panel[4];
 
 private:
-  //Пин подключен к ST_CP входу 74HC595
-  int latchPin = 8;
-  //Пин подключен к SH_CP входу 74HC595
-  int clockPin = 12;
-  //Пин подключен к DS входу 74HC595
-  int dataPin = 11;
-  // 4 Пина для управления цифрами
-  int digit[4] = {10,9,7,4};
-
-  String panelValue;
-  static MotorShield* _activeMotorShieldObject;
+  uint8_t motorMask;
 
 public:
-  MotorShield(int _latchPin, int _clockPin, int _dataPin, int* _digits, int _count);
-  void setValue(String value);
-  String getValue();
+  MotorShield();
+  void stopMotor();
+  void rightMotorForward();
+  void rightMotorBackward();
+  void leftMotorForward();
+  void leftMotorBackward();
+  void rightMotorPower(int power);
+  void leftMotorPower(int power);
 
 private:
-  static inline void handle_interrupt();
-  void showSegment();
-  void resetAllDigit();
-  byte getChar(char chr, boolean isPnt);
-  void setNumBit(uint8_t mask);
+  void setBitMask();
 };
 
 #endif
