@@ -11,6 +11,7 @@ MotorShield::MotorShield() {
   pinMode(MSHLD_DIR_LATCH_PIN, OUTPUT);
   pinMode(MSHLD_DIR_CLK_PIN, OUTPUT);
   pinMode(MSHLD_DIR_SER_PIN, OUTPUT);
+  pinMode(MSHLD_DIR_EN_PIN, OUTPUT);
   // устанавливаем enabled
   digitalWrite(MSHLD_DIR_EN_PIN, LOW);
 /*
@@ -78,6 +79,9 @@ void MotorShield::leftMotorPower(int power) {
 
 /** Выводим маску моторов в 74HC595 */
 void MotorShield::setBitMask() {
+  Serial.print(motorMask, BIN);
+  Serial.print(" - ");
+  Serial.println(motorMask, HEX);
   // устанавливаем синхронизацию "защелки" на LOW
   digitalWrite(MSHLD_DIR_LATCH_PIN, LOW);
   // передаем последовательно на MSHLD_DIR_SER_PIN

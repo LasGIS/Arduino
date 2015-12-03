@@ -13,19 +13,29 @@ void setup() {
   hSer.attach(motorPin);
   vSer.attach(motorPin);
 }
-
+/*
+00000100
+00001000
+00001010
+00011000
+00000000
+*/
 void loop() {
+  Serial.println("start");
+  mShield.rightMotorPower(155);
+  delay(1000);
   mShield.rightMotorForward();
   delay(1000);
   mShield.rightMotorBackward();
   delay(1000);
+  mShield.stopMotor();
+  delay(1000);
+
+  mShield.leftMotorPower(155);
+  delay(1000);
   mShield.leftMotorForward();
   delay(1000);
   mShield.leftMotorBackward();
-  delay(1000);
-  mShield.rightMotorPower(256);
-  delay(1000);
-  mShield.leftMotorPower(256);
   delay(1000);
   mShield.stopMotor();
   delay(1000);
