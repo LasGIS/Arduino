@@ -2,27 +2,8 @@
 
 #include "LiquidCrystal_I2C.h"
 #include <inttypes.h>
-#if defined(ARDUINO) && ARDUINO >= 100
-
-#include "Arduino.h"
-
-#define printIIC(args)	Wire.write(args)
-inline size_t LiquidCrystal_I2C::write(uint8_t value) {
-	send(value, Rs);
-	return 0;
-}
-
-#else
-#include "WProgram.h"
-
-#define printIIC(args)	Wire.send(args)
-inline void LiquidCrystal_I2C::write(uint8_t value) {
-	send(value, Rs);
-}
-
-#endif
 #include "Wire.h"
-
+#include "Arduino.h"
 
 
 // When the display powers up, it is configured as follows:
@@ -77,7 +58,7 @@ void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
 	// according to datasheet, we need at least 40ms after power rises above 2.7V
 	// before sending commands. Arduino can turn on way befer 4.5V so we'll wait 50
-	delay(50); 
+	delayMicroseconds(50000); 
   
 	// Now we pull both RS and R/W low to begin commands
 	expanderWrite(_backlightval);	// reset expanderand turn backlight off (Bit 8 =1)
@@ -233,6 +214,11 @@ inline void LiquidCrystal_I2C::command(uint8_t value) {
 	send(value, 0);
 }
 
+inline size_t LiquidCrystal_I2C::write(uint8_t value) {
+	send(value, Rs);
+	return 0;
+}
+
 
 /************ low level data pushing commands **********/
 
@@ -240,7 +226,7 @@ inline void LiquidCrystal_I2C::command(uint8_t value) {
 void LiquidCrystal_I2C::send(uint8_t value, uint8_t mode) {
 	uint8_t highnib=value&0xf0;
 	uint8_t lownib=(value<<4)&0xf0;
-       write4bits((highnib)|mode);
+    write4bits((highnib)|mode);
 	write4bits((lownib)|mode); 
 }
 
@@ -251,7 +237,7 @@ void LiquidCrystal_I2C::write4bits(uint8_t value) {
 
 void LiquidCrystal_I2C::expanderWrite(uint8_t _data){                                        
 	Wire.beginTransmission(_Addr);
-	printIIC((int)(_data) | _backlightval);
+	Wire.write((int)(_data) | _backlightval);
 	Wire.endTransmission();   
 }
 
