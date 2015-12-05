@@ -4,14 +4,14 @@
  */
 #include "LcdPanel.h"
 #include <IrControl.h>
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 #include <DS1302.h>
 #include "DHT.h"
 
 // указываем пин для ИК датчика 
 IrControl control(2);
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(12, 10, 6, 7, 8, 9);
+LiquidCrystal_I2C lcd(0x3F, 16, 2);
 // пин для жужалки
 const int buzzerPin = A3;
 
@@ -35,8 +35,10 @@ DHT dht(A2, DHT11);
 
 void setup() {
   Serial.begin(9600);
-  // set up the LCD's number of columns and rows:
-  lcd.begin(16, 2);
+  // initialize the lcd 
+  lcd.init();
+  // Print a message to the LCD.
+  lcd.backlight();
   lcd.clear();
   lcd.print("Start");
   control.start();
