@@ -5,13 +5,10 @@ Servo hSer;
 Servo vSer;
 MotorShield mShield;
 
-// Пин подключен к сервоприводу
-const int motorPin = 5;
-
 void setup() {
   Serial.begin(9600);
-  hSer.attach(motorPin);
-  vSer.attach(motorPin);
+  hSer.attach(MSHLD_PWM1A_PIN);
+  vSer.attach(MSHLD_PWM1B_PIN);
 }
 /*
 00000100
@@ -21,24 +18,8 @@ void setup() {
 00000000
 */
 void loop() {
-  Serial.println("start");
-  mShield.rightMotorPower(155);
-  delay(1000);
-  mShield.rightMotorForward();
-  delay(1000);
-  mShield.rightMotorBackward();
-  delay(1000);
-  mShield.stopMotor();
-  delay(1000);
-
-  mShield.leftMotorPower(155);
-  delay(1000);
-  mShield.leftMotorForward();
-  delay(1000);
-  mShield.leftMotorBackward();
-  delay(1000);
-  mShield.stopMotor();
-  delay(1000);
+  delay(2000);
+  shimmiDance();
 }
 
 void serialEvent() {
@@ -66,6 +47,27 @@ void serialEvent() {
   }
 
   delay(2000);
+}
+
+void testDrive() {
+  Serial.println("start тест драйв");
+  mShield.rightMotorPower(155);
+  delay(1000);
+  mShield.rightMotorForward();
+  delay(1000);
+  mShield.rightMotorBackward();
+  delay(1000);
+  mShield.stopMotor();
+  delay(1000);
+
+  mShield.leftMotorPower(155);
+  delay(1000);
+  mShield.leftMotorForward();
+  delay(1000);
+  mShield.leftMotorBackward();
+  delay(1000);
+  mShield.stopMotor();
+  delay(1000);
 }
 
 void shimmiDance() {

@@ -23,6 +23,9 @@ DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 // текущая команда
 int curCommand = 0;
+int count = 0;
+#define COMMAND_MAX 3
+
 // начальная страница для показа раскладки символов (0-15)
 int charsRow = 0;
 // 
@@ -32,6 +35,10 @@ unsigned long milliSec;
 
 /** настраиваем измеритель влажности. */
 DHT dht(A2, DHT11);
+
+/* пины Ультразвукового дальномера */
+int echoPin = 7; 
+int trigPin = 6; 
 
 void setup() {
   Serial.begin(9600);
@@ -45,6 +52,8 @@ void setup() {
   milliSec = millis();
   pinMode(buzzerPin, OUTPUT);
   dht.begin();
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
 }
 
 void loop() {
@@ -59,6 +68,9 @@ void loop() {
     case 1: // показываем раскладку LCD символов
       break;
     case 2: // показываем ключ и код ИК пульта
+      break;
+    case 3: // дистанцию
+      showDistance();
       break;
     default:
       break;
@@ -115,7 +127,7 @@ void loop() {
     case 'm':
       beforeCommandSet();
       curCommand++;
-      if (curCommand > 2) {
+      if (curCommand > COMMAND_MAX) {
         curCommand = 0;
       }
       afterCommandSet();
@@ -124,12 +136,14 @@ void loop() {
       beforeCommandSet();
       curCommand--;
       if (curCommand < 0) {
-        curCommand = 2;
+        curCommand = COMMAND_MAX;
       }
       afterCommandSet();
       break;
     }
   }
+  count++;
+  if (count > 1000) count = 0;
   delay(100);
 }
 
@@ -138,11 +152,17 @@ void beforeCommandSet() {
 }
 
 void afterCommandSet() {
-  if (curCommand == 1) {
-//    charsRow = 0;
-    lcdShowChars();
-  } else if (curCommand == 2) {
-    lcd.print("Enter IR key");
+  switch (curCommand) {
+    case 1:
+//      charsRow = 0;
+      lcdShowChars();
+      break;
+    case 2:
+      lcd.print("Enter IR key");
+      break;
+    case 3:
+      lcd.print("Distance = ");
+      break;
   }
 }
 
@@ -162,7 +182,7 @@ void serialEvent() {
       }
     }
   }
-  delay(12000);
+  delay(2000);
 }
 
 /** Показываем время */
@@ -230,9 +250,7 @@ void lcdIRkey(long code, char key) {
  * Показываем температуру и влажность
  */
 void temperatureHumidity(int showMode) {
-  static int puls = 0;
-  if (puls++ == 20) {
-    puls = 0;
+  if (count % 20 == 0) {
     delay(100);
     double h = dht.readHumidity();
     double t = dht.readTemperature();
