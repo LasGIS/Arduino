@@ -3,6 +3,9 @@
 
 #include <Arduino.h>
 
+#define FORWARD true
+#define BACKWARD false
+
 // Пин DIR_SER   / DS    / 14 входу 74HC595
 #define MSHLD_DIR_SER_PIN   8
 
@@ -59,14 +62,13 @@ private:
 public:
   MotorShield();
   void stopMotor();
-  void rightMotorForward();
-  void rightMotorBackward();
-  void leftMotorForward();
-  void leftMotorBackward();
-  void rightMotorPower(int power);
-  void leftMotorPower(int power);
+  void setM1(int);
+  void setM2(int);
+  void setM3(int);
+  void setM4(int);
 
 private:
+  void setSpeed(int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
   void setBitMask();
 };
 

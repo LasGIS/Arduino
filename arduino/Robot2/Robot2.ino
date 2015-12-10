@@ -19,7 +19,7 @@ void setup() {
 */
 void loop() {
   delay(2000);
-  shimmiDance();
+  //shimmiDance();
 }
 
 void serialEvent() {
@@ -38,36 +38,54 @@ void serialEvent() {
     }
   }
   if (isDigits) {
-    int degre = int(buf);
+    testDrive(buf[0]);
+/*   
     if (degre >= 0 && degre <= 180) {
       vSer.write(degre);
+    } else {
+//    shimmiDance();
     }
-  } else {
-    shimmiDance();
+*/
   }
-
-  delay(2000);
+  delay(1000);
 }
 
-void testDrive() {
-  Serial.println("start тест драйв");
-  mShield.rightMotorPower(155);
-  delay(1000);
-  mShield.rightMotorForward();
-  delay(1000);
-  mShield.rightMotorBackward();
-  delay(1000);
+void testDrive(char motor) {
+  Serial.println(motor);
+  switch (motor) {
+    case '1':
+      Serial.println("M1 test drive");
+      for (int speed = 260; speed > -260; speed--) {
+        mShield.setM1(speed);
+        delay(10);
+      }
+      break;
+    
+    case '2':
+      Serial.println("M2 test drive");
+      for (int speed = 260; speed > -260; speed--) {
+        mShield.setM2(speed);
+        delay(10);
+      }
+      break;
+    
+    case '3':
+      Serial.println("M3 test drive");
+      for (int speed = 260; speed > -260; speed--) {
+        mShield.setM3(speed);
+        delay(10);
+      }
+      break;
+    
+    case '4':
+      Serial.println("M4 test drive");
+      for (int speed = 260; speed > -260; speed--) {
+        mShield.setM4(speed);
+        delay(10);
+      }
+      break;
+  }
   mShield.stopMotor();
-  delay(1000);
-
-  mShield.leftMotorPower(155);
-  delay(1000);
-  mShield.leftMotorForward();
-  delay(1000);
-  mShield.leftMotorBackward();
-  delay(1000);
-  mShield.stopMotor();
-  delay(1000);
 }
 
 void shimmiDance() {
@@ -75,7 +93,7 @@ void shimmiDance() {
   for (int j = 0; j < 3; j++) {
     for (i++; i <= 180; i++) {
       vSer.write(i);
-      //Serial.println(i);
+      Serial.println(i);
       if (i % 90 == 0) {
         delay(1000);
       } else if (i % 30 == 0) {
@@ -86,7 +104,7 @@ void shimmiDance() {
     }
     for (i--; i >= 0; i--) {
       vSer.write(i);
-      //Serial.println(i);
+      Serial.println(i);
       if (i % 90 == 0) {
         delay(1000);
       } else if (i % 30 == 0) {

@@ -19,7 +19,7 @@ MotorShield::MotorShield() {
   // снимаем enabled
   digitalWrite(MSHLD_DIR_EN_PIN, HIGH);
 */
-  motorMask = 0;
+  stopMotor();
 }
 
 void MotorShield::stopMotor() {
@@ -32,56 +32,114 @@ void MotorShield::stopMotor() {
 }
 
 /**
- * двигатель M1 на вперёд
+ * Устанавливаем скорость двигатель M1:
+ * speed > 0 - вперёд;
+ * speed < 0 - назад;
+ * значения от -255 до +255
  */
-void MotorShield::rightMotorForward() {
-  motorMask = (motorMask & MSHLD_DOWN_M1B_MASK) | MSHLD_UP_M1A_MASK;
-  setBitMask();
+void MotorShield::setM1(int speed) {
+  setSpeed(speed,
+    MSHLD_UP_M1A_MASK, MSHLD_DOWN_M1A_MASK,
+	MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK,
+	MSHLD_PWM2A_PIN
+  );
 }
 
 /**
- * двигатель M1 на назад
+ * Устанавливаем скорость двигатель M2:
+ * speed > 0 - вперёд;
+ * speed < 0 - назад;
+ * значения от -255 до +255
  */
-void MotorShield::rightMotorBackward() {
-  motorMask = (motorMask & MSHLD_DOWN_M1A_MASK) | MSHLD_UP_M1B_MASK;
-  setBitMask();
+void MotorShield::setM2(int speed) {
+  setSpeed(speed,
+    MSHLD_UP_M2A_MASK, MSHLD_DOWN_M2A_MASK,
+	MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK,
+	MSHLD_PWM2B_PIN
+  );
 }
 
 /**
- * двигатель M2 на вперёд
+ * Устанавливаем скорость двигатель M3:
+ * speed > 0 - вперёд;
+ * speed < 0 - назад;
+ * значения от -255 до +255
  */
-void MotorShield::leftMotorForward() {
-  motorMask = (motorMask & MSHLD_DOWN_M2B_MASK) | MSHLD_UP_M2A_MASK;
-  setBitMask();
+void MotorShield::setM3(int speed) {
+  setSpeed(speed,
+    MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK,
+	MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK,
+	MSHLD_PWM0A_PIN
+  );
 }
 
 /**
- * двигатель M2 на назад
+ * Устанавливаем скорость двигатель M4:
+ * speed > 0 - вперёд;
+ * speed < 0 - назад;
+ * значения от -255 до +255
  */
-void MotorShield::leftMotorBackward() {
-  motorMask = (motorMask & MSHLD_DOWN_M2A_MASK) | MSHLD_UP_M2B_MASK;
-  setBitMask();
+void MotorShield::setM4(int speed) {
+  setSpeed(speed,
+    MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK,
+	MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK,
+	MSHLD_PWM0B_PIN
+  );
 }
 
 /**
- * мощьность двигатель M1
+ * устанавливаем скорость и направление абстрактного мотора
  */
-void MotorShield::rightMotorPower(int power) {
-  analogWrite(MSHLD_PWM2A_PIN, power);
-}
+void MotorShield::setSpeed(
+  int speed,            // скорость
+  uint8_t upMask_A,     // маска установки клемы A
+  uint8_t downMask_A,   // маска снятия клемы A
+  uint8_t upMask_B,     // маска установки клемы B
+  uint8_t downMask_B,   // маска снятия клемы B
+  uint8_t powerPin      // пин для установки скорости
+) {
+/*
+  Serial.print("speed = ");
+  Serial.print(speed, DEC);
+  Serial.print("; Masks = ");
+  Serial.print(upMask_A, BIN);
+  Serial.print(" ; ");
+  Serial.print(downMask_A, BIN);
+  Serial.print(" ; ");
+  Serial.print(upMask_B, BIN);
+  Serial.print(" ; ");
+  Serial.print(downMask_B, BIN);
+  Serial.print("; powerPin = ");
+  Serial.print(powerPin);
+  Serial.println(" ; ");
+*/  
+  // устанавливаем направление
+  uint8_t mask = motorMask;
+  if (speed > 0) {
+    mask = (mask & downMask_B) | upMask_A;
+  } else if (speed == 0) {
+    mask = mask & downMask_A & downMask_B;
+  } else {
+	speed = -speed;
+    mask = (mask & downMask_A) | upMask_B;
+  }
+  if (mask != motorMask) {
+    motorMask = mask;
+    setBitMask();
+  }
 
-/**
- * мощьность двигатель M2
- */
-void MotorShield::leftMotorPower(int power) {
-  analogWrite(MSHLD_PWM2B_PIN, power);
+  // устанавливаем скорость
+  if (speed > 255) speed = 255;
+  analogWrite(powerPin, speed);
 }
 
 /** Выводим маску моторов в 74HC595 */
 void MotorShield::setBitMask() {
+/*
   Serial.print(motorMask, BIN);
   Serial.print(" - ");
   Serial.println(motorMask, HEX);
+*/
   // устанавливаем синхронизацию "защелки" на LOW
   digitalWrite(MSHLD_DIR_LATCH_PIN, LOW);
   // передаем последовательно на MSHLD_DIR_SER_PIN
