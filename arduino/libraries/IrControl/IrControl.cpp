@@ -53,7 +53,7 @@ void IrControl::stop() {
 
 void IrControl::handle_interrupt() {
   if (_activeIrControlObject) {
-	_activeIrControlObject->interrupt();
+  _activeIrControlObject->interrupt();
   }
 }
 
@@ -132,8 +132,8 @@ int IrControl::wait(byte val) {
 char IrControl::toKey(long code) {
   for (unsigned int i = 0; i < sizeof(irControlKeyMap) / sizeof(IrControlKey); i++) {
     if (irControlKeyMap[i].code == code) {
-	  return irControlKeyMap[i].key;
-	}
+      return irControlKeyMap[i].key;
+    }
   }
   return 0;
 }
@@ -144,8 +144,8 @@ char IrControl::toKey(long code) {
 IrControlKey* IrControl::toControlKey(long code) {
   for (unsigned int i = 0; i < sizeof(irControlKeyMap) / sizeof(IrControlKey); i++) {
     if (irControlKeyMap[i].code == code) {
-	  return irControlKeyMap + i;
-	}
+      return irControlKeyMap + i;
+    }
   }
   return 0;
 }

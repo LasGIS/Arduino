@@ -40,8 +40,8 @@ void MotorShield::stopMotor() {
 void MotorShield::setM1(int speed) {
   setSpeed(speed,
     MSHLD_UP_M1A_MASK, MSHLD_DOWN_M1A_MASK,
-	MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK,
-	MSHLD_PWM2A_PIN
+    MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK,
+    MSHLD_PWM2A_PIN
   );
 }
 
@@ -54,8 +54,8 @@ void MotorShield::setM1(int speed) {
 void MotorShield::setM2(int speed) {
   setSpeed(speed,
     MSHLD_UP_M2A_MASK, MSHLD_DOWN_M2A_MASK,
-	MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK,
-	MSHLD_PWM2B_PIN
+    MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK,
+    MSHLD_PWM2B_PIN
   );
 }
 
@@ -68,8 +68,8 @@ void MotorShield::setM2(int speed) {
 void MotorShield::setM3(int speed) {
   setSpeed(speed,
     MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK,
-	MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK,
-	MSHLD_PWM0A_PIN
+    MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK,
+    MSHLD_PWM0A_PIN
   );
 }
 
@@ -82,8 +82,8 @@ void MotorShield::setM3(int speed) {
 void MotorShield::setM4(int speed) {
   setSpeed(speed,
     MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK,
-	MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK,
-	MSHLD_PWM0B_PIN
+    MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK,
+    MSHLD_PWM0B_PIN
   );
 }
 
@@ -120,7 +120,7 @@ void MotorShield::setSpeed(
   } else if (speed == 0) {
     mask = mask & downMask_A & downMask_B;
   } else {
-	speed = -speed;
+    speed = -speed;
     mask = (mask & downMask_A) | upMask_B;
   }
   if (mask != motorMask) {
