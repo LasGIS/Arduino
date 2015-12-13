@@ -12,14 +12,24 @@ MotorShield::MotorShield() {
   pinMode(MSHLD_DIR_CLK_PIN, OUTPUT);
   pinMode(MSHLD_DIR_SER_PIN, OUTPUT);
   pinMode(MSHLD_DIR_EN_PIN, OUTPUT);
+
+  pinMode(MSHLD_PWM2A_PIN, OUTPUT);
+  pinMode(MSHLD_PWM2B_PIN, OUTPUT);
+  pinMode(MSHLD_PWM0A_PIN, OUTPUT);
+  pinMode(MSHLD_PWM0B_PIN, OUTPUT);
   // устанавливаем enabled
-  digitalWrite(MSHLD_DIR_EN_PIN, LOW);
-/*
-  todo: потом добавим два метода enabled() и disabled()
-  // снимаем enabled
-  digitalWrite(MSHLD_DIR_EN_PIN, HIGH);
-*/
+  enabled();
   stopMotor();
+}
+
+/** включаем мотор shild */
+void  MotorShield::enabled() {
+  digitalWrite(MSHLD_DIR_EN_PIN, LOW);
+}
+
+/** выключаем мотор shild */
+void  MotorShield::disabled() {
+  digitalWrite(MSHLD_DIR_EN_PIN, HIGH);
 }
 
 void MotorShield::stopMotor() {
@@ -37,12 +47,13 @@ void MotorShield::stopMotor() {
  * speed < 0 - назад;
  * значения от -255 до +255
  */
-void MotorShield::setM1(int speed) {
+uint8_t MotorShield::setM1(int speed) {
   setSpeed(speed,
     MSHLD_UP_M1A_MASK, MSHLD_DOWN_M1A_MASK,
     MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK,
     MSHLD_PWM2A_PIN
   );
+  return MSHLD_PWM2A_PIN;
 }
 
 /**
@@ -51,12 +62,13 @@ void MotorShield::setM1(int speed) {
  * speed < 0 - назад;
  * значения от -255 до +255
  */
-void MotorShield::setM2(int speed) {
+uint8_t MotorShield::setM2(int speed) {
   setSpeed(speed,
     MSHLD_UP_M2A_MASK, MSHLD_DOWN_M2A_MASK,
     MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK,
     MSHLD_PWM2B_PIN
   );
+  return MSHLD_PWM2B_PIN;
 }
 
 /**
@@ -65,12 +77,13 @@ void MotorShield::setM2(int speed) {
  * speed < 0 - назад;
  * значения от -255 до +255
  */
-void MotorShield::setM3(int speed) {
+uint8_t MotorShield::setM3(int speed) {
   setSpeed(speed,
     MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK,
     MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK,
     MSHLD_PWM0A_PIN
   );
+  return MSHLD_PWM0A_PIN;
 }
 
 /**
@@ -79,12 +92,13 @@ void MotorShield::setM3(int speed) {
  * speed < 0 - назад;
  * значения от -255 до +255
  */
-void MotorShield::setM4(int speed) {
+uint8_t MotorShield::setM4(int speed) {
   setSpeed(speed,
     MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK,
     MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK,
     MSHLD_PWM0B_PIN
   );
+  return MSHLD_PWM0B_PIN;
 }
 
 /**
@@ -98,7 +112,7 @@ void MotorShield::setSpeed(
   uint8_t downMask_B,   // маска снятия клемы B
   uint8_t powerPin      // пин для установки скорости
 ) {
-/*
+
   Serial.print("speed = ");
   Serial.print(speed, DEC);
   Serial.print("; Masks = ");
@@ -112,7 +126,7 @@ void MotorShield::setSpeed(
   Serial.print("; powerPin = ");
   Serial.print(powerPin);
   Serial.println(" ; ");
-*/  
+  
   // устанавливаем направление
   uint8_t mask = motorMask;
   if (speed > 0) {
@@ -130,7 +144,7 @@ void MotorShield::setSpeed(
 
   // устанавливаем скорость
   if (speed > 255) speed = 255;
-  analogWrite(powerPin, speed);
+//  analogWrite(powerPin, speed);
 }
 
 /** Выводим маску моторов в 74HC595 */

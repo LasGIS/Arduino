@@ -53,7 +53,7 @@ void IrControl::stop() {
 
 void IrControl::handle_interrupt() {
   if (_activeIrControlObject) {
-  _activeIrControlObject->interrupt();
+    _activeIrControlObject->interrupt();
   }
 }
 

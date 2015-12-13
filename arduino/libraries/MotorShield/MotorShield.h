@@ -61,11 +61,13 @@ private:
 
 public:
   MotorShield();
+  void enabled();
+  void disabled();
   void stopMotor();
-  void setM1(int);
-  void setM2(int);
-  void setM3(int);
-  void setM4(int);
+  uint8_t setM1(int);
+  uint8_t setM2(int);
+  uint8_t setM3(int);
+  uint8_t setM4(int);
 
 private:
   void setSpeed(int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
