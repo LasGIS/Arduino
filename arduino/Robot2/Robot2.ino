@@ -18,7 +18,7 @@ void setup() {
 
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);
-  //testDrive('1');
+  testDrive('1');
 }
 /*
 00000100
@@ -99,10 +99,10 @@ void testDrive(char motor) {
 }
 
 #define MSHLD_DEL_TIME 9
-int speedMask[] = {2, 3, 5, 7, 10, 16};
-/*int speedMask[] = {
+//int speedMask[] = {2, 3, 5, 7, 10, 16};
+int speedMask[] = {
   0x8080, 0x0842, 0x2492, 0xa52a, 0xdad6, 0xffff
-};*/
+};
 
 /**
  *
@@ -110,27 +110,25 @@ int speedMask[] = {2, 3, 5, 7, 10, 16};
 void testDrive1() {
   uint8_t pinl;
   uint8_t pinr;
-  int speed;
-  int level;
 // [2|3|5|7|10|16]
   Serial.println("M1 test drive");
   pinl = mShield.setM1(255);
   pinr = mShield.setM4(255);
   for (int i = 0; i < 6; i++) {
-    speed = speedMask[i];
+    int speed = speedMask[i];
     Serial.print("speed = ");
-    Serial.println(speed, DEC);
-    for (int tm = 0; tm < 50; tm++) {
-//      for (int k = 0; k < 16; k++) {
-        digitalWrite(pinl, HIGH);
-        digitalWrite(pinr, HIGH);
-        delay(MSHLD_DEL_TIME * speed);
-        if (speed < 16) {
-          digitalWrite(pinl, LOW);
-          digitalWrite(pinr, LOW);
-          delay(MSHLD_DEL_TIME * (16 - speed));
-        }
-//      }
+    Serial.println(i, DEC);
+    lcd.setCursor(0, 1);
+    lcd.print("gear = ");
+    lcd.print(i + 1);
+    lcd.print("  ");
+    for (int tm = 0; tm < 30; tm++) {
+      for (int k = 0; k < 16; k++) {
+        int level = (speed & 1 << k) ? HIGH : LOW;
+        digitalWrite(pinl, level);
+        digitalWrite(pinr, level);
+        delay(MSHLD_DEL_TIME);
+      }
     }
   }
 }
