@@ -4,7 +4,7 @@
 
 Servo hSer;
 Servo vSer;
-MotorShield mShield;
+MotorShield mShield(MSHLD_M1, MSHLD_M4);
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
 void setup() {
@@ -14,21 +14,15 @@ void setup() {
   // Print a message to the LCD.
   lcd.backlight();
   lcd.clear();
-  lcd.print("Start Robo 1.0");
+  lcd.print("Start Robo 1.0.1");
 
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);
   testDrive('1');
 }
-/*
-00000100
-00001000
-00001010
-00011000
-00000000
-*/
+
 void loop() {
-  delay(2000);
+  //delay(2000);
   //shimmiDance();
 }
 
@@ -62,75 +56,62 @@ void serialEvent() {
 
 void testDrive(char motor) {
   Serial.println(motor);
-  uint8_t pinl;
-  uint8_t pinr;
-  int speed;
-  int level;
   switch (motor) {
     case '1':
-      testDrive1();
+      Serial.println("M1 test drive");
+      for (int gear = 5; gear >= -5; gear--) {
+        mShield.motor(MSHLD_M1, gear, 1000);
+        delay(100);
+      }
       break;
     
     case '2':
       Serial.println("M2 test drive");
-      for (int speed = 260; speed > -260; speed--) {
-        mShield.setM2(speed);
-        delay(10);
+      for (int gear = 5; gear >= -5; gear--) {
+        mShield.motor(MSHLD_M2, gear, 1000);
+        delay(100);
       }
       break;
     
     case '3':
       Serial.println("M3 test drive");
-      for (int speed = 260; speed > -260; speed--) {
-        mShield.setM3(speed);
-        delay(10);
+      for (int gear = 5; gear >= -5; gear--) {
+        mShield.motor(MSHLD_M3, gear, 1000);
+        delay(100);
       }
       break;
     
     case '4':
       Serial.println("M4 test drive");
-      for (int speed = 260; speed > -260; speed--) {
-        mShield.setM4(speed);
-        delay(10);
+      for (int gear = 5; gear >= -5; gear--) {
+        mShield.motor(MSHLD_M4, gear, 1000);
+        delay(100);
+      }
+      break;
+    
+    case 'l':
+      Serial.println("левый мотор");
+      for (int gear = 5; gear >= -5; gear--) {
+        mShield.leftMotor(gear, 1000);
+        delay(100);
+      }
+      break;
+    
+    case 'r':
+      Serial.println("правый мотор");
+      for (int gear = 5; gear >= -5; gear--) {
+        mShield.rightMotor(gear, 1000);
+        delay(100);
       }
       break;
   }
-  mShield.stopMotor();
+  mShield.stopMotors();
 }
-
-#define MSHLD_DEL_TIME 9
-//int speedMask[] = {2, 3, 5, 7, 10, 16};
-int speedMask[] = {
-  0x8080, 0x0842, 0x2492, 0xa52a, 0xdad6, 0xffff
-};
 
 /**
  *
  */
 void testDrive1() {
-  uint8_t pinl;
-  uint8_t pinr;
-// [2|3|5|7|10|16]
-  Serial.println("M1 test drive");
-  pinl = mShield.setM1(255);
-  pinr = mShield.setM4(255);
-  for (int i = 0; i < 6; i++) {
-    int speed = speedMask[i];
-    Serial.print("speed = ");
-    Serial.println(i, DEC);
-    lcd.setCursor(0, 1);
-    lcd.print("gear = ");
-    lcd.print(i + 1);
-    lcd.print("  ");
-    for (int tm = 0; tm < 30; tm++) {
-      for (int k = 0; k < 16; k++) {
-        int level = (speed & 1 << k) ? HIGH : LOW;
-        digitalWrite(pinl, level);
-        digitalWrite(pinr, level);
-        delay(MSHLD_DEL_TIME);
-      }
-    }
-  }
 }
 
 void shimmiDance() {

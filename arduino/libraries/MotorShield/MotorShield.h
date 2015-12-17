@@ -52,24 +52,52 @@
 #define MSHLD_DOWN_M3B_MASK  B10111111
 #define MSHLD_DOWN_M4B_MASK  B01111111
 
+#define MSHLD_M1 0
+#define MSHLD_M2 1
+#define MSHLD_M3 2
+#define MSHLD_M4 3
+
+#define MSHLD_DEL_TIME 9
+
+/** класс содержит все внутренние параметры мотора. */
+class DcMotor {
+public:
+  uint8_t upMask_A;     // маска установки клемы A
+  uint8_t downMask_A;   // маска снятия клемы A
+  uint8_t upMask_B;     // маска установки клемы B
+  uint8_t downMask_B;   // маска снятия клемы B
+  uint8_t powerPin;     // пин для установки скорости
+  DcMotor(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+
+  long time;            // оставшееся время работы мотора
+};
+
 class MotorShield {
 
 public:
 
 private:
   uint8_t motorMask;
+  uint8_t leftMotorNum;
+  uint8_t rightMotorNum;
+  static MotorShield* _activeMotorShieldObject;
 
 public:
-  MotorShield();
+  MotorShield(uint8_t, uint8_t);
   void enabled();
   void disabled();
-  void stopMotor();
-  uint8_t setM1(int);
-  uint8_t setM2(int);
-  uint8_t setM3(int);
-  uint8_t setM4(int);
+  void stopMotors();
+  void stopMotor(uint8_t);
+  void motor(uint8_t, int8_t, long);
+  void leftMotor(int8_t, long);
+  void leftMotorStop();
+  void rightMotor(int8_t, long);
+  void rightMotorStop();
 
 private:
+  static inline void handle_interrupt();
+  void timeAction();
+  void setSpeed(int, DcMotor);
   void setSpeed(int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
   void setBitMask();
 };
