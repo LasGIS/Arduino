@@ -7,6 +7,10 @@ Servo vSer;
 MotorShield mShield(MSHLD_M1, MSHLD_M4);
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
+/* пины Ультразвукового дальномера */
+int echoPin = A3; 
+int trigPin = A2; 
+
 void setup() {
   Serial.begin(9600);
   // initialize the lcd 
@@ -15,10 +19,12 @@ void setup() {
   lcd.backlight();
   lcd.clear();
   lcd.print("Start Robo 1.0.1");
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
 
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);
-  testDrive('1');
+  // testDrive('1');
 }
 
 void loop() {
@@ -35,14 +41,15 @@ void serialEvent() {
   Serial.print("\"");
   Serial.print(buf);
   Serial.print("\"");
-  boolean isDigits = true;
-  for (int i = 0; i < cnt; i++) {
-    if (!isDigit(buf[i])) {
-      isDigits = false;
+  if (buf[0] == 'T') {
+    for (int i = 1; i < cnt; i++) {
+      testDrive(buf[i]);
+    }
+  } else if (buf[0] == 'D') {
+    for (int i = 1; i < cnt; i++) {
+      drive(buf[i]);
     }
   }
-  if (isDigits) {
-    testDrive(buf[0]);
 /*   
     if (degre >= 0 && degre <= 180) {
       vSer.write(degre);
@@ -50,50 +57,63 @@ void serialEvent() {
 //    shimmiDance();
     }
 */
+//  delay(1000);
+}
+
+void drive(char command) {
+  switch (command) {
+    case 'f':
+      mShield.leftMotor(5, 1000);
+      mShield.rightMotor(5, 1000);
+      delay(1000);
+      break;
+    case 'b':
+      mShield.leftMotor(-5, 1000);
+      mShield.rightMotor(-5, 1000);
+      delay(1000);
+      break;
+    case 'r':
+      mShield.leftMotor(5, 300);
+      //mShield.rightMotor(3, 300);
+      delay(300);
+      break;
+    case 'l':
+      //mShield.leftMotor(3, 300);
+      mShield.rightMotor(5, 300);
+      delay(300);
+      break;
+    case 's': // сканирование обстановки
+      shimmiDance();
+      break;
   }
-  delay(1000);
 }
 
 void testDrive(char motor) {
   Serial.println(motor);
   switch (motor) {
     case '1':
-      Serial.println("M1 test drive");
-      for (int gear = 5; gear >= -5; gear--) {
-        mShield.motor(MSHLD_M1, gear, 1000);
-        delay(100);
-      }
+      testDriveMotor(MSHLD_M1);
       break;
     
     case '2':
-      Serial.println("M2 test drive");
-      for (int gear = 5; gear >= -5; gear--) {
-        mShield.motor(MSHLD_M2, gear, 1000);
-        delay(100);
-      }
+      testDriveMotor(MSHLD_M2);
       break;
     
     case '3':
-      Serial.println("M3 test drive");
-      for (int gear = 5; gear >= -5; gear--) {
-        mShield.motor(MSHLD_M3, gear, 1000);
-        delay(100);
-      }
+      testDriveMotor(MSHLD_M3);
       break;
     
     case '4':
-      Serial.println("M4 test drive");
-      for (int gear = 5; gear >= -5; gear--) {
-        mShield.motor(MSHLD_M4, gear, 1000);
-        delay(100);
-      }
+      testDriveMotor(MSHLD_M4);
       break;
     
     case 'l':
       Serial.println("левый мотор");
       for (int gear = 5; gear >= -5; gear--) {
         mShield.leftMotor(gear, 1000);
-        delay(100);
+        Serial.print("gear = ");
+        Serial.println(gear);
+        delay(1100);
       }
       break;
     
@@ -101,8 +121,14 @@ void testDrive(char motor) {
       Serial.println("правый мотор");
       for (int gear = 5; gear >= -5; gear--) {
         mShield.rightMotor(gear, 1000);
-        delay(100);
+        Serial.print("gear = ");
+        Serial.println(gear);
+        delay(1100);
       }
+      break;
+    
+    case 's':
+      shimmiDance();
       break;
   }
   mShield.stopMotors();
@@ -111,34 +137,47 @@ void testDrive(char motor) {
 /**
  *
  */
-void testDrive1() {
+void testDriveMotor(int motoNum) {
+  Serial.print("M");
+  Serial.print(motoNum + 1);
+  Serial.println(" test drive");
+  for (int gear = 5; gear >= -5; gear--) {
+    mShield.motor(motoNum, gear, 1000);
+    Serial.print("gear = ");
+    Serial.println(gear);
+    delay(1100);
+  }
 }
+
+#define WAIT_TIME_DISTANCE 100
 
 void shimmiDance() {
   int i = vSer.read();
-  for (int j = 0; j < 3; j++) {
-    for (i++; i <= 180; i++) {
-      vSer.write(i);
-      Serial.println(i);
-      if (i % 90 == 0) {
-        delay(1000);
-      } else if (i % 30 == 0) {
-        delay(300);
-      } else {
-        delay(30);
-      }
+  for (i++; i <= 180; i++) {
+    vSer.write(i);
+    delay(10);
+  }
+  for (i--; i >= 0; i--) {
+    vSer.write(i);
+    if (i % 10 == 0) {
+      delay(WAIT_TIME_DISTANCE);
+      showDistance(i);
+    } else {
+      delay(10);
     }
-    for (i--; i >= 0; i--) {
-      vSer.write(i);
-      Serial.println(i);
-      if (i % 90 == 0) {
-        delay(1000);
-      } else if (i % 30 == 0) {
-        delay(300);
-      } else {
-        delay(30);
-      }
+  }
+  for (i++; i <= 180; i++) {
+    vSer.write(i);
+    if (i % 10 == 0) {
+      delay(WAIT_TIME_DISTANCE);
+      showDistance(i);
+    } else {
+      delay(10);
     }
+  }
+  for (i--; i >= 90; i--) {
+    vSer.write(i);
+    delay(10);
   }
 }
 

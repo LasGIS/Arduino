@@ -11,7 +11,7 @@
 static const int MSHLD_GEAR_SPEED[] = {/*34*/0, 50, 75, 113, 170, 255};
 
 /** Настраиваем пины конкретных моторов. */
-static const DcMotor MSHLD_MOTORS[4] = {
+static DcMotor MSHLD_MOTORS[4] = {
   DcMotor(MSHLD_UP_M1A_MASK, MSHLD_DOWN_M1A_MASK, MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK, MSHLD_PWM2A_PIN),
   DcMotor(MSHLD_UP_M2A_MASK, MSHLD_DOWN_M2A_MASK, MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK, MSHLD_PWM2B_PIN),
   DcMotor(MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK, MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK, MSHLD_PWM0A_PIN),
@@ -72,11 +72,14 @@ void MotorShield::handle_interrupt() {
 
 /** включаем мотор shild */
 void MotorShield::timeAction() {
-  Serial.print("Time Action!");
+  //Serial.print("Time Action!");
   long time = millis();
   for (int i = 0; i < 4; i++) {
     DcMotor motor = MSHLD_MOTORS[i];
     if (motor.time > 0 && motor.time < time) {
+//      Serial.print("stopMotor(");
+//      Serial.print(i);
+//      Serial.println(")");
       stopMotor(i);
     }
   }
@@ -109,7 +112,7 @@ void MotorShield::stopMotors() {
 void MotorShield::stopMotor(uint8_t nMotor) {
   DcMotor motor = MSHLD_MOTORS[nMotor];
   analogWrite(motor.powerPin, 0);
-  motor.time = 0;
+  MSHLD_MOTORS[nMotor].time = 0;
 }
 
 /** Останавливаем левый мотор. */
@@ -132,9 +135,11 @@ void MotorShield::motor(uint8_t nMotor, int8_t gear, long time) {
   DcMotor motor = MSHLD_MOTORS[nMotor];
   int indGear = gear < 0 ? -gear : gear;
   if (indGear > 5) indGear = 5;
-  int speed = MSHLD_GEAR_SPEED[indGear];
+  int speed = MSHLD_GEAR_SPEED[indGear] * (gear < 0 ? -1 : 1);
   setSpeed(speed, motor);
-  motor.time = millis() + time;
+  MSHLD_MOTORS[nMotor].time = millis() + time;
+//  Serial.print("time = ");
+//  Serial.println(MSHLD_MOTORS[nMotor].time, DEC);
 }
 
 /** Устанавливаем скорость для левого мотора */

@@ -69,7 +69,7 @@ public:
   uint8_t powerPin;     // пин для установки скорости
   DcMotor(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 
-  long time;            // оставшееся время работы мотора
+  volatile long time;   // оставшееся время работы мотора
 };
 
 class MotorShield {
