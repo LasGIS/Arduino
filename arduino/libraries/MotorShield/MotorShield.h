@@ -57,7 +57,7 @@
 #define MSHLD_M3 2
 #define MSHLD_M4 3
 
-#define MSHLD_DEL_TIME 9
+#define MSHLD_DEL_TIME 20
 
 /** класс содержит все внутренние параметры мотора. */
 class DcMotor {
@@ -70,14 +70,15 @@ public:
   DcMotor(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 
   volatile long time;   // оставшееся время работы мотора
+  volatile bool busy = false;
 };
 
 class MotorShield {
 
 public:
+  volatile uint8_t motorMask;
 
 private:
-  uint8_t motorMask;
   uint8_t leftMotorNum;
   uint8_t rightMotorNum;
   static MotorShield* _activeMotorShieldObject;
@@ -87,8 +88,12 @@ public:
   void enabled();
   void disabled();
   void stopMotors();
+
   void stopMotor(uint8_t);
   void motor(uint8_t, int8_t, long);
+  bool isBusy();
+  bool waitBusy();
+
   void leftMotor(int8_t, long);
   void leftMotorStop();
   void rightMotor(int8_t, long);
@@ -99,7 +104,7 @@ private:
   void timeAction();
   void setSpeed(int, DcMotor);
   void setSpeed(int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
-  void setBitMask();
+  void setBitMask(uint8_t);
 };
 
 #endif

@@ -33,9 +33,9 @@ void loop() {
 }
 
 void serialEvent() {
-  char buf[10];
-  int cnt = Serial.readBytes(buf, 10) - 1;
-  if (cnt >= 0 && cnt < 10) {
+  char buf[50];
+  int cnt = Serial.readBytes(buf, 50) - 1;
+  if (cnt >= 0 && cnt < 50) {
     buf[cnt] = 0;
   }
   Serial.print("\"");
@@ -61,26 +61,28 @@ void serialEvent() {
 }
 
 void drive(char command) {
+  Serial.println(mShield.motorMask, BIN);
+  mShield.waitBusy();
   switch (command) {
     case 'f':
       mShield.leftMotor(5, 1000);
       mShield.rightMotor(5, 1000);
-      delay(1000);
+  Serial.println(mShield.motorMask, BIN);
       break;
     case 'b':
       mShield.leftMotor(-5, 1000);
       mShield.rightMotor(-5, 1000);
-      delay(1000);
+  Serial.println(mShield.motorMask, BIN);
       break;
     case 'r':
       mShield.leftMotor(5, 300);
       //mShield.rightMotor(3, 300);
-      delay(300);
-      break;
+  Serial.println(mShield.motorMask, BIN);
+       break;
     case 'l':
       //mShield.leftMotor(3, 300);
       mShield.rightMotor(5, 300);
-      delay(300);
+  Serial.println(mShield.motorMask, BIN);
       break;
     case 's': // сканирование обстановки
       shimmiDance();
@@ -113,7 +115,7 @@ void testDrive(char motor) {
         mShield.leftMotor(gear, 1000);
         Serial.print("gear = ");
         Serial.println(gear);
-        delay(1100);
+        delay(1010);
       }
       break;
     
@@ -123,7 +125,7 @@ void testDrive(char motor) {
         mShield.rightMotor(gear, 1000);
         Serial.print("gear = ");
         Serial.println(gear);
-        delay(1100);
+        delay(1010);
       }
       break;
     
@@ -145,7 +147,7 @@ void testDriveMotor(int motoNum) {
     mShield.motor(motoNum, gear, 1000);
     Serial.print("gear = ");
     Serial.println(gear);
-    delay(1100);
+    delay(1010);
   }
 }
 

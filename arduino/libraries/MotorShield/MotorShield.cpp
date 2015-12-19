@@ -85,20 +85,19 @@ void MotorShield::timeAction() {
   }
 }
 
-/** включаем мотор shild */
+/** включаем моторы shild */
 void MotorShield::enabled() {
   digitalWrite(MSHLD_DIR_EN_PIN, LOW);
 }
 
-/** выключаем мотор shild */
+/** выключаем моторы shild */
 void MotorShield::disabled() {
   digitalWrite(MSHLD_DIR_EN_PIN, HIGH);
 }
 
 /** Останавливаем все что можно. */
 void MotorShield::stopMotors() {
-  motorMask = 0;
-  setBitMask();
+  setBitMask(0);
   analogWrite(MSHLD_PWM2A_PIN, 0);
   analogWrite(MSHLD_PWM2B_PIN, 0);
   analogWrite(MSHLD_PWM0A_PIN, 0);
@@ -108,11 +107,39 @@ void MotorShield::stopMotors() {
   }
 }
 
-/** Останавливаем конкретный мотор. */
+/**
+ * Останавливаем конкретный мотор.
+ */
 void MotorShield::stopMotor(uint8_t nMotor) {
   DcMotor motor = MSHLD_MOTORS[nMotor];
+  setBitMask(motorMask & motor.downMask_A & motor.downMask_B);
   analogWrite(motor.powerPin, 0);
   MSHLD_MOTORS[nMotor].time = 0;
+  MSHLD_MOTORS[nMotor].busy = false;
+}
+
+/**
+ * проверяем моторы
+ */
+bool MotorShield::isBusy() {
+  bool busy = false;
+  for (int i = 0; i < 4; i++) {
+    busy |= MSHLD_MOTORS[i].busy;
+  }
+  return busy;
+}
+
+/**
+ * Ожидаем окончания
+ */
+bool MotorShield::waitBusy() {
+  for (int i = 0; i < 1000; i++) {
+    if (!isBusy()) {
+      return true;
+    }
+    delay(MSHLD_DEL_TIME);
+  }
+  return false;
 }
 
 /** Останавливаем левый мотор. */
@@ -125,6 +152,16 @@ void MotorShield::rightMotorStop() {
   stopMotor(rightMotorNum);
 }
 
+/** Устанавливаем скорость для левого мотора */
+void MotorShield::leftMotor(int8_t gear, long time) {
+  motor(leftMotorNum, gear, time);
+}
+
+/** Устанавливаем скорость для правого мотора */
+void MotorShield::rightMotor(int8_t gear, long time) {
+  motor(rightMotorNum, gear, time);
+}
+
 /**
  * Устанавливаем скорость <gear> для двигателя nMotor:
  * speed > 0 - вперёд;
@@ -135,21 +172,15 @@ void MotorShield::motor(uint8_t nMotor, int8_t gear, long time) {
   DcMotor motor = MSHLD_MOTORS[nMotor];
   int indGear = gear < 0 ? -gear : gear;
   if (indGear > 5) indGear = 5;
-  int speed = MSHLD_GEAR_SPEED[indGear] * (gear < 0 ? -1 : 1);
-  setSpeed(speed, motor);
+  int speed = MSHLD_GEAR_SPEED[indGear];
+  if (gear < 0) {
+    speed = -speed;
+  }
   MSHLD_MOTORS[nMotor].time = millis() + time;
+  MSHLD_MOTORS[nMotor].busy = true;
+  setSpeed(speed, motor);
 //  Serial.print("time = ");
 //  Serial.println(MSHLD_MOTORS[nMotor].time, DEC);
-}
-
-/** Устанавливаем скорость для левого мотора */
-void MotorShield::leftMotor(int8_t gear, long time) {
-  motor(leftMotorNum, gear, time);
-}
-
-/** Устанавливаем скорость для правого мотора */
-void MotorShield::rightMotor(int8_t gear, long time) {
-  motor(rightMotorNum, gear, time);
 }
 
 /**
@@ -201,10 +232,7 @@ void MotorShield::setSpeed(
     speed = -speed;
     mask = (mask & downMask_A) | upMask_B;
   }
-  if (mask != motorMask) {
-    motorMask = mask;
-    setBitMask();
-  }
+  setBitMask(mask);
 
   // устанавливаем скорость
   if (speed > 255) speed = 255;
@@ -212,17 +240,19 @@ void MotorShield::setSpeed(
 }
 
 /** Выводим маску моторов в 74HC595 */
-void MotorShield::setBitMask() {
-/*
-  Serial.print(motorMask, BIN);
-  Serial.print(" - ");
-  Serial.println(motorMask, HEX);
-*/
-  // устанавливаем синхронизацию "защелки" на LOW
-  digitalWrite(MSHLD_DIR_LATCH_PIN, LOW);
-  // передаем последовательно на MSHLD_DIR_SER_PIN
-  shiftOut(MSHLD_DIR_SER_PIN, MSHLD_DIR_CLK_PIN, MSBFIRST, motorMask);
-  //"защелкиваем" регистр, тем самым устанавливая значения на выходах
-  digitalWrite(MSHLD_DIR_LATCH_PIN, HIGH);
+void MotorShield::setBitMask(uint8_t mask) {
+  if (mask != motorMask) {
+    motorMask = mask;
+  /*
+    Serial.print("motorMask = ");
+    Serial.println(motorMask, BIN);
+  */
+    // устанавливаем синхронизацию "защелки" на LOW
+    digitalWrite(MSHLD_DIR_LATCH_PIN, LOW);
+    // передаем последовательно на MSHLD_DIR_SER_PIN
+    shiftOut(MSHLD_DIR_SER_PIN, MSHLD_DIR_CLK_PIN, MSBFIRST, motorMask);
+    //"защелкиваем" регистр, тем самым устанавливая значения на выходах
+    digitalWrite(MSHLD_DIR_LATCH_PIN, HIGH);
+  }
 }
 
