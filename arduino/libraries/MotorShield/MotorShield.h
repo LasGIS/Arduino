@@ -90,13 +90,13 @@ public:
   void stopMotors();
 
   void stopMotor(uint8_t);
-  void motor(uint8_t, int8_t, long);
+  void motor(uint8_t, int, long);
   bool isBusy();
   bool waitBusy();
 
-  void leftMotor(int8_t, long);
+  void leftMotor(int, long);
   void leftMotorStop();
-  void rightMotor(int8_t, long);
+  void rightMotor(int, long);
   void rightMotorStop();
 
 private:

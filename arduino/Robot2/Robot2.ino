@@ -1,24 +1,27 @@
 #include <Servo.h>
+//#include <LiquidCrystal_I2C.h>
 #include "MotorShield.h"
-#include <LiquidCrystal_I2C.h>
+#include "RobotCommand.h"
 
 Servo hSer;
 Servo vSer;
 MotorShield mShield(MSHLD_M1, MSHLD_M4);
-LiquidCrystal_I2C lcd(0x3F, 16, 2);
+//LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
 /* пины Ультразвукового дальномера */
 int echoPin = A3; 
-int trigPin = A2; 
+int trigPin = A2;
 
 void setup() {
   Serial.begin(9600);
+/*
   // initialize the lcd 
   lcd.init();
   // Print a message to the LCD.
   lcd.backlight();
   lcd.clear();
   lcd.print("Start Robo 1.0.1");
+*/
   pinMode(trigPin, OUTPUT); 
   pinMode(echoPin, INPUT); 
 
@@ -34,59 +37,57 @@ void loop() {
 
 void serialEvent() {
   char buf[50];
-  int cnt = Serial.readBytes(buf, 50) - 1;
+  int cnt = Serial.readBytesUntil(';', buf, 50) - 1;
   if (cnt >= 0 && cnt < 50) {
     buf[cnt] = 0;
   }
   Serial.print("\"");
   Serial.print(buf);
   Serial.print("\"");
-  if (buf[0] == 'T') {
-    for (int i = 1; i < cnt; i++) {
-      testDrive(buf[i]);
-    }
-  } else if (buf[0] == 'D') {
-    for (int i = 1; i < cnt; i++) {
-      drive(buf[i]);
-    }
+  RobotCommand* command = addRobotCommand(buf, cnt);
+  if (command != NULL) {
+    drive(*command);
   }
-/*   
-    if (degre >= 0 && degre <= 180) {
-      vSer.write(degre);
-    } else {
-//    shimmiDance();
-    }
-*/
-//  delay(1000);
 }
 
-void drive(char command) {
-  Serial.println(mShield.motorMask, BIN);
+void drive(RobotCommand com) {
+  //Serial.println(mShield.motorMask, BIN);
   mShield.waitBusy();
-  switch (command) {
-    case 'f':
-      mShield.leftMotor(5, 1000);
-      mShield.rightMotor(5, 1000);
-  Serial.println(mShield.motorMask, BIN);
+  switch (com.type) {
+    case MOTOR_FORWARD:
+      mShield.leftMotor(255, 1000);
+      mShield.rightMotor(255, 1000);
       break;
-    case 'b':
-      mShield.leftMotor(-5, 1000);
-      mShield.rightMotor(-5, 1000);
-  Serial.println(mShield.motorMask, BIN);
+    case MOTOR_BACKWARD:
+      mShield.leftMotor(-255, 1000);
+      mShield.rightMotor(-255, 1000);
       break;
-    case 'r':
-      mShield.leftMotor(5, 300);
-      //mShield.rightMotor(3, 300);
-  Serial.println(mShield.motorMask, BIN);
-       break;
-    case 'l':
-      //mShield.leftMotor(3, 300);
+    case MOTOR_FORWARD_LEFT:
       mShield.rightMotor(5, 300);
-  Serial.println(mShield.motorMask, BIN);
       break;
-    case 's': // сканирование обстановки
+    case MOTOR_FORWARD_RIGHT:
+      mShield.leftMotor(5, 300);
+      break;
+
+    case MOTOR_LEFT:
+      mShield.rightMotor(5, 150);
+      mShield.leftMotor(-5, 150);
+      break;
+    case MOTOR_RIGHT:
+      mShield.rightMotor(-5, 150);
+      mShield.leftMotor(5, 150);
+      break;
+    case MOTOR_BACKWARD_LEFT:
+      mShield.leftMotor(-5, 300);
+      break;
+    case MOTOR_BACKWARD_RIGHT:
+      mShield.rightMotor(-5, 300);
+      break;
+/*
+    case ROBOT_SCANING: // сканирование обстановки
       shimmiDance();
       break;
+*/
   }
 }
 
@@ -110,22 +111,24 @@ void testDrive(char motor) {
       break;
     
     case 'l':
-      Serial.println("левый мотор");
+      Serial.println("Left MOTOR");
       for (int gear = 5; gear >= -5; gear--) {
+        mShield.waitBusy();
         mShield.leftMotor(gear, 1000);
         Serial.print("gear = ");
         Serial.println(gear);
-        delay(1010);
+//        delay(1010);
       }
       break;
     
     case 'r':
-      Serial.println("правый мотор");
+      Serial.println("Right MOTOR");
       for (int gear = 5; gear >= -5; gear--) {
+        mShield.waitBusy();
         mShield.rightMotor(gear, 1000);
         Serial.print("gear = ");
         Serial.println(gear);
-        delay(1010);
+//        delay(1010);
       }
       break;
     
@@ -136,6 +139,9 @@ void testDrive(char motor) {
   mShield.stopMotors();
 }
 
+/** Скорость от передачи (5 передача - самая высокая) */
+static const int MSHLD_GEAR_SPEED[] = {-255, -170, -113, 0, 113, 170, 255};
+
 /**
  *
  */
@@ -143,11 +149,13 @@ void testDriveMotor(int motoNum) {
   Serial.print("M");
   Serial.print(motoNum + 1);
   Serial.println(" test drive");
-  for (int gear = 5; gear >= -5; gear--) {
-    mShield.motor(motoNum, gear, 1000);
-    Serial.print("gear = ");
-    Serial.println(gear);
-    delay(1010);
+  for (int i = 0; i < 7; i++) {
+    mShield.waitBusy();
+    int speed = MSHLD_GEAR_SPEED[i];
+    mShield.motor(motoNum, speed, 1000);
+    Serial.print("speed = ");
+    Serial.println(speed);
+    //delay(1010);
   }
 }
 

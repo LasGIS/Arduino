@@ -8,7 +8,7 @@
 //  0x8080, 0x0842, 0x2492, 0xa52a, 0xdad6, 0xffff
 
 /** —корость от передачи (5 передача - сама€ высока€) */
-static const int MSHLD_GEAR_SPEED[] = {/*34*/0, 50, 75, 113, 170, 255};
+//static const int MSHLD_GEAR_SPEED[] = {/*34*/0, 50, 75, 113, 170, 255};
 
 /** Ќастраиваем пины конкретных моторов. */
 static DcMotor MSHLD_MOTORS[4] = {
@@ -153,13 +153,13 @@ void MotorShield::rightMotorStop() {
 }
 
 /** ”станавливаем скорость дл€ левого мотора */
-void MotorShield::leftMotor(int8_t gear, long time) {
-  motor(leftMotorNum, gear, time);
+void MotorShield::leftMotor(int speed, long time) {
+  motor(leftMotorNum, speed, time);
 }
 
 /** ”станавливаем скорость дл€ правого мотора */
-void MotorShield::rightMotor(int8_t gear, long time) {
-  motor(rightMotorNum, gear, time);
+void MotorShield::rightMotor(int speed, long time) {
+  motor(rightMotorNum, speed, time);
 }
 
 /**
@@ -168,14 +168,8 @@ void MotorShield::rightMotor(int8_t gear, long time) {
  * speed < 0 - назад;
  * значени€ от -5 до +5
  */
-void MotorShield::motor(uint8_t nMotor, int8_t gear, long time) {
+void MotorShield::motor(uint8_t nMotor, int speed, long time) {
   DcMotor motor = MSHLD_MOTORS[nMotor];
-  int indGear = gear < 0 ? -gear : gear;
-  if (indGear > 5) indGear = 5;
-  int speed = MSHLD_GEAR_SPEED[indGear];
-  if (gear < 0) {
-    speed = -speed;
-  }
   MSHLD_MOTORS[nMotor].time = millis() + time;
   MSHLD_MOTORS[nMotor].busy = true;
   setSpeed(speed, motor);
