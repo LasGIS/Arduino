@@ -43,7 +43,7 @@ void serialEvent() {
   }
   Serial.print("\"");
   Serial.print(buf);
-  Serial.print("\"");
+  Serial.println("\"");
   RobotCommand* command = addRobotCommand(buf, cnt);
   if (command != NULL) {
     drive(*command);

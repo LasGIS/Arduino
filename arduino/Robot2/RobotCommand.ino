@@ -33,6 +33,9 @@ RobotCommand* addRobotCommand(char buf[], int len) {
   } else if (buf[0] == 'r') {
     command->type = MOTOR_RIGHT;
     cnt = 1;
+  } else if (buf[0] == 's') { // strcmp(buf, "scan")
+    command->type = ROBOT_SCANING;
+    return command;
   }
   if (cnt > 0 && len > cnt) {
     command->param = atoi(buf + cnt);
