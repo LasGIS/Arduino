@@ -4,12 +4,36 @@
 #define RIGHT_BACKWARD_FACTOR 30.0
 #define ANGLE_FACTOR 0.225
 
-static RobotCommand robotCommands[10];
-static int currenRobotCommand = 0;
+#define ROBOT_COMMANDS_BUF_SIZE 10
+
+static RobotCommand robotCommands[ROBOT_COMMANDS_BUF_SIZE];
+/** последняя записанная команда. */
+static uint8_t lastRobotCommand = -1;
+/** первая команда, готовая к выполнению. */
+static uint8_t firstRobotCommand = -1;
+
+/** получаем ссылку на команду для заполнения. */
+RobotCommand* getLastRobotCommand() {
+  int index = lastRobotCommand; index++;
+  if (index >= ROBOT_COMMANDS_BUF_SIZE) index = 0;
+  lastRobotCommand = index;
+  return &robotCommands[lastRobotCommand];
+}
+
+/** получаем ссылку на первая команда, готовую к выполнению. */
+RobotCommand* getFirstRobotCommand() {
+  int index = firstRobotCommand; index++;
+  if (index >= ROBOT_COMMANDS_BUF_SIZE) index = 0;
+  if (!robotCommands[index].isDone) {
+    firstRobotCommand = index;
+    return &robotCommands[firstRobotCommand];
+  }
+  return NULL;
+}
 
 /** разбираем строку в команду */
 RobotCommand* addRobotCommand(char buf[], int len) {
-  RobotCommand* command = new RobotCommand();
+  RobotCommand* command = getLastRobotCommand();
   int cnt = 0;
   if (buf[0] == 'f') {
     if (buf[1] == 'l') {
@@ -38,53 +62,56 @@ RobotCommand* addRobotCommand(char buf[], int len) {
     cnt = 1;
   } else if (strcmp(buf, "run") == 0) {
     command->type = ROBOT_ANALYSE;
+    command->isDone = false;
     return command;
   } else if (buf[0] == 'r') {
     command->type = MOTOR_RIGHT;
     cnt = 1;
   } else if (buf[0] == 's') { // 
     command->type = ROBOT_SCANING;
+    command->isDone = false;
     return command;
   }
   if (cnt > 0 && len > cnt) {
     command->param = atoi(buf + cnt);
+    command->isDone = false;
     return command;
   }
   return NULL;
 }
 
-void action(RobotCommand com) {
+void action(RobotCommand* command) {
   //Serial.println(mShield.motorMask, BIN);
   mShield.waitBusy();
-  switch (com.type) {
+  switch (command->type) {
     case MOTOR_FORWARD:
-      mShield.leftMotor(255, (int) (com.param * LEFT_FORWARD_FACTOR));
-      mShield.rightMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR));
+      mShield.leftMotor(255, (int) (command->param * LEFT_FORWARD_FACTOR));
+      mShield.rightMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR));
       break;
     case MOTOR_BACKWARD:
-      mShield.leftMotor(-255, (int) (com.param * LEFT_BACKWARD_FACTOR));
-      mShield.rightMotor(-255, (int) (com.param * RIGHT_BACKWARD_FACTOR));
+      mShield.leftMotor(-255, (int) (command->param * LEFT_BACKWARD_FACTOR));
+      mShield.rightMotor(-255, (int) (command->param * RIGHT_BACKWARD_FACTOR));
       break;
     case MOTOR_FORWARD_LEFT:
-      mShield.rightMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
+      mShield.rightMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
       break;
     case MOTOR_FORWARD_RIGHT:
-      mShield.leftMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
+      mShield.leftMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
       break;
 
     case MOTOR_LEFT:
-      mShield.rightMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
-      mShield.leftMotor(-255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
+      mShield.rightMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
+      mShield.leftMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
       break;
     case MOTOR_RIGHT:
-      mShield.rightMotor(-255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
-      mShield.leftMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
+      mShield.rightMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
+      mShield.leftMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
       break;
     case MOTOR_BACKWARD_LEFT:
-      mShield.leftMotor(-255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
+      mShield.leftMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
       break;
     case MOTOR_BACKWARD_RIGHT:
-      mShield.rightMotor(-255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
+      mShield.rightMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
       break;
     case ROBOT_SCANING: // сканирование обстановки
       shimmiDance();
@@ -93,6 +120,7 @@ void action(RobotCommand com) {
       robotAnalyse();
       break;
   }
+  command->isDone = true;
 }
 
 /**

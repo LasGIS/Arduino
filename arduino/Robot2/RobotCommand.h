@@ -15,6 +15,6 @@ class RobotCommand {
 public:
   RobotCommandType type;
   int param;
-  bool isExecuted = false;
+  bool isDone = true;
 };
 

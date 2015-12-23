@@ -49,7 +49,7 @@ void serialEvent() {
   }
   RobotCommand* command = addRobotCommand(buf, cnt);
   if (command != NULL) {
-    action(*command);
+    action(command);
   }
 }
 
