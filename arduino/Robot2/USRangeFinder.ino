@@ -1,5 +1,8 @@
+#define WAIT_TIME_DISTANCE 100
+
 /** получить дистанцию в point`ax (условная единица 1[point]*58.0 = 1[см] .*/
 int getDistance() { 
+  delay(WAIT_TIME_DISTANCE);
   digitalWrite(trigPin, LOW); 
   delayMicroseconds(2); 
   digitalWrite(trigPin, HIGH); 

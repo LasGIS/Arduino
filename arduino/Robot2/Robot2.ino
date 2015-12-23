@@ -41,56 +41,15 @@ void serialEvent() {
   if (cnt >= 0 && cnt < 50) {
     buf[cnt] = 0;
   }
-  Serial.print("\"");
-  Serial.print(buf);
-  Serial.println("\"");
+  Serial.println(buf);
+  if (buf[0] == 't') {
+    for (int i = 1; i < cnt; i++) {
+      testDrive(buf[i]);
+    }
+  }
   RobotCommand* command = addRobotCommand(buf, cnt);
   if (command != NULL) {
-    drive(*command);
-  }
-}
-#define LEFT_FORWARD_FACTOR 30.0
-#define RIGHT_FORWARD_FACTOR 30.0
-#define LEFT_BACKWARD_FACTOR 30.0
-#define RIGHT_BACKWARD_FACTOR 30.0
-#define ANGLE_FACTOR 0.225
-
-void drive(RobotCommand com) {
-  //Serial.println(mShield.motorMask, BIN);
-  mShield.waitBusy();
-  switch (com.type) {
-    case MOTOR_FORWARD:
-      mShield.leftMotor(255, (int) (com.param * LEFT_FORWARD_FACTOR));
-      mShield.rightMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR));
-      break;
-    case MOTOR_BACKWARD:
-      mShield.leftMotor(-255, (int) (com.param * LEFT_BACKWARD_FACTOR));
-      mShield.rightMotor(-255, (int) (com.param * RIGHT_BACKWARD_FACTOR));
-      break;
-    case MOTOR_FORWARD_LEFT:
-      mShield.rightMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
-      break;
-    case MOTOR_FORWARD_RIGHT:
-      mShield.leftMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
-      break;
-
-    case MOTOR_LEFT:
-      mShield.rightMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
-      mShield.leftMotor(-255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
-      break;
-    case MOTOR_RIGHT:
-      mShield.rightMotor(-255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
-      mShield.leftMotor(255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
-      break;
-    case MOTOR_BACKWARD_LEFT:
-      mShield.leftMotor(-255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
-      break;
-    case MOTOR_BACKWARD_RIGHT:
-      mShield.rightMotor(-255, (int) (com.param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
-      break;
-    case ROBOT_SCANING: // сканирование обстановки
-      shimmiDance();
-      break;
+    action(*command);
   }
 }
 
@@ -161,36 +120,3 @@ void testDriveMotor(int motoNum) {
     //delay(1010);
   }
 }
-
-#define WAIT_TIME_DISTANCE 100
-
-void shimmiDance() {
-  int i = vSer.read();
-  for (i++; i <= 180; i++) {
-    vSer.write(i);
-    delay(10);
-  }
-  for (i--; i >= 0; i--) {
-    vSer.write(i);
-    if (i % 10 == 0) {
-      delay(WAIT_TIME_DISTANCE);
-      showDistance(i);
-    } else {
-      delay(10);
-    }
-  }
-  for (i++; i <= 180; i++) {
-    vSer.write(i);
-    if (i % 10 == 0) {
-      delay(WAIT_TIME_DISTANCE);
-      showDistance(i);
-    } else {
-      delay(10);
-    }
-  }
-  for (i--; i >= 90; i--) {
-    vSer.write(i);
-    delay(10);
-  }
-}
-
