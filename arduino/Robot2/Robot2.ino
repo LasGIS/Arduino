@@ -28,12 +28,15 @@ void setup() {
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);
   // testDrive('1');
+  addRobotCommand(ROBOT_ANALYSE, 0);
 }
 
 void loop() {
-  RobotCommand* command = getRobotCommand4Run();
-  if (command != NULL) {
-    action(command);
+  if (!mShield.isBusy()) {
+    RobotCommand* command = getRobotCommand4Run();
+    if (command != NULL) {
+      action(command);
+    }
   }
   delay(20);
 }

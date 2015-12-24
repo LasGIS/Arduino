@@ -19,6 +19,7 @@ RobotCommand* getRobotCommand4Load() {
   lastRobotCommand = index;
   Serial.print("lastRobotCommand = ");
   Serial.print(lastRobotCommand, DEC);
+  Serial.print("; ");
   return &robotCommands[lastRobotCommand];
 }
 
@@ -31,7 +32,7 @@ RobotCommand* getRobotCommand4Run() {
     return &robotCommands[firstRobotCommand];
   } else {
 //    Serial.print("index = ");
-    Serial.print(index, DEC);
+//    Serial.print(index, DEC);
 /*  
     Serial.print(" robotCommands[index].state = ");
     Serial.println(robotCommands[index].state, DEC);
@@ -96,7 +97,6 @@ void addRobotCommand(RobotCommandType type, int param) {
 void action(RobotCommand* command) {
   command->state = RUNNING;
   Serial.println((long) command, HEX);
-  mShield.waitBusy();
   Serial.println(mShield.motorMask, BIN);
   switch (command->type) {
     case MOTOR_FORWARD:
@@ -135,5 +135,6 @@ void action(RobotCommand* command) {
       robotAnalyse();
       break;
   }
+  mShield.waitBusy();
   command->state = EMPTY;
 }

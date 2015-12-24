@@ -8,35 +8,37 @@ static float distanceBefore[19];
 void robotAnalyse() {
   headMovement();
   RobotAnalyseCheck check = checkForward(9, 15.0);
+  int dist;
   switch (check) {
     case NO_BLOCK:       // нет препятствий, можно двигать
-      addRobotCommand(MOTOR_FORWARD, 10);
+      dist = getForward(9);      
+      addRobotCommand(MOTOR_FORWARD, (dist > 40 ? 40 : dist) * .75);
       addRobotCommand(ROBOT_ANALYSE, 0);
       return;
     case BLOCK_FRONT:  // помеха спереди
-      addRobotCommand(MOTOR_BACKWARD, 10);
+      addRobotCommand(MOTOR_RIGHT, 10);
       addRobotCommand(ROBOT_ANALYSE, 0);
       return;
     case BLOCK_RIGHT:    // помеха справа
-      for (int i = 8; i >= 0; i--) {
-        if (checkRight(i, 10.0) && getForward(i) > 15.0) {
-          addRobotCommand(MOTOR_RIGHT, (9 - i) * 10);
-          addRobotCommand(ROBOT_ANALYSE, 0);
-          return;
-        }
-      }
-      addRobotCommand(MOTOR_RIGHT, 180);
-      addRobotCommand(ROBOT_ANALYSE, 0);
-      return;
-    case BLOCK_LEFT:     // помеха слева
-      for (int i = 10; i <= 18; i++) {
-        if (checkLeft(i, 10.0)) {
+      for (int i = 10; i <= 17; i++) {
+        if (checkRight(i, 10.0)) {
           addRobotCommand(MOTOR_LEFT, (i - 9) * 10);
           addRobotCommand(ROBOT_ANALYSE, 0);
           return;
         }
       }
       addRobotCommand(MOTOR_LEFT, 180);
+      addRobotCommand(ROBOT_ANALYSE, 0);
+      return;
+    case BLOCK_LEFT:     // помеха слева
+      for (int i = 8; i >= 1; i--) {
+        if (checkLeft(i, 10.0)) {
+          addRobotCommand(MOTOR_RIGHT, (9 - i) * 10);
+          addRobotCommand(ROBOT_ANALYSE, 0);
+          return;
+        }
+      }
+      addRobotCommand(MOTOR_RIGHT, 180);
       addRobotCommand(ROBOT_ANALYSE, 0);
       return;
   }
@@ -68,11 +70,11 @@ float getForward(int centerDegre) {
   return min;
 }
 
-/** проверка дистанции слева <= */
-bool checkLeft(int centerDegre, float dist) {
+/** проверка дистанции справа => */
+bool checkRight(int centerDegre, float dist) {
   float min = 1000.0; 
   int angle, i;
-  for (angle = 0, i = centerDegre - 9; angle <= 40; angle += 10, i++) {
+  for (angle = 10, i = centerDegre - 8; angle <= 50; angle += 10, i++) {
     if (i >= 0) {
       float rel = distanceBefore[i] * cos(angle * DEGREE_TO_RADIAN);
       if (rel < min) min = rel;
@@ -81,11 +83,11 @@ bool checkLeft(int centerDegre, float dist) {
   return min > dist;
 }
 
-/** проверка дистанции справа => */
-bool checkRight(int centerDegre, float dist) {
+/** проверка дистанции слева <= */
+bool checkLeft(int centerDegre, float dist) {
   float min = 1000.0; 
   int angle, i;
-  for (angle = 0, i = centerDegre + 9; angle <= 40; angle += 10, i--) {
+  for (angle = 10, i = centerDegre + 8; angle <= 50; angle += 10, i--) {
     if (i <= 18) {
       float rel = distanceBefore[i] * cos(angle * DEGREE_TO_RADIAN);
       if (rel < min) min = rel;
@@ -98,9 +100,20 @@ bool checkRight(int centerDegre, float dist) {
  * движение головой
  */
 void headMovement() {
-  for (int i = 0; i <= 18; i++) {
-    distanceBefore[i] = loadDistance(i * 10);
+  if (vSer.read() < 90) {
+    for (int i = 0; i <= 18; i++) {
+      distanceBefore[i] = loadDistance(i * 10);
+    }
+  } else {
+    for (int i = 18; i >= 0; i--) {
+      distanceBefore[i] = loadDistance(i * 10);
+    }
   }
+  for (int i = 0; i <= 18; i++) {
+    Serial.print(distanceBefore[i]);
+    Serial.print(";");
+  }
+  Serial.println("");
 }
 
 /**
@@ -109,9 +122,21 @@ void headMovement() {
  * return - расстояние в см
  */
 float loadDistance(int degre) {
-  for (int i = vSer.read(); i <= degre; i++) {
-    vSer.write(i);
-    delay(10);
+  int i = vSer.read();
+  if (i > degre) {
+    for (; i >= degre; i--) {
+//      Serial.print(i);
+//      Serial.println(' ');
+      vSer.write(i);
+      delay(10);
+    }
+  } else {
+    for (; i <= degre; i++) {
+//      Serial.print(i);
+//      Serial.println(' ');
+      vSer.write(i);
+      delay(10);
+    }
   }
   return showDistance(degre);
 }

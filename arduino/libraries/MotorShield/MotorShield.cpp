@@ -124,7 +124,7 @@ void MotorShield::stopMotor(uint8_t nMotor) {
 bool MotorShield::isBusy() {
   bool busy = false;
   for (int i = 0; i < 4; i++) {
-    busy |= MSHLD_MOTORS[i].busy;
+    busy = busy || MSHLD_MOTORS[i].busy;
   }
   return busy;
 }
