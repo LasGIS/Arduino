@@ -31,8 +31,11 @@ void setup() {
 }
 
 void loop() {
-  //delay(2000);
-  //shimmiDance();
+  RobotCommand* command = getFirstRobotCommand();
+  if (command != NULL) {
+    action(command);
+  }
+  delay(20);
 }
 
 void serialEvent() {
@@ -41,17 +44,23 @@ void serialEvent() {
   if (cnt >= 0 && cnt < 50) {
     buf[cnt] = 0;
   }
-  Serial.println(buf);
+  Serial.print('"');
+  Serial.print(buf);
+  Serial.println('"');
   if (buf[0] == 't') {
     for (int i = 1; i < cnt; i++) {
       testDrive(buf[i]);
     }
   }
-  RobotCommand* command = addRobotCommand(buf, cnt);
-  if (command != NULL) {
+//  RobotCommand* command = 
+  addRobotCommand(buf, cnt);
+/*  if (command != NULL) {
     action(command);
-  }
+  }*/
 }
+
+/** Скорость от передачи (5 передача - самая высокая) */
+static const int MSHLD_GEAR_SPEED[] = {-255, -170, -113, 0, 113, 170, 255};
 
 void testDrive(char motor) {
   Serial.println(motor);
@@ -74,22 +83,24 @@ void testDrive(char motor) {
     
     case 'l':
       Serial.println("Left MOTOR");
-      for (int gear = 5; gear >= -5; gear--) {
+      for (int i = 0; i < 7; i++) {
         mShield.waitBusy();
-        mShield.leftMotor(gear, 1000);
-        Serial.print("gear = ");
-        Serial.println(gear);
+        int speed = MSHLD_GEAR_SPEED[i];
+        mShield.leftMotor(speed, 1000);
+        Serial.print("speed = ");
+        Serial.println(speed);
 //        delay(1010);
       }
       break;
     
     case 'r':
       Serial.println("Right MOTOR");
-      for (int gear = 5; gear >= -5; gear--) {
+      for (int i = 0; i < 7; i++) {
         mShield.waitBusy();
-        mShield.rightMotor(gear, 1000);
-        Serial.print("gear = ");
-        Serial.println(gear);
+        int speed = MSHLD_GEAR_SPEED[i];
+        mShield.rightMotor(speed, 1000);
+        Serial.print("speed = ");
+        Serial.println(speed);
 //        delay(1010);
       }
       break;
@@ -100,9 +111,6 @@ void testDrive(char motor) {
   }
   mShield.stopMotors();
 }
-
-/** Скорость от передачи (5 передача - самая высокая) */
-static const int MSHLD_GEAR_SPEED[] = {-255, -170, -113, 0, 113, 170, 255};
 
 /**
  *

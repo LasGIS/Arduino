@@ -17,6 +17,8 @@ RobotCommand* getLastRobotCommand() {
   int index = lastRobotCommand; index++;
   if (index >= ROBOT_COMMANDS_BUF_SIZE) index = 0;
   lastRobotCommand = index;
+  Serial.print("lastRobotCommand = ");
+  Serial.print(lastRobotCommand, DEC);
   return &robotCommands[lastRobotCommand];
 }
 
@@ -27,6 +29,13 @@ RobotCommand* getFirstRobotCommand() {
   if (!robotCommands[index].isDone) {
     firstRobotCommand = index;
     return &robotCommands[firstRobotCommand];
+  } else {
+//    Serial.print("index = ");
+    Serial.print(index, DEC);
+/*  
+    Serial.print(" robotCommands[index].isDone = ");
+    Serial.println(robotCommands[index].isDone, DEC);
+*/
   }
   return NULL;
 }
@@ -81,8 +90,9 @@ RobotCommand* addRobotCommand(char buf[], int len) {
 }
 
 void action(RobotCommand* command) {
-  //Serial.println(mShield.motorMask, BIN);
+  Serial.println((long) command, HEX);
   mShield.waitBusy();
+  Serial.println(mShield.motorMask, BIN);
   switch (command->type) {
     case MOTOR_FORWARD:
       mShield.leftMotor(255, (int) (command->param * LEFT_FORWARD_FACTOR));
