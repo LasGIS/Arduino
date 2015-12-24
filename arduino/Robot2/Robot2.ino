@@ -31,7 +31,7 @@ void setup() {
 }
 
 void loop() {
-  RobotCommand* command = getFirstRobotCommand();
+  RobotCommand* command = getRobotCommand4Run();
   if (command != NULL) {
     action(command);
   }
@@ -106,7 +106,7 @@ void testDrive(char motor) {
       break;
     
     case 's':
-      shimmiDance();
+      headMovement();
       break;
   }
   mShield.stopMotors();

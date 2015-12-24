@@ -13,7 +13,7 @@ static uint8_t lastRobotCommand = -1;
 static uint8_t firstRobotCommand = -1;
 
 /** получаем ссылку на команду для заполнения. */
-RobotCommand* getLastRobotCommand() {
+RobotCommand* getRobotCommand4Load() {
   int index = lastRobotCommand; index++;
   if (index >= ROBOT_COMMANDS_BUF_SIZE) index = 0;
   lastRobotCommand = index;
@@ -22,74 +22,79 @@ RobotCommand* getLastRobotCommand() {
   return &robotCommands[lastRobotCommand];
 }
 
-/** получаем ссылку на первая команда, готовую к выполнению. */
-RobotCommand* getFirstRobotCommand() {
+/** получаем ссылку на первую команду, готовую к выполнению. */
+RobotCommand* getRobotCommand4Run() {
   int index = firstRobotCommand; index++;
   if (index >= ROBOT_COMMANDS_BUF_SIZE) index = 0;
-  if (!robotCommands[index].isDone) {
+  if (robotCommands[index].state == LOADED) {
     firstRobotCommand = index;
     return &robotCommands[firstRobotCommand];
   } else {
 //    Serial.print("index = ");
     Serial.print(index, DEC);
 /*  
-    Serial.print(" robotCommands[index].isDone = ");
-    Serial.println(robotCommands[index].isDone, DEC);
+    Serial.print(" robotCommands[index].state = ");
+    Serial.println(robotCommands[index].state, DEC);
 */
   }
   return NULL;
 }
 
 /** разбираем строку в команду */
-RobotCommand* addRobotCommand(char buf[], int len) {
-  RobotCommand* command = getLastRobotCommand();
+void addRobotCommand(char buf[], int len) {
   int cnt = 0;
+  RobotCommandType type;
   if (buf[0] == 'f') {
     if (buf[1] == 'l') {
-      command->type = MOTOR_FORWARD_LEFT;
+      type = MOTOR_FORWARD_LEFT;
       cnt = 2;
     } else if (buf[1] == 'r') {
-      command->type = MOTOR_FORWARD_RIGHT;
+      type = MOTOR_FORWARD_RIGHT;
       cnt = 2;
     } else {
-      command->type = MOTOR_FORWARD;
+      type = MOTOR_FORWARD;
       cnt = 1;
     }
   } else if (buf[0] == 'b') {
     if (buf[1] == 'l') {
-      command->type = MOTOR_BACKWARD_LEFT;
+      type = MOTOR_BACKWARD_LEFT;
       cnt = 2;
     } else if (buf[1] == 'r') {
-      command->type = MOTOR_BACKWARD_RIGHT;
+      type = MOTOR_BACKWARD_RIGHT;
       cnt = 2;
     } else {
-      command->type = MOTOR_BACKWARD;
+      type = MOTOR_BACKWARD;
       cnt = 1;
     }
   } else if (buf[0] == 'l') {
-    command->type = MOTOR_LEFT;
+    type = MOTOR_LEFT;
     cnt = 1;
   } else if (strcmp(buf, "run") == 0) {
-    command->type = ROBOT_ANALYSE;
-    command->isDone = false;
-    return command;
+    addRobotCommand(ROBOT_ANALYSE, 0);
+    return;
   } else if (buf[0] == 'r') {
-    command->type = MOTOR_RIGHT;
+    type = MOTOR_RIGHT;
     cnt = 1;
   } else if (buf[0] == 's') { // 
-    command->type = ROBOT_SCANING;
-    command->isDone = false;
-    return command;
+    addRobotCommand(ROBOT_SCANING, 0);
+    return;
   }
   if (cnt > 0 && len > cnt) {
-    command->param = atoi(buf + cnt);
-    command->isDone = false;
-    return command;
+    addRobotCommand(type, atoi(buf + cnt));
   }
-  return NULL;
+  return;
 }
 
+void addRobotCommand(RobotCommandType type, int param) {
+  RobotCommand* command = getRobotCommand4Load();
+  command->type = type;
+  command->param = param;
+  command->state = LOADED;
+}
+
+/** выполняем команду */
 void action(RobotCommand* command) {
+  command->state = RUNNING;
   Serial.println((long) command, HEX);
   mShield.waitBusy();
   Serial.println(mShield.motorMask, BIN);
@@ -124,49 +129,11 @@ void action(RobotCommand* command) {
       mShield.rightMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
       break;
     case ROBOT_SCANING: // сканирование обстановки
-      shimmiDance();
+      headMovement();
       break;
     case ROBOT_ANALYSE: // анализ ситуации и принятие решений
       robotAnalyse();
       break;
   }
-  command->isDone = true;
-}
-
-/**
- *
- */
-void shimmiDance() {
-  int i = vSer.read();
-  for (i++; i <= 180; i++) {
-    vSer.write(i);
-    delay(10);
-  }
-  for (i--; i >= 0; i--) {
-    vSer.write(i);
-    if (i % 10 == 0) {
-      showDistance(i);
-    } else {
-      delay(10);
-    }
-  }
-  for (i++; i <= 180; i++) {
-    vSer.write(i);
-    if (i % 10 == 0) {
-      showDistance(i);
-    } else {
-      delay(10);
-    }
-  }
-  for (i--; i >= 90; i--) {
-    vSer.write(i);
-    delay(10);
-  }
-}
-
-/**
- *
- */
-void robotAnalyse() {
-  
+  command->state = EMPTY;
 }

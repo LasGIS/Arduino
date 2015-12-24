@@ -11,12 +11,11 @@ int getDistance() {
   return pulseIn(echoPin, HIGH); 
 }
 
-int showDistance(int degre) {
+float showDistance(int degre) {
   Serial.print(degre);
   Serial.print("C ");
-  int distance = getDistance();
-  float cm = distance / 58.;
+  float cm = getDistance() / 58.;
   Serial.print(cm);
   Serial.println("cm");
-  return distance;
+  return cm;
 }
