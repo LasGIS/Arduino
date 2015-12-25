@@ -18,12 +18,12 @@ static uint8_t CUSTOM_DIGITS[10][2][3] {
   { { 0,  6,  6}, { 3,  4,  5} },  // 6
   { { 1,  1,  2}, {32, 32,  7} },  // 7
   { { 0,  6,  2}, { 3,  4,  5} },  // 8
-  { { 0,  6,  2}, {32, 32,  7} }   // 9
+  { { 0,  6,  2}, { 4,  4,  5} }   // 9
 };
 
 void loadCustomChars() {
   for (int i = 0; i < 8; i++) {
-    lcd.createChar(0, FIRST_LCD_CHARS[i]);
+    lcd.createChar(i, FIRST_LCD_CHARS[i]);
   }
 }
 

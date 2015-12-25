@@ -32,27 +32,43 @@ String dayAsString(const Time::Day day) {
   return "(und)";
 }
 
-void printTime(int showMode) {
+/**
+ * выводим время и дату на LCD.
+ */
+void printTime(LPShowModeType showMode) {
   // Get the current time and date from the chip.
   Time t = rtc.time();
 
-  // Name the day of the week.
   const String day = dayAsString(t.day);
 
-  // Format the time and date and insert into the temporary buffer.
   char buf[50];
-  if (showMode == 0) {
+  switch (showMode) {
+  case BigTime:
+    viewCustomDigit(0, t.hr / 10); 
+    viewCustomDigit(4, t.hr % 10); 
+    viewCustomDigit(9, t.min / 10);
+    viewCustomDigit(13, t.min % 10);
+    break;
+  case DataTime:
     snprintf(buf, sizeof(buf), "%s %04d-%02d-%02d ", day.c_str(), t.yr, t.mon, t.date);
     lcd.setCursor(0, 0);
     lcd.print(buf);
+    printOnlyTime(1, &t);
+    break;
+  case TimeHum:
+    printOnlyTime(0, &t);
+    break;
+  case Humidity:
+    break;
   }
-  //Serial.print(buf);
-  if (showMode < 2) {
-    snprintf(buf, sizeof(buf), "Time = %02d:%02d:%02d", t.hr, t.min, t.sec);
-    lcd.setCursor(0, showMode == 0 ? 1 : 0);
-    lcd.print(buf);
-  }
-  //Serial.println(buf);
+}
+
+/** временнАя чать. */
+void printOnlyTime(uint8_t row, Time* t) {
+  char buf[50];
+  snprintf(buf, sizeof(buf), "Time = %02d:%02d:%02d", t->hr, t->min, t->sec);
+  lcd.setCursor(0, row);
+  lcd.print(buf);
 }
 
 /**
@@ -72,7 +88,7 @@ LPMode editTime(char key) {
   case 1: // начальная 
     Time2Fields(rtc.time());
     lcd.clear();
-    printTime(0);
+    printTime(DataTime);
     lcd.cursor();
     lcd.blink();
     nField = 0;
@@ -196,7 +212,7 @@ void setValue(int nField, int nPosit, char key) {
   if (val > field.maxVal) {
     val = field.maxVal;
   }
-  int minVal = (nField < 4 ? 1 : 0);
+  uint16_t minVal = (nField < 4 ? 1 : 0);
   if (val < minVal) {
     val = minVal;
   }

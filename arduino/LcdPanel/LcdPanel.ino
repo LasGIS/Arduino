@@ -63,7 +63,7 @@ void setup() {
 }
 
 void loop() {
-  static int showMode = 1;
+  static LPShowModeType showMode = BigTime;
   switch (curCommand) {
     case 0: // показываем часы, температуру и влажность
       if (mode == show) {
@@ -110,7 +110,7 @@ void loop() {
     case '+':
       if (curCommand == 0) {
         lcd.clear();
-        showMode = showMode > 0 ? showMode - 1 : 0;
+        showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : BigTime;
       } else if (curCommand == 1) {
         charsRow++;
         lcdShowChars();
@@ -119,7 +119,7 @@ void loop() {
     case '-':
       if (curCommand == 0) {
        lcd.clear();
-       showMode = showMode < 2 ? showMode + 1 : 2;
+       showMode = showMode < Humidity ? (LPShowModeType) (showMode + 1) : Humidity;
       } else if (curCommand == 1) {
         charsRow--;
         lcdShowChars();
@@ -192,7 +192,7 @@ void serialEvent() {
 }
 
 /** Показываем время */
-void lcdShowTime(int showMode) {
+void lcdShowTime(LPShowModeType showMode) {
   unsigned long msec = millis();
   if ((msec - milliSec) / 1000 > 0) {
     milliSec = msec;
@@ -255,14 +255,14 @@ void lcdIRkey(long code, char key) {
 /**
  * Показываем температуру и влажность
  */
-void temperatureHumidity(int showMode) {
+void temperatureHumidity(LPShowModeType showMode) {
   if (count % 20 == 0) {
     delay(100);
     double h = dht.readHumidity();
     double t = dht.readTemperature();
     double hic = dht.computeHeatIndex(t, h, false);
 
-    if (showMode == 1) {
+    if (showMode == TimeHum) {
       lcd.setCursor(0, 1);
       lcd.print("Temp ");
       lcd.print(t, 0);
@@ -273,7 +273,7 @@ void temperatureHumidity(int showMode) {
       lcd.print("ind ");
       lcd.print(hic, 2);
       lcd.print("C ");
-    } else if (showMode == 2) {
+    } else if (showMode == Humidity) {
       lcd.setCursor(0, 0);
       lcd.print("Temper ");
       lcd.print(t, 0);
