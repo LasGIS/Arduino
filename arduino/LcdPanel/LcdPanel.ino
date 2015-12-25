@@ -44,10 +44,16 @@ void setup() {
   Serial.begin(9600);
   // initialize the lcd 
   lcd.init();
+  loadCustomChars();
   // Print a message to the LCD.
   lcd.backlight();
   lcd.clear();
-  lcd.print("Start");
+  //lcd.print("Start");
+  viewCustomDigit(0, 2); 
+  viewCustomDigit(4, 3); 
+  viewCustomDigit(9, 5);
+  viewCustomDigit(13, 9);
+
   control.start();
   milliSec = millis();
   pinMode(buzzerPin, OUTPUT);
