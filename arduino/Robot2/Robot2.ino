@@ -12,6 +12,11 @@ MotorShield mShield(MSHLD_M1, MSHLD_M3);
 int echoPin = A3; 
 int trigPin = A2;
 
+/** пин кнопочки */
+int buttonPin = 2; 
+bool isButtonPressed = false;
+bool isAutorun = false;
+
 void setup() {
   Serial.begin(9600);
 /*
@@ -24,11 +29,12 @@ void setup() {
 */
   pinMode(trigPin, OUTPUT); 
   pinMode(echoPin, INPUT); 
+  pinMode(buttonPin, INPUT); 
 
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);
   // testDrive('1');
-  addRobotCommand(ROBOT_ANALYSE, 0);
+  // addRobotCommand(ROBOT_ANALYSE, 0);
 }
 
 void loop() {
@@ -37,6 +43,25 @@ void loop() {
     if (command != NULL) {
       action(command);
     }
+  }
+  static long buttonPressTime = 1000000000l;
+  if (digitalRead(buttonPin)) {
+    isButtonPressed = true;
+    buttonPressTime = millis();
+  } else if (isButtonPressed
+    && (millis() - buttonPressTime > 100)
+    && !digitalRead(buttonPin)
+    ) {
+    if (isAutorun) {
+      //addRobotCommand(ROBOT_STOP, 0);
+      Serial.println("ROBOT_STOP");
+      isAutorun = false;
+    } else {
+      addRobotCommand(ROBOT_ANALYSE, 0);
+      Serial.println("ROBOT_ANALYSE");
+      isAutorun = true;
+    }
+    isButtonPressed = false;
   }
   delay(20);
 }

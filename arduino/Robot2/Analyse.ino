@@ -22,7 +22,8 @@ void robotAnalyse() {
     case BLOCK_RIGHT:    // помеха справа
       for (int i = 10; i <= 17; i++) {
         if (checkRight(i, 10.0)) {
-          addRobotCommand(MOTOR_LEFT, (i - 9) * 10);
+          int grad = (i - 9) * 10;
+          addRobotCommand((grad <= 30) ? MOTOR_FORWARD_LEFT : MOTOR_LEFT, grad + 30);
           addRobotCommand(ROBOT_ANALYSE, 0);
           return;
         }
@@ -33,7 +34,8 @@ void robotAnalyse() {
     case BLOCK_LEFT:     // помеха слева
       for (int i = 8; i >= 1; i--) {
         if (checkLeft(i, 10.0)) {
-          addRobotCommand(MOTOR_RIGHT, (9 - i) * 10);
+          int grad = (9 - i) * 10;
+          addRobotCommand((grad <= 30) ? MOTOR_FORWARD_RIGHT : MOTOR_RIGHT, grad + 30);
           addRobotCommand(ROBOT_ANALYSE, 0);
           return;
         }
