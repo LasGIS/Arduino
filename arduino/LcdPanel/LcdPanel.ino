@@ -99,8 +99,17 @@ void loop() {
     if (curCommand == 2) {
       lcdIRkey(code, key);
     }
-
+    static bool isLcdBacklight = true;
     switch (key) {
+    case 'q':
+      if (isLcdBacklight) {
+        lcd.noBacklight();
+        isLcdBacklight = false;
+      } else {
+        lcd.backlight();
+        isLcdBacklight = true;
+      }
+      break;
     case '>':
       lcd.scrollDisplayLeft();
       break;
