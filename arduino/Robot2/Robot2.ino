@@ -33,6 +33,7 @@ void setup() {
 
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);
+  headToDegree(90);
   // testDrive('1');
   // addRobotCommand(ROBOT_ANALYSE, 0);
 }
@@ -134,7 +135,7 @@ void testDrive(char motor) {
       break;
     
     case 's':
-      headMovement();
+      scanSituation();
       break;
   }
   mShield.stopMotors();

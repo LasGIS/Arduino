@@ -96,8 +96,11 @@ void addRobotCommand(RobotCommandType type, int param) {
 /** выполняем команду */
 void action(RobotCommand* command) {
   command->state = RUNNING;
-  Serial.println((long) command, HEX);
-  Serial.println(mShield.motorMask, BIN);
+  Serial.print((long) command, HEX);
+  Serial.print("command(");
+  Serial.print(command->type);
+  Serial.print(")->param = ");
+  Serial.println(command->param);
   switch (command->type) {
     case MOTOR_FORWARD:
       mShield.leftMotor(255, (int) (command->param * LEFT_FORWARD_FACTOR));
@@ -129,7 +132,7 @@ void action(RobotCommand* command) {
       mShield.rightMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
       break;
     case ROBOT_SCANING: // сканирование обстановки
-      headMovement();
+      scanSituation();
       break;
     case ROBOT_ANALYSE: // анализ ситуации и принятие решений
       robotAnalyse();

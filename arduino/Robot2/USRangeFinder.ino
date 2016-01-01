@@ -1,4 +1,4 @@
-#define WAIT_TIME_DISTANCE 100
+#define WAIT_TIME_DISTANCE 70
 
 /** получить дистанцию в point`ax (условная единица 1[point]*58.0 = 1[см] .*/
 int getDistance() { 
