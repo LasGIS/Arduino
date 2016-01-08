@@ -39,12 +39,6 @@ void setup() {
 }
 
 void loop() {
-  if (!mShield.isBusy()) {
-    RobotCommand* command = getRobotCommand4Run();
-    if (command != NULL) {
-      action(command);
-    }
-  }
   static long buttonPressTime = 1000000000l;
   if (digitalRead(buttonPin)) {
     isButtonPressed = true;
@@ -52,9 +46,9 @@ void loop() {
   } else if (isButtonPressed
     && (millis() - buttonPressTime > 100)
     && !digitalRead(buttonPin)
-    ) {
+  ) {
     if (isAutorun) {
-      //addRobotCommand(ROBOT_STOP, 0);
+      addRobotCommand(ROBOT_STOP, 0);
       Serial.println("ROBOT_STOP");
       isAutorun = false;
     } else {
@@ -63,6 +57,12 @@ void loop() {
       isAutorun = true;
     }
     isButtonPressed = false;
+  }
+  if (!mShield.isBusy()) {
+    RobotCommand* command = getRobotCommand4Run();
+    if (command != NULL) {
+      action(command);
+    }
   }
   delay(20);
 }

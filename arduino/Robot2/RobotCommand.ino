@@ -19,7 +19,7 @@ RobotCommand* getRobotCommand4Load() {
   lastRobotCommand = index;
   Serial.print("lastRobotCommand = ");
   Serial.print(lastRobotCommand, DEC);
-  Serial.print("; ");
+  Serial.println("; ");
   return &robotCommands[lastRobotCommand];
 }
 
@@ -39,6 +39,13 @@ RobotCommand* getRobotCommand4Run() {
 */
   }
   return NULL;
+}
+
+/** останавливаем всё */
+void robotStop() {
+  lastRobotCommand = -1;
+  firstRobotCommand = -1;
+  robotCommands[0].state ****= EMPTY;
 }
 
 /** разбираем строку в команду */
@@ -136,6 +143,9 @@ void action(RobotCommand* command) {
       break;
     case ROBOT_ANALYSE: // анализ ситуации и принятие решений
       robotAnalyse();
+      break;
+    case ROBOT_STOP: // останавливаем всё
+      robotStop();
       break;
   }
   mShield.waitBusy();
