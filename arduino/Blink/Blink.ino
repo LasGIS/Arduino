@@ -16,6 +16,7 @@
 
 // the setup function runs once when you press reset or power the board
 void setup() {
+  Serial.begin(9600);
   // initialize digital pin 13 as an output.
   pinMode(13, OUTPUT);
 }
@@ -31,3 +32,17 @@ void loop() {
   digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
   delay(1600);              // wait for a second
 }
+
+void serialEvent() {
+  char buf[10];
+  int j = 0;
+  while (Serial.available() > 0) {
+    int cnt = Serial.readBytes(buf, 10);
+    for (int i = 0; i < cnt; i++, j++) {
+      Serial.write(buf[i]);
+    }
+    Serial.println("cam takoy:");
+  }
+  delay(20);
+}
+
