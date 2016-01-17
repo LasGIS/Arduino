@@ -8,12 +8,8 @@
 
 // Switch on LED on and off each half second
 
-#if ARDUINO >= 100
-const int led_pin = LED_BUILTIN;	// 1.0 built in LED pin var
-#else
-const int led_pin = 13;			// default to pin 13
-#endif
-
+// default to pin 13
+const int led_pin = 13;
 
 void flash()
 {

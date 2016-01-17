@@ -31,6 +31,7 @@ void loop() {
   delay(200);              // wait for a second
   digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
   delay(1600);              // wait for a second
+  Serial.print("blnk ");
 }
 
 void serialEvent() {
