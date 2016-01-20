@@ -45,7 +45,7 @@ RobotCommand* getRobotCommand4Run() {
 void robotStop() {
   lastRobotCommand = -1;
   firstRobotCommand = -1;
-  robotCommands[0].state ****= EMPTY;
+  robotCommands[0].state = EMPTY;
 }
 
 /** разбираем строку в команду */

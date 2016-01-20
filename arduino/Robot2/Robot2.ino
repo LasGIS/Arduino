@@ -5,17 +5,18 @@
 
 Servo hSer;
 Servo vSer;
-MotorShield mShield(MSHLD_M1, MSHLD_M3);
+MotorShield mShield(MSHLD_M1, MSHLD_M2);
 //LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
 /* пины Ультразвукового дальномера */
 int echoPin = A3; 
 int trigPin = A2;
 
-/** пин кнопочки */
+/** пин кнопочки
 int buttonPin = 2; 
 bool isButtonPressed = false;
 bool isAutorun = false;
+*/
 
 void setup() {
   Serial.begin(9600);
@@ -29,7 +30,7 @@ void setup() {
 */
   pinMode(trigPin, OUTPUT); 
   pinMode(echoPin, INPUT); 
-  pinMode(buttonPin, INPUT); 
+//  pinMode(buttonPin, INPUT); 
 
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);
@@ -39,6 +40,7 @@ void setup() {
 }
 
 void loop() {
+/*  
   static long buttonPressTime = 1000000000l;
   if (digitalRead(buttonPin)) {
     isButtonPressed = true;
@@ -58,6 +60,7 @@ void loop() {
     }
     isButtonPressed = false;
   }
+*/
   if (!mShield.isBusy()) {
     RobotCommand* command = getRobotCommand4Run();
     if (command != NULL) {
