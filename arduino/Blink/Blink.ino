@@ -23,6 +23,7 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
+  static int i = 0;
   digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
   delay(200);              // wait for a second
   digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
@@ -31,7 +32,8 @@ void loop() {
   delay(200);              // wait for a second
   digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
   delay(1600);              // wait for a second
-  Serial.print("blnk ");
+  Serial.println(sin((i * PI) / 18));
+  i++;
 }
 
 void serialEvent() {
@@ -42,7 +44,7 @@ void serialEvent() {
     for (int i = 0; i < cnt; i++, j++) {
       Serial.write(buf[i]);
     }
-    Serial.println("cam takoy:");
+    Serial.println("Sam takoy:");
   }
   delay(20);
 }
