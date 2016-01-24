@@ -53,6 +53,9 @@ MotorShield::MotorShield(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
   pinMode(MSHLD_PWM0A_PIN, OUTPUT);
   pinMode(MSHLD_PWM0B_PIN, OUTPUT);
 */
+  pinMode(MSHLD_LEFT_COUNT_PIN, INPUT);
+  pinMode(MSHLD_RIGHT_COUNT_PIN, INPUT);
+
   leftMotorNum = _leftMotorNum;
   rightMotorNum = _rightMotorNum;
   // устанавливаем enabled
@@ -70,7 +73,7 @@ void MotorShield::handle_interrupt() {
   }
 }
 
-/** включаем мотор shild */
+/** эта процедура запускается каждую милисекунду */
 void MotorShield::timeAction() {
   //Serial.print("Time Action!");
   long time = millis();
@@ -83,6 +86,8 @@ void MotorShield::timeAction() {
       stopMotor(i);
     }
   }
+//  Serial.print(digitalRead(MSHLD_LEFT_COUNT_PIN));
+  Serial.print(digitalRead(MSHLD_RIGHT_COUNT_PIN));
 }
 
 /** включаем моторы shild */

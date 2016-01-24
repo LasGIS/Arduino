@@ -33,6 +33,11 @@
 // Пин PWM2B --- мощьность M2 (PIN 1, PIN 2)
 #define MSHLD_PWM2B_PIN     3
 
+// Пин счетчика левого мотора
+#define MSHLD_LEFT_COUNT_PIN A0
+// Пин счетчика правого мотора
+#define MSHLD_RIGHT_COUNT_PIN A1
+
 // маски моторов
 #define MSHLD_UP_M3A_MASK  B00000001
 #define MSHLD_UP_M2A_MASK  B00000010
@@ -57,7 +62,7 @@
 #define MSHLD_M3 2
 #define MSHLD_M4 3
 
-#define MSHLD_DEL_TIME 20
+#define MSHLD_DEL_TIME 1
 
 /** класс содержит все внутренние параметры мотора. */
 class DcMotor {
