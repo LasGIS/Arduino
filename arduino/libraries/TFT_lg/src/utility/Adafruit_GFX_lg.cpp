@@ -52,8 +52,7 @@ Adafruit_GFX::Adafruit_GFX(int16_t w, int16_t h) :
 }
 
 // draw a circle outline
-void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r,
-			      uint16_t color) {
+void Adafruit_GFX::drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
   int16_t f = 1 - r;
   int16_t ddF_x = 1;
   int16_t ddF_y = -2 * r;
@@ -131,8 +130,7 @@ void Adafruit_GFX::fillCircle(int16_t x0, int16_t y0, int16_t r,
 
 // used to do circles and roundrects
 void Adafruit_GFX::fillCircleHelper(int16_t x0, int16_t y0, int16_t r,
-				    uint8_t cornername, int16_t delta, 				    uint16_t color)
-{
+    uint8_t cornername, int16_t delta, uint16_t color) {
   int16_t f     = 1 - r;
   int16_t ddF_x = 1;
   int16_t ddF_y = -2 * r;

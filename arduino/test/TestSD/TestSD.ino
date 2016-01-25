@@ -19,7 +19,7 @@ void setup()
   Serial.print("Initializing SD card...");
   // Магия. Этот вывод должен быть настроен как выход.
   // Иначе, некоторые функции могут не работать.
-  pinMode(10, OUTPUT);
+  //pinMode(10, OUTPUT);
  
   if (!SD.begin(4)) {
     Serial.println("initialization failed!");

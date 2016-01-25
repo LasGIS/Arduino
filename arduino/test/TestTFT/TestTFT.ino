@@ -31,10 +31,10 @@ void loop() {
 }
 
 void drawBox() {
-  int xMin = 3;
-  int yMin = 2;
-  int xMax = TFTscreen.height();
-  int yMax = TFTscreen.width()-2;
+  int xMin = 0;
+  int yMin = 0;
+  int xMax = TFTscreen.height()-1;
+  int yMax = TFTscreen.width()-1;
   Serial.print("x0 = ");
   Serial.print(xMin);
   Serial.print("; y0 = ");

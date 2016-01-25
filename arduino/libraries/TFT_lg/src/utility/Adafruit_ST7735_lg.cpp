@@ -399,7 +399,7 @@ void Adafruit_ST7735::initR(uint8_t options) {
   if(options == INITR_GREENTAB) {
     commandList(Rcmd2green);
     colstart = 2;
-    rowstart = 1;
+    rowstart = 3;
   } else {
     // colstart, rowstart left at default '0' values
     commandList(Rcmd2red);

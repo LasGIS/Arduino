@@ -23,11 +23,6 @@
 #define dc   9
 #define rst  8
 
-// pin definition for the Leonardo
-// #define cs   7
-// #define dc   0
-// #define rst  1
-
 // create an instance of the library
 TFT TFTscreen = TFT(cs, dc, rst);
 
@@ -50,7 +45,7 @@ void setup() {
   // set the font size
   TFTscreen.setTextSize(1);
   // write the text to the top left corner of the screen
-  TFTscreen.text("Sensor Value:\n абвгдеёжз", 3, 2);
+  TFTscreen.text("Sensor Value:\n абвгдеёжз", 0, 0);
   // ste the font size very large for the loop
   TFTscreen.setTextSize(4);
 }
@@ -68,11 +63,11 @@ void loop() {
   // set the font color
   TFTscreen.stroke(255, 0, 255);
   // print the sensor value
-  TFTscreen.text(sensorPrintout, 3, 22);
+  TFTscreen.text(sensorPrintout, 0, 20);
   // wait for a moment
   delay(250);
   // erase the text you just wrote
   TFTscreen.stroke(0, 0, 0);
-  TFTscreen.text(sensorPrintout, 3, 22);
+  TFTscreen.text(sensorPrintout, 0, 20);
 }
 
