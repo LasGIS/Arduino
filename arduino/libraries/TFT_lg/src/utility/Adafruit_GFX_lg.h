@@ -55,7 +55,7 @@
  */
 
 #if defined(__SD_H__)  // Arduino SD library
- #include "PImage.h"
+ #include "PImage_lg.h"
 #else
  #warning "The SD library was not found. loadImage() and image() won't be supported."
 #endif
