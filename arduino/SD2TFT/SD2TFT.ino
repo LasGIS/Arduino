@@ -20,9 +20,6 @@ File myFile;
 // create an instance of the library
 TFT TFTscreen = TFT(cs, dc, rst);
 
-// char array to print to the screen
-char sensorPrintout[5];
-
 void setup() {
   // begin serial communication
   Serial.begin(9600);
@@ -47,31 +44,37 @@ void setup() {
 }
 
 void loop() {
+  // char array to print to the screen
+  static char sensorPrintout[10];
 
   // Read the value of the sensor on A0
-  int sensor = analogRead(A0);
-  String sensorVal = String(sensor);
+  float sensor = (analogRead(A0) * 5) / 1023.0;
+  String sensorVal = String(sensor) + 'v'; //'\333';
   // convert the reading to a char array
-  sensorVal.toCharArray(sensorPrintout, 5);
+  sensorVal.toCharArray(sensorPrintout, 6);
 
+  //Serial.println(sensor);
+  saveData(sensor);
+
+  TFTscreen.setTextSize(4);
   // set the font color
   TFTscreen.stroke(255, 0, 255);
   // print the sensor value
-  TFTscreen.text(sensorPrintout, 0, 20);
-  //Serial.println(sensor);
-  saveData(sensor);
+  //TFTscreen.fillRect(0, 18, 116, 32, 0);
+  TFTscreen.text(sensorPrintout, 0, 18);
   // wait for a moment
-  delay(250);
+  delay(150);
   // erase the text you just wrote
   TFTscreen.stroke(0, 0, 0);
-  TFTscreen.text(sensorPrintout, 0, 20);
+  TFTscreen.text(sensorPrintout, 0, 18);
 }
 
 void initSD() {
   Serial.print("Initializing SD card...");
   if (!SD.begin(4)) {
     Serial.println("initialization SD card failed!");
-    TFTscreen.text("init SD card failed!", 0, 50);
+    TFTscreen.text("init SD card failed!\n", 0, 50);
+    TFTscreen.println("error on datalog.txt");
     return;
   }
   Serial.println("initialization done.");
@@ -98,7 +101,7 @@ void initSD() {
   }
 }
 
-void saveData(int sensor) {
+void saveData(float sensor) {
   File dataFile = SD.open("datalog.txt", FILE_WRITE);
 
   // if the file is available, write to it:
@@ -107,6 +110,9 @@ void saveData(int sensor) {
     dataFile.close();
   } else {
     Serial.println("error on datalog.txt");
+    TFTscreen.setTextSize(1);
+    TFTscreen.stroke(255, 0, 0);
+    TFTscreen.text("error on datalog.txt", 0, 58);
   }
 }
 
