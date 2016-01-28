@@ -58,6 +58,10 @@ MotorShield::MotorShield(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
 
   leftMotorNum = _leftMotorNum;
   rightMotorNum = _rightMotorNum;
+  // Пин счетчика моторов
+  (MSHLD_MOTORS + leftMotorNum)->countPin = MSHLD_LEFT_COUNT_PIN
+  (MSHLD_MOTORS + rightMotorNum)->countPin = MSHLD_RIGHT_COUNT_PIN
+
   // устанавливаем enabled
   enabled();
   stopMotors();
@@ -78,15 +82,15 @@ void MotorShield::timeAction() {
   //Serial.print("Time Action!");
   long time = millis();
   for (int i = 0; i < 4; i++) {
-    DcMotor motor = MSHLD_MOTORS[i];
-    if (motor.time > 0 && motor.time < time) {
+    DcMotor* motor = MSHLD_MOTORS + i;
+    if (motor->time > 0 && motor->time < time) {
 //      Serial.print("stopMotor(");
 //      Serial.print(i);
 //      Serial.println(")");
       stopMotor(i);
     }
   }
-//  Serial.print(digitalRead(MSHLD_LEFT_COUNT_PIN));
+  Serial.print(digitalRead(MSHLD_LEFT_COUNT_PIN));
   Serial.print(digitalRead(MSHLD_RIGHT_COUNT_PIN));
 }
 
@@ -116,11 +120,11 @@ void MotorShield::stopMotors() {
  * Останавливаем конкретный мотор.
  */
 void MotorShield::stopMotor(uint8_t nMotor) {
-  DcMotor motor = MSHLD_MOTORS[nMotor];
-  setBitMask(motorMask & motor.downMask_A & motor.downMask_B);
-  analogWrite(motor.powerPin, 0);
-  MSHLD_MOTORS[nMotor].time = 0;
-  MSHLD_MOTORS[nMotor].busy = false;
+  DcMotor* motor = MSHLD_MOTORS + nMotor;
+  setBitMask(motorMask & motor->downMask_A & motor->downMask_B);
+  analogWrite(motor->powerPin, 0);
+  motor->time = 0;
+  motor->busy = false;
 }
 
 /**
@@ -174,24 +178,24 @@ void MotorShield::rightMotor(int speed, long time) {
  * значения от -5 до +5
  */
 void MotorShield::motor(uint8_t nMotor, int speed, long time) {
-  DcMotor motor = MSHLD_MOTORS[nMotor];
-  MSHLD_MOTORS[nMotor].time = millis() + time;
-  MSHLD_MOTORS[nMotor].busy = true;
+  DcMotor* motor = MSHLD_MOTORS + nMotor;
+  motor->time = millis() + time;
+  motor->busy = true;
   setSpeed(speed, motor);
 //  Serial.print("time = ");
-//  Serial.println(MSHLD_MOTORS[nMotor].time, DEC);
+//  Serial.println(motor->time, DEC);
 }
 
 /**
  * устанавливаем скорость и направление конкретного мотора
  */
-void MotorShield::setSpeed(int speed, DcMotor motor) {
-  setSpeed(speed, 
-    motor.upMask_A,     // маска установки клемы A
-    motor.downMask_A,   // маска снятия клемы A
-    motor.upMask_B,     // маска установки клемы B
-    motor.downMask_B,   // маска снятия клемы B
-    motor.powerPin      // пин для установки скорости
+void MotorShield::setSpeed(int speed, DcMotor* motor) {
+  setSpeed(speed,
+    motor->upMask_A,     // маска установки клемы A
+    motor->downMask_A,   // маска снятия клемы A
+    motor->upMask_B,     // маска установки клемы B
+    motor->downMask_B,   // маска снятия клемы B
+    motor->powerPin      // пин для установки скорости
   );
 }
 

@@ -161,20 +161,19 @@ float loadDistance(int degree) {
   return showDistance(degree);
 }
 
-float headToDegree(int degre) {
+/**
+ * медленное перемещение головы в определённое положение
+ */
+void headToDegree(int degre) {
   int degree = degre + DEGREE_CORRECTION;
   int i = vSer.read();
   if (i > degree) {
     for (; i >= degree; i--) {
-//      Serial.print(i);
-//      Serial.println(' ');
       vSer.write(i);
       delay(10);
     }
   } else {
     for (; i <= degree; i++) {
-//      Serial.print(i);
-//      Serial.println(' ');
       vSer.write(i);
       delay(10);
     }

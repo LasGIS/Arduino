@@ -1,12 +1,10 @@
 #include <Servo.h>
-//#include <LiquidCrystal_I2C.h>
 #include "MotorShield.h"
 #include "RobotCommand.h"
 
 Servo hSer;
 Servo vSer;
 MotorShield mShield(MSHLD_M1, MSHLD_M2);
-//LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
 /* пины Ультразвукового дальномера */
 int echoPin = A3; 
@@ -20,14 +18,6 @@ bool isAutorun = false;
 
 void setup() {
   Serial.begin(9600);
-/*
-  // initialize the lcd 
-  lcd.init();
-  // Print a message to the LCD.
-  lcd.backlight();
-  lcd.clear();
-  lcd.print("Start Robo 1.0.1");
-*/
   pinMode(trigPin, OUTPUT); 
   pinMode(echoPin, INPUT); 
 //  pinMode(buttonPin, INPUT); 
@@ -50,7 +40,7 @@ void loop() {
     && !digitalRead(buttonPin)
   ) {
     if (isAutorun) {
-      addRobotCommand(ROBOT_STOP, 0);
+      robotStop();
       Serial.println("ROBOT_STOP");
       isAutorun = false;
     } else {

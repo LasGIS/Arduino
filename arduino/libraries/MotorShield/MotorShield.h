@@ -67,11 +67,12 @@
 /** класс содержит все внутренние параметры мотора. */
 class DcMotor {
 public:
-  uint8_t upMask_A;     // маска установки клемы A
-  uint8_t downMask_A;   // маска снятия клемы A
-  uint8_t upMask_B;     // маска установки клемы B
-  uint8_t downMask_B;   // маска снятия клемы B
-  uint8_t powerPin;     // пин для установки скорости
+  uint8_t upMask_A;      // маска установки клемы A
+  uint8_t downMask_A;    // маска снятия клемы A
+  uint8_t upMask_B;      // маска установки клемы B
+  uint8_t downMask_B;    // маска снятия клемы B
+  uint8_t powerPin;      // пин для установки скорости
+  uint8_t countPin = -1; // пин счётчика скорости
   DcMotor(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 
   volatile long time;   // оставшееся время работы мотора
@@ -107,7 +108,7 @@ public:
 private:
   static inline void handle_interrupt();
   void timeAction();
-  void setSpeed(int, DcMotor);
+  void setSpeed(int, DcMotor*);
   void setSpeed(int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
   void setBitMask(uint8_t);
 };
