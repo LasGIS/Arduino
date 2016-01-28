@@ -104,7 +104,7 @@ void addRobotCommand(RobotCommandType type, int param) {
 void action(RobotCommand* command) {
   command->state = RUNNING;
   Serial.print((long) command, HEX);
-  Serial.print("command(");
+  Serial.print(" - command(");
   Serial.print(command->type);
   Serial.print(")->param = ");
   Serial.println(command->param);
