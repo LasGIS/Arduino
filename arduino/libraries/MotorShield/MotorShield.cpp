@@ -18,10 +18,41 @@ static DcMotor MSHLD_MOTORS[4] = {
   DcMotor(MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK, MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK, MSHLD_PWM0B_PIN)
 };
 
+static Speedometer LEFT_SPEEDOMETR(MSHLD_LEFT_COUNT_PIN);
+static Speedometer RIGHT_SPEEDOMETR(MSHLD_RIGHT_COUNT_PIN);
+
 MotorShield* MotorShield::_activeMotorShieldObject = 0;
 
 /**
- * Конструктор с инициализатором
+ * Конструктор спидометра
+ */
+Speedometer::Speedometer(uint8_t _countPin) {
+  countPin = _countPin;
+  pinMode(countPin, INPUT);
+  clean();
+}
+
+/**
+ * проверка на изменение датчика
+ */
+bool Speedometer::check() {
+  uint8_t newVal = digitalRead(countPin);
+  if (newVal != val) {
+    count++;
+    val = newVal;
+    return true;
+  }
+  return false;
+}
+
+/** сбрасываем параметры */
+void Speedometer::clean() {
+  count = 0;
+  val = digitalRead(countPin);
+}
+
+/**
+ * Конструктор мотора
  */
 DcMotor::DcMotor(
   uint8_t _upMask_A,
@@ -59,8 +90,8 @@ MotorShield::MotorShield(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
   leftMotorNum = _leftMotorNum;
   rightMotorNum = _rightMotorNum;
   // Пин счетчика моторов
-  (MSHLD_MOTORS + leftMotorNum)->countPin = MSHLD_LEFT_COUNT_PIN;
-  (MSHLD_MOTORS + rightMotorNum)->countPin = MSHLD_RIGHT_COUNT_PIN;
+  (MSHLD_MOTORS + leftMotorNum)->speedometer = &LEFT_SPEEDOMETR;
+  (MSHLD_MOTORS + rightMotorNum)->speedometer = &RIGHT_SPEEDOMETR;
 
   // устанавливаем enabled
   enabled();
@@ -77,21 +108,30 @@ void MotorShield::handle_interrupt() {
   }
 }
 
-/** эта процедура запускается каждую милисекунду */
+/********************************************
+ * процедура запускается каждую милисекунду
+ */
 void MotorShield::timeAction() {
-  //Serial.print("Time Action!");
   long time = millis();
   for (int i = 0; i < 4; i++) {
     DcMotor* motor = MSHLD_MOTORS + i;
+    Speedometer* speedometer = motor->speedometer;
+    if (speedometer) {
+      speedometer->check();
+    }
     if (motor->time > 0 && motor->time < time) {
-//      Serial.print("stopMotor(");
-//      Serial.print(i);
-//      Serial.println(")");
+      Serial.print("stopMotor(");
+      Serial.print(i);
+      if (speedometer) {
+        Serial.print("); count = ");
+        Serial.print(speedometer->count);
+        Serial.println(";");
+      } else {
+        Serial.println(")");
+      }
       stopMotor(i);
     }
   }
-  Serial.print(digitalRead(MSHLD_LEFT_COUNT_PIN));
-  Serial.print(digitalRead(MSHLD_RIGHT_COUNT_PIN));
 }
 
 /** включаем моторы shild */
@@ -181,6 +221,11 @@ void MotorShield::motor(uint8_t nMotor, int speed, long time) {
   DcMotor* motor = MSHLD_MOTORS + nMotor;
   motor->time = millis() + time;
   motor->busy = true;
+  // настраиваем спидомерер
+  Speedometer* speedometer = motor->speedometer;
+  if (speedometer) {
+    speedometer->clean();
+  }
   setSpeed(speed, motor);
 //  Serial.print("time = ");
 //  Serial.println(motor->time, DEC);

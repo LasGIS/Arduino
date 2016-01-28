@@ -18,9 +18,9 @@ bool isAutorun = false;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(trigPin, OUTPUT); 
-  pinMode(echoPin, INPUT); 
-//  pinMode(buttonPin, INPUT); 
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+//  pinMode(buttonPin, INPUT);
 
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);

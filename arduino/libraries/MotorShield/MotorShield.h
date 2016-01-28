@@ -64,7 +64,23 @@
 
 #define MSHLD_DEL_TIME 1
 
-/** класс содержит все внутренние параметры мотора. */
+/**
+ * Класс счётчика скорости.
+ */
+class Speedometer {
+public:
+  uint8_t countPin;      // пин счётчика скорости
+  uint8_t count;         // счётчик
+  uint8_t val;           // показание датчика
+  Speedometer(uint8_t countPin);
+  void clean();
+  // проверка на изменение датчика
+  bool check();
+};
+
+/**
+ * класс содержит все внутренние параметры мотора.
+ */
 class DcMotor {
 public:
   uint8_t upMask_A;      // маска установки клемы A
@@ -72,13 +88,16 @@ public:
   uint8_t upMask_B;      // маска установки клемы B
   uint8_t downMask_B;    // маска снятия клемы B
   uint8_t powerPin;      // пин для установки скорости
-  uint8_t countPin = -1; // пин счётчика скорости
-  DcMotor(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+  // счётчик скорости
+  Speedometer* speedometer = NULL;
 
   volatile long time;   // оставшееся время работы мотора
   volatile bool busy = false;
+
+  DcMotor(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 };
 
+/** главный класс держателей моторов. */
 class MotorShield {
 
 public:
