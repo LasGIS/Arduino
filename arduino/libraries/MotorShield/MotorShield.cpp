@@ -59,8 +59,8 @@ MotorShield::MotorShield(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
   leftMotorNum = _leftMotorNum;
   rightMotorNum = _rightMotorNum;
   // Пин счетчика моторов
-  (MSHLD_MOTORS + leftMotorNum)->countPin = MSHLD_LEFT_COUNT_PIN
-  (MSHLD_MOTORS + rightMotorNum)->countPin = MSHLD_RIGHT_COUNT_PIN
+  (MSHLD_MOTORS + leftMotorNum)->countPin = MSHLD_LEFT_COUNT_PIN;
+  (MSHLD_MOTORS + rightMotorNum)->countPin = MSHLD_RIGHT_COUNT_PIN;
 
   // устанавливаем enabled
   enabled();
