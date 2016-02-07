@@ -47,5 +47,5 @@ TFT::TFT(uint8_t CS, uint8_t RS, uint8_t RST)
 void TFT::begin() {
   initR(INITR_GREENTAB);
   //initG();
-  setRotation(0);
+  setRotation(3);
 }
