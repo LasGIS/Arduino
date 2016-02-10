@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "Adafruit_GFX_lg.h"
-#include "glcdfont.c"
+#include "RussFontANSI.c"
 #ifdef __AVR__
  #include <avr/pgmspace.h>
 #else

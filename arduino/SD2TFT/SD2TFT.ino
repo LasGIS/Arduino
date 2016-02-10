@@ -1,10 +1,10 @@
 /**
- * Р§РёС‚Р°РµРј MicroSD РЅР° TFT Р­РєСЂР°РЅ
- * SD РєР°СЂС‚Р° РїРѕРґРєР»СЋС‡Р°РµС‚СЃСЏ С‚Р°Рє:
- ** MOSI - РїРёРЅ 11
- ** MISO - РїРёРЅ 12
- ** CLK - РїРёРЅ 13
- ** CS - РїРёРЅ 4
+ * Читаем MicroSD на TFT Экран
+ * SD карта подключается так:
+ ** MOSI - пин 11
+ ** MISO - пин 12
+ ** CLK - пин 13
+ ** CS - пин 4
  */
 #include <TFT_lg.h>
 #include <SPI.h>
@@ -36,11 +36,11 @@ void setup() {
   // set the font size
   TFTscreen.setTextSize(1);
   // write the text to the top left corner of the screen
-  TFTscreen.text("Sensor Value:\n Р°Р±РІРіРґРµС‘Р¶Р·", 0, 0);
+  TFTscreen.text("Значение Напряжения:\nАБВП-абвп-РСТЯ-рстя", 0, 0);
   initSD();
   // ste the font size very large for the loop
   TFTscreen.setTextSize(4);
-  
+
 }
 
 void loop() {
@@ -79,19 +79,19 @@ void initSD() {
   }
   Serial.println("initialization done.");
   TFTscreen.text("init SD card done.\n", 0, 50);
- 
+
   if (SD.exists("example.txt")) {
     Serial.println("example.txt exists.");
   } else {
     Serial.println("example.txt doesn't exist.");
   }
- 
-  //РћС‚РєСЂРѕРµРј РЅРѕРІС‹Р№ С„Р°Р№Р» Рё СЃСЂР°Р·Сѓ Р¶Рµ Р·Р°РєСЂРѕРµРј РµРіРѕ:
+
+  //Откроем новый файл и сразу же закроем его:
   Serial.println("Creating example.txt...");
   myFile = SD.open("example.txt", FILE_WRITE);
   myFile.close();
- 
-  //РџСЂРѕРІРµСЂСЏРµРј, СЃРѕР·РґР°РЅ Р»Рё С„Р°Р№Р»:
+
+  //Проверяем, создан ли файл:
   if (SD.exists("example.txt")) {
     Serial.println("example.txt exists.");
     TFTscreen.println("example.txt exists.");
@@ -115,4 +115,5 @@ void saveData(float sensor) {
     TFTscreen.text("error on datalog.txt", 0, 58);
   }
 }
+
 
