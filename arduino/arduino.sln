@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arduino", "arduino.vcproj", "{882759F3-A18C-4950-9BE0-3F5E09737F05}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Arduino = Debug|Arduino
+		Debug|Itanium = Debug|Itanium
+		Debug|Pocket PC 2003 (ARMV4) = Debug|Pocket PC 2003 (ARMV4)
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Empty|Arduino = Empty|Arduino
+		Empty|Itanium = Empty|Itanium
+		Empty|Pocket PC 2003 (ARMV4) = Empty|Pocket PC 2003 (ARMV4)
+		Empty|Win32 = Empty|Win32
+		Empty|x64 = Empty|x64
+		noCompile|Arduino = noCompile|Arduino
+		noCompile|Itanium = noCompile|Itanium
+		noCompile|Pocket PC 2003 (ARMV4) = noCompile|Pocket PC 2003 (ARMV4)
+		noCompile|Win32 = noCompile|Win32
+		noCompile|x64 = noCompile|x64
+		Release|Arduino = Release|Arduino
+		Release|Itanium = Release|Itanium
+		Release|Pocket PC 2003 (ARMV4) = Release|Pocket PC 2003 (ARMV4)
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Debug|Arduino.ActiveCfg = Debug|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Debug|Itanium.ActiveCfg = Debug|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Debug|Pocket PC 2003 (ARMV4).ActiveCfg = Debug|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Debug|Win32.ActiveCfg = Debug|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Debug|x64.ActiveCfg = Debug|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Debug|x64.Build.0 = Debug|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|Arduino.ActiveCfg = Empty|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|Itanium.ActiveCfg = Empty|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|Pocket PC 2003 (ARMV4).ActiveCfg = Empty|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|Win32.ActiveCfg = Empty|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|x64.ActiveCfg = Empty|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|x64.Build.0 = Empty|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Arduino.ActiveCfg = noCompile|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Itanium.ActiveCfg = noCompile|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Pocket PC 2003 (ARMV4).ActiveCfg = noCompile|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Win32.ActiveCfg = noCompile|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|x64.ActiveCfg = noCompile|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|x64.Build.0 = noCompile|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|Arduino.ActiveCfg = Release|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|Itanium.ActiveCfg = Release|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|Pocket PC 2003 (ARMV4).ActiveCfg = Release|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|Win32.ActiveCfg = Release|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|x64.ActiveCfg = Release|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
