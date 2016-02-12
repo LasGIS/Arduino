@@ -109,7 +109,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="C:\local\Arduino\hardware\arduino\avr\cores\arduino\;C:\local\Arduino\hardware\tools\avr\avr\include\;C:\local\Arduino\hardware\tools\avr\include\;D:\Arduino\arduino\libraries\MotorShield;C:\local\Arduino\libraries\Servo\src"
+				AdditionalIncludeDirectories="C:\local\Arduino\hardware\arduino\avr\cores\arduino\;C:\local\Arduino\hardware\tools\avr\avr\include\;C:\local\Arduino\hardware\tools\avr\include\;C:\local\Arduino\libraries\Servo\src;D:\Arduino\arduino\libraries\MotorShield"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
