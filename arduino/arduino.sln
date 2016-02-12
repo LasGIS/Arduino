@@ -3,6 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arduino", "arduino.vcproj", "{882759F3-A18C-4950-9BE0-3F5E09737F05}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Robot2", "Robot\Robot2\Robot2.vcproj", "{7970253E-F6CD-4D84-B7B3-3727411A97F3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1} = {D4DD9377-D5BF-410F-B623-A02FF43D75E1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MotorShield", "libraries\MotorShield\MotorShield.vcproj", "{D4DD9377-D5BF-410F-B623-A02FF43D75E1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5} = {8EC719A2-A8C3-4368-A79B-336FBBF71AD5}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MsTimer2", "libraries\MsTimer2\MsTimer2.vcproj", "{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Arduino = Debug|Arduino
@@ -39,7 +51,7 @@ Global
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|Win32.ActiveCfg = Empty|x64
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|x64.ActiveCfg = Empty|x64
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Empty|x64.Build.0 = Empty|x64
-		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Arduino.ActiveCfg = noCompile|x64
+		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Arduino.ActiveCfg = noCompile|Win32
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Itanium.ActiveCfg = noCompile|x64
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Pocket PC 2003 (ARMV4).ActiveCfg = noCompile|x64
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.noCompile|Win32.ActiveCfg = noCompile|x64
@@ -51,6 +63,78 @@ Global
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|Win32.ActiveCfg = Release|x64
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|x64.ActiveCfg = Release|x64
 		{882759F3-A18C-4950-9BE0-3F5E09737F05}.Release|x64.Build.0 = Release|x64
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Debug|Arduino.ActiveCfg = Debug|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Debug|Itanium.ActiveCfg = Debug|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Debug|Pocket PC 2003 (ARMV4).ActiveCfg = Debug|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Debug|Win32.Build.0 = Debug|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Debug|x64.ActiveCfg = Debug|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Empty|Arduino.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Empty|Itanium.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Empty|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Empty|Win32.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Empty|Win32.Build.0 = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Empty|x64.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.noCompile|Arduino.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.noCompile|Itanium.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.noCompile|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.noCompile|Win32.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.noCompile|Win32.Build.0 = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.noCompile|x64.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Release|Arduino.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Release|Itanium.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Release|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Release|Win32.ActiveCfg = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Release|Win32.Build.0 = Release|Win32
+		{7970253E-F6CD-4D84-B7B3-3727411A97F3}.Release|x64.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Debug|Arduino.ActiveCfg = Debug|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Debug|Itanium.ActiveCfg = Debug|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Debug|Pocket PC 2003 (ARMV4).ActiveCfg = Debug|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Debug|Win32.Build.0 = Debug|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Debug|x64.ActiveCfg = Debug|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Empty|Arduino.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Empty|Itanium.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Empty|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Empty|Win32.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Empty|Win32.Build.0 = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Empty|x64.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.noCompile|Arduino.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.noCompile|Itanium.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.noCompile|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.noCompile|Win32.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.noCompile|Win32.Build.0 = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.noCompile|x64.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Release|Arduino.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Release|Itanium.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Release|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Release|Win32.ActiveCfg = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Release|Win32.Build.0 = Release|Win32
+		{D4DD9377-D5BF-410F-B623-A02FF43D75E1}.Release|x64.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Debug|Arduino.ActiveCfg = Debug|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Debug|Itanium.ActiveCfg = Debug|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Debug|Pocket PC 2003 (ARMV4).ActiveCfg = Debug|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Debug|Win32.Build.0 = Debug|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Debug|x64.ActiveCfg = Debug|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Empty|Arduino.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Empty|Itanium.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Empty|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Empty|Win32.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Empty|Win32.Build.0 = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Empty|x64.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.noCompile|Arduino.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.noCompile|Itanium.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.noCompile|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.noCompile|Win32.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.noCompile|Win32.Build.0 = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.noCompile|x64.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Release|Arduino.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Release|Itanium.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Release|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Release|Win32.ActiveCfg = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Release|Win32.Build.0 = Release|Win32
+		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

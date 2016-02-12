@@ -11,6 +11,9 @@
 		<Platform
 			Name="x64"
 		/>
+		<Platform
+			Name="Win32"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -210,7 +213,232 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="C:\local\Arduino\libraries\Servo\src"
+				AdditionalIncludeDirectories="C:\local\Arduino\hardware\arduino\avr\cores\arduino\;C:\local\Arduino\hardware\tools\avr\avr\include\;C:\local\Arduino\hardware\tools\avr\include\;C:\local\Arduino\libraries"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			ConfigurationType="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			ConfigurationType="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Empty|Win32"
+			ConfigurationType="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="noCompile|Win32"
+			ConfigurationType="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="C:\local\Arduino\hardware\arduino\avr\cores\arduino\;C:\local\Arduino\hardware\tools\avr\avr\include\;C:\local\Arduino\hardware\tools\avr\include\;C:\local\Arduino\libraries"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -354,36 +582,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="MsTimer2"
-				Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
-				>
-				<File
-					RelativePath=".\libraries\MsTimer2\keywords.txt"
-					>
-				</File>
-				<File
-					RelativePath=".\libraries\MsTimer2\library.json"
-					>
-				</File>
-				<File
-					RelativePath=".\libraries\MsTimer2\library.properties"
-					>
-				</File>
-				<File
-					RelativePath=".\libraries\MsTimer2\MsTimer2.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\libraries\MsTimer2\MsTimer2.h"
-					>
-				</File>
-				<File
-					RelativePath=".\libraries\MsTimer2\README.md"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="LiquidCrystal_I2C"
 				>
 				<File
@@ -408,18 +606,6 @@
 				</File>
 				<File
 					RelativePath=".\libraries\LiquidCrystal_I2C\README.md"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="MotorShield"
-				>
-				<File
-					RelativePath=".\libraries\MotorShield\MotorShield.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\libraries\MotorShield\MotorShield.h"
 					>
 				</File>
 			</Filter>
@@ -485,14 +671,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Robot"
-			>
-			<File
-				RelativePath=".\Robot\RobotFirst\RobotFirst.ino"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="test"
 			>
 			<File
@@ -516,30 +694,10 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="Robot2"
+		<File
+			RelativePath=".\ClassDiagram11.cd"
 			>
-			<File
-				RelativePath=".\Robot\Robot2\Analyse.ino"
-				>
-			</File>
-			<File
-				RelativePath=".\Robot\Robot2\Robot2.ino"
-				>
-			</File>
-			<File
-				RelativePath=".\Robot\Robot2\RobotCommand.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Robot\Robot2\RobotCommand.ino"
-				>
-			</File>
-			<File
-				RelativePath=".\Robot\Robot2\USRangeFinder.ino"
-				>
-			</File>
-		</Filter>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
