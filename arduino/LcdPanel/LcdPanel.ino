@@ -48,11 +48,11 @@ void setup() {
   // Print a message to the LCD.
   lcd.backlight();
   lcd.clear();
-  //lcd.print("Start");
-  viewCustomDigit(0, 2); 
-  viewCustomDigit(4, 3); 
-  viewCustomDigit(9, 5);
-  viewCustomDigit(13, 9);
+  lcd.print("Start");
+  //viewCustomDigit(0, 2); 
+  //viewCustomDigit(4, 3); 
+  //viewCustomDigit(9, 5);
+  //viewCustomDigit(13, 9);
 
   control.start();
   milliSec = millis();
