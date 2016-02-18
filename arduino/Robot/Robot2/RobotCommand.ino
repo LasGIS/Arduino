@@ -1,7 +1,4 @@
-#define LEFT_FORWARD_FACTOR 30.0
-#define RIGHT_FORWARD_FACTOR 30.0
-#define LEFT_BACKWARD_FACTOR 30.0
-#define RIGHT_BACKWARD_FACTOR 30.0
+#define FORWARD_FACTOR 10.0
 #define ANGLE_FACTOR 0.225
 
 #define ROBOT_COMMANDS_BUF_SIZE 10
@@ -110,33 +107,33 @@ void action(RobotCommand* command) {
   Serial.println(command->param);
   switch (command->type) {
     case MOTOR_FORWARD:
-      mShield.leftMotor(255, (int) (command->param * LEFT_FORWARD_FACTOR));
-      mShield.rightMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR));
+      mShield.leftMotor(4, (int) (command->param * FORWARD_FACTOR));
+      mShield.rightMotor(4, (int) (command->param * FORWARD_FACTOR));
       break;
     case MOTOR_BACKWARD:
-      mShield.leftMotor(-255, (int) (command->param * LEFT_BACKWARD_FACTOR));
-      mShield.rightMotor(-255, (int) (command->param * RIGHT_BACKWARD_FACTOR));
+      mShield.leftMotor(-4, (int) (command->param * FORWARD_FACTOR));
+      mShield.rightMotor(-4, (int) (command->param * FORWARD_FACTOR));
       break;
     case MOTOR_FORWARD_LEFT:
-      mShield.rightMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
+      mShield.rightMotor(4, (int) (command->param * ANGLE_FACTOR));
       break;
     case MOTOR_FORWARD_RIGHT:
-      mShield.leftMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
+      mShield.leftMotor(4, (int) (command->param * ANGLE_FACTOR));
       break;
 
     case MOTOR_LEFT:
-      mShield.rightMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
-      mShield.leftMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
+      mShield.rightMotor(4, (int) (command->param * ANGLE_FACTOR / 2));
+      mShield.leftMotor(-4, (int) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_RIGHT:
-      mShield.rightMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
-      mShield.leftMotor(255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR / 2.));
+      mShield.rightMotor(-4, (int) (command->param * ANGLE_FACTOR / 2));
+      mShield.leftMotor(4, (int) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_BACKWARD_LEFT:
-      mShield.leftMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
+      mShield.leftMotor(-4, (int) (command->param * ANGLE_FACTOR));
       break;
     case MOTOR_BACKWARD_RIGHT:
-      mShield.rightMotor(-255, (int) (command->param * RIGHT_FORWARD_FACTOR * ANGLE_FACTOR));
+      mShield.rightMotor(-4, (int) (command->param * ANGLE_FACTOR));
       break;
     case ROBOT_SCANING: // сканирование обстановки
       scanSituation();

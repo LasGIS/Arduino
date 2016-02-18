@@ -4,11 +4,12 @@
 #include <MotorShield.h>
 #include <MsTimer2.h>
 
-//int speedMask[] = {2, 3, 5, 7, 10, 16};
-//  0x8080, 0x0842, 0x2492, 0xa52a, 0xdad6, 0xffff
-
-/** Скорость от передачи (5 передача - самая высокая) */
-//static const int MSHLD_GEAR_SPEED[] = {/*34*/0, 50, 75, 113, 170, 255};
+/** Начальное напряжение от передачи (5 передача - самая высокая) */
+static const int MSHLD_GEAR_VOLTAGE[] = {70, 90, 105, 120, 170, 255};
+/** Скорость в мм/мсек от передачи (5 передача - самая высокая) */
+static const float MSHLD_GEAR_FACTOR[]  = {0.03, 0.050, 0.075, 0.113, 0.170, 0.255};
+/** фактор рзмеров - сколько каунтов нужно отсчитать для перемещения на 1 мм. */
+#define MSHLD_COUNT_FACTOR 0.04
 
 /** Настраиваем пины конкретных моторов. */
 static DcMotor MSHLD_MOTORS[4] = {
@@ -66,7 +67,15 @@ DcMotor::DcMotor(
   upMask_B   = _upMask_B;
   downMask_B = _downMask_B;
   powerPin   = _powerPin;
-  time = 0L;
+  startTime = 0L;
+  endTime = 0L;
+}
+
+/**
+ * Корректируем напряжение на двигателе, если это необходимо.
+ */
+bool DcMotor::speedCorrection() {
+  return false;
 }
 
 /**
@@ -116,10 +125,19 @@ void MotorShield::timeAction() {
   for (int i = 0; i < 4; i++) {
     DcMotor* motor = MSHLD_MOTORS + i;
     Speedometer* speedometer = motor->speedometer;
+    bool isStop = false;
+
     if (speedometer) {
-      speedometer->check();
+      // проверяем счётчик скорости.
+      if (speedometer->check()) {
+        isStop = motor->speedCorrection();
+      }
+    } else {
+      // если у нас нет счётчика скорости, то ориентируемся по времени.
+      isStop = motor->endTime > 0 && motor->endTime < time;
     }
-    if (motor->time > 0 && motor->time < time) {
+
+    if (isStop) {
       Serial.print("stopMotor(");
       Serial.print(i);
       if (speedometer) {
@@ -163,7 +181,9 @@ void MotorShield::stopMotor(uint8_t nMotor) {
   DcMotor* motor = MSHLD_MOTORS + nMotor;
   setBitMask(motorMask & motor->downMask_A & motor->downMask_B);
   analogWrite(motor->powerPin, 0);
-  motor->time = 0;
+  motor->startTime = 0;
+  motor->endTime = 0;
+  motor->endCount = 0;
   motor->busy = false;
 }
 
@@ -201,41 +221,64 @@ void MotorShield::rightMotorStop() {
   stopMotor(rightMotorNum);
 }
 
-/** Устанавливаем скорость для левого мотора */
-void MotorShield::leftMotor(int speed, long time) {
-  motor(leftMotorNum, speed, time);
+/**
+ * Устанавливаем скорость для левого мотора
+ * @speed скорость мотора в 
+ */
+void MotorShield::leftMotor(int8_t speed, int16_t dist) {
+  motor(leftMotorNum, speed, dist);
 }
 
 /** Устанавливаем скорость для правого мотора */
-void MotorShield::rightMotor(int speed, long time) {
-  motor(rightMotorNum, speed, time);
+void MotorShield::rightMotor(int8_t speed, int16_t dist) {
+  motor(rightMotorNum, speed, dist);
 }
 
 /**
  * Устанавливаем скорость <gear> для двигателя nMotor:
- * speed > 0 - вперёд;
- * speed < 0 - назад;
- * значения от -5 до +5
+ * @nMotor номер мотора
+ * @gear скорость мотора в передачах:
+ *  gear > 0 - вперёд;
+ *  gear < 0 - назад;
+ *  значения от -5 до +5
+ * @dist дистанция в мм, которую надо преодолеть 
  */
-void MotorShield::motor(uint8_t nMotor, int speed, long time) {
+void MotorShield::motor(uint8_t nMotor, int8_t gear, int16_t dist) {
   DcMotor* motor = MSHLD_MOTORS + nMotor;
-  motor->time = millis() + time;
+  long currTime = millis();
+  bool isForward;
+  int8_t absGear;
+
+  if (gear >= 0) {
+    absGear = gear;
+    isForward = true;
+  } else {
+    absGear = -gear;
+    isForward = false;
+  }
+  if (absGear > 5) {
+    absGear = 5;
+  }
+
+  motor->startTime = currTime;
+  motor->endTime = currTime + dist / MSHLD_GEAR_FACTOR[absGear];
+  motor->endCount = dist * MSHLD_COUNT_FACTOR;
   motor->busy = true;
+
   // настраиваем спидомерер
   Speedometer* speedometer = motor->speedometer;
   if (speedometer) {
     speedometer->clean();
   }
-  setSpeed(speed, motor);
-//  Serial.print("time = ");
-//  Serial.println(motor->time, DEC);
+
+  setSpeed(isForward, MSHLD_GEAR_VOLTAGE[absGear], motor);
 }
 
 /**
  * устанавливаем скорость и направление конкретного мотора
  */
-void MotorShield::setSpeed(int speed, DcMotor* motor) {
-  setSpeed(speed,
+void MotorShield::setSpeed(bool isForward, int speed, DcMotor* motor) {
+  setSpeed(isForward, speed,
     motor->upMask_A,     // маска установки клемы A
     motor->downMask_A,   // маска снятия клемы A
     motor->upMask_B,     // маска установки клемы B
@@ -248,7 +291,8 @@ void MotorShield::setSpeed(int speed, DcMotor* motor) {
  * устанавливаем скорость и направление абстрактного мотора
  */
 void MotorShield::setSpeed(
-  int speed,            // скорость
+  bool isForward,       // направление движения
+  int speed,            // абсолютная скорость
   uint8_t upMask_A,     // маска установки клемы A
   uint8_t downMask_A,   // маска снятия клемы A
   uint8_t upMask_B,     // маска установки клемы B
@@ -272,12 +316,11 @@ void MotorShield::setSpeed(
 */
   // устанавливаем направление
   uint8_t mask = motorMask;
-  if (speed > 0) {
+  if (isForward) {
     mask = (mask & downMask_B) | upMask_A;
   } else if (speed == 0) {
     mask = mask & downMask_A & downMask_B;
   } else {
-    speed = -speed;
     mask = (mask & downMask_A) | upMask_B;
   }
   setBitMask(mask);

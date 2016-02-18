@@ -66,12 +66,13 @@
 
 /**
  * Класс счётчика скорости.
+ * Только считаем count, весь анализ и коррекция происходит в моторе
  */
 class Speedometer {
 public:
   uint8_t countPin;      // пин счётчика скорости
-  uint8_t count;         // счётчик
   uint8_t val;           // показание датчика
+  uint16_t count;        // счётчик
   Speedometer(uint8_t countPin);
   void clean();
   // проверка на изменение датчика
@@ -91,10 +92,14 @@ public:
   // счётчик скорости
   Speedometer* speedometer = NULL;
 
-  volatile long time;   // оставшееся время работы мотора
+  volatile long startTime;     // Начало работы мотора
+  volatile long endTime;       // В это время мотор должен остановиться
+  volatile uint16_t endCount;  // при этом показании счётчика мотор должен остановиться
+
   volatile bool busy = false;
 
   DcMotor(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+  bool speedCorrection();
 };
 
 /** главный класс держателей моторов. */
@@ -115,20 +120,20 @@ public:
   void stopMotors();
 
   void stopMotor(uint8_t);
-  void motor(uint8_t, int, long);
+  void motor(uint8_t, int8_t, int16_t);
   bool isBusy();
   bool waitBusy();
 
-  void leftMotor(int, long);
+  void leftMotor(int8_t, int16_t);
   void leftMotorStop();
-  void rightMotor(int, long);
+  void rightMotor(int8_t, int16_t);
   void rightMotorStop();
 
 private:
   static inline void handle_interrupt();
   void timeAction();
-  void setSpeed(int, DcMotor*);
-  void setSpeed(int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+  void setSpeed(bool, int, DcMotor*);
+  void setSpeed(bool, int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
   void setBitMask(uint8_t);
 };
 

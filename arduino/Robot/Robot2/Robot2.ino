@@ -83,7 +83,7 @@ void serialEvent() {
 }
 
 /** Скорость от передачи (5 передача - самая высокая) */
-static const int MSHLD_GEAR_SPEED[] = {-255, -170, -113, 0, 113, 170, 255};
+//static const int MSHLD_GEAR_SPEED[] = {-255, -170, -113, 0, 113, 170, 255};
 
 void testDrive(char motor) {
   Serial.println(motor);
@@ -106,10 +106,9 @@ void testDrive(char motor) {
     
     case 'l':
       Serial.println("Left MOTOR");
-      for (int i = 0; i < 7; i++) {
+      for (int speed = -5; speed <= 5; speed++) {
         mShield.waitBusy();
-        int speed = MSHLD_GEAR_SPEED[i];
-        mShield.leftMotor(speed, 1000);
+        mShield.leftMotor(speed, 100);
         Serial.print("speed = ");
         Serial.println(speed);
 //        delay(1010);
@@ -118,10 +117,9 @@ void testDrive(char motor) {
     
     case 'r':
       Serial.println("Right MOTOR");
-      for (int i = 0; i < 7; i++) {
+      for (int speed = -5; speed <= 5; speed++) {
         mShield.waitBusy();
-        int speed = MSHLD_GEAR_SPEED[i];
-        mShield.rightMotor(speed, 1000);
+        mShield.rightMotor(speed, 100);
         Serial.print("speed = ");
         Serial.println(speed);
 //        delay(1010);
@@ -142,10 +140,9 @@ void testDriveMotor(int motoNum) {
   Serial.print("M");
   Serial.print(motoNum + 1);
   Serial.println(" test drive");
-  for (int i = 0; i < 7; i++) {
+  for (int speed = -5; speed <= 5; speed++) {
     mShield.waitBusy();
-    int speed = MSHLD_GEAR_SPEED[i];
-    mShield.motor(motoNum, speed, 1000);
+    mShield.motor(motoNum, speed, 100);
     Serial.print("speed = ");
     Serial.println(speed);
     //delay(1010);
