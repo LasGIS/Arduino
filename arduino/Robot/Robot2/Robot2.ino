@@ -108,10 +108,10 @@ void testDrive(char motor) {
       Serial.println("Left MOTOR");
       for (int speed = -5; speed <= 5; speed++) {
         mShield.waitBusy();
-        mShield.leftMotor(speed, 100);
+        mShield.leftMotor(speed, 220);
         Serial.print("speed = ");
         Serial.println(speed);
-//        delay(1010);
+        delay(1010);
       }
       break;
     
@@ -119,10 +119,10 @@ void testDrive(char motor) {
       Serial.println("Right MOTOR");
       for (int speed = -5; speed <= 5; speed++) {
         mShield.waitBusy();
-        mShield.rightMotor(speed, 100);
+        mShield.rightMotor(speed, 220);
         Serial.print("speed = ");
         Serial.println(speed);
-//        delay(1010);
+        delay(1010);
       }
       break;
     
@@ -140,11 +140,12 @@ void testDriveMotor(int motoNum) {
   Serial.print("M");
   Serial.print(motoNum + 1);
   Serial.println(" test drive");
-  for (int speed = -5; speed <= 5; speed++) {
+  //for (int speed = -5; speed <= 5; speed++) {
+	int speed = 3;
     mShield.waitBusy();
-    mShield.motor(motoNum, speed, 100);
+    mShield.motor(motoNum, speed, 220);
     Serial.print("speed = ");
     Serial.println(speed);
-    //delay(1010);
-  }
+    delay(1010);
+  //}
 }

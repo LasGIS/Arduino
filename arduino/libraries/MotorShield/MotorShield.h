@@ -108,6 +108,7 @@ public:
   );
   bool speedCorrection(long time);
   void setPower();
+  void showStartParameters();
 };
 
 /** главный класс держателей моторов. */

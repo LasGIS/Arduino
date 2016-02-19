@@ -1,15 +1,15 @@
 /**
  * Подключаем и работаем с панелью на 4 светодиодных цифры.
  */
-#include <MotorShield.h>
-#include <MsTimer2.h>
+#include "MotorShield.h"
+#include "MsTimer2.h"
 
 /** Начальное напряжение от передачи (5 передача - самая высокая) */
 static const int MSHLD_GEAR_VOLTAGE[] = {70, 90, 105, 120, 170, 255};
 /** Скорость в мм/мсек от передачи (5 передача - самая высокая) */
 static const float MSHLD_GEAR_FACTOR[]  = {0.03, 0.050, 0.075, 0.113, 0.170, 0.255};
 /** фактор рзмеров - сколько каунтов нужно отсчитать для перемещения на 1 мм. */
-#define MSHLD_COUNT_FACTOR 0.04
+#define MSHLD_COUNT_FACTOR 0.2
 
 /** Настраиваем пины конкретных моторов. */
 static DcMotor MSHLD_MOTORS[4] = {
@@ -81,13 +81,25 @@ DcMotor::DcMotor(
 bool DcMotor::speedCorrection(long time) {
   double kb = speedometer->count / (time - startTime);
   double ka = (endCount - speedometer->count) / (endTime - time);
-  return (endCount >= speedometer->count);
+  return (speedometer->count >= endCount);
 }
 
 /** Устанавливаем скорость. */
 void DcMotor::setPower() {
   if (currPower > 255) currPower = 255;
   analogWrite(powerPin, currPower);
+}
+
+/**
+ * показывем параметры старта.
+ */
+void DcMotor::showStartParameters() {
+	Serial.print("time=");
+	Serial.print(endTime - startTime);
+	Serial.print("; endCount=");
+	Serial.print(endCount);
+	Serial.print("; Power=");
+	Serial.println(currPower);
 }
 
 /**
@@ -130,8 +142,8 @@ void MotorShield::handle_interrupt() {
 }
 
 /********************************************
- * процедура запускается каждую милисекунду
- */
+ * процедура запускается каждую милисекунду *
+ ********************************************/
 void MotorShield::timeAction() {
   long time = millis();
   for (int i = 0; i < 4; i++) {
@@ -155,7 +167,11 @@ void MotorShield::timeAction() {
       if (speedometer) {
         Serial.print("); count = ");
         Serial.print(speedometer->count);
-        Serial.println(";");
+		Serial.print(");\t RealTime = ");
+		Serial.print(time - motor->startTime);
+		Serial.print(";\t Time = ");
+		Serial.print(time);
+		Serial.println(";");
       } else {
         Serial.println(")");
       }
@@ -278,6 +294,9 @@ void MotorShield::motor(uint8_t nMotor, int8_t gear, int16_t dist) {
   motor->endCount = dist * MSHLD_COUNT_FACTOR;
   motor->currPower = MSHLD_GEAR_VOLTAGE[absGear];
   motor->busy = true;
+  motor->showStartParameters();
+  Serial.print("absGear = ");
+  Serial.println(absGear);
 
   // настраиваем спидомерер
   Speedometer* speedometer = motor->speedometer;
