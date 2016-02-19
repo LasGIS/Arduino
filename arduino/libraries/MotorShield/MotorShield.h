@@ -95,11 +95,19 @@ public:
   volatile long startTime;     // Ќачало работы мотора
   volatile long endTime;       // ¬ это врем€ мотор должен остановитьс€
   volatile uint16_t endCount;  // при этом показании счЄтчика мотор должен остановитьс€
+  volatile uint16_t currPower; // текуща€ мощьность мотора (напр€жение от 0 до 511)
 
   volatile bool busy = false;
 
-  DcMotor(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
-  bool speedCorrection();
+  DcMotor(
+    uint8_t _upMask_A,
+    uint8_t _downMask_A,
+    uint8_t _upMask_B,
+    uint8_t _downMask_B,
+    uint8_t _powerPin
+  );
+  bool speedCorrection(long time);
+  void setPower();
 };
 
 /** главный класс держателей моторов. */
@@ -132,7 +140,7 @@ public:
 private:
   static inline void handle_interrupt();
   void timeAction();
-  void setSpeed(bool, int, DcMotor*);
+  void setSpeed(bool, DcMotor*);
   void setSpeed(bool, int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
   void setBitMask(uint8_t);
 };

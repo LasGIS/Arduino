@@ -69,13 +69,25 @@ DcMotor::DcMotor(
   powerPin   = _powerPin;
   startTime = 0L;
   endTime = 0L;
+  endCount = 0;
+  currPower = 0;
+  busy = false;
 }
 
 /**
  * Корректируем напряжение на двигателе, если это необходимо.
+ * @time текущее время
  */
-bool DcMotor::speedCorrection() {
-  return false;
+bool DcMotor::speedCorrection(long time) {
+  double kb = speedometer->count / (time - startTime);
+  double ka = (endCount - speedometer->count) / (endTime - time);
+  return (endCount >= speedometer->count);
+}
+
+/** Устанавливаем скорость. */
+void DcMotor::setPower() {
+  if (currPower > 255) currPower = 255;
+  analogWrite(powerPin, currPower);
 }
 
 /**
@@ -130,7 +142,7 @@ void MotorShield::timeAction() {
     if (speedometer) {
       // проверяем счётчик скорости.
       if (speedometer->check()) {
-        isStop = motor->speedCorrection();
+        isStop = motor->speedCorrection(time);
       }
     } else {
       // если у нас нет счётчика скорости, то ориентируемся по времени.
@@ -184,6 +196,7 @@ void MotorShield::stopMotor(uint8_t nMotor) {
   motor->startTime = 0;
   motor->endTime = 0;
   motor->endCount = 0;
+  motor->currPower = 0;
   motor->busy = false;
 }
 
@@ -263,6 +276,7 @@ void MotorShield::motor(uint8_t nMotor, int8_t gear, int16_t dist) {
   motor->startTime = currTime;
   motor->endTime = currTime + dist / MSHLD_GEAR_FACTOR[absGear];
   motor->endCount = dist * MSHLD_COUNT_FACTOR;
+  motor->currPower = MSHLD_GEAR_VOLTAGE[absGear];
   motor->busy = true;
 
   // настраиваем спидомерер
@@ -271,14 +285,14 @@ void MotorShield::motor(uint8_t nMotor, int8_t gear, int16_t dist) {
     speedometer->clean();
   }
 
-  setSpeed(isForward, MSHLD_GEAR_VOLTAGE[absGear], motor);
+  setSpeed(isForward, motor);
 }
 
 /**
  * устанавливаем скорость и направление конкретного мотора
  */
-void MotorShield::setSpeed(bool isForward, int speed, DcMotor* motor) {
-  setSpeed(isForward, speed,
+void MotorShield::setSpeed(bool isForward, DcMotor* motor) {
+  setSpeed(isForward, motor->currPower,
     motor->upMask_A,     // маска установки клемы A
     motor->downMask_A,   // маска снятия клемы A
     motor->upMask_B,     // маска установки клемы B
@@ -299,21 +313,6 @@ void MotorShield::setSpeed(
   uint8_t downMask_B,   // маска снятия клемы B
   uint8_t powerPin      // пин для установки скорости
 ) {
-/*
-  Serial.print("speed = ");
-  Serial.print(speed, DEC);
-  Serial.print("; Masks = ");
-  Serial.print(upMask_A, BIN);
-  Serial.print(" ; ");
-  Serial.print(downMask_A, BIN);
-  Serial.print(" ; ");
-  Serial.print(upMask_B, BIN);
-  Serial.print(" ; ");
-  Serial.print(downMask_B, BIN);
-  Serial.print("; powerPin = ");
-  Serial.print(powerPin);
-  Serial.println(" ; ");
-*/
   // устанавливаем направление
   uint8_t mask = motorMask;
   if (isForward) {
@@ -334,10 +333,6 @@ void MotorShield::setSpeed(
 void MotorShield::setBitMask(uint8_t mask) {
   if (mask != motorMask) {
     motorMask = mask;
-  /*
-    Serial.print("motorMask = ");
-    Serial.println(motorMask, BIN);
-  */
     // устанавливаем синхронизацию "защелки" на LOW
     digitalWrite(MSHLD_DIR_LATCH_PIN, LOW);
     // передаем последовательно на MSHLD_DIR_SER_PIN
