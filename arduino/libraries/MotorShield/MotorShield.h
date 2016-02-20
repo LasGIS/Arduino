@@ -3,6 +3,9 @@
 
 #include <Arduino.h>
 
+// установка режима вывода отладочной информации
+#define MSHLD_DEBUG_MODE
+
 #define FORWARD true
 #define BACKWARD false
 
@@ -73,10 +76,14 @@ public:
   uint8_t countPin;      // пин счётчика скорости
   uint8_t val;           // показание датчика
   uint16_t count;        // счётчик
+  /* Время последней смены счётчика или последней проверки,
+     если счетчик долго не менялся. */
+  long lastTime;
+
   Speedometer(uint8_t countPin);
   void clean();
   // проверка на изменение датчика
-  bool check();
+  bool check(long time);
 };
 
 /**
