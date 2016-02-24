@@ -5,12 +5,12 @@
 #include "MsTimer2.h"
 
 /** Начальное напряжение от передачи (5 передача - самая высокая) */
-static const int MSHLD_GEAR_VOLTAGE[] = {70, 90, 105, 120, 170, 255};
+static const int MSHLD_GEAR_VOLTAGE[] = {33, 50, 74, 111, 167, 250};
 /** Скорость в мм/мсек от передачи (5 передача - самая высокая) */
-static const float MSHLD_GEAR_FACTOR[]  = {0.03, 0.050, 0.075, 0.113, 0.170, 0.255};
+static const float MSHLD_GEAR_FACTOR[]  = {0.094, 0.141, 0.212, 0.317, 0.476, 0.600};
 /** фактор рзмеров - сколько каунтов нужно отсчитать для перемещения на 1 мм. */
 #define MSHLD_COUNT_FACTOR 0.2
-#define MSHLD_SPEED_FACTOR 1.25
+#define MSHLD_SPEED_FACTOR 1.02
 
 /** Настраиваем пины конкретных моторов. */
 static DcMotor MSHLD_MOTORS[4] = {
@@ -80,6 +80,7 @@ DcMotor::DcMotor(
   endTime = 0L;
   endCount = 0;
   currPower = 0;
+  currGear = 0;
   busy = false;
 }
 
@@ -88,35 +89,48 @@ DcMotor::DcMotor(
  * @time текущее время
  */
 bool DcMotor::speedCorrection(long time) {
-  uint16_t count = speedometer->count;
-  uint16_t power = currPower;
-  uint16_t countMust = (uint16_t) (endCount * (time - startTime) / (endTime - startTime));
-  if (countMust - count > 2) {
+  int16_t count = speedometer->count;
+  uint16_t power = MSHLD_GEAR_VOLTAGE[currGear];
+  int16_t countMust = (int16_t) (endCount * (time - startTime) / (endTime - startTime));
+#ifdef MSHLD_DEBUG_MODE
+  Serial.print("countMust=");
+  Serial.print(countMust);
+  Serial.print("; count=");
+  Serial.print(count);
+#endif
+  int dcount = countMust - count;
+  if (dcount > 2) {
     if (count == 0) {
       currPower = 255;
     } else {
-      currPower *= MSHLD_SPEED_FACTOR;
+      currPower = power + dcount * 10;
     }
-  } else if (count - countMust > 2) {
+  } else if (dcount < 2) {
     if (endCount - count < 3) {
       currPower = 0;
     } else {
-      currPower /= MSHLD_SPEED_FACTOR;
+      currPower = power + dcount * 10;
     }
+  } else {
+    currPower = power;
   }
   if (power != currPower) {
     setPower();
   }
+#ifdef MSHLD_DEBUG_MODE
+  Serial.println();
+#endif
   return (count >= endCount);
 }
 
 /** Устанавливаем скорость. */
 void DcMotor::setPower() {
 #ifdef MSHLD_DEBUG_MODE
-	Serial.print(" -- Power=");
-	Serial.println(currPower);
+  Serial.print("; Power=");
+  Serial.print(currPower);
 #endif
   if (currPower > 255) currPower = 255;
+  else if (currPower > 0 && currPower < 50) currPower = 50;
   analogWrite(powerPin, currPower);
 }
 
@@ -180,6 +194,9 @@ void MotorShield::timeAction() {
   long time = millis();
   for (int i = 0; i < 4; i++) {
     DcMotor* motor = MSHLD_MOTORS + i;
+	if (motor->endTime == 0) {
+		continue;
+	}
     Speedometer* speedometer = motor->speedometer;
     bool isStop = false;
 
@@ -190,7 +207,7 @@ void MotorShield::timeAction() {
       }
     } else {
       // если у нас нет счётчика скорости, то ориентируемся по времени.
-      isStop = motor->endTime > 0 && motor->endTime < time;
+      isStop = motor->endTime < time;
     }
 
     if (isStop) {
@@ -247,6 +264,7 @@ void MotorShield::stopMotor(uint8_t nMotor) {
   motor->endTime = 0;
   motor->endCount = 0;
   motor->currPower = 0;
+  motor->currGear = 0;
   motor->busy = false;
 }
 
@@ -265,7 +283,7 @@ bool MotorShield::isBusy() {
  * Ожидаем окончания
  */
 bool MotorShield::waitBusy() {
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 10000; i++) {
     if (!isBusy()) {
       return true;
     }
@@ -327,6 +345,7 @@ void MotorShield::motor(uint8_t nMotor, int8_t gear, int16_t dist) {
   motor->endTime = startTime + dist / MSHLD_GEAR_FACTOR[absGear];
   motor->endCount = dist * MSHLD_COUNT_FACTOR;
   motor->currPower = MSHLD_GEAR_VOLTAGE[absGear];
+  motor->currGear = absGear;
   motor->busy = true;
   motor->showStartParameters();
 #ifdef MSHLD_DEBUG_MODE

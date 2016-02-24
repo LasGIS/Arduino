@@ -103,6 +103,7 @@ public:
   volatile long endTime;       // В это время мотор должен остановиться
   volatile uint16_t endCount;  // при этом показании счётчика мотор должен остановиться
   volatile uint16_t currPower; // текущая мощьность мотора (напряжение от 0 до 511)
+  volatile uint8_t currGear;   // текущая передача мотора (от 0 до 5) 0 - выключена
 
   volatile bool busy = false;
 

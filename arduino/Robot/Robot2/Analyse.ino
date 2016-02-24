@@ -1,10 +1,10 @@
 #define DEGREE_TO_RADIAN 0.0174533
-#define DEGREE_CORRECTION -9
+#define DEGREE_CORRECTION -2
 
 /** количество измерений (от 10° до 170°). */
 #define DISTANCE_BEFORE_COUNT 17
 /** градус начальной точки. */
-#define DISTANCE_BEFORE_START 10
+#define DISTANCE_BEFORE_START -10
 static float distanceBefore[DISTANCE_BEFORE_COUNT];
 
 /**
