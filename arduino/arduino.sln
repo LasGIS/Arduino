@@ -17,10 +17,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MsTimer2", "libraries\MsTim
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LcdPanel", "LcdPanel\LcdPanel.vcproj", "{2124B99C-8327-463E-BBF9-7C1676C90D8B}"
 	ProjectSection(ProjectDependencies) = postProject
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78} = {FEA9F147-D65A-43E8-A94B-7BF65697CF78}
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78} = {E839B04C-62C2-4431-8CBF-84AE66FFAA78}
 		{9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7} = {9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiquidCrystal_I2C", "libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.vcproj", "{9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IrControl", "libraries\IrControl\IrControl.vcproj", "{FEA9F147-D65A-43E8-A94B-7BF65697CF78}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DHT-sensor-library-master", "libraries\DHT-sensor-library-master\DHT-sensor-library-master.vcproj", "{E839B04C-62C2-4431-8CBF-84AE66FFAA78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -190,6 +196,54 @@ Global
 		{9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7}.Release|Win32.ActiveCfg = Release|Win32
 		{9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7}.Release|Win32.Build.0 = Release|Win32
 		{9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7}.Release|x64.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Debug|Arduino.ActiveCfg = Debug|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Debug|Itanium.ActiveCfg = Debug|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Debug|Pocket PC 2003 (ARMV4).ActiveCfg = Debug|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Debug|Win32.Build.0 = Debug|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Debug|x64.ActiveCfg = Debug|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Empty|Arduino.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Empty|Itanium.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Empty|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Empty|Win32.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Empty|Win32.Build.0 = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Empty|x64.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.noCompile|Arduino.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.noCompile|Itanium.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.noCompile|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.noCompile|Win32.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.noCompile|Win32.Build.0 = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.noCompile|x64.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Release|Arduino.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Release|Itanium.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Release|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Release|Win32.ActiveCfg = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Release|Win32.Build.0 = Release|Win32
+		{FEA9F147-D65A-43E8-A94B-7BF65697CF78}.Release|x64.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Debug|Arduino.ActiveCfg = Debug|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Debug|Itanium.ActiveCfg = Debug|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Debug|Pocket PC 2003 (ARMV4).ActiveCfg = Debug|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Debug|Win32.Build.0 = Debug|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Debug|x64.ActiveCfg = Debug|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Empty|Arduino.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Empty|Itanium.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Empty|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Empty|Win32.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Empty|Win32.Build.0 = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Empty|x64.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.noCompile|Arduino.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.noCompile|Itanium.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.noCompile|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.noCompile|Win32.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.noCompile|Win32.Build.0 = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.noCompile|x64.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Release|Arduino.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Release|Itanium.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Release|Pocket PC 2003 (ARMV4).ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Release|Win32.ActiveCfg = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Release|Win32.Build.0 = Release|Win32
+		{E839B04C-62C2-4431-8CBF-84AE66FFAA78}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

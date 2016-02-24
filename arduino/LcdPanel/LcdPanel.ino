@@ -6,7 +6,7 @@
 #include <IrControl.h>
 #include <LiquidCrystal_I2C.h>
 #include <DS1302.h>
-#include "DHT.h"
+#include <DHT.h>
 
 // указываем пин для ИК датчика 
 IrControl control(2);

@@ -266,6 +266,11 @@ void MotorShield::stopMotor(uint8_t nMotor) {
   motor->currPower = 0;
   motor->currGear = 0;
   motor->busy = false;
+  // настраиваем спидомерер
+  Speedometer* speedometer = motor->speedometer;
+  if (speedometer) {
+    speedometer->clean();
+  }
 }
 
 /**

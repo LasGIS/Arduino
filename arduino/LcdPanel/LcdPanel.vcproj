@@ -109,7 +109,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="C:\local\Arduino\hardware\arduino\avr\cores\arduino\;C:\local\Arduino\hardware\tools\avr\avr\include\;C:\local\Arduino\hardware\tools\avr\include\;C:\local\Arduino\libraries\Servo\src;D:\Arduino\arduino\libraries\IrControl;D:\Arduino\arduino\libraries\LiquidCrystal_I2C"
+				AdditionalIncludeDirectories="C:\local\Arduino\hardware\arduino\avr\cores\arduino\;C:\local\Arduino\hardware\tools\avr\avr\include\;C:\local\Arduino\hardware\tools\avr\include\;C:\local\Arduino\libraries\Servo\src;C:\local\Arduino\libraries\SD;D:\Arduino\arduino\libraries\IrControl;D:\Arduino\arduino\libraries\LiquidCrystal_I2C;&quot;D:\Arduino\arduino\libraries\DHT-sensor-library-master&quot;"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
