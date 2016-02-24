@@ -150,7 +150,7 @@ private:
   static inline void handle_interrupt();
   void timeAction();
   void setSpeed(bool, DcMotor*);
-  void setSpeed(bool, int, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+  void setSpeed(bool, uint16_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
   void setBitMask(uint8_t);
 };
 

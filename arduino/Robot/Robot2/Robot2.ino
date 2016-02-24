@@ -143,7 +143,7 @@ void testDriveMotor(int motoNum) {
   //for (int speed = -5; speed <= 5; speed++) {
   int speed = 5;
   mShield.waitBusy();
-  mShield.motor(motoNum, speed, 1000);
+  mShield.motor(motoNum, speed, 20);
   Serial.print("speed = ");
   Serial.println(speed);
   while (mShield.isBusy()) {

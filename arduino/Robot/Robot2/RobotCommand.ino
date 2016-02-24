@@ -1,5 +1,5 @@
-#define FORWARD_FACTOR 10.0
-#define ANGLE_FACTOR 0.225
+#define FORWARD_FACTOR 2.0
+#define ANGLE_FACTOR 1.0
 
 #define ROBOT_COMMANDS_BUF_SIZE 10
 
@@ -105,6 +105,7 @@ void action(RobotCommand* command) {
   Serial.print(command->type);
   Serial.print(")->param = ");
   Serial.println(command->param);
+  noInterrupts();
   switch (command->type) {
     case MOTOR_FORWARD:
       mShield.leftMotor(4, (int) (command->param * FORWARD_FACTOR));
@@ -126,7 +127,7 @@ void action(RobotCommand* command) {
       mShield.leftMotor(-4, (int) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_RIGHT:
-      mShield.rightMotor(-4, (int) (command->param * ANGLE_FACTOR / 2));
+      mShield.rightMotor(-4, (int)(command->param * ANGLE_FACTOR / 2));
       mShield.leftMotor(4, (int) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_BACKWARD_LEFT:
@@ -135,16 +136,20 @@ void action(RobotCommand* command) {
     case MOTOR_BACKWARD_RIGHT:
       mShield.rightMotor(-4, (int) (command->param * ANGLE_FACTOR));
       break;
-    case ROBOT_SCANING: // сканирование обстановки
-      scanSituation();
-      break;
-    case ROBOT_ANALYSE: // анализ ситуации и принятие решений
-      robotAnalyse();
-      break;
-    case ROBOT_STOP: // останавливаем всё
-      robotStop();
-      break;
   }
+  interrupts();
+  switch (command->type) {
+  case ROBOT_SCANING: // сканирование обстановки
+    scanSituation();
+    break;
+  case ROBOT_ANALYSE: // анализ ситуации и принятие решений
+    robotAnalyse();
+    break;
+  case ROBOT_STOP: // останавливаем всё
+    robotStop();
+    break;
+  }
+
   mShield.waitBusy();
   command->state = EMPTY;
 }

@@ -5,9 +5,9 @@
 #include "MsTimer2.h"
 
 /** Начальное напряжение от передачи (5 передача - самая высокая) */
-static const int MSHLD_GEAR_VOLTAGE[] = {33, 50, 74, 111, 167, 250};
+static const uint16_t MSHLD_GEAR_VOLTAGE[6] = {33, 50, 74, 111, 167, 250};
 /** Скорость в мм/мсек от передачи (5 передача - самая высокая) */
-static const float MSHLD_GEAR_FACTOR[]  = {0.094, 0.141, 0.212, 0.317, 0.476, 0.600};
+static const float MSHLD_GEAR_FACTOR[6] = {0.094, 0.141, 0.212, 0.317, 0.476, 0.600};
 /** фактор рзмеров - сколько каунтов нужно отсчитать для перемещения на 1 мм. */
 #define MSHLD_COUNT_FACTOR 0.2
 #define MSHLD_SPEED_FACTOR 1.02
@@ -106,7 +106,7 @@ bool DcMotor::speedCorrection(long time) {
       currPower = power + dcount * 10;
     }
   } else if (dcount < 2) {
-    if (endCount - count < 3) {
+    if (endCount > 8 && endCount - count < 3) {
       currPower = 0;
     } else {
       currPower = power + dcount * 10;
@@ -120,7 +120,7 @@ bool DcMotor::speedCorrection(long time) {
 #ifdef MSHLD_DEBUG_MODE
   Serial.println();
 #endif
-  return (count >= endCount);
+  return count >= endCount || time > endTime;
 }
 
 /** Устанавливаем скорость. */
@@ -311,13 +311,13 @@ void MotorShield::rightMotorStop() {
  * Устанавливаем скорость для левого мотора
  * @speed скорость мотора в 
  */
-void MotorShield::leftMotor(int8_t speed, int16_t dist) {
-  motor(leftMotorNum, speed, dist);
+void MotorShield::leftMotor(int8_t gear, int16_t dist) {
+  motor(leftMotorNum, gear, dist);
 }
 
 /** Устанавливаем скорость для правого мотора */
-void MotorShield::rightMotor(int8_t speed, int16_t dist) {
-  motor(rightMotorNum, speed, dist);
+void MotorShield::rightMotor(int8_t gear, int16_t dist) {
+  motor(rightMotorNum, gear, dist);
 }
 
 /**
@@ -385,7 +385,7 @@ void MotorShield::setSpeed(bool isForward, DcMotor* motor) {
  */
 void MotorShield::setSpeed(
   bool isForward,       // направление движения
-  int speed,            // абсолютная скорость
+  uint16_t speed,       // абсолютная скорость
   uint8_t upMask_A,     // маска установки клемы A
   uint8_t downMask_A,   // маска снятия клемы A
   uint8_t upMask_B,     // маска установки клемы B
@@ -412,10 +412,14 @@ void MotorShield::setSpeed(
 void MotorShield::setBitMask(uint8_t mask) {
   if (mask != motorMask) {
     motorMask = mask;
+#ifdef MSHLD_DEBUG_MODE
+    Serial.print("motorMask = ");
+    Serial.println(mask, BIN);
+#endif
     // устанавливаем синхронизацию "защелки" на LOW
     digitalWrite(MSHLD_DIR_LATCH_PIN, LOW);
     // передаем последовательно на MSHLD_DIR_SER_PIN
-    shiftOut(MSHLD_DIR_SER_PIN, MSHLD_DIR_CLK_PIN, MSBFIRST, motorMask);
+    shiftOut(MSHLD_DIR_SER_PIN, MSHLD_DIR_CLK_PIN, MSBFIRST, mask);
     //"защелкиваем" регистр, тем самым устанавливая значения на выходах
     digitalWrite(MSHLD_DIR_LATCH_PIN, HIGH);
   }
