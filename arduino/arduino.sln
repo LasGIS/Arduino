@@ -1,28 +1,19 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arduino", "arduino.vcproj", "{882759F3-A18C-4950-9BE0-3F5E09737F05}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arduino", "arduino.vcxproj", "{882759F3-A18C-4950-9BE0-3F5E09737F05}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Robot2", "Robot\Robot2\Robot2.vcproj", "{7970253E-F6CD-4D84-B7B3-3727411A97F3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D4DD9377-D5BF-410F-B623-A02FF43D75E1} = {D4DD9377-D5BF-410F-B623-A02FF43D75E1}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Robot2", "Robot\Robot2\Robot2.vcxproj", "{7970253E-F6CD-4D84-B7B3-3727411A97F3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MotorShield", "libraries\MotorShield\MotorShield.vcproj", "{D4DD9377-D5BF-410F-B623-A02FF43D75E1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8EC719A2-A8C3-4368-A79B-336FBBF71AD5} = {8EC719A2-A8C3-4368-A79B-336FBBF71AD5}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MotorShield", "libraries\MotorShield\MotorShield.vcxproj", "{D4DD9377-D5BF-410F-B623-A02FF43D75E1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MsTimer2", "libraries\MsTimer2\MsTimer2.vcproj", "{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MsTimer2", "libraries\MsTimer2\MsTimer2.vcxproj", "{8EC719A2-A8C3-4368-A79B-336FBBF71AD5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LcdPanel", "LcdPanel\LcdPanel.vcproj", "{2124B99C-8327-463E-BBF9-7C1676C90D8B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FEA9F147-D65A-43E8-A94B-7BF65697CF78} = {FEA9F147-D65A-43E8-A94B-7BF65697CF78}
-		{E839B04C-62C2-4431-8CBF-84AE66FFAA78} = {E839B04C-62C2-4431-8CBF-84AE66FFAA78}
-		{9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7} = {9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LcdPanel", "LcdPanel\LcdPanel.vcxproj", "{2124B99C-8327-463E-BBF9-7C1676C90D8B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiquidCrystal_I2C", "libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.vcproj", "{9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiquidCrystal_I2C", "libraries\LiquidCrystal_I2C\LiquidCrystal_I2C.vcxproj", "{9B8BEDDC-12F0-4511-A7D7-E0520ECCC2C7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IrControl", "libraries\IrControl\IrControl.vcproj", "{FEA9F147-D65A-43E8-A94B-7BF65697CF78}"
 EndProject
