@@ -37,8 +37,8 @@ unsigned long milliSec;
 DHT dht(A2, DHT11);
 
 /* пины Ультразвукового дальномера */
-int echoPin = 7; 
-int trigPin = 6; 
+int echoPin = A1; 
+int trigPin = A0; 
 
 void setup() {
   Serial.begin(9600);
@@ -48,7 +48,7 @@ void setup() {
   // Print a message to the LCD.
   lcd.backlight();
   lcd.clear();
-  lcd.print("Start");
+  //lcd.print("Start");
   //viewCustomDigit(0, 2); 
   //viewCustomDigit(4, 3); 
   //viewCustomDigit(9, 5);
