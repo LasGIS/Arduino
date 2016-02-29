@@ -165,6 +165,10 @@
 			RelativePath=".\MotorShield.h"
 			>
 		</File>
+		<File
+			RelativePath=".\MotorShieldDefine.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

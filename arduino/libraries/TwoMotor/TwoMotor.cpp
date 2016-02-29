@@ -1,8 +1,9 @@
 /**
  * Подключаем заголовки
  */
-#include "MotorShield.h"
+#include "TwoMotor.h"
 #include "MsTimer2.h"
+
 
 /** Начальное напряжение от передачи (5 передача - самая высокая) */
 static const uint16_t MSHLD_GEAR_VOLTAGE[6] = {33, 50, 74, 111, 167, 250};
@@ -14,10 +15,10 @@ static const float MSHLD_GEAR_FACTOR[6] = {0.094, 0.141, 0.212, 0.317, 0.476, 0.
 
 /** Настраиваем пины конкретных моторов. */
 static DcMotor MSHLD_MOTORS[4] = {
-  DcMotor(MSHLD_UP_M1A_MASK, MSHLD_DOWN_M1A_MASK, MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK, MSHLD_PWM2A_PIN),
-  DcMotor(MSHLD_UP_M2A_MASK, MSHLD_DOWN_M2A_MASK, MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK, MSHLD_PWM2B_PIN),
-  DcMotor(MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK, MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK, MSHLD_PWM0A_PIN),
-  DcMotor(MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK, MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK, MSHLD_PWM0B_PIN)
+  DcMotor('A', MSHLD_UP_M1A_MASK, MSHLD_DOWN_M1A_MASK, MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK, MSHLD_PWM2A_PIN),
+  DcMotor('B', MSHLD_UP_M2A_MASK, MSHLD_DOWN_M2A_MASK, MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK, MSHLD_PWM2B_PIN),
+  DcMotor('C', MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK, MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK, MSHLD_PWM0A_PIN),
+  DcMotor('D', MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK, MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK, MSHLD_PWM0B_PIN)
 };
 
 static Speedometer LEFT_SPEEDOMETR(MSHLD_LEFT_COUNT_PIN);
@@ -65,12 +66,14 @@ void Speedometer::clean() {
  * Конструктор мотора
  */
 DcMotor::DcMotor(
+  char _name,
   uint8_t _upMask_A,
   uint8_t _downMask_A,
   uint8_t _upMask_B,
   uint8_t _downMask_B,
   uint8_t _powerPin
 ) {
+  name = _name;
   upMask_A   = _upMask_A;
   downMask_A = _downMask_A;
   upMask_B   = _upMask_B;
@@ -157,20 +160,15 @@ MotorShield::MotorShield(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
   pinMode(MSHLD_DIR_CLK_PIN, OUTPUT);
   pinMode(MSHLD_DIR_SER_PIN, OUTPUT);
   pinMode(MSHLD_DIR_EN_PIN, OUTPUT);
-/*
-  pinMode(MSHLD_PWM2A_PIN, OUTPUT);
-  pinMode(MSHLD_PWM2B_PIN, OUTPUT);
-  pinMode(MSHLD_PWM0A_PIN, OUTPUT);
-  pinMode(MSHLD_PWM0B_PIN, OUTPUT);
-*/
+
   pinMode(MSHLD_LEFT_COUNT_PIN, INPUT);
   pinMode(MSHLD_RIGHT_COUNT_PIN, INPUT);
 
-  leftMotorNum = _leftMotorNum;
-  rightMotorNum = _rightMotorNum;
+  leftMotor = MSHLD_MOTORS + _leftMotorNum;
+  rightMotor = MSHLD_MOTORS + _rightMotorNum;
   // Пин счетчика моторов
-  (MSHLD_MOTORS + leftMotorNum)->speedometer = &LEFT_SPEEDOMETR;
-  (MSHLD_MOTORS + rightMotorNum)->speedometer = &RIGHT_SPEEDOMETR;
+  leftMotor->speedometer = &LEFT_SPEEDOMETR;
+  rightMotor->speedometer = &RIGHT_SPEEDOMETR;
 
   // устанавливаем enabled
   enabled();
@@ -191,43 +189,48 @@ void MotorShield::handle_interrupt() {
  * процедура запускается каждую милисекунду *
  ********************************************/
 void MotorShield::timeAction() {
+  timeAction(leftMotor);
+  timeAction(rightMotor);
+}
+
+/***
+ * обработка очередного мотора
+ */
+void MotorShield::timeAction(DcMotor* motor) {
   long time = millis();
-  for (int i = 0; i < 4; i++) {
-    DcMotor* motor = MSHLD_MOTORS + i;
-	if (motor->endTime == 0) {
-		continue;
-	}
-    Speedometer* speedometer = motor->speedometer;
-    bool isStop = false;
+  if (motor->endTime == 0) {
+	  return;
+  }
+  Speedometer* speedometer = motor->speedometer;
+  bool isStop = false;
 
-    if (speedometer) {
-      // проверяем счётчик скорости.
-      if (speedometer->check(time)) {
-        isStop = motor->speedCorrection(time);
-      }
-    } else {
-      // если у нас нет счётчика скорости, то ориентируемся по времени.
-      isStop = motor->endTime < time;
+  if (speedometer) {
+    // проверяем счётчик скорости.
+    if (speedometer->check(time)) {
+      isStop = motor->speedCorrection(time);
     }
+  } else {
+    // если у нас нет счётчика скорости, то ориентируемся по времени.
+    isStop = motor->endTime < time;
+  }
 
-    if (isStop) {
+  if (isStop) {
 #ifdef MSHLD_DEBUG_MODE
-      Serial.print("stopMotor(");
-      Serial.print(i);
-      if (speedometer) {
-        Serial.print("); count = ");
-        Serial.print(speedometer->count);
-		    Serial.print(");\t RealTime = ");
-		    Serial.print(time - motor->startTime);
-		    Serial.print(";\t Time = ");
-		    Serial.print(time);
-		    Serial.println(";");
-      } else {
-        Serial.println(")");
-      }
-#endif
-      stopMotor(i);
+    Serial.print("stopMotor(");
+    Serial.print(motor->name);
+    if (speedometer) {
+      Serial.print("); count = ");
+      Serial.print(speedometer->count);
+	    Serial.print(";\t RealTime = ");
+	    Serial.print(time - motor->startTime);
+	    Serial.print(";\t Time = ");
+	    Serial.print(time);
+	    Serial.println(";");
+    } else {
+      Serial.println(")");
     }
+#endif
+    stopMotor(motor);
   }
 }
 
@@ -248,16 +251,14 @@ void MotorShield::stopMotors() {
   analogWrite(MSHLD_PWM2B_PIN, 0);
   analogWrite(MSHLD_PWM0A_PIN, 0);
   analogWrite(MSHLD_PWM0B_PIN, 0);
-  for (int i = 0; i < 4; i++) {
-    stopMotor(i);
-  }
+  leftMotorStop();
+  rightMotorStop();
 }
 
 /**
  * Останавливаем конкретный мотор.
  */
-void MotorShield::stopMotor(uint8_t nMotor) {
-  DcMotor* motor = MSHLD_MOTORS + nMotor;
+void MotorShield::stopMotor(DcMotor* motor) {
   setBitMask(motorMask & motor->downMask_A & motor->downMask_B);
   analogWrite(motor->powerPin, 0);
   motor->startTime = 0;
@@ -299,38 +300,37 @@ bool MotorShield::waitBusy() {
 
 /** Останавливаем левый мотор. */
 void MotorShield::leftMotorStop() {
-  stopMotor(leftMotorNum);
+  stopMotor(leftMotor);
 }
 
 /** Останавливаем правый мотор. */
 void MotorShield::rightMotorStop() {
-  stopMotor(rightMotorNum);
+  stopMotor(rightMotor);
 }
 
 /**
  * Устанавливаем скорость для левого мотора
  * @speed скорость мотора в 
  */
-void MotorShield::leftMotor(int8_t gear, int16_t dist) {
-  motor(leftMotorNum, gear, dist);
+void MotorShield::leftMotorStart(int8_t gear, int16_t dist) {
+  motor(leftMotor, gear, dist);
 }
 
 /** Устанавливаем скорость для правого мотора */
-void MotorShield::rightMotor(int8_t gear, int16_t dist) {
-  motor(rightMotorNum, gear, dist);
+void MotorShield::rightMotorStart(int8_t gear, int16_t dist) {
+  motor(rightMotor, gear, dist);
 }
 
 /**
- * Устанавливаем скорость <gear> для двигателя nMotor:
- * @nMotor номер мотора
+ * Устанавливаем скорость <gear> для двигателя:
+ * @motor сам мотор
  * @gear скорость мотора в передачах:
  *  gear > 0 - вперёд;
  *  gear < 0 - назад;
  *  значения от -5 до +5
  * @dist дистанция в мм, которую надо преодолеть 
  */
-void MotorShield::motor(uint8_t nMotor, int8_t gear, int16_t dist) {
-  DcMotor* motor = MSHLD_MOTORS + nMotor;
+void MotorShield::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   long startTime = millis();
   bool isForward;
   int8_t absGear;

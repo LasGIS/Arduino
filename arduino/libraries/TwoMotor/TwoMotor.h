@@ -1,9 +1,8 @@
-#ifndef MotorShield_h
-#define MotorShield_h
+#ifndef TwoMotor_h
+#define TwoMotor_h
 
 #include <Arduino.h>
 #include "MotorShieldDefine.h"
-
 /**
  * Класс счётчика скорости.
  * Только считаем count, весь анализ и коррекция происходит в моторе
@@ -11,7 +10,7 @@
 class Speedometer {
 public:
   uint8_t countPin;      // пин счётчика скорости
-  uint8_t val;           // показание датчика
+  uint8_t val;           // показание счётчика
   uint16_t count;        // счётчик
   /* Время последней смены счётчика или последней проверки,
      если счетчик долго не менялся. */
@@ -28,6 +27,7 @@ public:
  */
 class DcMotor {
 public:
+  char name;
   uint8_t upMask_A;      // маска установки клемы A
   uint8_t downMask_A;    // маска снятия клемы A
   uint8_t upMask_B;      // маска установки клемы B
@@ -45,6 +45,7 @@ public:
   volatile bool busy = false;
 
   DcMotor(
+    char name,
     uint8_t _upMask_A,
     uint8_t _downMask_A,
     uint8_t _upMask_B,
@@ -63,8 +64,8 @@ public:
   volatile uint8_t motorMask;
 
 private:
-  uint8_t leftMotorNum;
-  uint8_t rightMotorNum;
+  DcMotor* leftMotor;
+  DcMotor* rightMotor;
   static MotorShield* _activeMotorShieldObject;
 
 public:
@@ -73,19 +74,20 @@ public:
   void disabled();
   void stopMotors();
 
-  void stopMotor(uint8_t);
-  void motor(uint8_t, int8_t, int16_t);
+  void stopMotor(DcMotor*);
+  void motor(DcMotor*, int8_t, int16_t);
   bool isBusy();
   bool waitBusy();
 
-  void leftMotor(int8_t, int16_t);
+  void leftMotorStart(int8_t, int16_t);
   void leftMotorStop();
-  void rightMotor(int8_t, int16_t);
+  void rightMotorStart(int8_t, int16_t);
   void rightMotorStop();
 
 private:
   static inline void handle_interrupt();
   void timeAction();
+  void timeAction(DcMotor*);
   void setSpeed(bool, DcMotor*);
   void setSpeed(bool, uint16_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
   void setBitMask(uint8_t);
