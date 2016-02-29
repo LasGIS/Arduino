@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Servo.h>
-#include "TwoMotor.h"
+#include "MotorShield.h"
 #include "RobotCommand.h"
 
 Servo hSer;
@@ -88,7 +88,7 @@ void serialEvent() {
 void testDrive(char motor) {
   Serial.println(motor);
   switch (motor) {
-/*
+
     case '1':
       testDriveMotor(MSHLD_M1);
       break;
@@ -104,7 +104,7 @@ void testDrive(char motor) {
     case '4':
       testDriveMotor(MSHLD_M4);
       break;
-*/    
+
     case 'l':
       Serial.println("Left MOTOR");
       for (int speed = -5; speed <= 5; speed++) {
@@ -136,6 +136,7 @@ void testDrive(char motor) {
 
 /**
  *
+ */
 void testDriveMotor(int motoNum) {
   Serial.print("M");
   Serial.print(motoNum + 1);
@@ -151,4 +152,3 @@ void testDriveMotor(int motoNum) {
   }
   //}
 }
- */
