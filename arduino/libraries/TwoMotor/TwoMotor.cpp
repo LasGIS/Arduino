@@ -24,7 +24,15 @@ static DcMotor MSHLD_MOTORS[4] = {
 static Speedometer LEFT_SPEEDOMETR(MSHLD_LEFT_COUNT_PIN);
 static Speedometer RIGHT_SPEEDOMETR(MSHLD_RIGHT_COUNT_PIN);
 
-MotorShield* MotorShield::_activeMotorShieldObject = 0;
+void leftSpeedometrInterrupt(void) {
+  LEFT_SPEEDOMETR.interrupt();
+}
+
+void rightSpeedometrInterrupt(void) {
+  RIGHT_SPEEDOMETR.interrupt();
+}
+
+TwoMotor* TwoMotor::_activeMotorShieldObject = 0;
 
 /**
  *  онструктор спидометра
@@ -35,31 +43,35 @@ Speedometer::Speedometer(uint8_t _countPin) {
   clean();
 }
 
-/**
- * проверка на изменение датчика
- */
-bool Speedometer::check(long time) {
-  uint8_t newVal = digitalRead(countPin);
-  if (newVal != val ) {
-    val = newVal;
-    // проверка на дребезг 
-    if (time - lastTime > 1) {
-      lastTime = time;
-      count++;
-      return true;
-    }
-  } else if (time - lastTime > 20) {
-    lastTime = time;
-    return true;
-  }
-  return false;
-}
-
 /** сбрасываем параметры */
 void Speedometer::clean() {
   count = 0;
   lastTime = 0L;
+  lastTimeDown = 0L;
+  timeInterval = 0L;
   val = digitalRead(countPin);
+}
+
+/** обрабатываем прерывание на изменение счЄтчика */
+void Speedometer::interrupt() {
+  long time = micros();
+  uint8_t newVal = digitalRead(countPin);
+  // проверка на дребезг 
+  if (newVal != val && time - lastTime > 500) {
+    val = newVal;
+    lastTime = time;
+    count++;
+    isChange = true;
+    if (val == LOW) {
+      timeInterval = time - lastTimeDown;
+      lastTimeDown = time;
+    }
+  } else if (time - lastTime > 20000) {
+    // счЄтчик долго находитс€ в одном положении
+    lastTime = time;
+    isChange = true;
+  }
+  isChange = false;
 }
 
 /**
@@ -100,6 +112,8 @@ bool DcMotor::speedCorrection(long time) {
   Serial.print(countMust);
   Serial.print("; count=");
   Serial.print(count);
+  Serial.print("; timeInterval=");
+  Serial.print(speedometer->timeInterval);
 #endif
   int dcount = countMust - count;
   if (dcount > 2) {
@@ -154,7 +168,7 @@ void DcMotor::showStartParameters() {
 /**
  *  онструктор с инициализатором
  */
-MotorShield::MotorShield(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
+TwoMotor::TwoMotor(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
   //устанавливаем режим OUTPUT
   pinMode(MSHLD_DIR_LATCH_PIN, OUTPUT);
   pinMode(MSHLD_DIR_CLK_PIN, OUTPUT);
@@ -174,12 +188,15 @@ MotorShield::MotorShield(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
   enabled();
   stopMotors();
 
-  MotorShield::_activeMotorShieldObject = this;
-  MsTimer2::set(MSHLD_DEL_TIME, MotorShield::handle_interrupt);
+  attachInterrupt(digitalPinToInterrupt(MSHLD_LEFT_COUNT_PIN), leftSpeedometrInterrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(MSHLD_RIGHT_COUNT_PIN), rightSpeedometrInterrupt, CHANGE);
+
+  TwoMotor::_activeMotorShieldObject = this;
+  MsTimer2::set(MSHLD_DEL_TIME, TwoMotor::handle_interrupt);
   MsTimer2::start();
 }
 
-void MotorShield::handle_interrupt() {
+void TwoMotor::handle_interrupt() {
   if (_activeMotorShieldObject) {
     _activeMotorShieldObject->timeAction();
   }
@@ -188,7 +205,7 @@ void MotorShield::handle_interrupt() {
 /********************************************
  * процедура запускаетс€ каждую милисекунду *
  ********************************************/
-void MotorShield::timeAction() {
+void TwoMotor::timeAction() {
   timeAction(leftMotor);
   timeAction(rightMotor);
 }
@@ -196,7 +213,7 @@ void MotorShield::timeAction() {
 /***
  * обработка очередного мотора
  */
-void MotorShield::timeAction(DcMotor* motor) {
+void TwoMotor::timeAction(DcMotor* motor) {
   long time = millis();
   if (motor->endTime == 0) {
 	  return;
@@ -206,7 +223,7 @@ void MotorShield::timeAction(DcMotor* motor) {
 
   if (speedometer) {
     // провер€ем счЄтчик скорости.
-    if (speedometer->check(time)) {
+    if (speedometer->isChange) {
       isStop = motor->speedCorrection(time);
     }
   } else {
@@ -235,17 +252,17 @@ void MotorShield::timeAction(DcMotor* motor) {
 }
 
 /** включаем моторы shild */
-void MotorShield::enabled() {
+void TwoMotor::enabled() {
   digitalWrite(MSHLD_DIR_EN_PIN, LOW);
 }
 
 /** выключаем моторы shild */
-void MotorShield::disabled() {
+void TwoMotor::disabled() {
   digitalWrite(MSHLD_DIR_EN_PIN, HIGH);
 }
 
 /** ќстанавливаем все что можно. */
-void MotorShield::stopMotors() {
+void TwoMotor::stopMotors() {
   setBitMask(0);
   analogWrite(MSHLD_PWM2A_PIN, 0);
   analogWrite(MSHLD_PWM2B_PIN, 0);
@@ -258,7 +275,7 @@ void MotorShield::stopMotors() {
 /**
  * ќстанавливаем конкретный мотор.
  */
-void MotorShield::stopMotor(DcMotor* motor) {
+void TwoMotor::stopMotor(DcMotor* motor) {
   setBitMask(motorMask & motor->downMask_A & motor->downMask_B);
   analogWrite(motor->powerPin, 0);
   motor->startTime = 0;
@@ -277,7 +294,7 @@ void MotorShield::stopMotor(DcMotor* motor) {
 /**
  * провер€ем моторы
  */
-bool MotorShield::isBusy() {
+bool TwoMotor::isBusy() {
   bool busy = false;
   for (int i = 0; i < 4; i++) {
     busy = busy || MSHLD_MOTORS[i].busy;
@@ -288,7 +305,7 @@ bool MotorShield::isBusy() {
 /**
  * ќжидаем окончани€
  */
-bool MotorShield::waitBusy() {
+bool TwoMotor::waitBusy() {
   for (int i = 0; i < 10000; i++) {
     if (!isBusy()) {
       return true;
@@ -299,12 +316,12 @@ bool MotorShield::waitBusy() {
 }
 
 /** ќстанавливаем левый мотор. */
-void MotorShield::leftMotorStop() {
+void TwoMotor::leftMotorStop() {
   stopMotor(leftMotor);
 }
 
 /** ќстанавливаем правый мотор. */
-void MotorShield::rightMotorStop() {
+void TwoMotor::rightMotorStop() {
   stopMotor(rightMotor);
 }
 
@@ -312,12 +329,12 @@ void MotorShield::rightMotorStop() {
  * ”станавливаем скорость дл€ левого мотора
  * @speed скорость мотора в 
  */
-void MotorShield::leftMotorStart(int8_t gear, int16_t dist) {
+void TwoMotor::leftMotorStart(int8_t gear, int16_t dist) {
   motor(leftMotor, gear, dist);
 }
 
 /** ”станавливаем скорость дл€ правого мотора */
-void MotorShield::rightMotorStart(int8_t gear, int16_t dist) {
+void TwoMotor::rightMotorStart(int8_t gear, int16_t dist) {
   motor(rightMotor, gear, dist);
 }
 
@@ -330,7 +347,7 @@ void MotorShield::rightMotorStart(int8_t gear, int16_t dist) {
  *  значени€ от -5 до +5
  * @dist дистанци€ в мм, которую надо преодолеть 
  */
-void MotorShield::motor(DcMotor* motor, int8_t gear, int16_t dist) {
+void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   long startTime = millis();
   bool isForward;
   int8_t absGear;
@@ -370,7 +387,7 @@ void MotorShield::motor(DcMotor* motor, int8_t gear, int16_t dist) {
 /**
  * устанавливаем скорость и направление конкретного мотора
  */
-void MotorShield::setSpeed(bool isForward, DcMotor* motor) {
+void TwoMotor::setSpeed(bool isForward, DcMotor* motor) {
   setSpeed(isForward, motor->currPower,
     motor->upMask_A,     // маска установки клемы A
     motor->downMask_A,   // маска сн€ти€ клемы A
@@ -383,7 +400,7 @@ void MotorShield::setSpeed(bool isForward, DcMotor* motor) {
 /**
  * устанавливаем скорость и направление абстрактного мотора
  */
-void MotorShield::setSpeed(
+void TwoMotor::setSpeed(
   bool isForward,       // направление движени€
   uint16_t speed,       // абсолютна€ скорость
   uint8_t upMask_A,     // маска установки клемы A
@@ -409,7 +426,7 @@ void MotorShield::setSpeed(
 }
 
 /** ¬ыводим маску моторов в 74HC595 */
-void MotorShield::setBitMask(uint8_t mask) {
+void TwoMotor::setBitMask(uint8_t mask) {
   if (mask != motorMask) {
     motorMask = mask;
 #ifdef MSHLD_DEBUG_MODE

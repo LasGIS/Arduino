@@ -5,7 +5,7 @@
 
 Servo hSer;
 Servo vSer;
-MotorShield mShield(MSHLD_M1, MSHLD_M2);
+TwoMotor mShield(MSHLD_M1, MSHLD_M2);
 
 /* пины Ультразвукового дальномера */
 int echoPin = A3; 

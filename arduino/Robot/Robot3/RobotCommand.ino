@@ -136,18 +136,33 @@ void action(RobotCommand* command) {
     case MOTOR_BACKWARD_RIGHT:
       mShield.rightMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
       break;
+
+    case ROBOT_SCANING:
+    case ROBOT_ANALYSE:
+    case ROBOT_STOP:
+      break;
   }
   interrupts();
   switch (command->type) {
-  case ROBOT_SCANING: // сканирование обстановки
-    scanSituation();
-    break;
-  case ROBOT_ANALYSE: // анализ ситуации и принятие решений
-    robotAnalyse();
-    break;
-  case ROBOT_STOP: // останавливаем всё
-    robotStop();
-    break;
+    case MOTOR_FORWARD:
+    case MOTOR_BACKWARD:
+    case MOTOR_FORWARD_LEFT:
+    case MOTOR_FORWARD_RIGHT:
+    case MOTOR_LEFT:
+    case MOTOR_RIGHT:
+    case MOTOR_BACKWARD_LEFT:
+    case MOTOR_BACKWARD_RIGHT:
+      break;
+
+    case ROBOT_SCANING: // сканирование обстановки
+      scanSituation();
+      break;
+    case ROBOT_ANALYSE: // анализ ситуации и принятие решений
+      robotAnalyse();
+      break;
+    case ROBOT_STOP: // останавливаем всё
+      robotStop();
+      break;
   }
 
   mShield.waitBusy();

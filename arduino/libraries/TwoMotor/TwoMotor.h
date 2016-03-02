@@ -12,14 +12,16 @@ public:
   uint8_t countPin;      // пин счётчика скорости
   uint8_t val;           // показание счётчика
   uint16_t count;        // счётчик
+  bool isChange;         // признак того, что счётччик поменялся
   /* Время последней смены счётчика или последней проверки,
      если счетчик долго не менялся. */
   long lastTime;
+  long lastTimeDown;     // момент падения счётчика
+  long timeInterval;     // интервал по времени между падениями счётчика
 
   Speedometer(uint8_t countPin);
+  void interrupt();
   void clean();
-  // проверка на изменение датчика
-  bool check(long time);
 };
 
 /**
@@ -58,7 +60,7 @@ public:
 };
 
 /** главный класс держателей моторов. */
-class MotorShield {
+class TwoMotor {
 
 public:
   volatile uint8_t motorMask;
@@ -66,10 +68,10 @@ public:
 private:
   DcMotor* leftMotor;
   DcMotor* rightMotor;
-  static MotorShield* _activeMotorShieldObject;
+  static TwoMotor* _activeMotorShieldObject;
 
 public:
-  MotorShield(uint8_t, uint8_t);
+  TwoMotor(uint8_t, uint8_t);
   void enabled();
   void disabled();
   void stopMotors();
