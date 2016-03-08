@@ -24,20 +24,20 @@
 // Пин PWM0B --- мощьность M3 (PIN 1, PIN 2)
 #define MSHLD_PWM0B_PIN     5
 
-// Пин PWM1A --- Сервомотор № 2
-#define MSHLD_PWM1A_PIN     9
-// Пин PWM1B --- Сервомотор № 1
-#define MSHLD_PWM1B_PIN     10
-
 // Пин PWM2A --- мощьность M1 (PIN 4, PIN 5)
 #define MSHLD_PWM2A_PIN     11
 // Пин PWM2B --- мощьность M2 (PIN 1, PIN 2)
 #define MSHLD_PWM2B_PIN     3
 
+// Пин PWM1A --- Сервомотор № 2
+#define MSHLD_PWM1A_PIN     9
+// Пин PWM1B --- Сервомотор № 1
+#define MSHLD_PWM1B_PIN     10
+
 // Пин счетчика левого мотора
-#define MSHLD_LEFT_COUNT_PIN A0
+#define MSHLD_LEFT_COUNT_PIN 3
 // Пин счетчика правого мотора
-#define MSHLD_RIGHT_COUNT_PIN A1
+#define MSHLD_RIGHT_COUNT_PIN 2
 
 // маски моторов
 #define MSHLD_UP_M3A_MASK  B00000001

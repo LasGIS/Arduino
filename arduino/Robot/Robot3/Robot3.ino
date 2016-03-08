@@ -5,11 +5,14 @@
 
 Servo hSer;
 Servo vSer;
-TwoMotor mShield(MSHLD_M1, MSHLD_M2);
+TwoMotor mShield;
 
 /* пины Ультразвукового дальномера */
 int echoPin = A3; 
 int trigPin = A2;
+
+extern void leftSpeedometrInterrupt(void);
+extern void rightSpeedometrInterrupt(void);
 
 /** пин кнопочки
 int buttonPin = 2; 
@@ -82,48 +85,33 @@ void serialEvent() {
   }*/
 }
 
-/** Скорость от передачи (5 передача - самая высокая) */
-//static const int MSHLD_GEAR_SPEED[] = {-255, -170, -113, 0, 113, 170, 255};
-
 void testDrive(char motor) {
   Serial.println(motor);
   switch (motor) {
-/*
-    case '1':
-      testDriveMotor(MSHLD_M1);
-      break;
-    
-    case '2':
-      testDriveMotor(MSHLD_M2);
-      break;
-    
-    case '3':
-      testDriveMotor(MSHLD_M3);
-      break;
-    
-    case '4':
-      testDriveMotor(MSHLD_M4);
-      break;
-*/    
-    case 'l':
+
+  case 'l':
       Serial.println("Left MOTOR");
-      for (int speed = -5; speed <= 5; speed++) {
-        mShield.waitBusy();
+      mShield.waitBusy();
+      for (int speed = 5; speed >= -5; speed--) {
         mShield.leftMotorStart(speed, 220);
         Serial.print("speed = ");
         Serial.println(speed);
-        delay(1010);
+        while (mShield.isBusy()) {
+          delay(100);
+        }
       }
       break;
     
     case 'r':
       Serial.println("Right MOTOR");
-      for (int speed = -5; speed <= 5; speed++) {
-        mShield.waitBusy();
+      mShield.waitBusy();
+      for (int speed = 5; speed >= -5; speed--) {
         mShield.rightMotorStart(speed, 220);
         Serial.print("speed = ");
         Serial.println(speed);
-        delay(1010);
+        while (mShield.isBusy()) {
+          delay(100);
+        }
       }
       break;
     
@@ -133,22 +121,3 @@ void testDrive(char motor) {
   }
   mShield.stopMotors();
 }
-
-/**
- *
-void testDriveMotor(int motoNum) {
-  Serial.print("M");
-  Serial.print(motoNum + 1);
-  Serial.println(" test drive");
-  //for (int speed = -5; speed <= 5; speed++) {
-  int speed = 5;
-  mShield.waitBusy();
-  mShield.motor(motoNum, speed, 20);
-  Serial.print("speed = ");
-  Serial.println(speed);
-  while (mShield.isBusy()) {
-    delay(100);
-  }
-  //}
-}
- */

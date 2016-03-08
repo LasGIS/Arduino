@@ -13,13 +13,17 @@ static const float MSHLD_GEAR_FACTOR[6] = {0.094, 0.141, 0.212, 0.317, 0.476, 0.
 #define MSHLD_COUNT_FACTOR 0.2
 #define MSHLD_SPEED_FACTOR 1.02
 
-/** Настраиваем пины конкретных моторов. */
+/** Настраиваем пины конкретных моторов.
 static DcMotor MSHLD_MOTORS[4] = {
   DcMotor('A', MSHLD_UP_M1A_MASK, MSHLD_DOWN_M1A_MASK, MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK, MSHLD_PWM2A_PIN),
   DcMotor('B', MSHLD_UP_M2A_MASK, MSHLD_DOWN_M2A_MASK, MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK, MSHLD_PWM2B_PIN),
   DcMotor('C', MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK, MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK, MSHLD_PWM0A_PIN),
   DcMotor('D', MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK, MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK, MSHLD_PWM0B_PIN)
 };
+*/
+
+static DcMotor MSHLD_LEFT_MOTOR('C', MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK, MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK, MSHLD_PWM0A_PIN);
+static DcMotor MSHLD_RIGHT_MOTOR('D', MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK, MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK, MSHLD_PWM0B_PIN);
 
 static Speedometer LEFT_SPEEDOMETR(MSHLD_LEFT_COUNT_PIN);
 static Speedometer RIGHT_SPEEDOMETR(MSHLD_RIGHT_COUNT_PIN);
@@ -58,6 +62,7 @@ void Speedometer::interrupt() {
   uint8_t newVal = digitalRead(countPin);
   // проверка на дребезг 
   if (newVal != val && time - lastTime > 500) {
+    //Serial.print(".");
     val = newVal;
     lastTime = time;
     count++;
@@ -70,8 +75,9 @@ void Speedometer::interrupt() {
     // счётчик долго находится в одном положении
     lastTime = time;
     isChange = true;
+  } else {
+    isChange = false;
   }
-  isChange = false;
 }
 
 /**
@@ -156,19 +162,19 @@ void DcMotor::setPower() {
  */
 void DcMotor::showStartParameters() {
 #ifdef MSHLD_DEBUG_MODE
-	Serial.print("time=");
-	Serial.print(endTime - startTime);
-	Serial.print("; endCount=");
-	Serial.print(endCount);
-	Serial.print("; Power=");
-	Serial.println(currPower);
+  Serial.print("time=");
+  Serial.print(endTime - startTime);
+  Serial.print("; endCount=");
+  Serial.print(endCount);
+  Serial.print("; Power=");
+  Serial.println(currPower);
 #endif
 }
 
 /**
  * Конструктор с инициализатором
  */
-TwoMotor::TwoMotor(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
+TwoMotor::TwoMotor() {
   //устанавливаем режим OUTPUT
   pinMode(MSHLD_DIR_LATCH_PIN, OUTPUT);
   pinMode(MSHLD_DIR_CLK_PIN, OUTPUT);
@@ -178,8 +184,8 @@ TwoMotor::TwoMotor(uint8_t _leftMotorNum, uint8_t _rightMotorNum) {
   pinMode(MSHLD_LEFT_COUNT_PIN, INPUT);
   pinMode(MSHLD_RIGHT_COUNT_PIN, INPUT);
 
-  leftMotor = MSHLD_MOTORS + _leftMotorNum;
-  rightMotor = MSHLD_MOTORS + _rightMotorNum;
+  leftMotor = &MSHLD_LEFT_MOTOR;
+  rightMotor = &MSHLD_RIGHT_MOTOR;
   // Пин счетчика моторов
   leftMotor->speedometer = &LEFT_SPEEDOMETR;
   rightMotor->speedometer = &RIGHT_SPEEDOMETR;
@@ -216,7 +222,7 @@ void TwoMotor::timeAction() {
 void TwoMotor::timeAction(DcMotor* motor) {
   long time = millis();
   if (motor->endTime == 0) {
-	  return;
+    return;
   }
   Speedometer* speedometer = motor->speedometer;
   bool isStop = false;
@@ -224,6 +230,7 @@ void TwoMotor::timeAction(DcMotor* motor) {
   if (speedometer) {
     // проверяем счётчик скорости.
     if (speedometer->isChange) {
+      Serial.print(",");
       isStop = motor->speedCorrection(time);
     }
   } else {
@@ -232,7 +239,7 @@ void TwoMotor::timeAction(DcMotor* motor) {
   }
 
   if (isStop) {
-#ifdef MSHLD_DEBUG_MODE
+//#ifdef MSHLD_DEBUG_MODE
     Serial.print("stopMotor(");
     Serial.print(motor->name);
     if (speedometer) {
@@ -246,7 +253,7 @@ void TwoMotor::timeAction(DcMotor* motor) {
     } else {
       Serial.println(")");
     }
-#endif
+//#endif
     stopMotor(motor);
   }
 }
@@ -264,10 +271,6 @@ void TwoMotor::disabled() {
 /** Останавливаем все что можно. */
 void TwoMotor::stopMotors() {
   setBitMask(0);
-  analogWrite(MSHLD_PWM2A_PIN, 0);
-  analogWrite(MSHLD_PWM2B_PIN, 0);
-  analogWrite(MSHLD_PWM0A_PIN, 0);
-  analogWrite(MSHLD_PWM0B_PIN, 0);
   leftMotorStop();
   rightMotorStop();
 }
@@ -295,11 +298,7 @@ void TwoMotor::stopMotor(DcMotor* motor) {
  * проверяем моторы
  */
 bool TwoMotor::isBusy() {
-  bool busy = false;
-  for (int i = 0; i < 4; i++) {
-    busy = busy || MSHLD_MOTORS[i].busy;
-  }
-  return busy;
+  return leftMotor->busy || rightMotor->busy;
 }
 
 /**

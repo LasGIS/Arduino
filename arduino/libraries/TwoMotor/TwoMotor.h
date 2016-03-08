@@ -71,7 +71,7 @@ private:
   static TwoMotor* _activeMotorShieldObject;
 
 public:
-  TwoMotor(uint8_t, uint8_t);
+  TwoMotor();
   void enabled();
   void disabled();
   void stopMotors();
