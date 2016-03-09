@@ -27,7 +27,7 @@ public:
 /**
  * класс содержит все внутренние параметры мотора.
  */
-class DcMotor {
+class DcMotor : public Speedometer {
 public:
   char name;
   uint8_t upMask_A;      // маска установки клемы A
@@ -36,7 +36,7 @@ public:
   uint8_t downMask_B;    // маска сн€ти€ клемы B
   uint8_t powerPin;      // пин дл€ установки скорости
   // счЄтчик скорости
-  Speedometer* speedometer = NULL;
+//  Speedometer* speedometer = NULL;
 
   volatile long startTime;     // Ќачало работы мотора
   volatile long endTime;       // ¬ это врем€ мотор должен остановитьс€
@@ -52,7 +52,8 @@ public:
     uint8_t _downMask_A,
     uint8_t _upMask_B,
     uint8_t _downMask_B,
-    uint8_t _powerPin
+    uint8_t _powerPin,
+    uint8_t _countPin
   );
   bool speedCorrection(long time);
   void setPower();

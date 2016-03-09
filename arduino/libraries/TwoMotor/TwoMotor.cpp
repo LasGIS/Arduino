@@ -22,18 +22,18 @@ static DcMotor MSHLD_MOTORS[4] = {
 };
 */
 
-static DcMotor MSHLD_LEFT_MOTOR('C', MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK, MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK, MSHLD_PWM0A_PIN);
-static DcMotor MSHLD_RIGHT_MOTOR('D', MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK, MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK, MSHLD_PWM0B_PIN);
-
+static DcMotor MSHLD_LEFT_MOTOR('C', MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK, MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK, MSHLD_PWM0A_PIN, MSHLD_LEFT_COUNT_PIN);
+static DcMotor MSHLD_RIGHT_MOTOR('D', MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK, MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK, MSHLD_PWM0B_PIN, MSHLD_RIGHT_COUNT_PIN);
+/*
 static Speedometer LEFT_SPEEDOMETR(MSHLD_LEFT_COUNT_PIN);
 static Speedometer RIGHT_SPEEDOMETR(MSHLD_RIGHT_COUNT_PIN);
-
+*/
 void leftSpeedometrInterrupt(void) {
-  LEFT_SPEEDOMETR.interrupt();
+  MSHLD_LEFT_MOTOR.interrupt();
 }
 
 void rightSpeedometrInterrupt(void) {
-  RIGHT_SPEEDOMETR.interrupt();
+  MSHLD_RIGHT_MOTOR.interrupt();
 }
 
 TwoMotor* TwoMotor::_activeMotorShieldObject = 0;
@@ -89,14 +89,16 @@ DcMotor::DcMotor(
   uint8_t _downMask_A,
   uint8_t _upMask_B,
   uint8_t _downMask_B,
-  uint8_t _powerPin
-) {
+  uint8_t _powerPin,
+  uint8_t _countPin
+) : Speedometer(_countPin) {
   name = _name;
   upMask_A   = _upMask_A;
   downMask_A = _downMask_A;
   upMask_B   = _upMask_B;
   downMask_B = _downMask_B;
   powerPin   = _powerPin;
+//  countPin = _countPin;
   startTime = 0L;
   endTime = 0L;
   endCount = 0;
@@ -110,7 +112,6 @@ DcMotor::DcMotor(
  * @time текущее время
  */
 bool DcMotor::speedCorrection(long time) {
-  int16_t count = speedometer->count;
   uint16_t power = MSHLD_GEAR_VOLTAGE[currGear];
   int16_t countMust = (int16_t) (endCount * (time - startTime) / (endTime - startTime));
 #ifdef MSHLD_DEBUG_MODE
@@ -119,7 +120,7 @@ bool DcMotor::speedCorrection(long time) {
   Serial.print("; count=");
   Serial.print(count);
   Serial.print("; timeInterval=");
-  Serial.print(speedometer->timeInterval);
+  Serial.print(timeInterval);
 #endif
   int dcount = countMust - count;
   if (dcount > 2) {
@@ -186,9 +187,6 @@ TwoMotor::TwoMotor() {
 
   leftMotor = &MSHLD_LEFT_MOTOR;
   rightMotor = &MSHLD_RIGHT_MOTOR;
-  // Пин счетчика моторов
-  leftMotor->speedometer = &LEFT_SPEEDOMETR;
-  rightMotor->speedometer = &RIGHT_SPEEDOMETR;
 
   // устанавливаем enabled
   enabled();
@@ -224,36 +222,29 @@ void TwoMotor::timeAction(DcMotor* motor) {
   if (motor->endTime == 0) {
     return;
   }
-  Speedometer* speedometer = motor->speedometer;
   bool isStop = false;
 
-  if (speedometer) {
-    // проверяем счётчик скорости.
-    if (speedometer->isChange) {
-      Serial.print(",");
-      isStop = motor->speedCorrection(time);
-    }
-  } else {
+  // проверяем счётчик скорости.
+  if (motor->isChange) {
+    Serial.print(",");
+    isStop = motor->speedCorrection(time);
+  } else if (motor->endTime < time) {
     // если у нас нет счётчика скорости, то ориентируемся по времени.
-    isStop = motor->endTime < time;
+    isStop = true;
   }
 
   if (isStop) {
-//#ifdef MSHLD_DEBUG_MODE
+#ifdef MSHLD_DEBUG_MODE
     Serial.print("stopMotor(");
     Serial.print(motor->name);
-    if (speedometer) {
-      Serial.print("); count = ");
-      Serial.print(speedometer->count);
-	    Serial.print(";\t RealTime = ");
-	    Serial.print(time - motor->startTime);
-	    Serial.print(";\t Time = ");
-	    Serial.print(time);
-	    Serial.println(";");
-    } else {
-      Serial.println(")");
-    }
-//#endif
+    Serial.print("); count = ");
+    Serial.print(motor->count);
+    Serial.print(";\t RealTime = ");
+    Serial.print(time - motor->startTime);
+    Serial.print(";\t Time = ");
+    Serial.print(time);
+    Serial.println(";");
+#endif
     stopMotor(motor);
   }
 }
@@ -288,10 +279,7 @@ void TwoMotor::stopMotor(DcMotor* motor) {
   motor->currGear = 0;
   motor->busy = false;
   // настраиваем спидомерер
-  Speedometer* speedometer = motor->speedometer;
-  if (speedometer) {
-    speedometer->clean();
-  }
+  motor->clean();
 }
 
 /**
@@ -375,10 +363,7 @@ void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
 #endif
 
   // настраиваем спидомерер
-  Speedometer* speedometer = motor->speedometer;
-  if (speedometer) {
-    speedometer->clean();
-  }
+  motor->clean();
 
   setSpeed(isForward, motor);
 }
