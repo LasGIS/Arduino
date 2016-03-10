@@ -86,33 +86,34 @@ void serialEvent() {
 }
 
 void testDrive(char motor) {
+  int speed = -3;
   Serial.println(motor);
   switch (motor) {
 
   case 'l':
       Serial.println("Left MOTOR");
       mShield.waitBusy();
-      for (int speed = 5; speed >= -5; speed--) {
-        mShield.leftMotorStart(speed, 220);
+//      for (int speed = 5; speed >= -5; speed--) {
+        mShield.leftMotorStart(speed, 2200);
         Serial.print("speed = ");
         Serial.println(speed);
         while (mShield.isBusy()) {
           delay(100);
         }
-      }
+//      }
       break;
     
     case 'r':
       Serial.println("Right MOTOR");
       mShield.waitBusy();
-      for (int speed = 5; speed >= -5; speed--) {
-        mShield.rightMotorStart(speed, 220);
+//      for (int speed = 5; speed >= -5; speed--) {
+        mShield.rightMotorStart(speed, 2200);
         Serial.print("speed = ");
         Serial.println(speed);
         while (mShield.isBusy()) {
           delay(100);
         }
-      }
+//      }
       break;
     
     case 's':

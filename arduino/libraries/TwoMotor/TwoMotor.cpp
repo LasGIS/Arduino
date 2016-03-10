@@ -61,15 +61,17 @@ void Speedometer::interrupt() {
   long time = micros();
   uint8_t newVal = digitalRead(countPin);
   // проверка на дребезг 
-  if (newVal != val && time - lastTime > 500) {
-    //Serial.print(".");
+  if (newVal != val) {
     val = newVal;
-    lastTime = time;
-    count++;
-    isChange = true;
-    if (val == LOW) {
-      timeInterval = time - lastTimeDown;
-      lastTimeDown = time;
+    if (time - lastTime > 500) {
+      //Serial.print(".");
+      lastTime = time;
+      count++;
+      isChange = true;
+      if (val == LOW) {
+        timeInterval = time - lastTimeDown;
+        lastTimeDown = time;
+      }
     }
   } else if (time - lastTime > 20000) {
     // счётчик долго находится в одном положении
@@ -119,24 +121,16 @@ bool DcMotor::speedCorrection(long time) {
   Serial.print(countMust);
   Serial.print("; count=");
   Serial.print(count);
+  Serial.print("; time=");
+  Serial.print(time);
   Serial.print("; timeInterval=");
   Serial.print(timeInterval);
 #endif
   int dcount = countMust - count;
-  if (dcount > 2) {
-    if (count == 0) {
-      currPower = 255;
-    } else {
-      currPower = power + dcount * 10;
-    }
-  } else if (dcount < 2) {
-    if (endCount > 8 && endCount - count < 3) {
-      currPower = 0;
-    } else {
-      currPower = power + dcount * 10;
-    }
+  if (dcount > 2 && count == 0) {
+    currPower = 255;
   } else {
-    currPower = power;
+    currPower = power + dcount * 5;
   }
   if (power != currPower) {
     setPower();
@@ -149,12 +143,15 @@ bool DcMotor::speedCorrection(long time) {
 
 /** Устанавливаем скорость. */
 void DcMotor::setPower() {
+  if (currPower > 255) {
+    currPower = 255;
+  } else if (currPower > 0 && currPower < 50) {
+    currPower = 50;
+  }
 #ifdef MSHLD_DEBUG_MODE
   Serial.print("; Power=");
   Serial.print(currPower);
 #endif
-  if (currPower > 255) currPower = 255;
-  else if (currPower > 0 && currPower < 50) currPower = 50;
   analogWrite(powerPin, currPower);
 }
 
@@ -353,7 +350,7 @@ void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   motor->startTime = startTime;
   motor->endTime = startTime + dist / MSHLD_GEAR_FACTOR[absGear];
   motor->endCount = dist * MSHLD_COUNT_FACTOR;
-  motor->currPower = MSHLD_GEAR_VOLTAGE[absGear];
+  motor->currPower = 255; // MSHLD_GEAR_VOLTAGE[absGear];
   motor->currGear = absGear;
   motor->busy = true;
   motor->showStartParameters();
@@ -366,6 +363,7 @@ void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   motor->clean();
 
   setSpeed(isForward, motor);
+  motor->setPower();
 }
 
 /**
@@ -405,8 +403,7 @@ void TwoMotor::setSpeed(
   setBitMask(mask);
 
   // устанавливаем скорость
-  if (speed > 255) speed = 255;
-  analogWrite(powerPin, speed);
+//  analogWrite(powerPin, (speed > 0) ? 255 : 0);
 }
 
 /** Выводим маску моторов в 74HC595 */
