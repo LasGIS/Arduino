@@ -63,6 +63,7 @@
 #define MSHLD_M3 2
 #define MSHLD_M4 3
 
-#define MSHLD_DEL_TIME 1
+#define WAIT_BUSY_TIME 1
+#define MSHLD_DEL_TIME 20
 
 #endif
