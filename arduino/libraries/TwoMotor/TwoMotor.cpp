@@ -24,10 +24,7 @@ static DcMotor MSHLD_MOTORS[4] = {
 
 static DcMotor MSHLD_LEFT_MOTOR('C', MSHLD_UP_M4A_MASK, MSHLD_DOWN_M4A_MASK, MSHLD_UP_M4B_MASK, MSHLD_DOWN_M4B_MASK, MSHLD_PWM0A_PIN, MSHLD_LEFT_COUNT_PIN);
 static DcMotor MSHLD_RIGHT_MOTOR('D', MSHLD_UP_M3A_MASK, MSHLD_DOWN_M3A_MASK, MSHLD_UP_M3B_MASK, MSHLD_DOWN_M3B_MASK, MSHLD_PWM0B_PIN, MSHLD_RIGHT_COUNT_PIN);
-/*
-static Speedometer LEFT_SPEEDOMETR(MSHLD_LEFT_COUNT_PIN);
-static Speedometer RIGHT_SPEEDOMETR(MSHLD_RIGHT_COUNT_PIN);
-*/
+
 void leftSpeedometrInterrupt(void) {
   MSHLD_LEFT_MOTOR.interrupt();
 }
@@ -165,7 +162,9 @@ void DcMotor::showStartParameters() {
   Serial.print("; endCount=");
   Serial.print(endCount);
   Serial.print("; Power=");
-  Serial.println(currPower);
+  Serial.print(currPower);
+  Serial.print("; currGear = ");
+  Serial.println(currGear);
 #endif
 }
 
@@ -223,11 +222,11 @@ void TwoMotor::timeAction(DcMotor* motor) {
 
   // проверяем счётчик скорости.
   if (motor->isChange) {
+    motor->isChange = false;
     Serial.print(",");
     isStop = motor->speedCorrection(time);
-  } else if (motor->endTime < time) {
-    // если у нас нет счётчика скорости, то ориентируемся по времени.
-    isStop = true;
+  } else {
+    motor->isChange = false;
   }
 
   if (isStop) {
@@ -351,31 +350,29 @@ void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   motor->endTime = startTime + dist / MSHLD_GEAR_FACTOR[absGear];
   motor->endCount = dist * MSHLD_COUNT_FACTOR;
   motor->currPower = 255; // MSHLD_GEAR_VOLTAGE[absGear];
+  motor->isForward = isForward;
   motor->currGear = absGear;
   motor->busy = true;
   motor->showStartParameters();
-#ifdef MSHLD_DEBUG_MODE
-  Serial.print("absGear = ");
-  Serial.println(absGear);
-#endif
 
   // настраиваем спидомерер
   motor->clean();
 
-  setSpeed(isForward, motor);
+  setSpeed(motor);
   motor->setPower();
 }
 
 /**
  * устанавливаем скорость и направление конкретного мотора
  */
-void TwoMotor::setSpeed(bool isForward, DcMotor* motor) {
-  setSpeed(isForward, motor->currPower,
+void TwoMotor::setSpeed(DcMotor* motor) {
+  setSpeed(
+    motor->isForward,    // направление движения
+    motor->currPower,    // абсолютная скорость
     motor->upMask_A,     // маска установки клемы A
     motor->downMask_A,   // маска снятия клемы A
     motor->upMask_B,     // маска установки клемы B
-    motor->downMask_B,   // маска снятия клемы B
-    motor->powerPin      // пин для установки скорости
+    motor->downMask_B    // маска снятия клемы B
   );
 }
 
@@ -388,8 +385,7 @@ void TwoMotor::setSpeed(
   uint8_t upMask_A,     // маска установки клемы A
   uint8_t downMask_A,   // маска снятия клемы A
   uint8_t upMask_B,     // маска установки клемы B
-  uint8_t downMask_B,   // маска снятия клемы B
-  uint8_t powerPin      // пин для установки скорости
+  uint8_t downMask_B    // маска снятия клемы B
 ) {
   // устанавливаем направление
   uint8_t mask = motorMask;
@@ -401,9 +397,6 @@ void TwoMotor::setSpeed(
     mask = (mask & downMask_A) | upMask_B;
   }
   setBitMask(mask);
-
-  // устанавливаем скорость
-//  analogWrite(powerPin, (speed > 0) ? 255 : 0);
 }
 
 /** Выводим маску моторов в 74HC595 */

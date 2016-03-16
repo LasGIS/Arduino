@@ -35,14 +35,13 @@ public:
   uint8_t upMask_B;      // маска установки клемы B
   uint8_t downMask_B;    // маска снятия клемы B
   uint8_t powerPin;      // пин для установки скорости
-  // счётчик скорости
-//  Speedometer* speedometer = NULL;
 
   volatile long startTime;     // Начало работы мотора
   volatile long endTime;       // В это время мотор должен остановиться
   volatile uint16_t endCount;  // при этом показании счётчика мотор должен остановиться
   volatile uint16_t currPower; // текущая мощьность мотора (напряжение от 0 до 511)
   volatile uint8_t currGear;   // текущая передача мотора (от 0 до 5) 0 - выключена
+  bool isForward;              // направление движения
 
   volatile bool busy = false;
 
@@ -91,8 +90,15 @@ private:
   static inline void handle_interrupt();
   void timeAction();
   void timeAction(DcMotor*);
-  void setSpeed(bool, DcMotor*);
-  void setSpeed(bool, uint16_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+  void setSpeed(DcMotor*);
+  void setSpeed(
+    bool isForward,       // направление движения
+    uint16_t speed,       // абсолютная скорость
+    uint8_t upMask_A,     // маска установки клемы A
+    uint8_t downMask_A,   // маска снятия клемы A
+    uint8_t upMask_B,     // маска установки клемы B
+    uint8_t downMask_B    // маска снятия клемы B
+  );
   void setBitMask(uint8_t);
 };
 

@@ -108,33 +108,33 @@ void action(RobotCommand* command) {
   noInterrupts();
   switch (command->type) {
     case MOTOR_FORWARD:
-      mShield.leftMotorStart(4, (int) (command->param * FORWARD_FACTOR));
-      mShield.rightMotorStart(4, (int) (command->param * FORWARD_FACTOR));
+      twoMotor.leftMotorStart(4, (int) (command->param * FORWARD_FACTOR));
+      twoMotor.rightMotorStart(4, (int) (command->param * FORWARD_FACTOR));
       break;
     case MOTOR_BACKWARD:
-      mShield.leftMotorStart(-4, (int) (command->param * FORWARD_FACTOR));
-      mShield.rightMotorStart(-4, (int) (command->param * FORWARD_FACTOR));
+      twoMotor.leftMotorStart(-4, (int) (command->param * FORWARD_FACTOR));
+      twoMotor.rightMotorStart(-4, (int) (command->param * FORWARD_FACTOR));
       break;
     case MOTOR_FORWARD_LEFT:
-      mShield.rightMotorStart(4, (int) (command->param * ANGLE_FACTOR));
+      twoMotor.rightMotorStart(4, (int) (command->param * ANGLE_FACTOR));
       break;
     case MOTOR_FORWARD_RIGHT:
-      mShield.leftMotorStart(4, (int) (command->param * ANGLE_FACTOR));
+      twoMotor.leftMotorStart(4, (int) (command->param * ANGLE_FACTOR));
       break;
 
     case MOTOR_LEFT:
-      mShield.rightMotorStart(4, (int) (command->param * ANGLE_FACTOR / 2));
-      mShield.leftMotorStart(-4, (int) (command->param * ANGLE_FACTOR / 2));
+      twoMotor.rightMotorStart(4, (int) (command->param * ANGLE_FACTOR / 2));
+      twoMotor.leftMotorStart(-4, (int) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_RIGHT:
-      mShield.rightMotorStart(-4, (int)(command->param * ANGLE_FACTOR / 2));
-      mShield.leftMotorStart(4, (int) (command->param * ANGLE_FACTOR / 2));
+      twoMotor.rightMotorStart(-4, (int)(command->param * ANGLE_FACTOR / 2));
+      twoMotor.leftMotorStart(4, (int) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_BACKWARD_LEFT:
-      mShield.leftMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
+      twoMotor.leftMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
       break;
     case MOTOR_BACKWARD_RIGHT:
-      mShield.rightMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
+      twoMotor.rightMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
       break;
 
     case ROBOT_SCANING:
@@ -165,6 +165,6 @@ void action(RobotCommand* command) {
       break;
   }
 
-  mShield.waitBusy();
+  twoMotor.waitBusy();
   command->state = EMPTY;
 }

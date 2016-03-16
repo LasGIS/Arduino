@@ -5,7 +5,7 @@
 
 Servo hSer;
 Servo vSer;
-TwoMotor mShield;
+TwoMotor twoMotor;
 
 /* пины Ультразвукового дальномера */
 int echoPin = A3; 
@@ -55,7 +55,7 @@ void loop() {
     isButtonPressed = false;
   }
 */
-  if (!mShield.isBusy()) {
+  if (!twoMotor.isBusy()) {
     RobotCommand* command = getRobotCommand4Run();
     if (command != NULL) {
       action(command);
@@ -92,12 +92,12 @@ void testDrive(char motor) {
 
   case 'l':
       Serial.println("Left MOTOR");
-      mShield.waitBusy();
+      twoMotor.waitBusy();
 //      for (int speed = 5; speed >= -5; speed--) {
-        mShield.leftMotorStart(speed, 2200);
+        twoMotor.leftMotorStart(speed, 2200);
         Serial.print("speed = ");
         Serial.println(speed);
-        while (mShield.isBusy()) {
+        while (twoMotor.isBusy()) {
           delay(100);
         }
 //      }
@@ -105,12 +105,12 @@ void testDrive(char motor) {
     
     case 'r':
       Serial.println("Right MOTOR");
-      mShield.waitBusy();
+      twoMotor.waitBusy();
 //      for (int speed = 5; speed >= -5; speed--) {
-        mShield.rightMotorStart(speed, 2200);
+        twoMotor.rightMotorStart(speed, 2200);
         Serial.print("speed = ");
         Serial.println(speed);
-        while (mShield.isBusy()) {
+        while (twoMotor.isBusy()) {
           delay(100);
         }
 //      }
@@ -120,5 +120,5 @@ void testDrive(char motor) {
       scanSituation();
       break;
   }
-  mShield.stopMotors();
+  twoMotor.stopMotors();
 }
