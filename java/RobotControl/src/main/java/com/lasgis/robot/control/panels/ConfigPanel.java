@@ -8,150 +8,54 @@
 
 package com.lasgis.robot.control.panels;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
-import javax.swing.JTree;
+import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Point;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.lasgis.util.Util.createImageButton;
 
 /**
  * Панель конфигурации.
  * @author VLaskin
  * @version 1.0 Date: 13.01.2005 16:38:05
  */
-public class ConfigPanel extends JPanel implements MouseWheelListener, MouseListener {
+public class ConfigPanel extends JPanel {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigPanel.class);
 
     /** дерево конфигурации. */
-    private JPanel tree;
-    /** панель для прокрутки дерева. */
-    private JScrollPane treeScroll;
+    private final JPanel controlPanel = new JPanel(new BorderLayout());
     /** панель для информации об ячейках. */
     private final JTextArea arealInfo = new JTextArea();
-
-
-    /**
-     * Invoked when the mouse wheel is rotated.
-     * @param event MouseWheelEvent
-     */
-    public void mouseWheelMoved(final MouseWheelEvent event) {
-        final int modif = event.getModifiersEx();
-        final int rotation = event.getWheelRotation();
-        /*if ((modif & InputEvent.CTRL_DOWN_MASK) != 0) {
-            //
-        } else*/
-        if ((modif & InputEvent.SHIFT_DOWN_MASK) != 0) {
-            final JScrollBar sb = treeScroll.getHorizontalScrollBar();
-            final int val = sb.getValue();
-            sb.setValue(val + rotation * 15);
-        } else {
-            final JScrollBar sb = treeScroll.getVerticalScrollBar();
-            final int val = sb.getValue();
-            sb.setValue(val + rotation * 15);
-        }
-    }
-
-    /**
-     * Invoked when the mouse button has been clicked (pressed and released) on a component.
-     * @param event MouseEvent
-     */
-    public void mouseClicked(final MouseEvent event) {
-        final Point pnt = event.getPoint();
-        final int button = event.getButton();
-        if (button == MouseEvent.BUTTON1) {
-            final JTree eventTree = (JTree) event.getSource();
-            final int row = eventTree.getLeadSelectionRow();
-            if (row >= 0) {
-                final Object object = eventTree.getLastSelectedPathComponent();
-/*
-                if (object instanceof DefaultMutableTreeNode) {
-                    final Object userObject = ((DefaultMutableTreeNode) object).getUserObject();
-                    if (userObject instanceof LiveObjectElement) {
-                        final LiveObjectElement element = (LiveObjectElement) userObject;
-                        final TreePath path = eventTree.getSelectionPath();
-                        final Rectangle rect = eventTree.getPathBounds(path);
-                        if (rect != null) {
-                            rect.width = 16;
-                            if (rect.contains(pnt)) {
-                                element.setShow(!element.isShow());
-                                eventTree.repaint();
-                            }
-                        }
-                    }
-                }
-*/
-            }
-        }
-    }
-
-    /**
-     * Invoked when a mouse button has been pressed on a component.
-     * @param event MouseEvent
-     */
-    public void mousePressed(final MouseEvent event) {
-        final Point pnt = event.getPoint();
-    }
-
-    /**
-     * Invoked when a mouse button has been released on a component.
-     * @param event MouseEvent
-     */
-    public void mouseReleased(final MouseEvent event) {
-        final Point pnt = event.getPoint();
-    }
-
-    /**
-     * Method for implements MouseListener.
-     * @param event MouseEvent
-     */
-    public void mouseEntered(final MouseEvent event) {
-        final Point pnt = event.getPoint();
-    }
-
-    /**
-     * Invoked when the mouse exits a component.
-     * @param event MouseEvent
-     */
-    public void mouseExited(final MouseEvent event) {
-        final Point pnt = event.getPoint();
-    }
 
     /**
      * Конструктор.
      */
     public ConfigPanel() {
         super();
-        tree = new JPanel();
-        tree.setBackground(MapPanel.PANEL_GRAY_COLOR);
-        treeScroll = new JScrollPane(tree);
-        treeScroll.setViewportView(tree);
 
-        final Font font = new Font("Arial", Font.PLAIN, 12);
+        fillControlPanel();
 
         /** панель для получении информации от робота. */
-        arealInfo.setFont(font);
-        arealInfo.setTabSize(16);
-        arealInfo.setColumns(2);
+        arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
         final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
         plantInfoScroll.setViewportView(arealInfo);
 
         /* разделительная панелька */
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitPane.setContinuousLayout(true);
-        splitPane.add(treeScroll, JSplitPane.TOP);
+        splitPane.add(controlPanel, JSplitPane.TOP);
         splitPane.add(plantInfoScroll, JSplitPane.BOTTOM);
         splitPane.setDividerLocation(100);
         splitPane.setLastDividerLocation(100);
@@ -160,10 +64,54 @@ public class ConfigPanel extends JPanel implements MouseWheelListener, MouseList
         setLayout(new BorderLayout());
         /* панель режима. */
         add(splitPane, BorderLayout.CENTER);
+    }
 
-        tree.addMouseWheelListener(this);
-        tree.addMouseListener(this);
+    private void fillControlPanel() {
+        controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
 
+        final JPanel keyPanel = new JPanel(new GridLayout(3, 3, 5, 5));
+        keyPanel.setSize(100, 100);
+        final JButton forward = createNavigationButton("arrow_up.gif", "вперед", null);
+        final JButton backward = createNavigationButton("arrow_down.gif", "назад", null);
+        final JButton toLeft = createNavigationButton("arrow_left.gif", "влево", null);
+        final JButton toRight = createNavigationButton("arrow_right.gif", "вправо", null);
+/*
+        arrow_down_left.gif
+        arrow_down_right.gif
+        arrow_up_left.gif
+        arrow_up_right.gif
+*/
+        keyPanel.add(new JLabel("TL", JLabel.CENTER));
+        keyPanel.add(forward);
+        keyPanel.add(new JLabel("TR", JLabel.CENTER ));
+        keyPanel.add(toLeft);
+        keyPanel.add(new JLabel("SC", JLabel.CENTER));
+        keyPanel.add(toRight);
+        keyPanel.add(new JLabel("BL", JLabel.CENTER));
+        keyPanel.add(backward);
+        keyPanel.add(new JLabel("BR", JLabel.CENTER));
+        controlPanel.add(keyPanel, BorderLayout.EAST);
+/*
+        controlPanel.add(new JPanel(true), BorderLayout.EAST);
+        controlPanel.add(new JPanel(false), BorderLayout.WEST);
+*/
+
+        final JTextField command = new JTextField();
+        command.addActionListener(e -> {
+            LOG.debug(e.getActionCommand());
+            LOG.debug("Class = " + e.getSource().getClass().getName());
+            ((JTextField) e.getSource()).setText("");
+        });
+        controlPanel.add(command, BorderLayout.SOUTH);
+
+    }
+
+    private JButton createNavigationButton(
+        final String iconName, final String toolTip, final ActionListener actListener
+    ) {
+        final JButton button = createImageButton(null, iconName, 24, 24, toolTip, actListener);
+        button.setBorderPainted(false);
+        return button;
     }
 
     public JTextArea getArealInfo() {

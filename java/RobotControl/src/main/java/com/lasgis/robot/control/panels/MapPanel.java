@@ -73,7 +73,7 @@ public class MapPanel extends JPanel
     /** Настройка выпадающего меню (пока только заготовка). */
     private SettingMenuItem[] setPopUpMenu = {
         new SettingMenuItem(
-            "Добавить животное", "pig.gif", "Добавить выделенное животное в данное место",
+            "Добавить животное", "openFile.gif", "Добавить выделенное животное в данное место",
             MapPanel.this::addElement, null
         ),
     };
