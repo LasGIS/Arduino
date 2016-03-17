@@ -138,6 +138,9 @@ public class MapPanel extends JPanel
             grBackgroundImage = new BufferedImage(
                 dim.width, dim.height, BufferedImage.TYPE_INT_RGB
             );
+            final Graphics bckGr = grBackgroundImage.getGraphics();
+            bckGr.setColor(MapPanel.PANEL_GRAY_COLOR);
+            bckGr.fillRect(0, 0, dim.width, dim.height);
             isRedrawMap = false;
         }
         gr.drawImage(grBackgroundImage, 0, 0, dim.width, dim.height, null);
