@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import jssc.SerialPort;
@@ -58,10 +59,29 @@ public class ConfigPanel extends JPanel {
     private final JPanel controlPanel = new JPanel(new BorderLayout());
     /** панель для информации об ячейках. */
     private final JTextArea arealInfo = new JTextArea();
+    /** поле для ввода команды. */
+    private final JTextField commandInput = new JTextField();
 
-    private final ActionListener enterOnInputAction = e -> {
-        LOG.debug(e.getActionCommand());
-        ((JTextField) e.getSource()).setText("");
+    /** Обработка события при смене текстовой команды (нажали ENTER в input). */
+    private final ActionListener enterOnInputAction = event -> {
+        LOG.debug(event.getActionCommand());
+        commandInput.setText("");
+    };
+
+    /** Обработка события нажатия кнопочки. */
+    class CommandActionListener implements ActionListener {
+
+        private final String command;
+
+        public CommandActionListener(final String command) {
+            this.command = command;
+        }
+
+        @Override
+        public void actionPerformed(final ActionEvent event) {
+            final String oldCom = commandInput.getText();
+            commandInput.setText(oldCom + command + "30" + ";");
+        }
     };
 
     /**
@@ -119,26 +139,25 @@ public class ConfigPanel extends JPanel {
         /* создание навигационных кнопок */
         final JPanel keyPanel = new JPanel(new GridLayout(3, 3, 5, 5));
         keyPanel.setSize(100, 100);
-        keyPanel.add(createNavigationButton("arrow_up_left.gif", "поворот вперёд и влево", null));
-        keyPanel.add(createNavigationButton("arrow_up.gif", "вперед", null));
-        keyPanel.add(createNavigationButton("arrow_up_right.gif", "поворот вперёд и вправо", null));
-        keyPanel.add(createNavigationButton("arrow_left.gif", "разворот влево наместе", null));
+        keyPanel.add(createNavigationButton("arrow_up_left.gif", "поворот вперёд и влево", "fl"));
+        keyPanel.add(createNavigationButton("arrow_up.gif", "вперед", "f"));
+        keyPanel.add(createNavigationButton("arrow_up_right.gif", "поворот вперёд и вправо", "fr"));
+        keyPanel.add(createNavigationButton("arrow_left.gif", "разворот влево наместе", "l"));
         keyPanel.add(new JLabel("SC", JLabel.CENTER));
-        keyPanel.add(createNavigationButton("arrow_right.gif", "разворот вправо наместе", null));
-        keyPanel.add(createNavigationButton("arrow_down_left.gif", "поворот назад и влево", null));
-        keyPanel.add(createNavigationButton("arrow_down.gif", "назад", null));
-        keyPanel.add(createNavigationButton("arrow_down_right.gif", "поворот назад и вправо", null));
+        keyPanel.add(createNavigationButton("arrow_right.gif", "разворот вправо наместе", "r"));
+        keyPanel.add(createNavigationButton("arrow_down_left.gif", "поворот назад и влево", "bl"));
+        keyPanel.add(createNavigationButton("arrow_down.gif", "назад", "b"));
+        keyPanel.add(createNavigationButton("arrow_down_right.gif", "поворот назад и вправо", "br"));
         controlPanel.add(keyPanel, BorderLayout.EAST);
 
-        final JTextField command = new JTextField();
-        command.addActionListener(enterOnInputAction);
-        controlPanel.add(command, BorderLayout.SOUTH);
+        commandInput.addActionListener(enterOnInputAction);
+        controlPanel.add(commandInput, BorderLayout.SOUTH);
     }
 
     private JButton createNavigationButton(
-        final String iconName, final String toolTip, final ActionListener actListener
+        final String iconName, final String toolTip, final String command
     ) {
-        final JButton button = createImageButton(null, iconName, 24, 24, toolTip, actListener);
+        final JButton button = createImageButton(null, iconName, 24, 24, toolTip, new CommandActionListener(command));
         button.setBorderPainted(false);
         button.setFocusPainted(false);
         button.setContentAreaFilled(true);
