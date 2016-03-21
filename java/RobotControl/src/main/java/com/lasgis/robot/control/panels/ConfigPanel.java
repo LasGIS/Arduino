@@ -90,7 +90,9 @@ public class ConfigPanel extends JPanel {
     public ConfigPanel() {
         super();
 
-        fillControlPanel();
+        controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
+        fillLinkPanel();
+        fillNavigationPanel();
 
         /** панель для получении информации от робота. */
         arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -102,8 +104,8 @@ public class ConfigPanel extends JPanel {
         splitPane.setContinuousLayout(true);
         splitPane.add(controlPanel, JSplitPane.TOP);
         splitPane.add(plantInfoScroll, JSplitPane.BOTTOM);
-        splitPane.setDividerLocation(100);
-        splitPane.setLastDividerLocation(100);
+        //splitPane.setDividerLocation(100);
+        //splitPane.setLastDividerLocation(100);
         splitPane.setResizeWeight(0.0);
 
         setLayout(new BorderLayout());
@@ -112,15 +114,10 @@ public class ConfigPanel extends JPanel {
 
     }
 
-    /**
-     * заполняем кнпочки
-     */
-    private void fillControlPanel() {
-        controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
-
-        /* создание панели связи с COM */
-        final JPanel comPanel = new JPanel();
-        comPanel.setLayout(new BoxLayout(comPanel, BoxLayout.LINE_AXIS));
+    /** создание панели связи с COM. */
+    private void fillLinkPanel() {
+        final JPanel linkPanel = new JPanel();
+        linkPanel.setLayout(new BoxLayout(linkPanel, BoxLayout.LINE_AXIS));
         final JComboBox<String> coms = new JComboBox<>(SerialPortList.getPortNames());
         coms.setSize(16, 20);
         final JComboBox<Integer> rates = new JComboBox<>(BAUD_RATES);
@@ -131,24 +128,26 @@ public class ConfigPanel extends JPanel {
         link.setBorderPainted(false);
         link.setFocusPainted(false);
         link.setContentAreaFilled(true);
-        comPanel.add(coms);
-        comPanel.add(rates);
-        comPanel.add(link);
-        controlPanel.add(comPanel, BorderLayout.NORTH);
+        linkPanel.add(coms);
+        linkPanel.add(rates);
+        linkPanel.add(link);
+        controlPanel.add(linkPanel, BorderLayout.NORTH);
+    }
 
-        /* создание навигационных кнопок */
-        final JPanel keyPanel = new JPanel(new GridLayout(3, 3, 5, 5));
-        keyPanel.setSize(100, 100);
-        keyPanel.add(createNavigationButton("arrow_up_left.gif", "поворот вперёд и влево", "fl"));
-        keyPanel.add(createNavigationButton("arrow_up.gif", "вперед", "f"));
-        keyPanel.add(createNavigationButton("arrow_up_right.gif", "поворот вперёд и вправо", "fr"));
-        keyPanel.add(createNavigationButton("arrow_left.gif", "разворот влево наместе", "l"));
-        keyPanel.add(new JLabel("SC", JLabel.CENTER));
-        keyPanel.add(createNavigationButton("arrow_right.gif", "разворот вправо наместе", "r"));
-        keyPanel.add(createNavigationButton("arrow_down_left.gif", "поворот назад и влево", "bl"));
-        keyPanel.add(createNavigationButton("arrow_down.gif", "назад", "b"));
-        keyPanel.add(createNavigationButton("arrow_down_right.gif", "поворот назад и вправо", "br"));
-        controlPanel.add(keyPanel, BorderLayout.EAST);
+    /** создание навигационных кнопок. */
+    private void fillNavigationPanel() {
+        final JPanel navigationPanel = new JPanel(new GridLayout(3, 3, 5, 5));
+        //keyPanel.setSize(150, 150);
+        navigationPanel.add(createNavigationButton("arrow_up_left.gif", "поворот вперёд и влево", "fl"));
+        navigationPanel.add(createNavigationButton("arrow_up.gif", "вперед", "f"));
+        navigationPanel.add(createNavigationButton("arrow_up_right.gif", "поворот вперёд и вправо", "fr"));
+        navigationPanel.add(createNavigationButton("arrow_left.gif", "разворот влево наместе", "l"));
+        navigationPanel.add(new JLabel("SC", JLabel.CENTER));
+        navigationPanel.add(createNavigationButton("arrow_right.gif", "разворот вправо наместе", "r"));
+        navigationPanel.add(createNavigationButton("arrow_down_left.gif", "поворот назад и влево", "bl"));
+        navigationPanel.add(createNavigationButton("arrow_down.gif", "назад", "b"));
+        navigationPanel.add(createNavigationButton("arrow_down_right.gif", "поворот назад и вправо", "br"));
+        controlPanel.add(navigationPanel, BorderLayout.EAST);
 
         commandInput.addActionListener(enterOnInputAction);
         controlPanel.add(commandInput, BorderLayout.SOUTH);
