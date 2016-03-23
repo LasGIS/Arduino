@@ -9,7 +9,7 @@
 
 <configuration scan="true" scanPeriod="2 minute">
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>D:\temp\log4j-RobotControl.log</file>
+    <file>C:\temp\log4j-RobotControl.log</file>
     <encoder>
       <pattern>%d [%t] %-5p %C{1} - %m%n</pattern>
     </encoder>

@@ -48,8 +48,8 @@ public class PortReader implements SerialPortEventListener {
                 baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE
             );
             //Включаем аппаратное управление потоком
-            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
-                                          SerialPort.FLOWCONTROL_RTSCTS_OUT);
+            /*serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
+                                          SerialPort.FLOWCONTROL_RTSCTS_OUT);*/
             //Устанавливаем ивент лисенер и маску
             serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
             portReader = this;
@@ -111,7 +111,6 @@ public class PortReader implements SerialPortEventListener {
                     listener.portReaderTrash(data);
                 }
                 System.out.print(data);
-                serialPort.writeString("Get data");
             } catch (final SerialPortException ex) {
                 LOG.error(ex.getMessage(), ex);
             }
