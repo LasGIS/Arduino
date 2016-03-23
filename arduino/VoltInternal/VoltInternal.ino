@@ -6,10 +6,25 @@ void setup() {
 }
 
 void loop() {
+/*
   int val = analogRead(A0);
   Serial.print("analogRead() = ");
   Serial.print(val);
   Serial.print("; V = ");
   Serial.println(val * rate);
   delay(1000);
+*/
+  delay(10);
+}
+
+void serialEvent() {
+  char buf[10];
+  while (Serial.available() > 0) {
+    int cnt = Serial.readBytes(buf, 10);
+    for (int i = 0; i < cnt; i++) {
+      Serial.write(buf[i]);
+    }
+    //Serial.println(".");
+  }
+  delay(10);
 }

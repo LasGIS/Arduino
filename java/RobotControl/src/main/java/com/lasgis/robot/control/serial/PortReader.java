@@ -8,6 +8,9 @@
 
 package com.lasgis.robot.control.serial;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -24,29 +27,65 @@ public class PortReader implements SerialPortEventListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(PortReader.class);
 
-    private static SerialPort serialPort;
+    private SerialPort serialPort = null;
+    private static PortReader portReader = null;
+
+    final StringBuilder sb = new StringBuilder();
+    final List<PortReaderListener> listeners = new ArrayList<>();
 
     /**
      * Конструктор.
      */
-    public PortReader() {
-        //Передаём в конструктор имя порта
-        serialPort = new SerialPort("COM14");
+    private PortReader(final String portName, final int baudRate) {
         try {
+            //Передаём в конструктор имя порта
+            serialPort = new SerialPort(portName);
+
             //Открываем порт
             serialPort.openPort();
             //Выставляем параметры
-            serialPort.setParams(SerialPort.BAUDRATE_9600,
-                                 SerialPort.DATABITS_8,
-                                 SerialPort.STOPBITS_1,
-                                 SerialPort.PARITY_NONE);
+            serialPort.setParams(
+                baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE
+            );
             //Включаем аппаратное управление потоком
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
                                           SerialPort.FLOWCONTROL_RTSCTS_OUT);
             //Устанавливаем ивент лисенер и маску
-            serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-            //Отправляем запрос устройству
-            serialPort.writeString("Get data 1");
+            serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
+            portReader = this;
+
+        } catch (final SerialPortException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
+
+    public static PortReader createPortReader(final String portName, final int baudRate) {
+
+        if (portReader != null && portReader.serialPort != null) {
+            try {
+                portReader.serialPort.closePort();
+            } catch (final SerialPortException ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
+        }
+
+        portReader = new PortReader(portName, baudRate);
+        return portReader;
+    }
+
+    public static PortReader getPortReader() {
+        return portReader;
+    }
+
+    /**
+     * Отправляем message устройству
+     * @param data message
+     */
+    public void writeString(final String data) {
+        try {
+            if (serialPort != null) {
+                serialPort.writeString(data);
+            }
         } catch (final SerialPortException ex) {
             LOG.error(ex.getMessage(), ex);
         }
@@ -58,12 +97,28 @@ public class PortReader implements SerialPortEventListener {
             try {
                 //Получаем ответ от устройства, обрабатываем данные и т.д.
                 final String data = serialPort.readString(event.getEventValue());
-                LOG.info(data);
-                //И снова отправляем запрос
+                sb.append(data);
+                int crInd;
+                while ((crInd = sb.indexOf("\r\n")) >= 0) {
+                    final String string = sb.substring(0, crInd);
+                    for (final PortReaderListener listener : listeners) {
+                        listener.portReaderCarriageReturn(string);
+                    }
+                    //LOG.info(string);
+                    sb.delete(0, crInd + 2);
+                }
+                for (final PortReaderListener listener : listeners) {
+                    listener.portReaderTrash(data);
+                }
+                System.out.print(data);
                 serialPort.writeString("Get data");
             } catch (final SerialPortException ex) {
                 LOG.error(ex.getMessage(), ex);
             }
         }
+    }
+
+    public void addListener(final PortReaderListener listener) {
+        listeners.add(listener);
     }
 }

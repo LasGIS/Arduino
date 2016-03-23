@@ -127,6 +127,8 @@ public class MainFrame extends JFrame implements ComponentListener {
             contentPane.add(jStatusBar, BorderLayout.SOUTH);
             contentPane.add(splitPane, BorderLayout.CENTER);
             configPanel = new ConfigPanel();
+            configPanel.setMainFrame(this);
+
             splitPane.add(configPanel, JSplitPane.RIGHT);
             splitPane.add(mapPanel, JSplitPane.LEFT);
             splitPane.setLastDividerLocation(size.width - 250);

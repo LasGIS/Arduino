@@ -14,17 +14,21 @@
       <pattern>%d [%t] %-5p %C{1} - %m%n</pattern>
     </encoder>
   </appender>
+<!--
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%d [%t] %-5p %C{1} - %m%n</pattern>
     </encoder>
   </appender>
+-->
 
   <!-- TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
-  <logger name="com.lasgis.robot.control" level="DEBUG">
+  <logger name="com.lasgis.robot" level="DEBUG">
     <appender-ref ref="FILE"/>
   </logger>
+<!--
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
   </root>
+-->
 </configuration>

@@ -17,13 +17,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultCaret;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import com.lasgis.robot.control.serial.PortReader;
+import com.lasgis.robot.control.serial.PortReaderListener;
 import jssc.SerialPort;
 import jssc.SerialPortList;
 import org.slf4j.Logger;
@@ -36,7 +41,7 @@ import static com.lasgis.util.Util.createImageButton;
  * @author VLaskin
  * @version 1.0 Date: 13.01.2005 16:38:05
  */
-public class ConfigPanel extends JPanel {
+public class ConfigPanel extends JPanel implements PortReaderListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigPanel.class);
 
@@ -55,18 +60,40 @@ public class ConfigPanel extends JPanel {
         SerialPort.BAUDRATE_128000,
         SerialPort.BAUDRATE_256000,
     };
+    private String[] portNames = SerialPortList.getPortNames();
+    /** ссылка на MainFrame. */
+    private MainFrame mainFrame = null;
     /** дерево конфигурации. */
     private final JPanel controlPanel = new JPanel(new BorderLayout());
     /** панель для информации об ячейках. */
     private final JTextArea arealInfo = new JTextArea();
     /** поле для ввода команды. */
     private final JTextField commandInput = new JTextField();
+    /** ComboBox for serial ports. */
+    private final JComboBox<String> portNamesComboBox = new JComboBox<>(portNames);
+    /** ComboBox for baud rates. */
+    private final JComboBox<Integer> baudRatesComboBox = new JComboBox<>(BAUD_RATES);
+
+    /** Восстановление или установление связи с девайсом. */
+    private final ActionListener resetLinkAction = event -> {
+        LOG.debug("Reset Link Action{}", event.getActionCommand());
+        final PortReader portReader = PortReader.createPortReader(
+            (String) portNamesComboBox.getSelectedItem(), (Integer) baudRatesComboBox.getSelectedItem()
+        );
+        portReader.addListener(this);
+        portReader.addListener(mainFrame.getMapPanel());
+    };
 
     /** Обработка события при смене текстовой команды (нажали ENTER в input). */
     private final ActionListener enterOnInputAction = event -> {
         LOG.debug(event.getActionCommand());
+        PortReader.getPortReader().writeString(event.getActionCommand());
         commandInput.setText("");
     };
+
+    public void setMainFrame(final MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+    }
 
     /** Обработка события нажатия кнопочки. */
     class CommandActionListener implements ActionListener {
@@ -80,7 +107,10 @@ public class ConfigPanel extends JPanel {
         @Override
         public void actionPerformed(final ActionEvent event) {
             final String oldCom = commandInput.getText();
-            commandInput.setText(oldCom + command + "30" + ";");
+            String outText = oldCom + command + "30" + ";";
+            //commandInput.setText(outText);
+            PortReader.getPortReader().writeString(outText);
+            LOG.debug(outText);
         }
     };
 
@@ -98,6 +128,7 @@ public class ConfigPanel extends JPanel {
         arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
         final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
         plantInfoScroll.setViewportView(arealInfo);
+        ((DefaultCaret) arealInfo.getCaret()).setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
 
         /* разделительная панелька */
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -111,25 +142,38 @@ public class ConfigPanel extends JPanel {
         setLayout(new BorderLayout());
         /* панель режима. */
         add(splitPane, BorderLayout.CENTER);
-
+        final Timer tick = new Timer();
+        tick.schedule(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    final String[] newPortNames = SerialPortList.getPortNames();
+                    if (portNames.length != newPortNames.length) {
+                        portNames = newPortNames;
+                        portNamesComboBox.removeAllItems();
+                        for (String portName : portNames) {
+                            portNamesComboBox.addItem(portName);
+                        }
+                    }
+                }
+            }, 1000, 2000
+        );
     }
 
     /** создание панели связи с COM. */
     private void fillLinkPanel() {
         final JPanel linkPanel = new JPanel();
         linkPanel.setLayout(new BoxLayout(linkPanel, BoxLayout.LINE_AXIS));
-        final JComboBox<String> coms = new JComboBox<>(SerialPortList.getPortNames());
-        coms.setSize(16, 20);
-        final JComboBox<Integer> rates = new JComboBox<>(BAUD_RATES);
-        rates.setSize(16, 20);
-        rates.setSelectedItem(SerialPort.BAUDRATE_9600);
-        final JButton link = createImageButton("Link", null, 64, 20, "Восстановить связь", null);
+        portNamesComboBox.setSize(16, 20);
+        baudRatesComboBox.setSize(16, 20);
+        baudRatesComboBox.setSelectedItem(SerialPort.BAUDRATE_9600);
+        final JButton link = createImageButton("Link", null, 64, 20, "Восстановить связь", resetLinkAction);
         link.setBackground(Color.CYAN);
         link.setBorderPainted(false);
         link.setFocusPainted(false);
         link.setContentAreaFilled(true);
-        linkPanel.add(coms);
-        linkPanel.add(rates);
+        linkPanel.add(portNamesComboBox);
+        linkPanel.add(baudRatesComboBox);
         linkPanel.add(link);
         controlPanel.add(linkPanel, BorderLayout.NORTH);
     }
@@ -165,5 +209,15 @@ public class ConfigPanel extends JPanel {
 
     public JTextArea getArealInfo() {
         return arealInfo;
+    }
+
+    @Override
+    public void portReaderCarriageReturn(final String string) {
+
+    }
+
+    @Override
+    public void portReaderTrash(final String string) {
+        arealInfo.append(string);
     }
 }

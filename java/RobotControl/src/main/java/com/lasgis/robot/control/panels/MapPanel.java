@@ -30,6 +30,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.lasgis.robot.control.serial.PortReaderListener;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.Util;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  */
 public class MapPanel extends JPanel
-    implements MouseMotionListener, KeyListener, FocusListener, MouseListener, MouseWheelListener {
+    implements MouseMotionListener, KeyListener, FocusListener, MouseListener, MouseWheelListener, PortReaderListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(MapPanel.class);
 
@@ -396,4 +397,13 @@ public class MapPanel extends JPanel
         isAutoDraw.getAndSet(autoDraw);
     }
 
+    @Override
+    public void portReaderCarriageReturn(final String string) {
+
+    }
+
+    @Override
+    public void portReaderTrash(final String string) {
+
+    }
 }
