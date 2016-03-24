@@ -58,8 +58,9 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         SerialPort.BAUDRATE_57600,
         SerialPort.BAUDRATE_115200,
         SerialPort.BAUDRATE_128000,
-        SerialPort.BAUDRATE_256000,
+        SerialPort.BAUDRATE_256000
     };
+    private static final Integer[] GEARS = {1, 2, 3, 4, 5};
     private String[] portNames = SerialPortList.getPortNames();
     /** ссылка на MainFrame. */
     private MainFrame mainFrame = null;
@@ -69,6 +70,12 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private final JTextArea arealInfo = new JTextArea();
     /** поле для ввода команды. */
     private final JTextField commandInput = new JTextField();
+    /** поле для ввода расстояния. */
+    private final JTextField distanceInput = new JTextField();
+    /** поле для ввода угла поворота. */
+    private final JTextField angleInput = new JTextField();
+    /** поле для ввода передачи. */
+    private final JComboBox<Integer> gearComboBox = new JComboBox(GEARS);
     /** ComboBox for serial ports. */
     private final JComboBox<String> portNamesComboBox = new JComboBox<>(portNames);
     /** ComboBox for baud rates. */
@@ -123,6 +130,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
         fillLinkPanel();
         fillNavigationPanel();
+        fillParametersPanel();
 
         /** панель для получении информации от робота. */
         arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -195,6 +203,25 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
         commandInput.addActionListener(enterOnInputAction);
         controlPanel.add(commandInput, BorderLayout.SOUTH);
+    }
+
+    /** создание доп атрибутов. */
+    private void fillParametersPanel() {
+        final JPanel parametersPanel = new JPanel(new GridLayout(3, 3, 2, 2));
+
+        parametersPanel.add(new JLabel("Дистанция", JLabel.RIGHT));
+        parametersPanel.add(distanceInput);
+        parametersPanel.add(new JLabel("[см]", JLabel.LEFT));
+
+        parametersPanel.add(new JLabel("Угол (поворота)", JLabel.RIGHT));
+        parametersPanel.add(angleInput);
+        parametersPanel.add(new JLabel("[град]", JLabel.LEFT));
+
+        parametersPanel.add(new JLabel("Передача", JLabel.RIGHT));
+        parametersPanel.add(gearComboBox);
+        parametersPanel.add(new JLabel("?", JLabel.LEFT));
+
+        controlPanel.add(parametersPanel, BorderLayout.WEST);
     }
 
     private JButton createNavigationButton(
