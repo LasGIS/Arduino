@@ -87,7 +87,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     /** Обработка события при смене текстовой команды (нажали ENTER в input). */
     private final ActionListener enterOnInputAction = event -> {
         LOG.debug(event.getActionCommand());
-        PortReader.getPortReader().writeString(event.getActionCommand());
+        PortReader.writeString(event.getActionCommand());
         commandInput.setText("");
     };
 
@@ -109,7 +109,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             final String oldCom = commandInput.getText();
             String outText = oldCom + command + "30" + ";";
             //commandInput.setText(outText);
-            PortReader.getPortReader().writeString(outText);
+            PortReader.writeString(outText);
             LOG.debug(outText);
         }
     };

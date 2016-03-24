@@ -81,10 +81,13 @@ public class PortReader implements SerialPortEventListener {
      * Отправляем message устройству
      * @param data message
      */
-    public void writeString(final String data) {
+    public static void writeString(final String data) {
         try {
-            if (serialPort != null) {
-                serialPort.writeString(data);
+            final PortReader portReader = PortReader.getPortReader();
+            if (portReader != null) {
+                if (portReader.serialPort != null) {
+                    portReader.serialPort.writeString(data);
+                }
             }
         } catch (final SerialPortException ex) {
             LOG.error(ex.getMessage(), ex);
