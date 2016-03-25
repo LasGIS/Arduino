@@ -27,8 +27,8 @@ public class PortReader implements SerialPortEventListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(PortReader.class);
 
-    private SerialPort serialPort = null;
     private static PortReader portReader = null;
+    private SerialPort serialPort = null;
 
     final StringBuilder sb = new StringBuilder();
     final List<PortReaderListener> listeners = new ArrayList<>();
@@ -37,6 +37,10 @@ public class PortReader implements SerialPortEventListener {
      * Конструктор.
      */
     private PortReader(final String portName, final int baudRate) {
+        connect(portName, baudRate);
+    }
+
+    public void connect(final String portName, final int baudRate) {
         try {
             //Передаём в конструктор имя порта
             serialPort = new SerialPort(portName);
@@ -61,12 +65,8 @@ public class PortReader implements SerialPortEventListener {
 
     public static PortReader createPortReader(final String portName, final int baudRate) {
 
-        if (portReader != null && portReader.serialPort != null) {
-            try {
-                portReader.serialPort.closePort();
-            } catch (final SerialPortException ex) {
-                LOG.error(ex.getMessage(), ex);
-            }
+        if (portReader != null) {
+            portReader.stop();
         }
 
         portReader = new PortReader(portName, baudRate);
@@ -91,6 +91,17 @@ public class PortReader implements SerialPortEventListener {
             }
         } catch (final SerialPortException ex) {
             LOG.error(ex.getMessage(), ex);
+        }
+    }
+
+    public void stop() {
+        if (serialPort != null) {
+            try {
+                serialPort.closePort();
+                serialPort = null;
+            } catch (final SerialPortException ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
         }
     }
 
@@ -122,5 +133,9 @@ public class PortReader implements SerialPortEventListener {
 
     public void addListener(final PortReaderListener listener) {
         listeners.add(listener);
+    }
+
+    public SerialPort getSerialPort() {
+        return serialPort;
     }
 }

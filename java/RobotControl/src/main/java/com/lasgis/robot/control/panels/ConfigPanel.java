@@ -82,12 +82,33 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
     /** Восстановление или установление связи с девайсом. */
     private final ActionListener resetLinkAction = event -> {
-        LOG.debug("Reset Link Action{}", event.getActionCommand());
-        final PortReader portReader = PortReader.createPortReader(
-            (String) portNamesComboBox.getSelectedItem(), (Integer) baudRatesComboBox.getSelectedItem()
-        );
-        portReader.addListener(this);
-        portReader.addListener(mainFrame.getMapPanel());
+        final JButton button = (JButton) event.getSource();
+        final String portName = (String) portNamesComboBox.getSelectedItem();
+        final Integer baudRate = (Integer) baudRatesComboBox.getSelectedItem();
+        PortReader portReader = PortReader.getPortReader();
+        if (portReader == null) {
+            LOG.debug("Create Port Reader Action{}", event.getActionCommand());
+            portReader = PortReader.createPortReader(portName, baudRate);
+            portReader.addListener(this);
+            portReader.addListener(mainFrame.getMapPanel());
+            button.setBackground(new Color(255, 225, 0, 255));
+            button.setForeground(new Color(188, 148, 0));
+            button.setText("Stop");
+        } else if (portReader.getSerialPort() == null) {
+            LOG.debug("Create Port Reader Action{}", event.getActionCommand());
+            portReader.connect(portName, baudRate);
+            //portReader.addListener(this);
+            //portReader.addListener(mainFrame.getMapPanel());
+            button.setBackground(new Color(255, 0, 0, 255));
+            button.setForeground(new Color(128, 0, 0));
+            button.setText("Stop");
+        } else {
+            LOG.debug("Create Port Reader Action{}", event.getActionCommand());
+            portReader.stop();
+            button.setBackground(new Color(0, 255, 0, 89));
+            button.setForeground(new Color(0, 128, 0));
+            button.setText("Connect");
+        }
     };
 
     /** Обработка события при смене текстовой команды (нажали ENTER в input). */
@@ -178,8 +199,9 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         portNamesComboBox.setSize(16, 20);
         baudRatesComboBox.setSize(16, 20);
         baudRatesComboBox.setSelectedItem(SerialPort.BAUDRATE_9600);
-        final JButton link = createImageButton("Link", null, 64, 20, "Восстановить связь", resetLinkAction);
-        link.setBackground(Color.CYAN);
+        final JButton link = createImageButton("Link", null, 80, 20, "Восстановить связь", resetLinkAction);
+        link.setBackground(new Color(0, 255, 255, 89));
+        link.setForeground(new Color(0, 128, 128));
         link.setBorderPainted(false);
         link.setFocusPainted(false);
         link.setContentAreaFilled(true);
