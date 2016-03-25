@@ -131,8 +131,8 @@ public class MainFrame extends JFrame implements ComponentListener {
 
             splitPane.add(configPanel, JSplitPane.RIGHT);
             splitPane.add(mapPanel, JSplitPane.LEFT);
-            splitPane.setLastDividerLocation(size.width - 250);
-            splitPane.setDividerLocation(size.width - 250);
+            //splitPane.setLastDividerLocation(size.width - 300);
+            //splitPane.setDividerLocation(size.width - 300);
             splitPane.setResizeWeight(1);
         } catch (final Exception ex) {
             LOG.error(ex.getMessage(), ex);
