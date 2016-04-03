@@ -42,8 +42,8 @@ TFT::TFT(uint8_t CS, uint8_t RS, uint8_t RST) : Adafruit_ST7735(CS, RS, RST) {
   _height = ST7735_TFTWIDTH;
 }
 
-void TFT::begin() {
+void TFT::begin(byte rotation) {
   initR(INITR_GREENTAB);
   //initG();
-  setRotation(3);
+  setRotation(rotation);
 }

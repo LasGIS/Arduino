@@ -25,7 +25,7 @@ void setup() {
   Serial.begin(9600);
 
   // Put this line at the beginning of every sketch that uses the GLCD:
-  TFTscreen.begin();
+  TFTscreen.begin(0);
 
   // clear the screen with a black background
   TFTscreen.background(0, 0, 0);
