@@ -48,7 +48,8 @@ void loop() {
   static char sensorPrintout[10];
 
   // Read the value of the sensor on A0
-  float sensor = (analogRead(A0) * 5) / 1023.0;
+  float factor = 2.5 / analogRead(A0);
+  float sensor = analogRead(A1) * factor;
   String sensorVal = String(sensor) + 'v'; //'\333';
   // convert the reading to a char array
   sensorVal.toCharArray(sensorPrintout, 6);

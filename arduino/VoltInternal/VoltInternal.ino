@@ -6,15 +6,12 @@ void setup() {
 }
 
 void loop() {
-/*
   int val = analogRead(A0);
   Serial.print("analogRead() = ");
   Serial.print(val);
   Serial.print("; V = ");
   Serial.println(val * rate);
   delay(1000);
-*/
-  delay(10);
 }
 
 void serialEvent() {
