@@ -98,10 +98,10 @@ public class PortReader implements SerialPortEventListener {
         if (serialPort != null) {
             try {
                 serialPort.closePort();
-                serialPort = null;
             } catch (final SerialPortException ex) {
                 LOG.error(ex.getMessage(), ex);
             }
+            serialPort = null;
         }
     }
 

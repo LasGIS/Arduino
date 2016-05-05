@@ -86,8 +86,8 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         final String portName = (String) portNamesComboBox.getSelectedItem();
         final Integer baudRate = (Integer) baudRatesComboBox.getSelectedItem();
         PortReader portReader = PortReader.getPortReader();
+        LOG.debug("Port Reader Action {}", event.getActionCommand());
         if (portReader == null) {
-            LOG.debug("Create Port Reader Action{}", event.getActionCommand());
             portReader = PortReader.createPortReader(portName, baudRate);
             portReader.addListener(this);
             portReader.addListener(mainFrame.getMapPanel());
@@ -95,7 +95,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             button.setForeground(new Color(188, 148, 0));
             button.setText("Stop");
         } else if (portReader.getSerialPort() == null) {
-            LOG.debug("Create Port Reader Action{}", event.getActionCommand());
             portReader.connect(portName, baudRate);
             //portReader.addListener(this);
             //portReader.addListener(mainFrame.getMapPanel());
@@ -103,7 +102,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             button.setForeground(new Color(128, 0, 0));
             button.setText("Stop");
         } else {
-            LOG.debug("Create Port Reader Action{}", event.getActionCommand());
             portReader.stop();
             button.setBackground(new Color(0, 255, 0, 89));
             button.setForeground(new Color(0, 128, 0));
