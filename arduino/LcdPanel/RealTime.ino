@@ -48,6 +48,9 @@ void printTime(LPShowModeType showMode) {
     viewCustomDigit(4, t.hr % 10); 
     viewCustomDigit(9, t.min / 10);
     viewCustomDigit(13, t.min % 10);
+    lcd.setCursor(7, 1);
+    snprintf(buf, sizeof(buf), "%02d", t.sec);
+    lcd.print(buf);
     break;
   case DataTime:
     snprintf(buf, sizeof(buf), "%s %04d-%02d-%02d ", day.c_str(), t.yr, t.mon, t.date);

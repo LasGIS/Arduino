@@ -34,7 +34,7 @@ LPMode mode = show;
 unsigned long milliSec;
 
 /** настраиваем измеритель влажности. */
-DHT dht(A2, DHT11);
+DHT dht(A2, DHT22);
 
 /* пины Ультразвукового дальномера */
 int echoPin = A1; 
@@ -203,7 +203,7 @@ void serialEvent() {
 /** Показываем время */
 void lcdShowTime(LPShowModeType showMode) {
   unsigned long msec = millis();
-  if ((msec - milliSec) / 1000 > 0) {
+  if ((msec - milliSec) / 100 > 0) {
     milliSec = msec;
     printTime(showMode);
   }
@@ -273,25 +273,25 @@ void temperatureHumidity(LPShowModeType showMode) {
 
     if (showMode == TimeHum) {
       lcd.setCursor(0, 1);
-      lcd.print("Temp ");
-      lcd.print(t, 0);
+      lcd.print("T=");
+      lcd.print(t, 1);
       lcd.print("C ");
-      lcd.print("Hum ");
-      lcd.print(h, 0);
+      lcd.print("H=");
+      lcd.print(h, 1);
       lcd.print("% ");
-      lcd.print("ind ");
+      lcd.print("I=");
       lcd.print(hic, 2);
       lcd.print("C ");
     } else if (showMode == Humidity) {
       lcd.setCursor(0, 0);
-      lcd.print("Temper ");
-      lcd.print(t, 0);
-      lcd.print("|");
+      lcd.print("Tem ");
+      lcd.print(t, 1);
+      lcd.print("C/");
       lcd.print(hic, 2);
       lcd.print("C ");
       lcd.setCursor(0, 1);
       lcd.print("Humidity ");
-      lcd.print(h, 0);
+      lcd.print(h, 1);
       lcd.print("%    ");
     }
     Serial.print("Humidity: ");
