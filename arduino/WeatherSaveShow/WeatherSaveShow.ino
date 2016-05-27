@@ -6,10 +6,10 @@
  ** CLK - пин 13
  ** CS - пин 4
  */
-#include <Arduino.h>
-#include <TFT_lg.h>
+//#include <Arduino.h>
 #include <SPI.h>
-#include <SD.h>;
+#include <SD.h>
+#include <TFT_lg.h>
 #include <DHT.h>
 
 File myFile;
@@ -23,13 +23,25 @@ File myFile;
 TFT screen = TFT(cs, dc, rst);
 
 /** настраиваем измеритель влажности. */
-DHT dht(6, DHT22);
+DHT dht1(7, DHT22);
+DHT dht2(6, DHT22);
 
-uint16_t foneColor;
-uint16_t errorColor;
-uint16_t markColor;
-uint16_t markHourColor;
-uint16_t markMinColor;
+#define TEMPERATURE_START 0.0
+#define TEMPERATURE_MULTIPLIER 2.5
+
+#define colorT1       0b0000000111011111
+#define colorT2       0b0111100111011111
+#define colorB1       0b0000011111100000
+#define colorB2       0b0111111111100000
+#define colorTime     0b1111100111100111
+#define voltColor     0b1111100000011111
+#define foneColor     0b0011000110000110
+#define errorColor    0b0000000000011111
+#define markColor     0b1111111111111111
+#define markTempColor 0b0011000110010111
+#define markMinColor  0b0110001100001100
+#define markHourColor 0b1001010010010010
+
 int curX = 0;
 
 void setup() {
@@ -41,19 +53,16 @@ void setup() {
 
   // clear the screen with a black background
   screen.background(0, 0, 0);
-  foneColor = screen.newColor(50, 50, 50);
-  errorColor = screen.newColor(0, 0, 255);
-  markColor = screen.newColor(255, 255, 255);
-  markMinColor = screen.newColor(150, 100, 100);
-  markHourColor = screen.newColor(150, 150, 150);
 
   screen.stroke(255, 255, 255);
   screen.setTextSize(1);
-  screen.text("Напряжение=10.00V\nТемпер.=    C Влажн.=    %", 0, 0);
+  //screen.text("Напряжение=10.00V\nТемпер.=    C Влажн.=    %", 0, 0);
+  screen.text("Т1=    C В1=    %      min\nТ2=    C В2=    % V=     V", 0, 0);
 
   initSD();
 
-  dht.begin();
+  dht1.begin();
+  dht2.begin();
 }
 
 void loop() {
@@ -63,12 +72,19 @@ void loop() {
 
   temperatureHumidity(sensor);
 
-  screen.stroke(255, 0, 255);
-  screen.fillRect(66, 0, 29, 7, 0);
-  screen.text("", 66, 0);
+  fillPlace(20, 1, 5, voltColor);
   screen.print(sensor, 2);
 
   delay(2000);
+}
+
+/**
+ * зачищаем место для надписи
+ */
+void fillPlace(int x, int y, int len, color col) {
+  screen.stroke(col);
+  screen.fillRect(x * 6, y * 8, (len * 6) - 1, 7, 0);
+  screen.text("", x * 6, y * 8);
 }
 
 /**
@@ -90,16 +106,20 @@ void initSD() {
 /**
  * сохраняем на SD
  */
-void saveData(long time, float volt, float temp, float hum) {
+void saveData(long time, float volt, float temp1, float hum1, float temp2, float hum2) {
   File dataFile = SD.open("datalog.txt", FILE_WRITE);
   // if the file is available, write to it:
   if (dataFile) {
     dataFile.print("time=");
     dataFile.print(time / 60000.0, 2);
-    dataFile.print(",T=");
-    dataFile.print(temp, 1);
-    dataFile.print(",H=");
-    dataFile.print(hum, 1);
+    dataFile.print(",T1=");
+    dataFile.print(temp1, 1);
+    dataFile.print(",H1=");
+    dataFile.print(hum1, 1);
+    dataFile.print(",T2=");
+    dataFile.print(temp2, 1);
+    dataFile.print(",H2=");
+    dataFile.print(hum2, 1);
     dataFile.print(",V=");
     dataFile.println(volt, 2);
     dataFile.close();
@@ -107,9 +127,8 @@ void saveData(long time, float volt, float temp, float hum) {
   } else {
     Serial.println("error on datalog.txt");
 /*
-    screen.stroke(0, 0, 255);
-    screen.fillRect(0, 16, 160, 7, 0);
-    screen.text("error on datalog.txt", 0, 16);
+    fillPlace(0, 2, 27, screen.stroke(0, 0, 255));
+    screen.print("error on datalog.txt", 0, 16);
 */
     screen.drawFastVLine(curX, 16, 7, errorColor);
   }
@@ -118,7 +137,7 @@ void saveData(long time, float volt, float temp, float hum) {
 /**
  * показываем на экране
  */
-void showData(long time, float volt, float temp, float hum) {
+void showData(long time, float volt, float temp1, float hum1, float temp2, float hum2) {
   static int hour = 0;
   static int min = 0;
   int tHour = time / 3600000;
@@ -132,11 +151,28 @@ void showData(long time, float volt, float temp, float hum) {
     hour = tHour;
     color = markHourColor;
   }
-  int ty = (int) (128 - (temp - 20) * 10);
-  int hy = (int) (128 - hum);
-  screen.drawFastVLine(curX, 28, 100, color);
-  screen.drawPixel(curX, ty, screen.newColor(0, 130, 255));
-  screen.drawPixel(curX, hy, screen.newColor(0, 255, 0));
+  screen.drawFastVLine(curX, 27, 100, color);
+  showTempMarks();
+  if (!isnan(hum1)) showHum(hum1, colorB1);
+  if (!isnan(hum2)) showHum(hum2, colorB2);
+  if (!isnan(temp1)) showTemp(temp1, colorT1);
+  if (!isnan(temp2)) showTemp(temp2, colorT2);
+}
+
+void showTempMarks() {
+  for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 10.0) {
+    showTemp(temp, markTempColor);
+  }
+}
+
+void showTemp(float temp, color col) {
+  int ty = (int) (127 - (temp - TEMPERATURE_START) * TEMPERATURE_MULTIPLIER);
+  screen.drawPixel(curX, ty, col);
+}
+
+void showHum(float hum, color col) {
+  int hy = (int) (127 - hum);
+  screen.drawPixel(curX, hy, col);
 }
 
 /**
@@ -144,33 +180,40 @@ void showData(long time, float volt, float temp, float hum) {
  */
 void temperatureHumidity(float volt) {
   static int count = -1;
-  long time = millis();
-  double hum = dht.readHumidity();
-  double temp = dht.readTemperature();
+  long   time  = millis();
+  double temp1 = dht1.readTemperature();
+  double hum1  = dht1.readHumidity();
+  double temp2 = dht2.readTemperature();
+  double hum2  = dht2.readHumidity();
 
-  saveData(time, volt, temp, hum);
+  saveData(time, volt, temp1, hum1, temp2, hum2);
 
   if (count != time / 180000) {
     count = time / 180000;
-    showData(time, volt, temp, hum);
+    showData(time, volt, temp1, hum1, temp2, hum2);
     curX++; if (curX >= 160) curX = 0;
-    screen.drawFastVLine(curX, 28, 100, markColor);
+    screen.drawFastVLine(curX, 27, 101, markColor);
   }
-  screen.stroke(0, 120, 255);
-  screen.fillRect(48, 8, 23, 7, 0);
-  screen.text("", 48, 8);
-  screen.print(temp, 1);
-
-  screen.stroke(0, 255, 0);
-  screen.fillRect(126, 8, 23, 7, 0);
-  screen.text("", 126, 8);
-  screen.print(hum, 1);
+  fillPlace(17, 0, 6, colorTime);
+  screen.print(time / 60000.0, 2);
+  fillPlace(3, 0, 4, colorT1);
+  screen.print(temp1, 1);
+  fillPlace(12, 0, 4, colorB1);
+  screen.print(hum1, 1);
+  fillPlace(3, 1, 4, colorT2);
+  screen.print(temp2, 1);
+  fillPlace(12, 1, 4, colorB2);
+  screen.print(hum2, 1);
 
   Serial.print("Volt: ");
   Serial.print(volt);
-  Serial.print(" V\tTemperature: ");
-  Serial.print(temp);
-  Serial.print(" *C\tHumidity: ");
-  Serial.print(hum);
-  Serial.println(" %");
+  Serial.print("V;\tTemp1: ");
+  Serial.print(temp1);
+  Serial.print("*C;\tHum1: ");
+  Serial.print(hum1);
+  Serial.print("%;\tTemp2: ");
+  Serial.print(temp2);
+  Serial.print("*C;\tHum2: ");
+  Serial.print(hum2);
+  Serial.println("%;");
 }
