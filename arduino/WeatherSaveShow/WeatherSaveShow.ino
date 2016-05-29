@@ -35,10 +35,10 @@ DHT dht2(6, DHT22);
 #define colorB2       0b0111111111100000
 #define colorTime     0b1111100111100111
 #define voltColor     0b1111100000011111
-#define foneColor     0b0011000110000110
+#define foneColor     0b0001000010000010
 #define errorColor    0b0000000000011111
 #define markColor     0b1111111111111111
-#define markTempColor 0b0011000110010111
+#define markTempColor 0b1001010010010010
 #define markMinColor  0b0110001100001100
 #define markHourColor 0b1001010010010010
 
@@ -57,7 +57,7 @@ void setup() {
   screen.stroke(255, 255, 255);
   screen.setTextSize(1);
   //screen.text("Напряжение=10.00V\nТемпер.=    C Влажн.=    %", 0, 0);
-  screen.text("Т1=    C В1=    %      min\nТ2=    C В2=    % V=     V", 0, 0);
+  screen.text("Т1=    C В1=    %        м\nТ2=    C В2=    % V=     V", 0, 0);
 
   initSD();
 
@@ -194,7 +194,7 @@ void temperatureHumidity(float volt) {
     curX++; if (curX >= 160) curX = 0;
     screen.drawFastVLine(curX, 27, 101, markColor);
   }
-  fillPlace(17, 0, 6, colorTime);
+  fillPlace(17, 0, 8, colorTime);
   screen.print(time / 60000.0, 2);
   fillPlace(3, 0, 4, colorT1);
   screen.print(temp1, 1);

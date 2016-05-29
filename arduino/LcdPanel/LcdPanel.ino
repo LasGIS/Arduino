@@ -34,7 +34,7 @@ LPMode mode = show;
 unsigned long milliSec;
 
 /** настраиваем измеритель влажности. */
-DHT dht(A2, DHT22);
+DHT dht(A2, DHT11);
 
 /* пины Ультразвукового дальномера */
 int echoPin = A1; 

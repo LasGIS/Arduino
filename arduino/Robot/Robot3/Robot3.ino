@@ -21,8 +21,8 @@ bool isAutorun = false;
 */
 
 void setup() {
-  //Serial.begin(9600);
-  Serial.begin(250000);
+  Serial.begin(9600);
+  //Serial.begin(128000);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 //  pinMode(buttonPin, INPUT);

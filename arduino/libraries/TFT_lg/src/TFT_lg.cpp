@@ -43,7 +43,7 @@ TFT::TFT(uint8_t CS, uint8_t RS, uint8_t RST) : Adafruit_ST7735(CS, RS, RST) {
 }
 
 void TFT::begin(byte rotation) {
-  initR(INITR_GREENTAB);
-  //initG();
+  //initR(INITR_GREENTAB);
+  initG();
   setRotation(rotation);
 }
