@@ -26,8 +26,8 @@ TFT screen = TFT(cs, dc, rst);
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
 
-#define TEMPERATURE_START 0.0
-#define TEMPERATURE_MULTIPLIER 2.5
+#define TEMPERATURE_START -10.0
+#define TEMPERATURE_MULTIPLIER 2.0
 
 #define colorT1       0b0000000111011111
 #define colorT2       0b0111100111011111
@@ -35,7 +35,7 @@ DHT dht2(6, DHT22);
 #define colorB2       0b0111111111100000
 #define colorTime     0b1111100111100111
 #define voltColor     0b1111100000011111
-#define foneColor     0b0001000010000010
+#define foneColor     0b0000100001000001
 #define errorColor    0b0000000000011111
 #define markColor     0b1111111111111111
 #define markTempColor 0b1001010010010010
@@ -160,8 +160,8 @@ void showData(long time, float volt, float temp1, float hum1, float temp2, float
 }
 
 void showTempMarks() {
-  for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 10.0) {
-    showTemp(temp, markTempColor);
+  for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 2.5) {
+    showTemp(temp, ((int) temp % 10 == 0) ? markTempColor : markMinColor);
   }
 }
 
