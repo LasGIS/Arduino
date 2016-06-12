@@ -28,14 +28,18 @@ DHT dht2(6, DHT22);
 
 #define TEMPERATURE_START -10.0
 #define TEMPERATURE_MULTIPLIER 2.0
+/* весь экран - 8 часов */
+//#define TIME_MULTIPLIER 180000
+/* весь экран - 24 часа */
+#define TIME_MULTIPLIER 540000
 
 #define colorT1       0b0000000111011111
 #define colorT2       0b0111100111011111
 #define colorB1       0b0000011111100000
 #define colorB2       0b0111111111100000
-#define colorTime     0b1111100111100111
-#define voltColor     0b1111100000011111
-#define foneColor     0b0000100001000001
+#define colorTime     0b0111101111101111
+#define voltColor     0b1111100100000100
+#define foneColor     0b0000000000000000
 #define errorColor    0b0000000000011111
 #define markColor     0b1111111111111111
 #define markTempColor 0b1001010010010010
@@ -141,7 +145,7 @@ void showData(long time, float volt, float temp1, float hum1, float temp2, float
   static int hour = 0;
   static int min = 0;
   int tHour = time / 3600000;
-  int tMin = time / 900000; // 15 мин
+  int tMin = time / 1800000; // 30 мин
   uint16_t color = foneColor;
   if (min != tMin) {
     min = tMin;
@@ -153,6 +157,7 @@ void showData(long time, float volt, float temp1, float hum1, float temp2, float
   }
   screen.drawFastVLine(curX, 27, 100, color);
   showTempMarks();
+  if (!isnan(volt)) showVolt(volt, voltColor);
   if (!isnan(hum1)) showHum(hum1, colorB1);
   if (!isnan(hum2)) showHum(hum2, colorB2);
   if (!isnan(temp1)) showTemp(temp1, colorT1);
@@ -160,7 +165,7 @@ void showData(long time, float volt, float temp1, float hum1, float temp2, float
 }
 
 void showTempMarks() {
-  for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 2.5) {
+  for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 2.0) {
     showTemp(temp, ((int) temp % 10 == 0) ? markTempColor : markMinColor);
   }
 }
@@ -173,6 +178,11 @@ void showTemp(float temp, color col) {
 void showHum(float hum, color col) {
   int hy = (int) (127 - hum);
   screen.drawPixel(curX, hy, col);
+}
+
+void showVolt(float volt, color col) {
+  int vy = (int) (127 - (volt - 2.0) * 40);
+  screen.drawPixel(curX, vy, col);
 }
 
 /**
@@ -188,8 +198,8 @@ void temperatureHumidity(float volt) {
 
   saveData(time, volt, temp1, hum1, temp2, hum2);
 
-  if (count != time / 180000) {
-    count = time / 180000;
+  if (count != time / TIME_MULTIPLIER) {
+    count = time / TIME_MULTIPLIER;
     showData(time, volt, temp1, hum1, temp2, hum2);
     curX++; if (curX >= 160) curX = 0;
     screen.drawFastVLine(curX, 27, 101, markColor);
