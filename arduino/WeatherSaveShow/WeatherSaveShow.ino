@@ -26,6 +26,7 @@ TFT screen = TFT(cs, dc, rst);
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
 
+//#define HAS_SERIAL
 #define TEMPERATURE_START -10.0
 #define TEMPERATURE_MULTIPLIER 2.0
 /* весь экран - 8 часов */
@@ -49,9 +50,10 @@ DHT dht2(6, DHT22);
 int curX = 0;
 
 void setup() {
+#ifdef HAS_SERIAL
   // begin serial communication
   Serial.begin(9600);
-
+#endif
   // Put this line at the beginning of every sketch that uses the GLCD:
   screen.begin(3);
 
@@ -95,14 +97,20 @@ void fillPlace(int x, int y, int len, color col) {
  * Инициализация SD
  */
 void initSD() {
+#ifdef HAS_SERIAL
   Serial.print("Initializing SD card...");
+#endif
   if (!SD.begin(4)) {
     screen.stroke(0, 0, 255);
+#ifdef HAS_SERIAL
     Serial.println("initialization SD card failed!");
+#endif
     screen.text("init SD card failed!", 0, 16);
     return;
   }
+#ifdef HAS_SERIAL
   Serial.println("initialization done.");
+#endif
   screen.stroke(255, 120, 120);
   screen.text("init SD card done.", 0, 16);
 }
@@ -129,7 +137,9 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
     dataFile.close();
     screen.drawFastVLine(curX, 16, 7, foneColor);
   } else {
+#ifdef HAS_SERIAL
     Serial.println("error on datalog.txt");
+#endif
 /*
     fillPlace(0, 2, 27, screen.stroke(0, 0, 255));
     screen.print("error on datalog.txt", 0, 16);
@@ -141,22 +151,26 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
 /**
  * показываем на экране
  */
-void showData(long time, float volt, float temp1, float hum1, float temp2, float hum2) {
+void showData(long time, float volt, float temp1, float hum1, float temp2, float hum2, bool isVline) {
   static int hour = 0;
-  static int min = 0;
-  int tHour = time / 3600000;
-  int tMin = time / 1800000; // 30 мин
+//  static int min = 0;
   uint16_t color = foneColor;
-  if (min != tMin) {
-    min = tMin;
-    color = markMinColor;
+  if (isVline) {
+/*
+    int tMin = time / 900000; // 15 мин
+    if (min != tMin) {
+      min = tMin;
+      color = markMinColor;
+    }
+*/
+    int tHour = time / 3600000;
+    if (hour != tHour) {
+      hour = tHour;
+      color = markHourColor;
+    }
+    screen.drawFastVLine(curX, 27, 100, color);
+    showTempMarks();
   }
-  if (hour != tHour) {
-    hour = tHour;
-    color = markHourColor;
-  }
-  screen.drawFastVLine(curX, 27, 100, color);
-  showTempMarks();
   if (!isnan(volt)) showVolt(volt, voltColor);
   if (!isnan(hum1)) showHum(hum1, colorB1);
   if (!isnan(hum2)) showHum(hum2, colorB2);
@@ -165,7 +179,7 @@ void showData(long time, float volt, float temp1, float hum1, float temp2, float
 }
 
 void showTempMarks() {
-  for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 2.0) {
+  for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 5.0) {
     showTemp(temp, ((int) temp % 10 == 0) ? markTempColor : markMinColor);
   }
 }
@@ -190,6 +204,7 @@ void showVolt(float volt, color col) {
  */
 void temperatureHumidity(float volt) {
   static int count = -1;
+  static int cntX = 0;
   long   time  = millis();
   double temp1 = dht1.readTemperature();
   double hum1  = dht1.readHumidity();
@@ -200,9 +215,13 @@ void temperatureHumidity(float volt) {
 
   if (count != time / TIME_MULTIPLIER) {
     count = time / TIME_MULTIPLIER;
-    showData(time, volt, temp1, hum1, temp2, hum2);
     curX++; if (curX >= 160) curX = 0;
-    screen.drawFastVLine(curX, 27, 101, markColor);
+    int curNextX = curX + 1; if (curNextX >= 160) curNextX = 0;
+    screen.drawFastVLine(curNextX, 27, 101, markColor);
+    cntX = 0;
+  } else {
+    showData(time, volt, temp1, hum1, temp2, hum2, cntX == 0);
+    cntX++;
   }
   fillPlace(17, 0, 8, colorTime);
   screen.print(time / 60000.0, 2);
@@ -215,6 +234,7 @@ void temperatureHumidity(float volt) {
   fillPlace(12, 1, 4, colorB2);
   screen.print(hum2, 1);
 
+#ifdef HAS_SERIAL
   Serial.print("Volt: ");
   Serial.print(volt);
   Serial.print("V;\tTemp1: ");
@@ -226,4 +246,5 @@ void temperatureHumidity(float volt) {
   Serial.print("*C;\tHum2: ");
   Serial.print(hum2);
   Serial.println("%;");
+#endif
 }
