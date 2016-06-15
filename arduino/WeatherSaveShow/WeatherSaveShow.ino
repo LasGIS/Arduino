@@ -30,7 +30,7 @@ DHT dht2(6, DHT22);
 #define TEMPERATURE_START -10.0
 #define TEMPERATURE_MULTIPLIER 2.0
 /* весь экран - 8 часов */
-//#define TIME_MULTIPLIER 180000
+//#define TIME_MULTIPLIER 200000
 /* весь экран - 24 часа */
 #define TIME_MULTIPLIER 600000
 
@@ -47,12 +47,12 @@ DHT dht2(6, DHT22);
 #define markMinColor  0b0110001100001100
 #define markHourColor 0b1001010010010010
 
-#define screenTop     16
-#define screenLeft    12
-#define screenRigth   156
-#define screenBottom  116
+#define screenTop     19
+#define screenBottom  119
+#define screenLeft    16
+#define screenRigth   159
 
-int curX = screenLeft;
+int curX = screenLeft - 1;
 
 void setup() {
 #ifdef HAS_SERIAL
@@ -68,7 +68,7 @@ void setup() {
   screen.stroke(255, 255, 255);
   screen.setTextSize(1);
   //screen.text("Напряжение=10.00V\nТемпер.=    C Влажн.=    %", 0, 0);
-  screen.text("Т1=    C В1=    %        м\nТ2=    C В2=    % V=     V", 0, 0);
+  screen.text("Т1=    C В1=    %         \nТ2=    C В2=    % V=     V", 0, 0);
   drawGrid();
 
   initSD();
@@ -96,18 +96,29 @@ void loop() {
 void fillPlace(int x, int y, int len, color col) {
   screen.stroke(col);
   screen.fillRect(x * 6, y * 8, (len * 6) - 1, 7, 0);
-  screen.text("", x * 6, y * 8);
+  screen.setCursor(x * 6, y * 8);
 }
 
 /**
  * показываем решётку
  */
 void drawGrid() {
-  screen.drawFastVLine(screenLeft - 1, screenTop,    100, markTempColor);
-  screen.drawFastVLine(screenRigth,    screenTop,    100, markTempColor);
-  screen.drawFastHLine(screenLeft - 1, screenTop,    146, markTempColor);
-  screen.drawFastHLine(screenLeft - 1, screenBottom, 146, markTempColor);
-
+  screen.drawFastVLine(screenLeft,  screenTop,    100, voltColor);
+  screen.drawFastVLine(screenRigth, screenTop,    100, voltColor);
+  screen.drawFastHLine(screenLeft,  screenTop,    144, voltColor);
+  screen.drawFastHLine(screenLeft,  screenBottom, 144, voltColor);
+  screen.stroke(colorT1);
+  for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 10) {
+    int ty = (int) (screenBottom - (temp - TEMPERATURE_START) * TEMPERATURE_MULTIPLIER);
+    screen.setCursor((temp >= 0.0 ? screenLeft - 12 : screenLeft - 18), ty - 3);
+    screen.print(temp, 0);
+  }
+  screen.stroke(colorTime);
+  for (int time = 0; time <= 24; time += 3) {
+    int tx = (int) (screenLeft + time * 6);
+    screen.setCursor(time < 10 ? tx - 2 : (time < 24 ? tx - 5 : tx - 10), screenBottom + 2);
+    screen.print(time);
+  }
 }
 
 /**
@@ -122,14 +133,14 @@ void initSD() {
 #ifdef HAS_SERIAL
     Serial.println("initialization SD card failed!");
 #endif
-    screen.text("init SD card failed!", 0, 16);
+    screen.text("init SD card failed!", screenLeft + 1, screenTop + 1);
     return;
   }
 #ifdef HAS_SERIAL
   Serial.println("initialization done.");
 #endif
   screen.stroke(255, 120, 120);
-  screen.text("init SD card done.", 0, 16);
+  screen.text("init SD card done.", screenLeft + 1, screenTop + 1);
 }
 
 /**
@@ -178,7 +189,7 @@ void showData(long time, float volt, float temp1, float hum1, float temp2, float
       min = tMin;
       color = markMinColor;
     }
-    int tHour = time / 108000000; // 3 часа
+    int tHour = time / 10800000; // 3 часа
     if (hour != tHour) {
       hour = tHour;
       color = markHourColor;
@@ -218,7 +229,7 @@ void showVolt(float volt, color col) {
  * Показываем температуру и влажность
  */
 void temperatureHumidity(float volt) {
-  static int count = 0;
+  static int count = -1;
   static int cntX = 0;
   long   time  = millis();
   double temp1 = dht1.readTemperature();
@@ -230,16 +241,22 @@ void temperatureHumidity(float volt) {
 
   if (count != time / TIME_MULTIPLIER) {
     count = time / TIME_MULTIPLIER;
-    curX++; if (curX >= 144) curX = screenLeft;
-    int curNextX = curX + 1; if (curNextX >= 144) curNextX = screenLeft;
+    curX++;
+    if (curX > screenRigth) curX = screenLeft;
+    int curNextX = curX + 1; if (curNextX > screenRigth) curNextX = screenLeft;
     screen.drawFastVLine(curNextX, screenTop, 101, markColor);
     cntX = 0;
-  } else {
-    showData(time, volt, temp1, hum1, temp2, hum2, cntX == 0);
-    cntX++;
   }
-  fillPlace(17, 0, 8, colorTime);
-  screen.print(time / 60000.0, 2);
+  showData(time, volt, temp1, hum1, temp2, hum2, cntX == 0);
+  cntX++;
+
+  char buf[10];
+  int hour = (time / 3600000) % 24;
+  int min = (time / 60000) % 60;
+  int sec = (time / 1000) % 60;
+  snprintf(buf, sizeof(buf), "%02d:%02d:%02d", hour, min, sec);
+  fillPlace(18, 0, 8, colorTime);
+  screen.print(buf);
   fillPlace(3, 0, 4, colorT1);
   screen.print(temp1, 1);
   fillPlace(12, 0, 4, colorB1);
