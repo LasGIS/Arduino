@@ -32,7 +32,7 @@ DHT dht2(6, DHT22);
 /* весь экран - 8 часов */
 //#define TIME_MULTIPLIER 180000
 /* весь экран - 24 часа */
-#define TIME_MULTIPLIER 540000
+#define TIME_MULTIPLIER 600000
 
 #define colorT1       0b0000000111011111
 #define colorT2       0b0111100111011111
@@ -40,14 +40,19 @@ DHT dht2(6, DHT22);
 #define colorB2       0b0111111111100000
 #define colorTime     0b0111101111101111
 #define voltColor     0b1111100100000100
-#define foneColor     0b0000000000000000
+#define foneColor     0b0001100011100011
 #define errorColor    0b0000000000011111
 #define markColor     0b1111111111111111
 #define markTempColor 0b1001010010010010
 #define markMinColor  0b0110001100001100
 #define markHourColor 0b1001010010010010
 
-int curX = 0;
+#define screenTop     16
+#define screenLeft    12
+#define screenRigth   156
+#define screenBottom  116
+
+int curX = screenLeft;
 
 void setup() {
 #ifdef HAS_SERIAL
@@ -64,6 +69,7 @@ void setup() {
   screen.setTextSize(1);
   //screen.text("Напряжение=10.00V\nТемпер.=    C Влажн.=    %", 0, 0);
   screen.text("Т1=    C В1=    %        м\nТ2=    C В2=    % V=     V", 0, 0);
+  drawGrid();
 
   initSD();
 
@@ -91,6 +97,17 @@ void fillPlace(int x, int y, int len, color col) {
   screen.stroke(col);
   screen.fillRect(x * 6, y * 8, (len * 6) - 1, 7, 0);
   screen.text("", x * 6, y * 8);
+}
+
+/**
+ * показываем решётку
+ */
+void drawGrid() {
+  screen.drawFastVLine(screenLeft - 1, screenTop,    100, markTempColor);
+  screen.drawFastVLine(screenRigth,    screenTop,    100, markTempColor);
+  screen.drawFastHLine(screenLeft - 1, screenTop,    146, markTempColor);
+  screen.drawFastHLine(screenLeft - 1, screenBottom, 146, markTempColor);
+
 }
 
 /**
@@ -135,7 +152,7 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
     dataFile.print(",V=");
     dataFile.println(volt, 2);
     dataFile.close();
-    screen.drawFastVLine(curX, 16, 7, foneColor);
+    //screen.drawFastVLine(curX, 16, 7, foneColor);
   } else {
 #ifdef HAS_SERIAL
     Serial.println("error on datalog.txt");
@@ -144,7 +161,7 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
     fillPlace(0, 2, 27, screen.stroke(0, 0, 255));
     screen.print("error on datalog.txt", 0, 16);
 */
-    screen.drawFastVLine(curX, 16, 7, errorColor);
+    //screen.drawFastVLine(curX, 16, 7, errorColor);
   }
 }
 
@@ -153,22 +170,20 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
  */
 void showData(long time, float volt, float temp1, float hum1, float temp2, float hum2, bool isVline) {
   static int hour = 0;
-//  static int min = 0;
+  static int min = 0;
   uint16_t color = foneColor;
   if (isVline) {
-/*
-    int tMin = time / 900000; // 15 мин
+    int tMin = time / 3600000; // 1 час 900000; // 15 мин
     if (min != tMin) {
       min = tMin;
       color = markMinColor;
     }
-*/
-    int tHour = time / 3600000;
+    int tHour = time / 108000000; // 3 часа
     if (hour != tHour) {
       hour = tHour;
       color = markHourColor;
     }
-    screen.drawFastVLine(curX, 27, 100, color);
+    screen.drawFastVLine(curX, screenTop, 100, color);
     showTempMarks();
   }
   if (!isnan(volt)) showVolt(volt, voltColor);
@@ -185,17 +200,17 @@ void showTempMarks() {
 }
 
 void showTemp(float temp, color col) {
-  int ty = (int) (127 - (temp - TEMPERATURE_START) * TEMPERATURE_MULTIPLIER);
+  int ty = (int) (screenBottom - (temp - TEMPERATURE_START) * TEMPERATURE_MULTIPLIER);
   screen.drawPixel(curX, ty, col);
 }
 
 void showHum(float hum, color col) {
-  int hy = (int) (127 - hum);
+  int hy = (int) (screenBottom - hum);
   screen.drawPixel(curX, hy, col);
 }
 
 void showVolt(float volt, color col) {
-  int vy = (int) (127 - (volt - 2.0) * 40);
+  int vy = (int) (screenBottom - (volt - 2.0) * 40);
   screen.drawPixel(curX, vy, col);
 }
 
@@ -203,7 +218,7 @@ void showVolt(float volt, color col) {
  * Показываем температуру и влажность
  */
 void temperatureHumidity(float volt) {
-  static int count = -1;
+  static int count = 0;
   static int cntX = 0;
   long   time  = millis();
   double temp1 = dht1.readTemperature();
@@ -215,9 +230,9 @@ void temperatureHumidity(float volt) {
 
   if (count != time / TIME_MULTIPLIER) {
     count = time / TIME_MULTIPLIER;
-    curX++; if (curX >= 160) curX = 0;
-    int curNextX = curX + 1; if (curNextX >= 160) curNextX = 0;
-    screen.drawFastVLine(curNextX, 27, 101, markColor);
+    curX++; if (curX >= 144) curX = screenLeft;
+    int curNextX = curX + 1; if (curNextX >= 144) curNextX = screenLeft;
+    screen.drawFastVLine(curNextX, screenTop, 101, markColor);
     cntX = 0;
   } else {
     showData(time, volt, temp1, hum1, temp2, hum2, cntX == 0);
