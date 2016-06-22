@@ -49,10 +49,12 @@ DHT dht2(6, DHT22);
 
 #define screenTop     19
 #define screenBottom  119
-#define screenLeft    16
-#define screenRigth   159
+#define screenLeft    1
+#define screenRigth   144
 
 int curX = screenLeft - 1;
+int curNextX = curX + 1;
+int curNextY = screenTop;
 
 void setup() {
 #ifdef HAS_SERIAL
@@ -87,7 +89,7 @@ void loop() {
   fillPlace(20, 1, 5, voltColor);
   screen.print(sensor, 2);
 
-  delay(2000);
+  delay(6000);
 }
 
 /**
@@ -103,20 +105,20 @@ void fillPlace(int x, int y, int len, color col) {
  * показываем решётку
  */
 void drawGrid() {
-  screen.drawFastVLine(screenLeft,  screenTop,    100, voltColor);
+  screen.drawFastVLine(screenLeft,  screenTop,    100, markHourColor);
   screen.drawFastVLine(screenRigth, screenTop,    100, voltColor);
   screen.drawFastHLine(screenLeft,  screenTop,    144, voltColor);
   screen.drawFastHLine(screenLeft,  screenBottom, 144, voltColor);
   screen.stroke(colorT1);
   for (float temp = TEMPERATURE_START; temp <= TEMPERATURE_START + 100 / TEMPERATURE_MULTIPLIER; temp += 10) {
     int ty = (int) (screenBottom - (temp - TEMPERATURE_START) * TEMPERATURE_MULTIPLIER);
-    screen.setCursor((temp >= 0.0 ? screenLeft - 12 : screenLeft - 18), ty - 3);
+    screen.setCursor((temp >= 0.0 ? screenRigth + 3 : screenRigth - 1), ty - 3);
     screen.print(temp, 0);
   }
   screen.stroke(colorTime);
   for (int time = 0; time <= 24; time += 3) {
     int tx = (int) (screenLeft + time * 6);
-    screen.setCursor(time < 10 ? tx - 2 : (time < 24 ? tx - 5 : tx - 10), screenBottom + 2);
+    screen.setCursor(time < 10 ? (time == 0 ? tx - 1 : tx - 2) : tx - 6, screenBottom + 2);
     screen.print(time);
   }
 }
@@ -163,7 +165,7 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
     dataFile.print(",V=");
     dataFile.println(volt, 2);
     dataFile.close();
-    //screen.drawFastVLine(curX, 16, 7, foneColor);
+    //screen.drawPixel(curNextX, curNextY, foneColor);
   } else {
 #ifdef HAS_SERIAL
     Serial.println("error on datalog.txt");
@@ -172,7 +174,8 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
     fillPlace(0, 2, 27, screen.stroke(0, 0, 255));
     screen.print("error on datalog.txt", 0, 16);
 */
-    //screen.drawFastVLine(curX, 16, 7, errorColor);
+    screen.drawPixel(curNextX, curNextY, errorColor);
+    curNextY++; if (curNextY > screenBottom) curNextY = screenTop;
   }
 }
 
@@ -180,8 +183,8 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
  * показываем на экране
  */
 void showData(long time, float volt, float temp1, float hum1, float temp2, float hum2, bool isVline) {
-  static int hour = 0;
-  static int min = 0;
+  static int hour = -1;
+  static int min = -1;
   uint16_t color = foneColor;
   if (isVline) {
     int tMin = time / 3600000; // 1 час 900000; // 15 мин
@@ -241,9 +244,9 @@ void temperatureHumidity(float volt) {
 
   if (count != time / TIME_MULTIPLIER) {
     count = time / TIME_MULTIPLIER;
-    curX++;
-    if (curX > screenRigth) curX = screenLeft;
-    int curNextX = curX + 1; if (curNextX > screenRigth) curNextX = screenLeft;
+    curX++; if (curX > screenRigth) curX = screenLeft;
+    curNextX++; if (curNextX > screenRigth) curNextX = screenLeft;
+    curNextY = screenTop;
     screen.drawFastVLine(curNextX, screenTop, 101, markColor);
     cntX = 0;
   }
