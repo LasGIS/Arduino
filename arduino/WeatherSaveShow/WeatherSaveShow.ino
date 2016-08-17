@@ -130,7 +130,7 @@ void initSD() {
 #ifdef HAS_SERIAL
   Serial.print("Initializing SD card...");
 #endif
-  if (!SD.begin(4)) {
+  if (!SD.begin(A3)) {
     screen.stroke(0, 0, 255);
 #ifdef HAS_SERIAL
     Serial.println("initialization SD card failed!");
