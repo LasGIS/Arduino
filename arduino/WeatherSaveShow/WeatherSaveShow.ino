@@ -1,30 +1,48 @@
 /**
- * Читаем MicroSD на TFT Экран
- * SD карта подключается так:
- ** MOSI - пин 11
- ** MISO - пин 12
- ** CLK - пин 13
- ** CS - пин 4
+ * Ловим температуру и влажность,
+ * выводим её на TFT Экран и пишем в SD.
  */
+
 //#include <Arduino.h>
 #include <SPI.h>
 #include <SD.h>
 #include <TFT_lg.h>
 #include <DHT.h>
+#include <IrControl.h>
+#include <DS1302.h>
 
 File myFile;
 
-// pin definition for the Uno
-#define cs   10
-#define dc   9
-#define rst  8
+/**
+ **S D карта подключается так (подключение пинов по умолчанию):
+ ** MOSI - пин 11
+ ** MISO - пин 12
+ ** CLK - пин 13
+ ** CS - пин A3
+ */
+// pin definition for SD
+#define sd_cs  A3
 
-// create an instance of the library
-TFT screen = TFT(cs, dc, rst);
+// pin definition for screen TFT
+#define tft_cs   10
+#define tft_dc   9
+#define tft_rst  8
+
+// create an instance of the screen TFT library
+TFT screen = TFT(tft_cs, tft_dc, tft_rst);
 
 /** настраиваем измеритель влажности. */
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
+
+// указываем пин для ИК датчика
+IrControl irControl(2);
+
+/** настраиваем real time clock. */
+const int kCePin   = 3;  // Chip Enable
+const int kIoPin   = 4;  // Input/Output
+const int kSclkPin = 5;  // Serial Clock
+DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 //#define HAS_SERIAL
 #define TEMPERATURE_START -10.0
@@ -77,6 +95,8 @@ void setup() {
 
   dht1.begin();
   dht2.begin();
+
+  irControl.start();
 }
 
 void loop() {
@@ -88,6 +108,11 @@ void loop() {
 
   fillPlace(20, 1, 5, voltColor);
   screen.print(sensor, 2);
+
+  if (irControl.hasCode()) {
+    long code = irControl.getCode();
+    IrControlKey* irControlKey = irControl.toControlKey(code);
+  }
 
   delay(6000);
 }
@@ -130,7 +155,7 @@ void initSD() {
 #ifdef HAS_SERIAL
   Serial.print("Initializing SD card...");
 #endif
-  if (!SD.begin(A3)) {
+  if (!SD.begin(sd_cs)) {
     screen.stroke(0, 0, 255);
 #ifdef HAS_SERIAL
     Serial.println("initialization SD card failed!");
