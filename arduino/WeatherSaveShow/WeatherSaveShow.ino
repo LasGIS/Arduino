@@ -259,7 +259,9 @@ void showVolt(float volt, color col) {
 void temperatureHumidity(float volt) {
   static int count = -1;
   static int cntX = 0;
-  long   time  = millis();
+  Time rtcTime = rtc.time();
+  long   time = (((rtcTime.hr * 60 + rtcTime.min) * 60) + rtcTime.sec) * 1000;
+//  long   time = millis();
   double temp1 = dht1.readTemperature();
   double hum1  = dht1.readHumidity();
   double temp2 = dht2.readTemperature();
@@ -279,10 +281,10 @@ void temperatureHumidity(float volt) {
   cntX++;
 
   char buf[10];
-  int hour = (time / 3600000) % 24;
+/*  int hour = (time / 3600000) % 24;
   int min = (time / 60000) % 60;
-  int sec = (time / 1000) % 60;
-  snprintf(buf, sizeof(buf), "%02d:%02d:%02d", hour, min, sec);
+  int sec = (time / 1000) % 60;*/
+  snprintf(buf, sizeof(buf), "%02d:%02d:%02d", rtcTime.hr, rtcTime.min, rtcTime.sec);
   fillPlace(18, 0, 8, colorTime);
   screen.print(buf);
   fillPlace(3, 0, 4, colorT1);
