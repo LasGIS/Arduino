@@ -67,7 +67,7 @@ DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 #define screenTop     19
 #define screenBottom  119
-#define screenLeft    1
+#define screenLeft    0
 #define screenRigth   144
 
 int curX = screenLeft - 1;
@@ -143,7 +143,7 @@ void drawGrid() {
   screen.stroke(colorTime);
   for (int time = 0; time <= 24; time += 3) {
     int tx = (int) (screenLeft + time * 6);
-    screen.setCursor(time < 10 ? (time == 0 ? tx - 1 : tx - 2) : tx - 6, screenBottom + 2);
+    screen.setCursor(time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6, screenBottom + 2);
     screen.print(time);
   }
 }
@@ -173,12 +173,16 @@ void initSD() {
 /**
  * сохраняем на SD
  */
-void saveData(long time, float volt, float temp1, float hum1, float temp2, float hum2) {
+void saveData(Time time, float volt, float temp1, float hum1, float temp2, float hum2) {
   File dataFile = SD.open("datalog.txt", FILE_WRITE);
   // if the file is available, write to it:
   if (dataFile) {
+    char buf[20];
     dataFile.print("time=");
-    dataFile.print(time / 60000.0, 2);
+    snprintf(buf, sizeof(buf), "%02d/%02d/%04d %02d:%02d:%02d",
+      time.date, time.mon, time.yr, time.hr, time.min, time.sec
+    );
+    dataFile.print(buf);
     dataFile.print(",T1=");
     dataFile.print(temp1, 1);
     dataFile.print(",H1=");
@@ -208,19 +212,18 @@ void saveData(long time, float volt, float temp1, float hum1, float temp2, float
  * показываем на экране
  */
 void showData(long time, float volt, float temp1, float hum1, float temp2, float hum2, bool isVline) {
-  static int hour = -1;
-  static int min = -1;
-  uint16_t color = foneColor;
   if (isVline) {
-    int tMin = time / 3600000; // 1 час 900000; // 15 мин
-    if (min != tMin) {
-      min = tMin;
+    uint16_t color;
+    // 3 часа
+    if (time % 10800000 < TIME_MULTIPLIER) {
+      color = markHourColor;
+    }
+    // 1 час 900000; // 15 мин
+    else if (time % 3600000 < TIME_MULTIPLIER) {
       color = markMinColor;
     }
-    int tHour = time / 10800000; // 3 часа
-    if (hour != tHour) {
-      hour = tHour;
-      color = markHourColor;
+    else {
+      color = foneColor;
     }
     screen.drawFastVLine(curX, screenTop, 100, color);
     showTempMarks();
@@ -257,11 +260,12 @@ void showVolt(float volt, color col) {
  * Показываем температуру и влажность
  */
 void temperatureHumidity(float volt) {
-  static int count = -1;
   static int cntX = 0;
-  Time rtcTime = rtc.time();
-  long   time = (((rtcTime.hr * 60 + rtcTime.min) * 60) + rtcTime.sec) * 1000;
-//  long   time = millis();
+  Time time = rtc.time();
+//  long   lTime = millis();
+  long lTime = (((time.hr * 60l + time.min) * 60) + time.sec) * 1000;
+//  fillPlace(8, 4, 10, colorTime);
+//  screen.print(lTime);
   double temp1 = dht1.readTemperature();
   double hum1  = dht1.readHumidity();
   double temp2 = dht2.readTemperature();
@@ -269,22 +273,20 @@ void temperatureHumidity(float volt) {
 
   saveData(time, volt, temp1, hum1, temp2, hum2);
 
-  if (count != time / TIME_MULTIPLIER) {
-    count = time / TIME_MULTIPLIER;
-    curX++; if (curX > screenRigth) curX = screenLeft;
-    curNextX++; if (curNextX > screenRigth) curNextX = screenLeft;
+  if (curX != lTime / TIME_MULTIPLIER) {
+    curX = lTime / TIME_MULTIPLIER;
+    if (curX >= screenRigth) curX = screenLeft;
+    curNextX = curX + 1;
+    if (curNextX >= screenRigth) curNextX = screenLeft;
     curNextY = screenTop;
     screen.drawFastVLine(curNextX, screenTop, 101, markColor);
     cntX = 0;
   }
-  showData(time, volt, temp1, hum1, temp2, hum2, cntX == 0);
+  showData(lTime, volt, temp1, hum1, temp2, hum2, cntX == 0);
   cntX++;
 
   char buf[10];
-/*  int hour = (time / 3600000) % 24;
-  int min = (time / 60000) % 60;
-  int sec = (time / 1000) % 60;*/
-  snprintf(buf, sizeof(buf), "%02d:%02d:%02d", rtcTime.hr, rtcTime.min, rtcTime.sec);
+  snprintf(buf, sizeof(buf), "%02d:%02d:%02d", time.hr, time.min, time.sec);
   fillPlace(18, 0, 8, colorTime);
   screen.print(buf);
   fillPlace(3, 0, 4, colorT1);
