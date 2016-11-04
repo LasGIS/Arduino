@@ -42,6 +42,9 @@ int trigPin = A0;
 
 void setup() {
   Serial.begin(9600);
+  // initialize real time clock. 
+  rtc.writeProtect(false);
+  rtc.halt(false);
   // initialize the lcd 
   lcd.init();
   loadCustomChars();
