@@ -286,17 +286,21 @@ void temperatureHumidity(LPShowModeType showMode) {
       lcd.print(hic, 2);
       lcd.print("C ");
     } else if (showMode == Humidity) {
+      analogReference(INTERNAL);
+      delay(100);
+      float vBattery = analogRead(A7) * 0.00630;
+      float vCharger = analogRead(A6) * 0.01175;
+      analogReference(DEFAULT);
       lcd.setCursor(0, 0);
-      lcd.print("Tem ");
-      lcd.print(t, 1);
-      lcd.print("C/");
-      lcd.print(hic, 2);
-      lcd.print("C ");
+      lcd.print("Battery ");
+      lcd.print(vBattery, 2);
+      lcd.print(" V   ");
       lcd.setCursor(0, 1);
-      lcd.print("Humidity ");
-      lcd.print(h, 1);
-      lcd.print("%    ");
+      lcd.print("Charger ");
+      lcd.print(vCharger, 2);
+      lcd.print(" V   ");
     }
+/*
     Serial.print("Humidity: ");
     Serial.print(h);
     Serial.print(" %\t");
@@ -306,6 +310,7 @@ void temperatureHumidity(LPShowModeType showMode) {
     Serial.print("Heat index: ");
     Serial.print(hic);
     Serial.println(" *C ");
+*/
   }
 }
 
