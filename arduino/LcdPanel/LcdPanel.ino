@@ -1,7 +1,7 @@
 /**
- * Проверяем:
  * real time часы + ик пульт + датчик влажности + жужалка
  */
+#include <EEPROM.h>
 #include "LcdPanel.h"
 #include <IrControl.h>
 #include <LiquidCrystal_I2C.h>
@@ -22,14 +22,16 @@ const int kSclkPin = 5;  // Serial Clock
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 // текущая команда
-int curCommand = 0;
+byte curCommand;
+LPMode mode = show;
+LPShowModeType showMode;
 int count = 0;
 #define COMMAND_MAX 3
+#define CUR_COMMAND_ADR 0
+#define SHOW_MODE_ADR 1
 
 // начальная страница для показа раскладки символов (0-15)
 int charsRow = 0;
-// 
-LPMode mode = show;
 // время в миллисекундах
 unsigned long milliSec;
 
@@ -42,6 +44,19 @@ int trigPin = A0;
 
 void setup() {
   Serial.begin(9600);
+  eepromSet();
+/*  
+  //for (int i = 0; i < 255; i++) EEPROM.update(i, i);
+  for (int i = 0; i < 4; i++) {
+    byte b = EEPROM.read(i);
+    Serial.print(b, HEX);
+    if (i % 16 == 15) {
+      Serial.println(";");
+    } else {
+      Serial.print(",");
+    }
+  }
+*/
   // initialize real time clock. 
   rtc.writeProtect(false);
   rtc.halt(false);
@@ -65,13 +80,25 @@ void setup() {
   pinMode(echoPin, INPUT); 
 }
 
+void eepromSet() {
+  curCommand = EEPROM.read(CUR_COMMAND_ADR);
+  if (curCommand < 0 || curCommand > COMMAND_MAX) {
+    curCommand = 0;
+    EEPROM.update(CUR_COMMAND_ADR, curCommand);
+  }
+  showMode = (LPShowModeType) EEPROM.read(SHOW_MODE_ADR);
+  if (showMode < 0 || showMode > 3) {
+    showMode = BigTime;
+    EEPROM.update(SHOW_MODE_ADR, showMode);
+  }
+}
+
 void loop() {
-  static LPShowModeType showMode = BigTime;
   switch (curCommand) {
     case 0: // показываем часы, температуру и влажность
       if (mode == show) {
-        lcdShowTime(showMode);
-        temperatureHumidity(showMode);
+        lcdShowTime();
+        temperatureHumidity();
       }
       break;
     case 1: // показываем раскладку LCD символов
@@ -122,7 +149,8 @@ void loop() {
     case '+':
       if (curCommand == 0) {
         lcd.clear();
-        showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : BigTime;
+        showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : Humidity;
+        EEPROM.update(SHOW_MODE_ADR, showMode);
       } else if (curCommand == 1) {
         charsRow++;
         lcdShowChars();
@@ -131,7 +159,8 @@ void loop() {
     case '-':
       if (curCommand == 0) {
        lcd.clear();
-       showMode = showMode < Humidity ? (LPShowModeType) (showMode + 1) : Humidity;
+       showMode = showMode < Humidity ? (LPShowModeType) (showMode + 1) : BigTime;
+       EEPROM.update(SHOW_MODE_ADR, showMode);
       } else if (curCommand == 1) {
         charsRow--;
         lcdShowChars();
@@ -148,6 +177,7 @@ void loop() {
       if (curCommand > COMMAND_MAX) {
         curCommand = 0;
       }
+      EEPROM.update(CUR_COMMAND_ADR, curCommand);
       afterCommandSet();
       break;
     case 'b':
@@ -156,6 +186,7 @@ void loop() {
       if (curCommand < 0) {
         curCommand = COMMAND_MAX;
       }
+      EEPROM.update(CUR_COMMAND_ADR, curCommand);
       afterCommandSet();
       break;
     }
@@ -204,7 +235,7 @@ void serialEvent() {
 }
 
 /** Показываем время */
-void lcdShowTime(LPShowModeType showMode) {
+void lcdShowTime() {
   unsigned long msec = millis();
   if ((msec - milliSec) / 100 > 0) {
     milliSec = msec;
@@ -267,7 +298,7 @@ void lcdIRkey(long code, char key) {
 /**
  * Показываем температуру и влажность
  */
-void temperatureHumidity(LPShowModeType showMode) {
+void temperatureHumidity() {
   if (count % 20 == 0) {
     delay(100);
     double h = dht.readHumidity();
@@ -290,15 +321,23 @@ void temperatureHumidity(LPShowModeType showMode) {
       delay(100);
       float vBattery = analogRead(A7) * 0.00630;
       float vCharger = analogRead(A6) * 0.01175;
+//      float vBat1 = analogRead(A6) * 0.01175;
+//      float vBat2 = analogRead(A3) * 0.01175;
       analogReference(DEFAULT);
       lcd.setCursor(0, 0);
-      lcd.print("Battery ");
+      lcd.print("Bat ");
       lcd.print(vBattery, 2);
-      lcd.print(" V   ");
+      lcd.print("V ");
       lcd.setCursor(0, 1);
       lcd.print("Charger ");
       lcd.print(vCharger, 2);
-      lcd.print(" V   ");
+      lcd.print("V   ");
+//      lcd.print("A6=");
+//      lcd.print(vBat1, 2);
+//      lcd.print(" ");
+//      lcd.print("A3=");
+//      lcd.print(vBat2, 2);
+//      lcd.print("V ");
     }
 /*
     Serial.print("Humidity: ");
