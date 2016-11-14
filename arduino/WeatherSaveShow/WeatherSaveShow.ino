@@ -45,7 +45,7 @@ const int kSclkPin = 5;  // Serial Clock
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 //#define HAS_SERIAL
-#define TEMPERATURE_START -10.0
+#define TEMPERATURE_START 10.0
 #define TEMPERATURE_MULTIPLIER 2.0
 /* весь экран - 8 часов */
 //#define TIME_MULTIPLIER 200000

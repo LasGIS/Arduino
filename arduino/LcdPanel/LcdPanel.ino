@@ -34,13 +34,14 @@ int count = 0;
 int charsRow = 0;
 // время в миллисекундах
 unsigned long milliSec;
+static char comBuffer[50];
 
 /** настраиваем измеритель влажности. */
 DHT dht(A2, DHT11);
 
 /* пины Ультразвукового дальномера */
-int echoPin = A1; 
-int trigPin = A0; 
+const int echoPin = A1; 
+const int trigPin = A0; 
 
 void setup() {
   Serial.begin(9600);
@@ -57,9 +58,6 @@ void setup() {
     }
   }
 */
-  // initialize real time clock. 
-  rtc.writeProtect(false);
-  rtc.halt(false);
   // initialize the lcd 
   lcd.init();
   loadCustomChars();
@@ -98,7 +96,13 @@ void loop() {
     case 0: // показываем часы, температуру и влажность
       if (mode == show) {
         lcdShowTime();
-        temperatureHumidity();
+        if (count % 20 == 1) {
+          if (showMode == TimeHum) {
+            temperatureHumidity();
+          } else if (showMode == Battery) {
+            batteryCapasity();
+          }
+        }
       }
       break;
     case 1: // показываем раскладку LCD символов
@@ -149,8 +153,9 @@ void loop() {
     case '+':
       if (curCommand == 0) {
         lcd.clear();
-        showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : Humidity;
+        showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : Battery;
         EEPROM.update(SHOW_MODE_ADR, showMode);
+        count = 0;
       } else if (curCommand == 1) {
         charsRow++;
         lcdShowChars();
@@ -158,9 +163,10 @@ void loop() {
       break;
     case '-':
       if (curCommand == 0) {
-       lcd.clear();
-       showMode = showMode < Humidity ? (LPShowModeType) (showMode + 1) : BigTime;
-       EEPROM.update(SHOW_MODE_ADR, showMode);
+        lcd.clear();
+        showMode = showMode < Battery ? (LPShowModeType) (showMode + 1) : BigTime;
+        EEPROM.update(SHOW_MODE_ADR, showMode);
+        count = 0;
       } else if (curCommand == 1) {
         charsRow--;
         lcdShowChars();
@@ -299,57 +305,67 @@ void lcdIRkey(long code, char key) {
  * Показываем температуру и влажность
  */
 void temperatureHumidity() {
-  if (count % 20 == 0) {
-    delay(100);
-    double h = dht.readHumidity();
-    double t = dht.readTemperature();
-    double hic = dht.computeHeatIndex(t, h, false);
-
-    if (showMode == TimeHum) {
-      lcd.setCursor(0, 1);
-      lcd.print("T=");
-      lcd.print(t, 1);
-      lcd.print("C ");
-      lcd.print("H=");
-      lcd.print(h, 1);
-      lcd.print("% ");
-      lcd.print("I=");
-      lcd.print(hic, 2);
-      lcd.print("C ");
-    } else if (showMode == Humidity) {
-      analogReference(INTERNAL);
-      delay(100);
-      float vBattery = analogRead(A7) * 0.00630;
-      float vCharger = analogRead(A6) * 0.01175;
-//      float vBat1 = analogRead(A6) * 0.01175;
-//      float vBat2 = analogRead(A3) * 0.01175;
-      analogReference(DEFAULT);
-      lcd.setCursor(0, 0);
-      lcd.print("Bat ");
-      lcd.print(vBattery, 2);
-      lcd.print("V ");
-      lcd.setCursor(0, 1);
-      lcd.print("Charger ");
-      lcd.print(vCharger, 2);
-      lcd.print("V   ");
-//      lcd.print("A6=");
-//      lcd.print(vBat1, 2);
-//      lcd.print(" ");
-//      lcd.print("A3=");
-//      lcd.print(vBat2, 2);
-//      lcd.print("V ");
-    }
+  delay(100);
+  double h = dht.readHumidity();
+  double t = dht.readTemperature();
+  double hic = dht.computeHeatIndex(t, h, false);
+  lcd.setCursor(0, 1);
+  lcd.print("T=");
+  lcd.print(t, 1);
+  lcd.print("C ");
+  lcd.print("H=");
+  lcd.print(h, 1);
+  lcd.print("% ");
+  lcd.print("I=");
+  lcd.print(hic, 2);
+  lcd.print("C ");
 /*
-    Serial.print("Humidity: ");
-    Serial.print(h);
-    Serial.print(" %\t");
-    Serial.print("Temperature: ");
-    Serial.print(t);
-    Serial.print(" *C ");
-    Serial.print("Heat index: ");
-    Serial.print(hic);
-    Serial.println(" *C ");
+  Serial.print("Humidity: ");
+  Serial.print(h);
+  Serial.print(" %\t");
+  Serial.print("Temperature: ");
+  Serial.print(t);
+  Serial.print(" *C ");
+  Serial.print("Heat index: ");
+  Serial.print(hic);
+  Serial.println(" *C ");
 */
+}
+
+/*
+ * Показываем уровень заряда батареи
+ */
+void batteryCapasity() {
+  static unsigned long startTime = millis();
+  static float oldBat = 0.0;
+  static float oldCrg = 0.0;
+
+  analogReference(INTERNAL);
+  delay(100);
+  float vBattery = analogRead(A7) * 0.00630;
+  float vCharger = analogRead(A6) * 0.01175;
+  analogReference(DEFAULT);
+  if ((oldBat > vBattery + 0.05) && (oldCrg + 0.05 < vCharger)) {
+    startTime = millis();
   }
+  oldBat = vBattery;
+  oldCrg = vCharger;
+
+  unsigned long milTime = (millis() - startTime) / 1000;
+  int sec = milTime % 60;
+  int min = (milTime / 60) % 60;
+  int hour = milTime / 3600;
+  snprintf(comBuffer, sizeof(comBuffer), "%d:%02d:%02d", hour, min, sec);
+    
+  lcd.setCursor(0, 0);
+  lcd.print("Bat ");
+  lcd.print(vBattery, 2);
+  lcd.print("V ");
+  lcd.print(comBuffer);
+  
+  lcd.setCursor(0, 1);
+  lcd.print("Crg ");
+  lcd.print(vCharger, 2);
+  lcd.print("V   ");
 }
 

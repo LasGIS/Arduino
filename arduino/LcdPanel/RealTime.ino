@@ -41,7 +41,6 @@ void printTime(LPShowModeType showMode) {
 
   const String day = dayAsString(t.day);
 
-  char buf[50];
   switch (showMode) {
   case BigTime:
     viewCustomDigit(0, t.hr / 10); 
@@ -49,29 +48,28 @@ void printTime(LPShowModeType showMode) {
     viewCustomDigit(9, t.min / 10);
     viewCustomDigit(13, t.min % 10);
     lcd.setCursor(7, 1);
-    snprintf(buf, sizeof(buf), "%02d", t.sec);
-    lcd.print(buf);
+    snprintf(comBuffer, sizeof(comBuffer), "%02d", t.sec);
+    lcd.print(comBuffer);
     break;
   case DataTime:
-    snprintf(buf, sizeof(buf), "%s %04d-%02d-%02d ", day.c_str(), t.yr, t.mon, t.date);
+    snprintf(comBuffer, sizeof(comBuffer), "%s %04d-%02d-%02d ", day.c_str(), t.yr, t.mon, t.date);
     lcd.setCursor(0, 0);
-    lcd.print(buf);
+    lcd.print(comBuffer);
     printOnlyTime(1, &t);
     break;
   case TimeHum:
     printOnlyTime(0, &t);
     break;
-  case Humidity:
+  case Battery:
     break;
   }
 }
 
 /** временнАя чать. */
 void printOnlyTime(uint8_t row, Time* t) {
-  char buf[50];
-  snprintf(buf, sizeof(buf), "Time = %02d:%02d:%02d", t->hr, t->min, t->sec);
+  snprintf(comBuffer, sizeof(comBuffer), "Time = %02d:%02d:%02d", t->hr, t->min, t->sec);
   lcd.setCursor(0, row);
-  lcd.print(buf);
+  lcd.print(comBuffer);
 }
 
 /**
@@ -126,6 +124,9 @@ LPMode editTime(char key) {
     showField(nField, nPosit);
     break;
   case 'p': // записываем и выходим
+    // initialize real time clock. 
+    rtc.writeProtect(false);
+    rtc.halt(false);
     rtc.time(Fields2Time());
     lcd.noCursor();
     lcd.noBlink();
