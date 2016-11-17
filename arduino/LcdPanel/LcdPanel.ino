@@ -37,7 +37,8 @@ unsigned long milliSec;
 static char comBuffer[50];
 
 /** настраиваем измеритель влажности. */
-DHT dht(A2, DHT11);
+DHT dht(7, DHT22);
+//DHT dht2(6, DHT22);
 
 /* пины Ультразвукового дальномера */
 const int echoPin = A1; 
