@@ -5,5 +5,6 @@ enum LPShowModeType : uint8_t {
   BigTime = 0,
   DataTime = 1,
   TimeHum = 2,
-  Battery = 3
+  Humidity = 3,
+  Battery = 4
 };

@@ -37,8 +37,8 @@ unsigned long milliSec;
 static char comBuffer[50];
 
 /** настраиваем измеритель влажности. */
-DHT dht(7, DHT22);
-//DHT dht2(6, DHT22);
+DHT dht1(7, DHT22);
+DHT dht2(6, DHT22);
 
 /* пины Ультразвукового дальномера */
 const int echoPin = A1; 
@@ -74,7 +74,8 @@ void setup() {
   control.start();
   milliSec = millis();
   pinMode(buzzerPin, OUTPUT);
-  dht.begin();
+  dht1.begin();
+  dht2.begin();
   pinMode(trigPin, OUTPUT); 
   pinMode(echoPin, INPUT); 
 }
@@ -98,7 +99,7 @@ void loop() {
       if (mode == show) {
         lcdShowTime();
         if (count % 20 == 1) {
-          if (showMode == TimeHum) {
+          if (showMode == TimeHum || showMode == Humidity) {
             temperatureHumidity();
           } else if (showMode == Battery) {
             batteryCapasity();
@@ -306,31 +307,36 @@ void lcdIRkey(long code, char key) {
  * Показываем температуру и влажность
  */
 void temperatureHumidity() {
-  delay(100);
-  double h = dht.readHumidity();
-  double t = dht.readTemperature();
-  double hic = dht.computeHeatIndex(t, h, false);
-  lcd.setCursor(0, 1);
-  lcd.print("T=");
+  switch (showMode) {
+    case TimeHum:
+    lcd.setCursor(0, 1);
+    temperatureHumidity(&dht1, '1');
+    break;
+    case Humidity:
+    lcd.setCursor(0, 0);
+    temperatureHumidity(&dht1, '1');
+    lcd.setCursor(0, 1);
+    temperatureHumidity(&dht2, '2');
+    break;
+  }
+}
+
+/**
+ * Показываем температуру и влажность
+ */
+void temperatureHumidity(DHT * dht, char n) {
+  double h = dht->readHumidity();
+  double t = dht->readTemperature();
+  double hic = dht->computeHeatIndex(t, h, false);
+  lcd.print("T"); lcd.print(n); lcd.print("=");
   lcd.print(t, 1);
   lcd.print("C ");
-  lcd.print("H=");
+  lcd.print("H"); lcd.print(n); lcd.print("=");
   lcd.print(h, 1);
   lcd.print("% ");
-  lcd.print("I=");
+  lcd.print("I"); lcd.print(n); lcd.print("=");
   lcd.print(hic, 2);
   lcd.print("C ");
-/*
-  Serial.print("Humidity: ");
-  Serial.print(h);
-  Serial.print(" %\t");
-  Serial.print("Temperature: ");
-  Serial.print(t);
-  Serial.print(" *C ");
-  Serial.print("Heat index: ");
-  Serial.print(hic);
-  Serial.println(" *C ");
-*/
 }
 
 /*
