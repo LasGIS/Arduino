@@ -13,7 +13,7 @@ IrControl control(2);
 // initialize the library with the numbers of the interface pins
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 // пин для жужалки
-const int buzzerPin = A3;
+const int buzzerPin = 8;
 
 /** настраиваем real time clock. */
 const int kCePin   = 3;  // Chip Enable
@@ -22,11 +22,11 @@ const int kSclkPin = 5;  // Serial Clock
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 // текущая команда
-byte curCommand;
+int8_t curCommand;
 LPMode mode = show;
 LPShowModeType showMode;
 int count = 0;
-#define COMMAND_MAX 3
+#define COMMAND_MAX 2
 #define CUR_COMMAND_ADR 0
 #define SHOW_MODE_ADR 1
 
@@ -65,11 +65,6 @@ void setup() {
   // Print a message to the LCD.
   lcd.backlight();
   lcd.clear();
-  //lcd.print("Start");
-  //viewCustomDigit(0, 2); 
-  //viewCustomDigit(4, 3); 
-  //viewCustomDigit(9, 5);
-  //viewCustomDigit(13, 9);
 
   control.start();
   milliSec = millis();
@@ -111,9 +106,11 @@ void loop() {
       break;
     case 2: // показываем ключ и код ИК пульта
       break;
+/*    
     case 3: // дистанцию
       showDistance();
       break;
+*/
     default:
       break;
   }
@@ -217,9 +214,11 @@ void afterCommandSet() {
     case 2:
       lcd.print("Enter IR key");
       break;
+/*
     case 3:
       lcd.print("Distance = ");
       break;
+*/
   }
 }
 

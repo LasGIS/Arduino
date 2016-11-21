@@ -5,6 +5,7 @@
  */
 void buzzerOut(unsigned int hertz, unsigned long del) {
 //  tone(buzzerPin, hertz, del);
+  noInterrupts();
   long delayVal = (500000 / hertz) - 9;
   int count = (del * hertz) / 1000;
   for (int i = 0; i < count; i++) {
@@ -13,6 +14,7 @@ void buzzerOut(unsigned int hertz, unsigned long del) {
     digitalWrite(buzzerPin, LOW);
     delayMicroseconds(delayVal);
   }
+  interrupts();
 }
 
 /**

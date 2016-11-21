@@ -1,4 +1,4 @@
-/** получить дистанцию.*/
+/** получить дистанцию.
 float getDistance() { 
   int duration;
   float cm;
@@ -22,4 +22,4 @@ void showDistance() {
     lcd.print(" cm ");
   }
 }
-
+*/
