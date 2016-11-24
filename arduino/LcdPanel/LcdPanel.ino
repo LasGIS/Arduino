@@ -22,11 +22,10 @@ const int kSclkPin = 5;  // Serial Clock
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 // текущая команда
-int8_t curCommand;
-LPMode mode = show;
+CurrentCommandType currentCommand;
+LPModeType mode = show;
 LPShowModeType showMode;
 int count = 0;
-#define COMMAND_MAX 2
 #define CUR_COMMAND_ADR 0
 #define SHOW_MODE_ADR 1
 
@@ -43,13 +42,10 @@ DHT dht2(6, DHT22);
 /* пины Ультразвукового дальномера */
 const int echoPin = A1; 
 const int trigPin = A0; 
-
-void setup() {
-  Serial.begin(9600);
-  eepromSet();
-/*  
+/*
+void SerialEEPROM() {
   //for (int i = 0; i < 255; i++) EEPROM.update(i, i);
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 8; i++) {
     byte b = EEPROM.read(i);
     Serial.print(b, HEX);
     if (i % 16 == 15) {
@@ -58,13 +54,22 @@ void setup() {
       Serial.print(",");
     }
   }
+  Serial.println(";");
+}
 */
+void setup() {
+  Serial.begin(9600);
+//  SerialEEPROM();  
+  eepromSet();
+//  SerialEEPROM();  
+
   // initialize the lcd 
   lcd.init();
   loadCustomChars();
   // Print a message to the LCD.
   lcd.backlight();
   lcd.clear();
+  afterCommandSet();
 
   control.start();
   milliSec = millis();
@@ -76,21 +81,21 @@ void setup() {
 }
 
 void eepromSet() {
-  curCommand = EEPROM.read(CUR_COMMAND_ADR);
-  if (curCommand < 0 || curCommand > COMMAND_MAX) {
-    curCommand = 0;
-    EEPROM.update(CUR_COMMAND_ADR, curCommand);
+  currentCommand = (CurrentCommandType) EEPROM.read(CUR_COMMAND_ADR);
+  if (currentCommand < mainCommand || currentCommand > showIRkey) {
+    currentCommand = mainCommand;
+    EEPROM.update(CUR_COMMAND_ADR, currentCommand);
   }
   showMode = (LPShowModeType) EEPROM.read(SHOW_MODE_ADR);
-  if (showMode < 0 || showMode > 3) {
+  if (showMode < BigTime || showMode > Battery) {
     showMode = BigTime;
     EEPROM.update(SHOW_MODE_ADR, showMode);
   }
 }
 
 void loop() {
-  switch (curCommand) {
-    case 0: // показываем часы, температуру и влажность
+  switch (currentCommand) {
+    case mainCommand: // показываем часы, температуру и влажность
       if (mode == show) {
         lcdShowTime();
         if (count % 20 == 1) {
@@ -102,12 +107,12 @@ void loop() {
         }
       }
       break;
-    case 1: // показываем раскладку LCD символов
+    case showLCDchars: // показываем раскладку LCD символов
       break;
-    case 2: // показываем ключ и код ИК пульта
+    case showIRkey: // показываем ключ и код ИК пульта
       break;
 /*    
-    case 3: // дистанцию
+    case showDistance: // дистанцию
       showDistance();
       break;
 */
@@ -129,7 +134,7 @@ void loop() {
     }
     
     serIRkey(code, key);
-    if (curCommand == 2) {
+    if (currentCommand == showIRkey) {
       lcdIRkey(code, key);
     }
     static bool isLcdBacklight = true;
@@ -150,48 +155,42 @@ void loop() {
       lcd.scrollDisplayRight();
       break;
     case '+':
-      if (curCommand == 0) {
+      if (currentCommand == mainCommand) {
         lcd.clear();
         showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : Battery;
         EEPROM.update(SHOW_MODE_ADR, showMode);
         count = 0;
-      } else if (curCommand == 1) {
+      } else if (currentCommand == showLCDchars) {
         charsRow++;
         lcdShowChars();
       }
       break;
     case '-':
-      if (curCommand == 0) {
+      if (currentCommand == mainCommand) {
         lcd.clear();
         showMode = showMode < Battery ? (LPShowModeType) (showMode + 1) : BigTime;
         EEPROM.update(SHOW_MODE_ADR, showMode);
         count = 0;
-      } else if (curCommand == 1) {
+      } else if (currentCommand == showLCDchars) {
         charsRow--;
         lcdShowChars();
       }
       break;
     case 'p':
-      if (curCommand == 0) {
+      if (currentCommand == mainCommand && showMode == DataTime) {
         mode = editTime(1);
       }
       break;
     case 'm':
       beforeCommandSet();
-      curCommand++;
-      if (curCommand > COMMAND_MAX) {
-        curCommand = 0;
-      }
-      EEPROM.update(CUR_COMMAND_ADR, curCommand);
+      currentCommand = currentCommand < showIRkey ? (CurrentCommandType) (currentCommand + 1) : mainCommand;
+      EEPROM.update(CUR_COMMAND_ADR, currentCommand);
       afterCommandSet();
       break;
     case 'b':
       beforeCommandSet();
-      curCommand--;
-      if (curCommand < 0) {
-        curCommand = COMMAND_MAX;
-      }
-      EEPROM.update(CUR_COMMAND_ADR, curCommand);
+      currentCommand = currentCommand > mainCommand ? (CurrentCommandType) (currentCommand - 1) : showIRkey;
+      EEPROM.update(CUR_COMMAND_ADR, currentCommand);
       afterCommandSet();
       break;
     }
@@ -206,16 +205,16 @@ void beforeCommandSet() {
 }
 
 void afterCommandSet() {
-  switch (curCommand) {
-    case 1:
+  switch (currentCommand) {
+    case showLCDchars:
 //      charsRow = 0;
       lcdShowChars();
       break;
-    case 2:
+    case showIRkey:
       lcd.print("Enter IR key");
       break;
 /*
-    case 3:
+    case showDistance:
       lcd.print("Distance = ");
       break;
 */

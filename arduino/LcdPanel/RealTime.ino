@@ -75,7 +75,7 @@ void printOnlyTime(uint8_t row, Time* t) {
 /**
  * Редактирование времени
  */
-LPMode editTime(char key) {
+LPModeType editTime(char key) {
   static int nField = 0;
   static int nPosit = 0;
 
@@ -92,7 +92,7 @@ LPMode editTime(char key) {
     printTime(DataTime);
     lcd.cursor();
     lcd.blink();
-    nField = 0;
+    nField = RT_MAX_FIELDS;
     nPosit = 0;
     showField(nField, nPosit);
     break;
