@@ -19,7 +19,6 @@ libraries/ADXL345/License.txt
 libraries/ADXL345/Read_Me.txt
 libraries/arduino-ds1302-master/examples/ram/ram.ino
 libraries/arduino-ds1302-master/examples/set_clock/set_clock.ino
-libraries/arduino-ds1302-master/examples/breadboard.fzz
 libraries/arduino-ds1302-master/examples/breadboard.png
 libraries/arduino-ds1302-master/examples/README.md
 libraries/arduino-ds1302-master/DS1302.cpp
@@ -69,8 +68,6 @@ libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h
 libraries/LiquidCrystal_I2C/README.md
 libraries/MotorShield/MotorShield.cpp
 libraries/MotorShield/MotorShield.h
-libraries/MotorShield/MotorShield.iml
-libraries/MotorShield/MotorShield.vcproj
 libraries/MotorShield/MotorShieldDefine.h
 libraries/MsTimer2/examples/FlashLed/FlashLed.pde
 libraries/MsTimer2/keywords.txt
@@ -104,9 +101,7 @@ libraries/TwoMotor/TwoMotor.cpp
 libraries/TwoMotor/TwoMotor.h
 libraries/readme.txt
 Robot/Robot2/Analyse.ino
-Robot/Robot2/Robot2.iml
 Robot/Robot2/Robot2.ino
-Robot/Robot2/Robot2.vcproj
 Robot/Robot2/RobotCommand.h
 Robot/Robot2/RobotCommand.ino
 Robot/Robot2/USRangeFinder.ino
