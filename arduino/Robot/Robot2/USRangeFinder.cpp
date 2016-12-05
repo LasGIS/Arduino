@@ -1,4 +1,9 @@
+#include "Robot2.h"
+
 #define WAIT_TIME_DISTANCE 70
+
+extern int echoPin;
+extern int trigPin;
 
 /** получить дистанцию в point`ax (условная единица 1[point]*58.0 = 1[см] .*/
 int getDistance() {

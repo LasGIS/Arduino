@@ -1,19 +1,19 @@
 /**
- * Подключаем заголовки
+ * РџРѕРґРєР»СЋС‡Р°РµРј Р·Р°РіРѕР»РѕРІРєРё
  */
 #include "TwoMotor.h"
 #include "MsTimer2.h"
 
 
-/** Начальное напряжение от передачи (5 передача - самая высокая) */
+/** РќР°С‡Р°Р»СЊРЅРѕРµ РЅР°РїСЂСЏР¶РµРЅРёРµ РѕС‚ РїРµСЂРµРґР°С‡Рё (5 РїРµСЂРµРґР°С‡Р° - СЃР°РјР°СЏ РІС‹СЃРѕРєР°СЏ) */
 static const uint16_t MSHLD_GEAR_VOLTAGE[6] = {33, 50, 74, 111, 167, 250};
-/** Скорость в мм/мсек от передачи (5 передача - самая высокая) */
+/** РЎРєРѕСЂРѕСЃС‚СЊ РІ РјРј/РјСЃРµРє РѕС‚ РїРµСЂРµРґР°С‡Рё (5 РїРµСЂРµРґР°С‡Р° - СЃР°РјР°СЏ РІС‹СЃРѕРєР°СЏ) */
 static const float MSHLD_GEAR_FACTOR[6] = {0.094, 0.141, 0.212, 0.317, 0.476, 0.600};
-/** фактор рзмеров - сколько каунтов нужно отсчитать для перемещения на 1 мм. */
+/** С„Р°РєС‚РѕСЂ СЂР·РјРµСЂРѕРІ - СЃРєРѕР»СЊРєРѕ РєР°СѓРЅС‚РѕРІ РЅСѓР¶РЅРѕ РѕС‚СЃС‡РёС‚Р°С‚СЊ РґР»СЏ РїРµСЂРµРјРµС‰РµРЅРёСЏ РЅР° 1 РјРј. */
 #define MSHLD_COUNT_FACTOR 0.2
 #define MSHLD_SPEED_FACTOR 1.02
 
-/** Настраиваем пины конкретных моторов.
+/** РќР°СЃС‚СЂР°РёРІР°РµРј РїРёРЅС‹ РєРѕРЅРєСЂРµС‚РЅС‹С… РјРѕС‚РѕСЂРѕРІ.
 static DcMotor MSHLD_MOTORS[4] = {
   DcMotor('A', MSHLD_UP_M1A_MASK, MSHLD_DOWN_M1A_MASK, MSHLD_UP_M1B_MASK, MSHLD_DOWN_M1B_MASK, MSHLD_PWM2A_PIN),
   DcMotor('B', MSHLD_UP_M2A_MASK, MSHLD_DOWN_M2A_MASK, MSHLD_UP_M2B_MASK, MSHLD_DOWN_M2B_MASK, MSHLD_PWM2B_PIN),
@@ -36,7 +36,7 @@ void rightSpeedometrInterrupt(void) {
 TwoMotor* TwoMotor::_activeMotorShieldObject = 0;
 
 /**
- * Конструктор спидометра
+ * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃРїРёРґРѕРјРµС‚СЂР°
  */
 Speedometer::Speedometer(uint8_t _countPin) {
   countPin = _countPin;
@@ -44,7 +44,7 @@ Speedometer::Speedometer(uint8_t _countPin) {
   clean();
 }
 
-/** сбрасываем параметры */
+/** СЃР±СЂР°СЃС‹РІР°РµРј РїР°СЂР°РјРµС‚СЂС‹ */
 void Speedometer::clean() {
   count = 0;
   lastTime = 0L;
@@ -53,11 +53,11 @@ void Speedometer::clean() {
   val = digitalRead(countPin);
 }
 
-/** обрабатываем прерывание на изменение счётчика */
+/** РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј РїСЂРµСЂС‹РІР°РЅРёРµ РЅР° РёР·РјРµРЅРµРЅРёРµ СЃС‡С‘С‚С‡РёРєР° */
 void Speedometer::interrupt() {
   long time = micros();
   uint8_t newVal = digitalRead(countPin);
-  // проверка на дребезг 
+  // РїСЂРѕРІРµСЂРєР° РЅР° РґСЂРµР±РµР·Рі 
   if (newVal != val) {
     val = newVal;
     if (time - lastTime > 500) {
@@ -71,7 +71,7 @@ void Speedometer::interrupt() {
       }
     }
   } else if (time - lastTime > 20000) {
-    // счётчик долго находится в одном положении
+    // СЃС‡С‘С‚С‡РёРє РґРѕР»РіРѕ РЅР°С…РѕРґРёС‚СЃСЏ РІ РѕРґРЅРѕРј РїРѕР»РѕР¶РµРЅРёРё
     lastTime = time;
     isChange = true;
   } else {
@@ -80,7 +80,7 @@ void Speedometer::interrupt() {
 }
 
 /**
- * Конструктор мотора
+ * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РјРѕС‚РѕСЂР°
  */
 DcMotor::DcMotor(
   char _name,
@@ -107,8 +107,8 @@ DcMotor::DcMotor(
 }
 
 /**
- * Корректируем напряжение на двигателе, если это необходимо.
- * @time текущее время
+ * РљРѕСЂСЂРµРєС‚РёСЂСѓРµРј РЅР°РїСЂСЏР¶РµРЅРёРµ РЅР° РґРІРёРіР°С‚РµР»Рµ, РµСЃР»Рё СЌС‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ.
+ * @time С‚РµРєСѓС‰РµРµ РІСЂРµРјСЏ
  */
 bool DcMotor::speedCorrection(long time) {
   uint16_t power = MSHLD_GEAR_VOLTAGE[currGear];
@@ -138,7 +138,7 @@ bool DcMotor::speedCorrection(long time) {
   return count >= endCount || time > endTime;
 }
 
-/** Устанавливаем скорость. */
+/** РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРєРѕСЂРѕСЃС‚СЊ. */
 void DcMotor::setPower() {
   if (currPower > 255) {
     currPower = 255;
@@ -153,7 +153,7 @@ void DcMotor::setPower() {
 }
 
 /**
- * показывем параметры старта.
+ * РїРѕРєР°Р·С‹РІРµРј РїР°СЂР°РјРµС‚СЂС‹ СЃС‚Р°СЂС‚Р°.
  */
 void DcMotor::showStartParameters() {
 #ifdef MSHLD_DEBUG_MODE
@@ -169,10 +169,10 @@ void DcMotor::showStartParameters() {
 }
 
 /**
- * Конструктор с инициализатором
+ * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃ РёРЅРёС†РёР°Р»РёР·Р°С‚РѕСЂРѕРј
  */
 TwoMotor::TwoMotor() {
-  //устанавливаем режим OUTPUT
+  //СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂРµР¶РёРј OUTPUT
   pinMode(MSHLD_DIR_LATCH_PIN, OUTPUT);
   pinMode(MSHLD_DIR_CLK_PIN, OUTPUT);
   pinMode(MSHLD_DIR_SER_PIN, OUTPUT);
@@ -184,7 +184,7 @@ TwoMotor::TwoMotor() {
   leftMotor = &MSHLD_LEFT_MOTOR;
   rightMotor = &MSHLD_RIGHT_MOTOR;
 
-  // устанавливаем enabled
+  // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј enabled
   enabled();
   stopMotors();
 
@@ -203,7 +203,7 @@ void TwoMotor::handle_interrupt() {
 }
 
 /********************************************
- * процедура запускается каждую милисекунду *
+ * РїСЂРѕС†РµРґСѓСЂР° Р·Р°РїСѓСЃРєР°РµС‚СЃСЏ РєР°Р¶РґСѓСЋ РјРёР»РёСЃРµРєСѓРЅРґСѓ *
  ********************************************/
 void TwoMotor::timeAction() {
   timeAction(leftMotor);
@@ -211,7 +211,7 @@ void TwoMotor::timeAction() {
 }
 
 /***
- * обработка очередного мотора
+ * РѕР±СЂР°Р±РѕС‚РєР° РѕС‡РµСЂРµРґРЅРѕРіРѕ РјРѕС‚РѕСЂР°
  */
 void TwoMotor::timeAction(DcMotor* motor) {
   long time = millis();
@@ -220,7 +220,7 @@ void TwoMotor::timeAction(DcMotor* motor) {
   }
   bool isStop = false;
 
-  // проверяем счётчик скорости.
+  // РїСЂРѕРІРµСЂСЏРµРј СЃС‡С‘С‚С‡РёРє СЃРєРѕСЂРѕСЃС‚Рё.
   if (motor->isChange) {
     motor->isChange = false;
     Serial.print(",");
@@ -245,17 +245,17 @@ void TwoMotor::timeAction(DcMotor* motor) {
   }
 }
 
-/** включаем моторы shild */
+/** РІРєР»СЋС‡Р°РµРј РјРѕС‚РѕСЂС‹ shild */
 void TwoMotor::enabled() {
   digitalWrite(MSHLD_DIR_EN_PIN, LOW);
 }
 
-/** выключаем моторы shild */
+/** РІС‹РєР»СЋС‡Р°РµРј РјРѕС‚РѕСЂС‹ shild */
 void TwoMotor::disabled() {
   digitalWrite(MSHLD_DIR_EN_PIN, HIGH);
 }
 
-/** Останавливаем все что можно. */
+/** РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј РІСЃРµ С‡С‚Рѕ РјРѕР¶РЅРѕ. */
 void TwoMotor::stopMotors() {
   setBitMask(0);
   leftMotorStop();
@@ -263,7 +263,7 @@ void TwoMotor::stopMotors() {
 }
 
 /**
- * Останавливаем конкретный мотор.
+ * РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј РєРѕРЅРєСЂРµС‚РЅС‹Р№ РјРѕС‚РѕСЂ.
  */
 void TwoMotor::stopMotor(DcMotor* motor) {
   setBitMask(motorMask & motor->downMask_A & motor->downMask_B);
@@ -274,19 +274,19 @@ void TwoMotor::stopMotor(DcMotor* motor) {
   motor->currPower = 0;
   motor->currGear = 0;
   motor->busy = false;
-  // настраиваем спидомерер
+  // РЅР°СЃС‚СЂР°РёРІР°РµРј СЃРїРёРґРѕРјРµСЂРµСЂ
   motor->clean();
 }
 
 /**
- * проверяем моторы
+ * РїСЂРѕРІРµСЂСЏРµРј РјРѕС‚РѕСЂС‹
  */
 bool TwoMotor::isBusy() {
   return leftMotor->busy || rightMotor->busy;
 }
 
 /**
- * Ожидаем окончания
+ * РћР¶РёРґР°РµРј РѕРєРѕРЅС‡Р°РЅРёСЏ
  */
 bool TwoMotor::waitBusy() {
   for (int i = 0; i < 10000; i++) {
@@ -298,37 +298,37 @@ bool TwoMotor::waitBusy() {
   return false;
 }
 
-/** Останавливаем левый мотор. */
+/** РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р»РµРІС‹Р№ РјРѕС‚РѕСЂ. */
 void TwoMotor::leftMotorStop() {
   stopMotor(leftMotor);
 }
 
-/** Останавливаем правый мотор. */
+/** РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїСЂР°РІС‹Р№ РјРѕС‚РѕСЂ. */
 void TwoMotor::rightMotorStop() {
   stopMotor(rightMotor);
 }
 
 /**
- * Устанавливаем скорость для левого мотора
- * @speed скорость мотора в 
+ * РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРєРѕСЂРѕСЃС‚СЊ РґР»СЏ Р»РµРІРѕРіРѕ РјРѕС‚РѕСЂР°
+ * @speed СЃРєРѕСЂРѕСЃС‚СЊ РјРѕС‚РѕСЂР° РІ 
  */
 void TwoMotor::leftMotorStart(int8_t gear, int16_t dist) {
   motor(leftMotor, gear, dist);
 }
 
-/** Устанавливаем скорость для правого мотора */
+/** РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРєРѕСЂРѕСЃС‚СЊ РґР»СЏ РїСЂР°РІРѕРіРѕ РјРѕС‚РѕСЂР° */
 void TwoMotor::rightMotorStart(int8_t gear, int16_t dist) {
   motor(rightMotor, gear, dist);
 }
 
 /**
- * Устанавливаем скорость <gear> для двигателя:
- * @motor сам мотор
- * @gear скорость мотора в передачах:
- *  gear > 0 - вперёд;
- *  gear < 0 - назад;
- *  значения от -5 до +5
- * @dist дистанция в мм, которую надо преодолеть 
+ * РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРєРѕСЂРѕСЃС‚СЊ <gear> РґР»СЏ РґРІРёРіР°С‚РµР»СЏ:
+ * @motor СЃР°Рј РјРѕС‚РѕСЂ
+ * @gear СЃРєРѕСЂРѕСЃС‚СЊ РјРѕС‚РѕСЂР° РІ РїРµСЂРµРґР°С‡Р°С…:
+ *  gear > 0 - РІРїРµСЂС‘Рґ;
+ *  gear < 0 - РЅР°Р·Р°Рґ;
+ *  Р·РЅР°С‡РµРЅРёСЏ РѕС‚ -5 РґРѕ +5
+ * @dist РґРёСЃС‚Р°РЅС†РёСЏ РІ РјРј, РєРѕС‚РѕСЂСѓСЋ РЅР°РґРѕ РїСЂРµРѕРґРѕР»РµС‚СЊ 
  */
 void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   long startTime = millis();
@@ -355,7 +355,7 @@ void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   motor->busy = true;
   motor->showStartParameters();
 
-  // настраиваем спидомерер
+  // РЅР°СЃС‚СЂР°РёРІР°РµРј СЃРїРёРґРѕРјРµСЂРµСЂ
   motor->clean();
 
   setSpeed(motor);
@@ -363,31 +363,31 @@ void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
 }
 
 /**
- * устанавливаем скорость и направление конкретного мотора
+ * СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРєРѕСЂРѕСЃС‚СЊ Рё РЅР°РїСЂР°РІР»РµРЅРёРµ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ РјРѕС‚РѕСЂР°
  */
 void TwoMotor::setSpeed(DcMotor* motor) {
   setSpeed(
-    motor->isForward,    // направление движения
-    motor->currPower,    // абсолютная скорость
-    motor->upMask_A,     // маска установки клемы A
-    motor->downMask_A,   // маска снятия клемы A
-    motor->upMask_B,     // маска установки клемы B
-    motor->downMask_B    // маска снятия клемы B
+    motor->isForward,    // РЅР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ
+    motor->currPower,    // Р°Р±СЃРѕР»СЋС‚РЅР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ
+    motor->upMask_A,     // РјР°СЃРєР° СѓСЃС‚Р°РЅРѕРІРєРё РєР»РµРјС‹ A
+    motor->downMask_A,   // РјР°СЃРєР° СЃРЅСЏС‚РёСЏ РєР»РµРјС‹ A
+    motor->upMask_B,     // РјР°СЃРєР° СѓСЃС‚Р°РЅРѕРІРєРё РєР»РµРјС‹ B
+    motor->downMask_B    // РјР°СЃРєР° СЃРЅСЏС‚РёСЏ РєР»РµРјС‹ B
   );
 }
 
 /**
- * устанавливаем скорость и направление абстрактного мотора
+ * СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРєРѕСЂРѕСЃС‚СЊ Рё РЅР°РїСЂР°РІР»РµРЅРёРµ Р°Р±СЃС‚СЂР°РєС‚РЅРѕРіРѕ РјРѕС‚РѕСЂР°
  */
 void TwoMotor::setSpeed(
-  bool isForward,       // направление движения
-  uint16_t speed,       // абсолютная скорость
-  uint8_t upMask_A,     // маска установки клемы A
-  uint8_t downMask_A,   // маска снятия клемы A
-  uint8_t upMask_B,     // маска установки клемы B
-  uint8_t downMask_B    // маска снятия клемы B
+  bool isForward,       // РЅР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ
+  uint16_t speed,       // Р°Р±СЃРѕР»СЋС‚РЅР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ
+  uint8_t upMask_A,     // РјР°СЃРєР° СѓСЃС‚Р°РЅРѕРІРєРё РєР»РµРјС‹ A
+  uint8_t downMask_A,   // РјР°СЃРєР° СЃРЅСЏС‚РёСЏ РєР»РµРјС‹ A
+  uint8_t upMask_B,     // РјР°СЃРєР° СѓСЃС‚Р°РЅРѕРІРєРё РєР»РµРјС‹ B
+  uint8_t downMask_B    // РјР°СЃРєР° СЃРЅСЏС‚РёСЏ РєР»РµРјС‹ B
 ) {
-  // устанавливаем направление
+  // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅР°РїСЂР°РІР»РµРЅРёРµ
   uint8_t mask = motorMask;
   if (isForward) {
     mask = (mask & downMask_B) | upMask_A;
@@ -399,7 +399,7 @@ void TwoMotor::setSpeed(
   setBitMask(mask);
 }
 
-/** Выводим маску моторов в 74HC595 */
+/** Р’С‹РІРѕРґРёРј РјР°СЃРєСѓ РјРѕС‚РѕСЂРѕРІ РІ 74HC595 */
 void TwoMotor::setBitMask(uint8_t mask) {
   if (mask != motorMask) {
     motorMask = mask;
@@ -407,11 +407,11 @@ void TwoMotor::setBitMask(uint8_t mask) {
     Serial.print("motorMask = ");
     Serial.println(mask, BIN);
 #endif
-    // устанавливаем синхронизацию "защелки" на LOW
+    // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёСЋ "Р·Р°С‰РµР»РєРё" РЅР° LOW
     digitalWrite(MSHLD_DIR_LATCH_PIN, LOW);
-    // передаем последовательно на MSHLD_DIR_SER_PIN
+    // РїРµСЂРµРґР°РµРј РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕ РЅР° MSHLD_DIR_SER_PIN
     shiftOut(MSHLD_DIR_SER_PIN, MSHLD_DIR_CLK_PIN, MSBFIRST, mask);
-    //"защелкиваем" регистр, тем самым устанавливая значения на выходах
+    //"Р·Р°С‰РµР»РєРёРІР°РµРј" СЂРµРіРёСЃС‚СЂ, С‚РµРј СЃР°РјС‹Рј СѓСЃС‚Р°РЅР°РІР»РёРІР°СЏ Р·РЅР°С‡РµРЅРёСЏ РЅР° РІС‹С…РѕРґР°С…
     digitalWrite(MSHLD_DIR_LATCH_PIN, HIGH);
   }
 }

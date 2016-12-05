@@ -1,7 +1,4 @@
-#include <Arduino.h>
-#include <Servo.h>
-#include "MotorShield.h"
-#include "RobotCommand.h"
+#include "Robot2.h"
 
 Servo hSer;
 Servo vSer;
@@ -10,6 +7,7 @@ MotorShield mShield(MSHLD_M1, MSHLD_M2);
 /* пины Ультразвукового дальномера */
 int echoPin = A3; 
 int trigPin = A2;
+
 
 /** пин кнопочки
 int buttonPin = 2; 
@@ -109,7 +107,7 @@ void testDrive(char motor) {
       Serial.println("Left MOTOR");
       for (int speed = -5; speed <= 5; speed++) {
         mShield.waitBusy();
-        mShield.leftMotorStart(speed, 220);
+        mShield.leftMotor(speed, 220);
         Serial.print("speed = ");
         Serial.println(speed);
         delay(1010);
@@ -120,7 +118,7 @@ void testDrive(char motor) {
       Serial.println("Right MOTOR");
       for (int speed = -5; speed <= 5; speed++) {
         mShield.waitBusy();
-        mShield.rightMotorStart(speed, 220);
+        mShield.rightMotor(speed, 220);
         Serial.print("speed = ");
         Serial.println(speed);
         delay(1010);

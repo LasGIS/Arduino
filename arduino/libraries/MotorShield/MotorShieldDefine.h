@@ -1,45 +1,45 @@
 #ifndef MotorShieldDefine_h
 #define MotorShieldDefine_h
 
-// установка режима вывода отладочной информации
+// СѓСЃС‚Р°РЅРѕРІРєР° СЂРµР¶РёРјР° РІС‹РІРѕРґР° РѕС‚Р»Р°РґРѕС‡РЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё
 #define MSHLD_DEBUG_MODE
 
 #define FORWARD true
 #define BACKWARD false
 
-// Пин DIR_SER   / DS    / 14 входу 74HC595
+// РџРёРЅ DIR_SER   / DS    / 14 РІС…РѕРґСѓ 74HC595
 #define MSHLD_DIR_SER_PIN   8
 
-// Пин DIR_CLK   / SH_CP / 11 входу 74HC595
+// РџРёРЅ DIR_CLK   / SH_CP / 11 РІС…РѕРґСѓ 74HC595
 #define MSHLD_DIR_CLK_PIN   4
 
-// Пин DIR_LATCH / ST_CP / 12 входу 74HC595
+// РџРёРЅ DIR_LATCH / ST_CP / 12 РІС…РѕРґСѓ 74HC595
 #define MSHLD_DIR_LATCH_PIN 12
 
-// Пин DIR_EN    / OE    / 13 входу 74HC595
+// РџРёРЅ DIR_EN    / OE    / 13 РІС…РѕРґСѓ 74HC595
 #define MSHLD_DIR_EN_PIN    7
 
-// Пин PWM0A --- мощьность M4 (PIN 4, PIN 5)
+// РџРёРЅ PWM0A --- РјРѕС‰СЊРЅРѕСЃС‚СЊ M4 (PIN 4, PIN 5)
 #define MSHLD_PWM0A_PIN     6
-// Пин PWM0B --- мощьность M3 (PIN 1, PIN 2)
+// РџРёРЅ PWM0B --- РјРѕС‰СЊРЅРѕСЃС‚СЊ M3 (PIN 1, PIN 2)
 #define MSHLD_PWM0B_PIN     5
 
-// Пин PWM1A --- Сервомотор № 2
+// РџРёРЅ PWM1A --- РЎРµСЂРІРѕРјРѕС‚РѕСЂ в„– 2
 #define MSHLD_PWM1A_PIN     9
-// Пин PWM1B --- Сервомотор № 1
+// РџРёРЅ PWM1B --- РЎРµСЂРІРѕРјРѕС‚РѕСЂ в„– 1
 #define MSHLD_PWM1B_PIN     10
 
-// Пин PWM2A --- мощьность M1 (PIN 4, PIN 5)
+// РџРёРЅ PWM2A --- РјРѕС‰СЊРЅРѕСЃС‚СЊ M1 (PIN 4, PIN 5)
 #define MSHLD_PWM2A_PIN     11
-// Пин PWM2B --- мощьность M2 (PIN 1, PIN 2)
+// РџРёРЅ PWM2B --- РјРѕС‰СЊРЅРѕСЃС‚СЊ M2 (PIN 1, PIN 2)
 #define MSHLD_PWM2B_PIN     3
 
-// Пин счетчика левого мотора
+// РџРёРЅ СЃС‡РµС‚С‡РёРєР° Р»РµРІРѕРіРѕ РјРѕС‚РѕСЂР°
 #define MSHLD_LEFT_COUNT_PIN A0
-// Пин счетчика правого мотора
+// РџРёРЅ СЃС‡РµС‚С‡РёРєР° РїСЂР°РІРѕРіРѕ РјРѕС‚РѕСЂР°
 #define MSHLD_RIGHT_COUNT_PIN A1
 
-// маски моторов
+// РјР°СЃРєРё РјРѕС‚РѕСЂРѕРІ
 #define MSHLD_UP_M3A_MASK  B00000001
 #define MSHLD_UP_M2A_MASK  B00000010
 #define MSHLD_UP_M1A_MASK  B00000100

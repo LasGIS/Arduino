@@ -1,3 +1,5 @@
+#include "Robot2.h"
+
 #define DEGREE_TO_RADIAN 0.0174533
 #define DEGREE_CORRECTION -2
 
@@ -5,6 +7,9 @@
 #define DISTANCE_BEFORE_COUNT 17
 /** градус начальной точки. */
 #define DISTANCE_BEFORE_START -10
+
+extern Servo vSer;
+
 static float distanceBefore[DISTANCE_BEFORE_COUNT];
 
 /**

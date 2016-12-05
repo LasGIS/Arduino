@@ -1,3 +1,5 @@
+#include "Robot2.h"
+
 #define FORWARD_FACTOR 2.0
 #define ANGLE_FACTOR 1.0
 
@@ -8,6 +10,8 @@ static RobotCommand robotCommands[ROBOT_COMMANDS_BUF_SIZE];
 static uint8_t lastRobotCommand = -1;
 /** первая команда, готовая к выполнению. */
 static uint8_t firstRobotCommand = -1;
+
+extern MotorShield mShield;
 
 /** получаем ссылку на команду для заполнения. */
 RobotCommand* getRobotCommand4Load() {
@@ -108,33 +112,35 @@ void action(RobotCommand* command) {
   noInterrupts();
   switch (command->type) {
     case MOTOR_FORWARD:
-      mShield.leftMotorStart(4, (int) (command->param * FORWARD_FACTOR));
-      mShield.rightMotorStart(4, (int) (command->param * FORWARD_FACTOR));
+      mShield.leftMotor(4, (int16_t) (command->param * FORWARD_FACTOR));
+      mShield.rightMotor(4, (int16_t) (command->param * FORWARD_FACTOR));
       break;
     case MOTOR_BACKWARD:
-      mShield.leftMotorStart(-4, (int) (command->param * FORWARD_FACTOR));
-      mShield.rightMotorStart(-4, (int) (command->param * FORWARD_FACTOR));
+      mShield.leftMotor(-4, (int16_t) (command->param * FORWARD_FACTOR));
+      mShield.rightMotor(-4, (int16_t) (command->param * FORWARD_FACTOR));
       break;
     case MOTOR_FORWARD_LEFT:
-      mShield.rightMotorStart(4, (int) (command->param * ANGLE_FACTOR));
+      mShield.rightMotor(4, (int16_t) (command->param * ANGLE_FACTOR));
       break;
     case MOTOR_FORWARD_RIGHT:
-      mShield.leftMotorStart(4, (int) (command->param * ANGLE_FACTOR));
+      mShield.leftMotor(4, (int16_t) (command->param * ANGLE_FACTOR));
       break;
 
     case MOTOR_LEFT:
-      mShield.rightMotorStart(4, (int) (command->param * ANGLE_FACTOR / 2));
-      mShield.leftMotorStart(-4, (int) (command->param * ANGLE_FACTOR / 2));
+      mShield.rightMotor(4, (int16_t) (command->param * ANGLE_FACTOR / 2));
+      mShield.leftMotor(-4, (int16_t) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_RIGHT:
-      mShield.rightMotorStart(-4, (int)(command->param * ANGLE_FACTOR / 2));
-      mShield.leftMotorStart(4, (int) (command->param * ANGLE_FACTOR / 2));
+      mShield.rightMotor(-4, (int16_t)(command->param * ANGLE_FACTOR / 2));
+      mShield.leftMotor(4, (int16_t) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_BACKWARD_LEFT:
-      mShield.leftMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
+      mShield.leftMotor(-4, (int16_t) (command->param * ANGLE_FACTOR));
       break;
     case MOTOR_BACKWARD_RIGHT:
-      mShield.rightMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
+      mShield.rightMotor(-4, (int16_t) (command->param * ANGLE_FACTOR));
+      break;
+    default:
       break;
   }
   interrupts();
@@ -147,6 +153,8 @@ void action(RobotCommand* command) {
     break;
   case ROBOT_STOP: // останавливаем всё
     robotStop();
+    break;
+  default:
     break;
   }
 
