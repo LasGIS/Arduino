@@ -1,15 +1,17 @@
-/**
- * Ловим температуру и влажность,
- * выводим её на TFT Экран и пишем в SD.
- */
+/*****************************************
+ * Ловим температуру и влажность,        *
+ * выводим её на TFT Экран и пишем в SD. *
+ *****************************************/
 
 //#include <Arduino.h>
+#include <avr/pgmspace.h>
 #include <SPI.h>
 #include <SD.h>
-#include <TFT_lg.h>
 #include <DHT.h>
 #include <IrControl.h>
-#include <DS1302.h>
+#include "WeatherSaveShow.h"
+
+char buffer[20];
 
 File myFile;
 
@@ -44,35 +46,11 @@ const int kIoPin   = 4;  // Input/Output
 const int kSclkPin = 5;  // Serial Clock
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
-//#define HAS_SERIAL
-#define TEMPERATURE_START 10.0
-#define TEMPERATURE_MULTIPLIER 2.0
-/* весь экран - 8 часов */
-//#define TIME_MULTIPLIER 200000
-/* весь экран - 24 часа */
-#define TIME_MULTIPLIER 600000
-
-#define colorT1       0b0000000111011111
-#define colorT2       0b0111100111011111
-#define colorB1       0b0000011111100000
-#define colorB2       0b0111111111100000
-#define colorTime     0b0111101111101111
-#define voltColor     0b1111100100000100
-#define foneColor     0b0001100011100011
-#define errorColor    0b0000000000011111
-#define markColor     0b1111111111111111
-#define markTempColor 0b1001010010010010
-#define markMinColor  0b0110001100001100
-#define markHourColor 0b1001010010010010
-
-#define screenTop     19
-#define screenBottom  119
-#define screenLeft    0
-#define screenRigth   144
-
 int curX = screenLeft - 1;
 int curNextX = curX + 1;
 int curNextY = screenTop;
+const char mainScreenText[] = "Т1=    C В1=    %         \nТ2=    C В2=    % V=     V";
+//const char timeSetScreenText[] = "********\n********";
 
 void setup() {
 #ifdef HAS_SERIAL
@@ -83,12 +61,11 @@ void setup() {
   screen.begin(3);
 
   // clear the screen with a black background
-  screen.background(0, 0, 0);
+  screen.background(backColor);
 
-  screen.stroke(255, 255, 255);
+  screen.stroke(textColor);
   screen.setTextSize(1);
-  //screen.text("Напряжение=10.00V\nТемпер.=    C Влажн.=    %", 0, 0);
-  screen.text("Т1=    C В1=    %         \nТ2=    C В2=    % V=     V", 0, 0);
+  screen.text(mainScreenText, 0, 0);
   drawGrid();
 
   initSD();
@@ -100,21 +77,48 @@ void setup() {
 }
 
 void loop() {
-  // Read the value of the sensor
-  float factor = 2.5 / analogRead(A7);
-  float sensor = analogRead(A6) * factor;
-
-  temperatureHumidity(sensor);
-
-  fillPlace(20, 1, 5, voltColor);
-  screen.print(sensor, 2);
-
+  static int count = 0;
+  static bool isEditTime = false;
+  if (--count < 0) {
+    if (!isEditTime) {
+      temperatureHumidity();
+    }
+    count = 60;
+  }
   if (irControl.hasCode()) {
     long code = irControl.getCode();
     IrControlKey* irControlKey = irControl.toControlKey(code);
+    char key = irControlKey->key;
+    switch (key) {
+    case 'm':
+    case 'b':
+      screen.stroke(textColor);
+      screen.fillRect(0, 0, 160, 16, backColor);
+      showScreen(isEditTime = !isEditTime);
+      break;
+    default:
+      if (isEditTime) {
+        bool isNewEditTime = editTime(key);
+        if (!isNewEditTime) {
+          isEditTime = isNewEditTime;
+          showScreen(isEditTime);
+        }
+      }
+      break;
+    }
   }
+  delay(100);
+}
 
-  delay(6000);
+/**
+ * Первоначальный показ экрана
+ */
+void showScreen(bool isEditTime) {
+  if (isEditTime) {
+    editTime(1);
+  } else {
+    screen.text(mainScreenText, 0, 0);
+  }
 }
 
 /**
@@ -171,18 +175,22 @@ void initSD() {
 }
 
 /**
+ * Получаем значение напряжения питания
+ */
+float findVolt() {
+  float factor = 2.5 / analogRead(A7);
+  return analogRead(A6) * factor;;
+}
+
+/**
  * сохраняем на SD
  */
 void saveData(Time time, float volt, float temp1, float hum1, float temp2, float hum2) {
   File dataFile = SD.open("datalog.txt", FILE_WRITE);
   // if the file is available, write to it:
   if (dataFile) {
-    char buf[20];
     dataFile.print("time=");
-    snprintf(buf, sizeof(buf), "%02d/%02d/%04d %02d:%02d:%02d",
-      time.date, time.mon, time.yr, time.hr, time.min, time.sec
-    );
-    dataFile.print(buf);
+    dataFile.print(printTime(&time, DataTime));
     dataFile.print(",T1=");
     dataFile.print(temp1, 1);
     dataFile.print(",H1=");
@@ -259,13 +267,11 @@ void showVolt(float volt, color col) {
 /**
  * Показываем температуру и влажность
  */
-void temperatureHumidity(float volt) {
+void temperatureHumidity() {
   static int cntX = 0;
+  float volt = findVolt();
   Time time = rtc.time();
-//  long   lTime = millis();
   long lTime = (((time.hr * 60l + time.min) * 60) + time.sec) * 1000;
-//  fillPlace(8, 4, 10, colorTime);
-//  screen.print(lTime);
   double temp1 = dht1.readTemperature();
   double hum1  = dht1.readHumidity();
   double temp2 = dht2.readTemperature();
@@ -285,10 +291,8 @@ void temperatureHumidity(float volt) {
   showData(lTime, volt, temp1, hum1, temp2, hum2, cntX == 0);
   cntX++;
 
-  char buf[10];
-  snprintf(buf, sizeof(buf), "%02d:%02d:%02d", time.hr, time.min, time.sec);
   fillPlace(18, 0, 8, colorTime);
-  screen.print(buf);
+  screen.print(printTime(&time, TimeMode));
   fillPlace(3, 0, 4, colorT1);
   screen.print(temp1, 1);
   fillPlace(12, 0, 4, colorB1);
@@ -297,6 +301,8 @@ void temperatureHumidity(float volt) {
   screen.print(temp2, 1);
   fillPlace(12, 1, 4, colorB2);
   screen.print(hum2, 1);
+  fillPlace(20, 1, 5, voltColor);
+  screen.print(volt, 2);
 
 #ifdef HAS_SERIAL
   Serial.print("Volt: ");
