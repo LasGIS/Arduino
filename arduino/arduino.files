@@ -153,3 +153,9 @@ libraries/TwoMotor/TwoMotor.h
 Robot/Robot2/Robot2.h
 WeatherSaveShow/RealTime.cpp
 WeatherSaveShow/WeatherSaveShow.h
+Dallas18B20/Dallas18B20.ino
+libraries/OneWire/examples/DS18x20_Temperature/DS18x20_Temperature.pde
+libraries/OneWire/examples/DS2408_Switch/DS2408_Switch.pde
+libraries/OneWire/examples/DS250x_PROM/DS250x_PROM.pde
+libraries/OneWire/OneWire.cpp
+libraries/OneWire/OneWire.h
