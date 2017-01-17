@@ -159,3 +159,6 @@ libraries/OneWire/examples/DS2408_Switch/DS2408_Switch.pde
 libraries/OneWire/examples/DS250x_PROM/DS250x_PROM.pde
 libraries/OneWire/OneWire.cpp
 libraries/OneWire/OneWire.h
+LcdPanel/buzzer.cpp
+LcdPanel/CustomChars.cpp
+LcdPanel/RealTime.cpp

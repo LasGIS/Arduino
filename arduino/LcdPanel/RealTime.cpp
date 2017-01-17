@@ -1,4 +1,16 @@
+#include "LcdPanel.h"
+
 #define RT_MAX_FIELDS 6
+
+extern char comBuffer[50];
+extern DS1302 rtc;
+extern LiquidCrystal_I2C lcd;
+
+void printOnlyTime(uint8_t row, Time* t);
+void setValue(int nField, int nPosit, char key);
+void showField(int nField, int nPosit);
+void Time2Fields(Time tm);
+Time Fields2Time();
 
 class RTField {
 public:

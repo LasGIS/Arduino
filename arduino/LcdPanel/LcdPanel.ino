@@ -33,15 +33,12 @@ int count = 0;
 int charsRow = 0;
 // время в миллисекундах
 unsigned long milliSec;
-static char comBuffer[50];
+char comBuffer[50];
 
 /** настраиваем измеритель влажности. */
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
 
-/* пины Ультразвукового дальномера */
-const int echoPin = A1; 
-const int trigPin = A0; 
 /*
 void SerialEEPROM() {
   //for (int i = 0; i < 255; i++) EEPROM.update(i, i);
@@ -76,8 +73,6 @@ void setup() {
   pinMode(buzzerPin, OUTPUT);
   dht1.begin();
   dht2.begin();
-  pinMode(trigPin, OUTPUT); 
-  pinMode(echoPin, INPUT); 
 }
 
 void eepromSet() {
@@ -349,6 +344,7 @@ void batteryCapasity() {
   delay(100);
   float vBattery = analogRead(A7) * 0.00630;
   float vCharger = analogRead(A6) * 0.01175;
+  float vScheme = analogRead(A3) * 0.01175;
   analogReference(DEFAULT);
   if ((oldBat > vBattery + 0.05) && (oldCrg + 0.05 < vCharger)) {
     startTime = millis();
@@ -371,6 +367,8 @@ void batteryCapasity() {
   lcd.setCursor(0, 1);
   lcd.print("Crg ");
   lcd.print(vCharger, 2);
-  lcd.print("V   ");
+  lcd.print("V ");
+  lcd.print(vScheme, 2);
+  lcd.print("V ");
 }
 

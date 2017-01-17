@@ -1,3 +1,5 @@
+#include "LcdPanel.h"
+
 static uint8_t FIRST_LCD_CHARS[8][8] = {
   { B00111, B01111, B11111, B11111, B11111, B11111, B11111, B11111 },
   { B11111, B11111, B11111, B00000, B00000, B00000, B00000, B00000 },
@@ -20,6 +22,7 @@ static uint8_t CUSTOM_DIGITS[10][2][3] {
   { { 0,  6,  2}, { 3,  4,  5} },  // 8
   { { 0,  6,  2}, { 4,  4,  5} }   // 9
 };
+extern LiquidCrystal_I2C lcd;
 
 void loadCustomChars() {
   for (int i = 0; i < 8; i++) {
