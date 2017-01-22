@@ -1,6 +1,6 @@
 #include <OneWire.h>
 
-OneWire  ds(10);  // РїРѕРґРєР»СЋС‡РµРЅ Рє 10 РїРёРЅСѓ (СЂРµР·РёСЃС‚РѕСЂ РЅР° 4.7Рє РѕР±СЏР·Р°С‚РµР»РµРЅ)
+OneWire  ds(10);  // подключен к 10 пину (резистор на 4.7к обязателен)
 
 void setup(void) {
   Serial.begin(9600);
@@ -55,18 +55,18 @@ void loop(void) {
 
   ds.reset();
   ds.select(addr);
-  ds.write(0x44, 1);        // РЅР°С‡Р°Р»Рѕ РєРѕРјРјСѓРЅРёРєР°С†РёРё
+  ds.write(0x44, 1);        // начало коммуникации
   
-  delay(1000);
+  delay(2000);
   
   present = ds.reset();
   ds.select(addr);    
-  ds.write(0xBE);         // С‡РёС‚Р°РµРј Р·РЅР°С‡РµРЅРёРµ
+  ds.write(0xBE);         // читаем значение
 
   Serial.print("  Data = ");
   Serial.print(present, HEX);
   Serial.print(" ");
-  for ( i = 0; i < 9; i++) {           // СЃРјРѕС‚СЂРёРј 9 Р±Р°Р№С‚РѕРІ
+  for ( i = 0; i < 9; i++) {           // смотрим 9 байтов
     data[i] = ds.read();
     Serial.print(data[i], HEX);
     Serial.print(" ");
@@ -75,9 +75,9 @@ void loop(void) {
   Serial.print(OneWire::crc8(data, 8), HEX);
   Serial.println();
 
-  // РџСЂРµРѕР±СЂР°Р·СѓРµРј РїРѕР»СѓС‡РЅРµРЅРЅС‹Р№ РґР°РЅРЅС‹Рµ РІ С‚РµРјРїРµСЂР°С‚СѓСЂСѓ
-  // РСЃРїРѕР»СЊР·СѓРµРј int16_t С‚РёРї, С‚.Рє. РѕРЅ СЂР°РІРµРЅ 16 Р±РёС‚Р°Рј
-  // РґР°Р¶Рµ РїСЂРё РєРѕРјРїРёР»СЏС†РёРё РїРѕРґ 32-С… Р±РёС‚РЅС‹Р№ РїСЂРѕС†РµСЃСЃРѕСЂ
+  // Преобразуем получненный данные в температуру
+  // Используем int16_t тип, т.к. он равен 16 битам
+  // даже при компиляции под 32-х битный процессор
   int16_t raw = (data[1] << 8) | data[0];
   if (type_s) {
     raw = raw << 3;
@@ -92,7 +92,7 @@ void loop(void) {
   }
   celsius = (float)raw / 16.0;
   fahrenheit = celsius * 1.8 + 32.0;
-  Serial.print("  Temperature = ");
+  Serial.print("  Температура = ");
   Serial.print(celsius);
   Serial.print(" Celsius, ");
   Serial.print(fahrenheit);
