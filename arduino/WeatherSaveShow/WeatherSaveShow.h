@@ -33,7 +33,7 @@
 #define screenLeft    0
 #define screenRigth   144
 
-class RTField {
+class LcdField {
 public:
   uint8_t row;
   uint8_t col;

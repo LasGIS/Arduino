@@ -1,4 +1,5 @@
 #include "LcdPanel.h"
+#include "lcd_screen.h"
 
 #define RT_MAX_FIELDS 6
 
@@ -6,22 +7,7 @@ extern char comBuffer[50];
 extern DS1302 rtc;
 extern LiquidCrystal_I2C lcd;
 
-void printOnlyTime(uint8_t row, Time* t);
-void setValue(int nField, int nPosit, char key);
-void showField(int nField, int nPosit);
-void Time2Fields(Time tm);
-Time Fields2Time();
-
-class RTField {
-public:
-  uint8_t row;
-  uint8_t col;
-  uint8_t len;
-  uint16_t maxVal;
-  uint16_t val;
-};
-
-RTField RTFields[RT_MAX_FIELDS + 1] {
+LcdField RTFields[RT_MAX_FIELDS + 1] {
   {0, 0, 1, 7, 1},
   {0, 4, 4, 9999, 2015},
   {0, 9, 2, 12, 1},
@@ -42,6 +28,13 @@ String dayAsString(const Time::Day day) {
     case Time::kSaturday: return "Sat";
   }
   return "(und)";
+}
+
+/** временнАя чать. */
+void printOnlyTime(uint8_t row, Time* t) {
+  snprintf(comBuffer, sizeof(comBuffer), "Time = %02d:%02d:%02d", t->hr, t->min, t->sec);
+  lcd.setCursor(0, row);
+  lcd.print(comBuffer);
 }
 
 /**
@@ -74,14 +67,93 @@ void printTime(LPShowModeType showMode) {
     break;
   case Battery:
     break;
+  default:
+    break;
   }
 }
 
-/** временнАя чать. */
-void printOnlyTime(uint8_t row, Time* t) {
-  snprintf(comBuffer, sizeof(comBuffer), "Time = %02d:%02d:%02d", t->hr, t->min, t->sec);
-  lcd.setCursor(0, row);
-  lcd.print(comBuffer);
+/**
+ * устанавливаем значение поля
+ */
+void setValue(int nField, int nPosit, char key) {
+  LcdField field = RTFields[nField];
+  byte buf[5];
+  uint16_t val = field.val;
+  for (int i = field.len - 1; i >= 0; i--) {
+    buf[i] = val % 10;
+    val = val / 10;
+  }
+
+  if (key >= '0' && key <= '9') {
+    buf[nPosit] = key - '0';
+  } else switch (key) {
+    case '+':
+    buf[nPosit]++;
+    break;
+    case '-':
+    buf[nPosit]--;
+    break;
+  }
+
+  val = 0;
+  for (int i = 0; i < field.len; i++) {
+    val *= 10;
+    val += buf[i];
+  }
+
+  if (val > field.maxVal) {
+    val = field.maxVal;
+  }
+  uint16_t minVal = (nField < 4 ? 1 : 0);
+  if (val < minVal) {
+    val = minVal;
+  }
+  RTFields[nField].val = val;
+}
+
+/**
+ * рисуем очередной филд
+ */
+void showField(int nField, int nPosit) {
+  LcdField field = RTFields[nField];
+  char buf[5];
+  lcd.setCursor(field.col, field.row);
+  if (nField == 0) {
+    lcd.print(dayAsString((Time::Day) field.val));
+  } else {
+    int val = field.val;
+    buf[field.len] = 0;
+    for (int i = field.len - 1; i >= 0; i--) {
+      buf[i] = '0' + val % 10;
+      val = val / 10;
+    }
+    lcd.print(buf);
+  }
+  lcd.setCursor(field.col + nPosit, field.row);
+}
+
+void Time2Fields(Time tm) {
+  RTFields[0].val = tm.day;
+  RTFields[1].val = tm.yr;
+  RTFields[2].val = tm.mon;
+  RTFields[3].val = tm.date;
+
+  RTFields[4].val = tm.hr;
+  RTFields[5].val = tm.min;
+  RTFields[6].val = tm.sec;
+}
+
+Time Fields2Time() {
+  Time tm(2099, 1, 1, 0, 0, 0, Time::kSunday);
+  tm.day = (Time::Day) RTFields[0].val;
+  tm.yr = RTFields[1].val;
+  tm.mon = RTFields[2].val;
+  tm.date = RTFields[3].val;
+
+  tm.hr = RTFields[4].val;
+  tm.min = RTFields[5].val;
+  tm.sec = RTFields[6].val;
+  return tm;
 }
 
 /**
@@ -149,88 +221,4 @@ LPModeType editTime(char key) {
     return show;
   }
   return edit;
-}
-
-void Time2Fields(Time tm) {
-  RTFields[0].val = tm.day;
-  RTFields[1].val = tm.yr;
-  RTFields[2].val = tm.mon;
-  RTFields[3].val = tm.date;
-
-  RTFields[4].val = tm.hr;
-  RTFields[5].val = tm.min;
-  RTFields[6].val = tm.sec;
-}
-
-Time Fields2Time() {
-  Time tm(2099, 1, 1, 0, 0, 0, Time::kSunday);
-  tm.day = (Time::Day) RTFields[0].val;
-  tm.yr = RTFields[1].val;
-  tm.mon = RTFields[2].val;
-  tm.date = RTFields[3].val;
-
-  tm.hr = RTFields[4].val;
-  tm.min = RTFields[5].val;
-  tm.sec = RTFields[6].val;
-  return tm;
-}
-
-/**
- * рисуем очередной филд
- */
-void showField(int nField, int nPosit) {
-  RTField field = RTFields[nField];
-  char buf[5];
-  lcd.setCursor(field.col, field.row);
-  if (nField == 0) {
-    lcd.print(dayAsString((Time::Day) field.val));
-  } else {
-    int val = field.val;
-    buf[field.len] = 0;
-    for (int i = field.len - 1; i >= 0; i--) {
-      buf[i] = '0' + val % 10;
-      val = val / 10;
-    }
-    lcd.print(buf);
-  }
-  lcd.setCursor(field.col + nPosit, field.row);
-}
-
-/**
- * устанавливаем значение поля
- */
-void setValue(int nField, int nPosit, char key) {
-  RTField field = RTFields[nField];
-  byte buf[5];
-  uint16_t val = field.val;
-  for (int i = field.len - 1; i >= 0; i--) {
-    buf[i] = val % 10;
-    val = val / 10;
-  }
-
-  if (key >= '0' && key <= '9') {
-    buf[nPosit] = key - '0';
-  } else switch (key) {
-    case '+':
-    buf[nPosit]++;
-    break;
-    case '-':
-    buf[nPosit]--;
-    break;
-  }
-
-  val = 0;
-  for (int i = 0; i < field.len; i++) {
-    val *= 10;
-    val += buf[i];
-  }
-
-  if (val > field.maxVal) {
-    val = field.maxVal;
-  }
-  uint16_t minVal = (nField < 4 ? 1 : 0);
-  if (val < minVal) {
-    val = minVal;
-  }
-  RTFields[nField].val = val;
 }

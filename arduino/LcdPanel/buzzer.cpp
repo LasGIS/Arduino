@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "pitches.h"
 
-extern int buzzerPin = 8;
+extern int buzzerPin;
 
 /**
  * пищит <del> секунд с частотой <hertz> герц  

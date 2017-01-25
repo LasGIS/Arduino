@@ -162,3 +162,8 @@ libraries/OneWire/OneWire.h
 LcdPanel/buzzer.cpp
 LcdPanel/CustomChars.cpp
 LcdPanel/RealTime.cpp
+LcdPanel/SetScreen.cpp
+LcdPanel/set_screen.h
+LcdPanel/set_screen.cpp
+LcdPanel/lcd_screen.cpp
+LcdPanel/lcd_screen.h

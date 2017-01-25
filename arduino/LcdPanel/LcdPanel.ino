@@ -1,19 +1,16 @@
 /**
  * real time часы + ик пульт + датчик влажности + жужалка
  */
-#include <EEPROM.h>
 #include "LcdPanel.h"
-#include <IrControl.h>
-#include <LiquidCrystal_I2C.h>
-#include <DS1302.h>
-#include <DHT.h>
+#include <EEPROM.h>
+#include "set_screen.h"
 
 // указываем пин для ИК датчика 
 IrControl control(2);
 // initialize the library with the numbers of the interface pins
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 // пин для жужалки
-const int buzzerPin = 8;
+int buzzerPin = 8;
 
 /** настраиваем real time clock. */
 const int kCePin   = 3;  // Chip Enable
@@ -38,6 +35,10 @@ char comBuffer[50];
 /** настраиваем измеритель влажности. */
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
+SetScreen setScreen;
+
+extern LPModeType editTime(char key);
+
 
 /*
 void SerialEEPROM() {
@@ -77,18 +78,19 @@ void setup() {
 
 void eepromSet() {
   currentCommand = (CurrentCommandType) EEPROM.read(CUR_COMMAND_ADR);
-  if (currentCommand < mainCommand || currentCommand > showIRkey) {
+  if (currentCommand > showIRkey) {
     currentCommand = mainCommand;
     EEPROM.update(CUR_COMMAND_ADR, currentCommand);
   }
   showMode = (LPShowModeType) EEPROM.read(SHOW_MODE_ADR);
-  if (showMode < BigTime || showMode > Battery) {
+  if (showMode > Battery) {
     showMode = BigTime;
     EEPROM.update(SHOW_MODE_ADR, showMode);
   }
 }
 
 void loop() {
+  /* показываем экран каждые 1/10 секунды. */
   switch (currentCommand) {
     case mainCommand: // показываем часы, температуру и влажность
       if (mode == show) {
@@ -102,11 +104,14 @@ void loop() {
         }
       }
       break;
+  case settingsScreen: // показываем часы, температуру и влажность
+    setScreen.show();
+    break;
+      /*
     case showLCDchars: // показываем раскладку LCD символов
       break;
     case showIRkey: // показываем ключ и код ИК пульта
       break;
-/*    
     case showDistance: // дистанцию
       showDistance();
       break;
@@ -201,18 +206,20 @@ void beforeCommandSet() {
 
 void afterCommandSet() {
   switch (currentCommand) {
-    case showLCDchars:
-//      charsRow = 0;
-      lcdShowChars();
-      break;
-    case showIRkey:
-      lcd.print("Enter IR key");
-      break;
+  case showLCDchars:
+//    charsRow = 0;
+    lcdShowChars();
+    break;
+  case showIRkey:
+    lcd.print("Enter IR key");
+    break;
 /*
     case showDistance:
       lcd.print("Distance = ");
       break;
 */
+  default:
+    break;
   }
 }
 
@@ -301,15 +308,17 @@ void lcdIRkey(long code, char key) {
  */
 void temperatureHumidity() {
   switch (showMode) {
-    case TimeHum:
+  case TimeHum:
     lcd.setCursor(0, 1);
     temperatureHumidity(&dht1, '1');
     break;
-    case Humidity:
+  case Humidity:
     lcd.setCursor(0, 0);
     temperatureHumidity(&dht1, '1');
     lcd.setCursor(0, 1);
     temperatureHumidity(&dht2, '2');
+    break;
+  default:
     break;
   }
 }
