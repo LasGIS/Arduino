@@ -2,10 +2,13 @@
 #define LCD_PANEL_H
 
 #include <Arduino.h>
-#include <IrControl.h>
-#include <LiquidCrystal_I2C.h>
-#include <DS1302.h>
-#include <DHT.h>
+
+#define CUR_COMMAND_ADR 0
+#define SHOW_MODE_ADR 1
+#define BUZZER_FACTOR_ADR 2
+
+// установка режима вывода отладочной информации
+//#define HAS_SERIAL
 
 enum LPModeType : uint8_t {
   show, edit

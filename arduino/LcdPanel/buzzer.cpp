@@ -1,22 +1,35 @@
-#include <Arduino.h>
+#include "LcdPanel.h"
 #include "pitches.h"
 
 extern int buzzerPin;
+uint8_t buzzerfactor = 1;
 
 /**
  * пищит <del> секунд с частотой <hertz> герц  
  */
 void buzzerOut(unsigned int hertz, unsigned long del) {
 //  tone(buzzerPin, hertz, del);
-  return;
+  if (buzzerfactor == 0) return;
   noInterrupts();
   long delayVal = (500000 / hertz) - 9;
-  int count = (del * hertz) / 1000;
+  long delayHigh = 0x1 << (buzzerfactor - 1);
+  long delayLow = (delayVal) - delayHigh;
+  int count = (del * 500) / delayVal;
+#ifdef HAS_SERIAL
+  Serial.print(delayVal);
+  Serial.print(", (");
+  Serial.print(delayHigh);
+  Serial.print(", ");
+  Serial.print(delayLow);
+  Serial.print("), ");
+  Serial.print(count);
+  Serial.println(";");
+#endif
   for (int i = 0; i < count; i++) {
     digitalWrite(buzzerPin, HIGH);
-    delayMicroseconds(delayVal);
+    delayMicroseconds(delayHigh);
     digitalWrite(buzzerPin, LOW);
-    delayMicroseconds(delayVal);
+    delayMicroseconds(delayLow);
   }
   interrupts();
 }
@@ -31,7 +44,9 @@ void buzzerOutTest(unsigned int hertz, unsigned long del) {
   buzzerOut(hertz, del);
   //interrupts();
   msecs = millis() - msecs;
+#ifdef HAS_SERIAL
   Serial.println(msecs, DEC);
+#endif
   lcd.print(msecs);
   delay(1000);
 }

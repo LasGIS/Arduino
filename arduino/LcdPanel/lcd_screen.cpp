@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include "LcdPanel.h"
 #include <LiquidCrystal_I2C.h>
 #include "lcd_screen.h"
 
@@ -22,7 +22,7 @@ void LcdField::setValue(int nPosit, char key) {
     buf[nPosit]++;
     break;
     case '-':
-    buf[nPosit]--;
+    if (buf[nPosit] > 0) buf[nPosit]--;
     break;
   }
 

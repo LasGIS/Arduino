@@ -1,7 +1,12 @@
 /**
  * real time часы + ик пульт + датчик влажности + жужалка
  */
+
 #include "LcdPanel.h"
+#include <IrControl.h>
+#include <LiquidCrystal_I2C.h>
+#include <DS1302.h>
+#include <DHT.h>
 #include <EEPROM.h>
 #include "set_screen.h"
 
@@ -23,8 +28,6 @@ CurrentCommandType currentCommand;
 LPModeType mode = show;
 LPShowModeType showMode;
 int count = 0;
-#define CUR_COMMAND_ADR 0
-#define SHOW_MODE_ADR 1
 
 // начальная страница для показа раскладки символов (0-15)
 int charsRow = 0;
@@ -38,7 +41,7 @@ DHT dht2(6, DHT22);
 SetScreen setScreen;
 
 extern LPModeType editTime(char key);
-
+extern uint8_t buzzerfactor;
 
 /*
 void SerialEEPROM() {
@@ -87,6 +90,11 @@ void eepromSet() {
     showMode = BigTime;
     EEPROM.update(SHOW_MODE_ADR, showMode);
   }
+  buzzerfactor = EEPROM.read(BUZZER_FACTOR_ADR);
+  if (buzzerfactor > 8) {
+    buzzerfactor = 1;
+    EEPROM.update(BUZZER_FACTOR_ADR, showMode);
+  }
 }
 
 void loop() {
@@ -105,7 +113,9 @@ void loop() {
       }
       break;
   case settingsScreen: // показываем часы, температуру и влажность
-    setScreen.show();
+    if (mode == show) {
+      setScreen.show();
+    }
     break;
       /*
     case showLCDchars: // показываем раскладку LCD символов
@@ -129,11 +139,17 @@ void loop() {
       buzzerOut(controlKey->tone, 200);
     }
     if (mode == edit) {
-      mode = editTime(key);
+      if (currentCommand == mainCommand) {
+        mode = editTime(key);
+      } else if (currentCommand == settingsScreen) {
+        mode = setScreen.edit(key);
+      }
       return;
     }
     
+#ifdef HAS_SERIAL
     serIRkey(code, key);
+#endif
     if (currentCommand == showIRkey) {
       lcdIRkey(code, key);
     }
@@ -179,6 +195,8 @@ void loop() {
     case 'p':
       if (currentCommand == mainCommand && showMode == DataTime) {
         mode = editTime(1);
+      } else if (currentCommand == settingsScreen) {
+        mode = setScreen.edit(1);
       }
       break;
     case 'm':
@@ -274,6 +292,7 @@ void lcdShowChars() {
 /**
  * Показываем полученное значение ИК пульта в Serial
  */
+#ifdef HAS_SERIAL
 void serIRkey(long code, char key) {
   Serial.print("IR key = ");
   if (key == 0) {
@@ -284,6 +303,7 @@ void serIRkey(long code, char key) {
   Serial.print("; code = 0x");
   Serial.println(code, HEX);
 }
+#endif
 
 /**
  * Показываем полученное значение ИК пульта на дисплее

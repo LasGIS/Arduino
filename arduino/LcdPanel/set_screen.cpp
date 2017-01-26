@@ -1,58 +1,70 @@
 #include "LcdPanel.h"
+#include <EEPROM.h>
+#include <LiquidCrystal_I2C.h>
 #include "set_screen.h"
 
-extern char comBuffer[50];
+#define SS_MAX_FIELDS 0
+
+extern uint8_t buzzerfactor;
+//extern char comBuffer[50];
 extern LiquidCrystal_I2C lcd;
 
+LcdField SSFields[SS_MAX_FIELDS + 1] {
+  {0, 9, 1, 0, 8, 6, NULL},         // сила звука
+  //{1, 13, 2, 0, 59, 0, NULL}          // секунда
+};
+
 SetScreen::SetScreen() {
-  zummer = 100;
 }
 
 /***
  * выводим содержимое на LCD.
  */
 void SetScreen::show() {
-  snprintf(comBuffer, sizeof(comBuffer), "Zummer = %02d", zummer);
   lcd.setCursor(0, 0);
-  lcd.print(comBuffer);
+  lcd.print("Buzzer = ");
+  lcd.print(buzzerfactor);
 }
 
 /***
  * Редактирование настроек
  */
 LPModeType SetScreen::edit(char key) {
-  /*
   static int nField = 0;
   static int nPosit = 0;
+#ifdef HAS_SERIAL
+  Serial.print(nField);
+  Serial.print(", ");
+  Serial.print(nPosit);
+  Serial.println(";");
+#endif
 
   if (key >= '0' && key <= '9') {
-    setValue(nField, nPosit, key);
-    showField(nField, nPosit);
+    SSFields[nField].setValue(nPosit, key);
+    SSFields[nField].showField(nPosit);
     key = '>';
   }
 
   switch(key) {
   case 1: // начальная
-    Time2Fields(rtc.time());
     lcd.clear();
-    printTime(DataTime);
+    show();
+    SSFields[0].val = buzzerfactor;
     lcd.cursor();
     lcd.blink();
-    nField = RT_MAX_FIELDS;
+    nField = SS_MAX_FIELDS;
     nPosit = 0;
-    showField(nField, nPosit);
     break;
   case '>':
     nPosit++;
-    if (nPosit >= RTFields[nField].len) {
-      if (nField < RT_MAX_FIELDS) {
+    if (nPosit >= SSFields[nField].len) {
+      if (nField < SS_MAX_FIELDS) {
         nField++;
         nPosit = 0;
       } else {
         nPosit--;
       }
     }
-    showField(nField, nPosit);
     break;
   case '<':
     nPosit--;
@@ -60,28 +72,21 @@ LPModeType SetScreen::edit(char key) {
       if (nField > 0) {
         nField--;
       }
-      nPosit = RTFields[nField].len - 1;
+      nPosit = SSFields[nField].len - 1;
     }
-    showField(nField, nPosit);
     break;
   case '+':
   case '-':
-    setValue(nField, nPosit, key);
-    showField(nField, nPosit);
+    SSFields[nField].setValue(nPosit, key);
     break;
   case 'p': // записываем и выходим
-    // initialize real time clock.
-    rtc.writeProtect(false);
-    rtc.halt(false);
-    rtc.time(Fields2Time());
-    lcd.noCursor();
-    lcd.noBlink();
-    return show;
+    buzzerfactor = SSFields[0].val;
+    EEPROM.update(BUZZER_FACTOR_ADR, buzzerfactor);
   case 'b': // выходим без записи
     lcd.noCursor();
     lcd.noBlink();
-    return show;
+    return LPModeType::show;
   }
-  */
+  SSFields[nField].showField(nPosit);
   return LPModeType::edit;
 }

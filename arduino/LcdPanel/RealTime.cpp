@@ -1,4 +1,6 @@
 #include "LcdPanel.h"
+#include <LiquidCrystal_I2C.h>
+#include <DS1302.h>
 #include "lcd_screen.h"
 
 #define RT_MAX_FIELDS 6

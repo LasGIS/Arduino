@@ -2,6 +2,7 @@
  * Отображение больших цифр на дисплее.
  *************************************/
 #include "LcdPanel.h"
+#include <LiquidCrystal_I2C.h>
 
 static uint8_t FIRST_LCD_CHARS[8][8] = {
   { B00111, B01111, B11111, B11111, B11111, B11111, B11111, B11111 },

@@ -5,7 +5,6 @@
 
 class SetScreen
 {
-  int zummer;
 public:
   SetScreen();
   void show();
