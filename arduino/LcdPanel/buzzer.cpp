@@ -8,6 +8,7 @@ extern int buzzerPin;
  */
 void buzzerOut(unsigned int hertz, unsigned long del) {
 //  tone(buzzerPin, hertz, del);
+  return;
   noInterrupts();
   long delayVal = (500000 / hertz) - 9;
   int count = (del * hertz) / 1000;

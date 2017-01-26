@@ -21,11 +21,11 @@ D:/local/Arduino/hardware/arduino/avr/cores/arduino
 D:/local/Arduino/hardware/tools/avr/avr/include
 D:/local/Arduino/hardware/arduino/avr/variants/standard
 D:/local/Arduino/hardware/arduino/avr/libraries/EEPROM/src
-D:/local/Arduino/hardware/arduino/avr/libraries/HID
-D:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial
-D:/local/Arduino/hardware/arduino/avr/libraries/SPI
-D:/local/Arduino/hardware/arduino/avr/libraries/Wire
-D:/local/Arduino/hardware/arduino/avr/libraries/Wire/utility
+D:/local/Arduino/hardware/arduino/avr/libraries/HID/src
+D:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/src
+D:/local/Arduino/hardware/arduino/avr/libraries/SPI/src
+D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src
+D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src/utility
 D:/local/Arduino/libraries/SD/src
 D:/local/Arduino/libraries/Servo/src
 libraries/OneWire/examples/DS250x_PROM

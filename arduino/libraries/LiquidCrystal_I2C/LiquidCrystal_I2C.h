@@ -81,7 +81,7 @@ public:
   virtual size_t write(uint8_t);
   void command(uint8_t);
   void init();
-
+/*
 ////compatibility API function aliases
 void blink_on();						// alias for blink()
 void blink_off();       					// alias for noBlink()
@@ -101,7 +101,7 @@ void off();
 uint8_t init_bargraph(uint8_t graphtype);
 void draw_horizontal_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end);
 void draw_vertical_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end);
-	 
+*/
 
 private:
   void init_priv();

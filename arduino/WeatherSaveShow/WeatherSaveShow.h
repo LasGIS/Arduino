@@ -42,10 +42,6 @@ public:
   uint16_t val;
 };
 
-enum LPModeType : uint8_t {
-
-};
-
 enum ShowTimeType : uint8_t {
     DataTime,
     DataMode,

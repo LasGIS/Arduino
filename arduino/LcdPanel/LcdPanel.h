@@ -6,10 +6,10 @@
 #include <LiquidCrystal_I2C.h>
 #include <DS1302.h>
 #include <DHT.h>
-/*
+
 enum LPModeType : uint8_t {
   show, edit
-};*/
+};
 /* модель отображения для главного экрана */
 enum LPShowModeType : uint8_t {
   BigTime = 0,
