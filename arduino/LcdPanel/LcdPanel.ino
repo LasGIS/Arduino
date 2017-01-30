@@ -9,6 +9,7 @@
 #include <DHT.h>
 #include <EEPROM.h>
 #include "set_screen.h"
+#include "real_time_screen.h"
 
 // указываем пин для ИК датчика 
 IrControl control(2);
@@ -39,8 +40,8 @@ char comBuffer[50];
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
 SetScreen setScreen;
+RealTimeScreen realTimeScreen;
 
-extern LPModeType editTime(char key);
 extern uint8_t buzzerfactor;
 
 /*
@@ -97,39 +98,9 @@ void eepromSet() {
   }
 }
 
+/** Общий цикл */
 void loop() {
-  /* показываем экран каждые 1/10 секунды. */
-  switch (currentCommand) {
-    case mainCommand: // показываем часы, температуру и влажность
-      if (mode == show) {
-        lcdShowTime();
-        if (count % 20 == 1) {
-          if (showMode == TimeHum || showMode == Humidity) {
-            temperatureHumidity();
-          } else if (showMode == Battery) {
-            batteryCapasity();
-          }
-        }
-      }
-      break;
-  case settingsScreen: // показываем часы, температуру и влажность
-    if (mode == show) {
-      setScreen.show();
-    }
-    break;
-      /*
-    case showLCDchars: // показываем раскладку LCD символов
-      break;
-    case showIRkey: // показываем ключ и код ИК пульта
-      break;
-    case showDistance: // дистанцию
-      showDistance();
-      break;
-*/
-    default:
-      break;
-  }
-
+  showEveryTime();
   if (control.hasCode()) {
     long code = control.getCode();
     IrControlKey* controlKey = control.toControlKey(code);
@@ -140,7 +111,7 @@ void loop() {
     }
     if (mode == edit) {
       if (currentCommand == mainCommand) {
-        mode = editTime(key);
+        mode = realTimeScreen.edit(key);
       } else if (currentCommand == settingsScreen) {
         mode = setScreen.edit(key);
       }
@@ -194,7 +165,7 @@ void loop() {
       break;
     case 'p':
       if (currentCommand == mainCommand && showMode == DataTime) {
-        mode = editTime(1);
+        mode = realTimeScreen.edit(1);
       } else if (currentCommand == settingsScreen) {
         mode = setScreen.edit(1);
       }
@@ -216,6 +187,40 @@ void loop() {
   count++;
   if (count > 1000) count = 0;
   delay(100);
+}
+
+/** показываем экран каждые 1/10 секунды. */
+void showEveryTime() {
+  switch (currentCommand) {
+    case mainCommand: // показываем часы, температуру и влажность
+      if (mode == show) {
+        lcdShowTime();
+        if (count % 20 == 1) {
+          if (showMode == TimeHum || showMode == Humidity) {
+            temperatureHumidity();
+          } else if (showMode == Battery) {
+            batteryCapasity();
+          }
+        }
+      }
+      break;
+  case settingsScreen: // показываем часы, температуру и влажность
+    if (mode == show) {
+      setScreen.show();
+    }
+    break;
+      /*
+    case showLCDchars: // показываем раскладку LCD символов
+      break;
+    case showIRkey: // показываем ключ и код ИК пульта
+      break;
+    case showDistance: // дистанцию
+      showDistance();
+      break;
+  */
+    default:
+      break;
+  }
 }
 
 void beforeCommandSet() {
@@ -241,6 +246,7 @@ void afterCommandSet() {
   }
 }
 
+/** ввод значения извне. */
 void serialEvent() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -265,7 +271,7 @@ void lcdShowTime() {
   unsigned long msec = millis();
   if ((msec - milliSec) / 100 > 0) {
     milliSec = msec;
-    printTime(showMode);
+    realTimeScreen.show();
   }
 }
 

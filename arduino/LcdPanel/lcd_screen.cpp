@@ -60,3 +60,69 @@ void LcdField::showField(int nPosit) {
   }
   lcd.setCursor(col + nPosit, row);
 }
+
+LcdScreen::LcdScreen() {
+  nField = 0;
+  nPosit = 0;
+}
+
+void LcdScreen::show() {
+  lcd.setCursor(0, 0);
+}
+
+LPModeType LcdScreen::edit(char key) {
+#ifdef HAS_SERIAL
+  Serial.print(nField);
+  Serial.print(", ");
+  Serial.print(nPosit);
+  Serial.println(";");
+#endif
+
+  if (key >= '0' && key <= '9') {
+    fields[nField].setValue(nPosit, key);
+    fields[nField].showField(nPosit);
+    key = '>';
+  }
+
+  switch(key) {
+  case 1: // начальная
+    lcd.clear();
+    show();
+    lcd.cursor();
+    lcd.blink();
+    nField = maxFields;
+    nPosit = 0;
+    break;
+  case '>':
+    nPosit++;
+    if (nPosit >= fields[nField].len) {
+      if (nField < maxFields) {
+        nField++;
+        nPosit = 0;
+      } else {
+        nPosit--;
+      }
+    }
+    break;
+  case '<':
+    nPosit--;
+    if (nPosit < 0) {
+      if (nField > 0) {
+        nField--;
+      }
+      nPosit = fields[nField].len - 1;
+    }
+    break;
+  case '+':
+  case '-':
+    fields[nField].setValue(nPosit, key);
+    break;
+  case 'p': // записываем и выходим
+  case 'b': // выходим без записи
+    lcd.noCursor();
+    lcd.noBlink();
+    return LPModeType::show;
+  }
+  fields[nField].showField(nPosit);
+  return LPModeType::edit;
+}

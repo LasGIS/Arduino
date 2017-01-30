@@ -167,3 +167,6 @@ LcdPanel/set_screen.h
 LcdPanel/set_screen.cpp
 LcdPanel/lcd_screen.cpp
 LcdPanel/lcd_screen.h
+LcdPanel/main_screen.h
+LcdPanel/main_screen.cpp
+LcdPanel/real_time_screen.h

@@ -3,7 +3,7 @@
 
 #include "lcd_screen.h"
 
-class SetScreen
+class SetScreen : public LcdScreen
 {
 public:
   SetScreen();

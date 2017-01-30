@@ -10,9 +10,6 @@
 // установка режима вывода отладочной информации
 //#define HAS_SERIAL
 
-enum LPModeType : uint8_t {
-  show, edit
-};
 /* модель отображения для главного экрана */
 enum LPShowModeType : uint8_t {
   BigTime = 0,
@@ -32,7 +29,6 @@ enum CurrentCommandType : uint8_t {
 
 void buzzerOut(unsigned int hertz, unsigned long del);
 //void buzzerOutTest(unsigned int hertz, unsigned long del);
-void printTime(LPShowModeType showMode);
 void loadCustomChars();
 void viewCustomDigit(int offset, int digit);
 

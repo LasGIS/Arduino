@@ -1,13 +1,14 @@
 #include "LcdPanel.h"
 #include <LiquidCrystal_I2C.h>
 #include <DS1302.h>
-#include "lcd_screen.h"
+#include "real_time_screen.h"
 
 #define RT_MAX_FIELDS 6
 
 extern char comBuffer[50];
 extern DS1302 rtc;
 extern LiquidCrystal_I2C lcd;
+extern LPShowModeType showMode;
 
 String dayAsString(const uint16_t val) {
   Time::Day day = (Time::Day) val;
@@ -23,17 +24,19 @@ String dayAsString(const uint16_t val) {
   return "(und)";
 }
 
-LcdField RTFields[RT_MAX_FIELDS + 1] {
-  {0, 0,  1, 1, 7, 1, dayAsString},   // день недели
-  {0, 4,  4, 1, 9999, 2015, NULL},    // год
-  {0, 9,  2, 1, 12, 1, NULL},         // месяц
-  {0, 12, 2, 1, 31, 1, NULL},         // день месяца
-  {1, 7,  2, 0, 23, 0, NULL},         // час
-  {1, 10, 2, 0, 59, 0, NULL},         // минута
-  {1, 13, 2, 0, 59, 0, NULL}          // секунда
-};
+RealTimeScreen::RealTimeScreen() {
+  maxFields = RT_MAX_FIELDS;
+  fields = new LcdField[maxFields + 1];
+  fields[0] = {0, 0,  1, 1, 7, 1, dayAsString};   // день недели
+  fields[1] = {0, 4,  4, 1, 9999, 2015, NULL};    // год
+  fields[2] = {0, 9,  2, 1, 12, 1, NULL};         // месяц
+  fields[3] = {0, 12, 2, 1, 31, 1, NULL};         // день месяца
+  fields[4] = {1, 7,  2, 0, 23, 0, NULL};         // час
+  fields[5] = {1, 10, 2, 0, 59, 0, NULL};         // минута
+  fields[6] = {1, 13, 2, 0, 59, 0, NULL};         // секунда
+}
 
-/** временнАя чать. */
+/** временнАя часть. */
 void printOnlyTime(uint8_t row, Time* t) {
   snprintf(comBuffer, sizeof(comBuffer), "Time = %02d:%02d:%02d", t->hr, t->min, t->sec);
   lcd.setCursor(0, row);
@@ -43,13 +46,13 @@ void printOnlyTime(uint8_t row, Time* t) {
 /**
  * выводим время и дату на LCD.
  */
-void printTime(LPShowModeType showMode) {
+void printTime(LPShowModeType mode) {
   // Get the current time and date from the chip.
   Time t = rtc.time();
 
   const String day = dayAsString(t.day);
 
-  switch (showMode) {
+  switch (mode) {
   case BigTime:
     viewCustomDigit(0, t.hr / 10); 
     viewCustomDigit(4, t.hr % 10); 
@@ -69,96 +72,57 @@ void printTime(LPShowModeType showMode) {
     printOnlyTime(0, &t);
     break;
   case Battery:
-    break;
   default:
     break;
   }
 }
 
-void Time2Fields(Time tm) {
-  RTFields[0].val = tm.day;
-  RTFields[1].val = tm.yr;
-  RTFields[2].val = tm.mon;
-  RTFields[3].val = tm.date;
-
-  RTFields[4].val = tm.hr;
-  RTFields[5].val = tm.min;
-  RTFields[6].val = tm.sec;
+void RealTimeScreen::show() {
+  printTime(showMode);
 }
 
-Time Fields2Time() {
-  Time tm(2099, 1, 1, 0, 0, 0, Time::kSunday);
-  tm.day = (Time::Day) RTFields[0].val;
-  tm.yr = RTFields[1].val;
-  tm.mon = RTFields[2].val;
-  tm.date = RTFields[3].val;
+void RealTimeScreen::Time2Fields(Time tm) {
+  fields[0].val = tm.day;
+  fields[1].val = tm.yr;
+  fields[2].val = tm.mon;
+  fields[3].val = tm.date;
 
-  tm.hr = RTFields[4].val;
-  tm.min = RTFields[5].val;
-  tm.sec = RTFields[6].val;
+  fields[4].val = tm.hr;
+  fields[5].val = tm.min;
+  fields[6].val = tm.sec;
+}
+
+Time RealTimeScreen::Fields2Time() {
+  Time tm(2099, 1, 1, 0, 0, 0, Time::kSunday);
+  tm.day = (Time::Day) fields[0].val;
+  tm.yr = fields[1].val;
+  tm.mon = fields[2].val;
+  tm.date = fields[3].val;
+
+  tm.hr = fields[4].val;
+  tm.min = fields[5].val;
+  tm.sec = fields[6].val;
   return tm;
 }
 
 /**
  * Редактирование времени
  */
-LPModeType editTime(char key) {
-  static int nField = 0;
-  static int nPosit = 0;
-
-  if (key >= '0' && key <= '9') {
-    RTFields[nField].setValue(nPosit, key);
-    RTFields[nField].showField(nPosit);
-    key = '>';
-  }
-
+LPModeType RealTimeScreen::edit(char key) {
   switch(key) {
   case 1: // начальная 
     Time2Fields(rtc.time());
-    lcd.clear();
-    printTime(DataTime);
-    lcd.cursor();
-    lcd.blink();
-    nField = RT_MAX_FIELDS;
-    nPosit = 0;
-    break;
-  case '>':
-    nPosit++;
-    if (nPosit >= RTFields[nField].len) {
-      if (nField < RT_MAX_FIELDS) {
-        nField++;
-        nPosit = 0;
-      } else {
-        nPosit--;
-      }
-    }
-    break;
-  case '<':
-    nPosit--;
-    if (nPosit < 0) {
-      if (nField > 0) {
-        nField--;
-      }
-      nPosit = RTFields[nField].len - 1;
-    }
-    break;
-  case '+':
-  case '-':
-    RTFields[nField].setValue(nPosit, key);
+//    printTime(DataTime);
+//    nField = RT_MAX_FIELDS;
+//    nPosit = 0;
     break;
   case 'p': // записываем и выходим
     // initialize real time clock. 
     rtc.writeProtect(false);
     rtc.halt(false);
     rtc.time(Fields2Time());
-    lcd.noCursor();
-    lcd.noBlink();
-    return show;
   case 'b': // выходим без записи
-    lcd.noCursor();
-    lcd.noBlink();
-    return show;
+    break;
   }
-  RTFields[nField].showField(nPosit);
-  return edit;
+  return LcdScreen::edit(key);
 }
