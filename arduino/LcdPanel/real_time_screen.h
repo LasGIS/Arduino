@@ -1,19 +1,19 @@
-#ifndef REALTIMESCREEN_H
-#define REALTIMESCREEN_H
+//#ifndef REALTIMESCREEN_H
+//#define REALTIMESCREEN_H
 
-#include "lcd_screen.h"
+//#include "lcd_screen.h"
 
-class RealTimeScreen : public LcdScreen
-{
-public:
-// --- данные ---
+//class RealTimeScreen : public LcdScreen
+//{
+//public:
+//// --- данные ---
 
-// --- методы ---
-  RealTimeScreen();
-  void show();
-  LPModeType edit(char key);
-  void Time2Fields(Time tm);
-  Time Fields2Time();
-};
+//// --- методы ---
+//  RealTimeScreen();
+//  void showOnce();
+//  LPModeType edit(char key);
+//  void Time2Fields(Time tm);
+//  Time Fields2Time();
+//};
 
-#endif // REALTIMESCREEN_H
+//#endif // REALTIMESCREEN_H

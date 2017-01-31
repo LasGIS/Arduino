@@ -10,14 +10,7 @@
 // установка режима вывода отладочной информации
 //#define HAS_SERIAL
 
-/* модель отображения для главного экрана */
-enum LPShowModeType : uint8_t {
-  BigTime = 0,
-  DataTime = 1,
-  TimeHum = 2,
-  Humidity = 3,
-  Battery = 4
-};
+#define CURRENT_COMMAND_TYPE_MAX 3
 /* текущий экран. */
 enum CurrentCommandType : uint8_t {
   mainCommand = 0,

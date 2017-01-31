@@ -1,4 +1,5 @@
 #include "LcdPanel.h"
+#include <EEPROM.h>
 #include <LiquidCrystal_I2C.h>
 #include "lcd_screen.h"
 
@@ -62,15 +63,16 @@ void LcdField::showField(int nPosit) {
 }
 
 LcdScreen::LcdScreen() {
+  mode = show;
   nField = 0;
   nPosit = 0;
 }
 
-void LcdScreen::show() {
+void LcdScreen::showOnce() {
   lcd.setCursor(0, 0);
 }
 
-LPModeType LcdScreen::edit(char key) {
+void LcdScreen::edit(char key) {
 #ifdef HAS_SERIAL
   Serial.print(nField);
   Serial.print(", ");
@@ -87,7 +89,7 @@ LPModeType LcdScreen::edit(char key) {
   switch(key) {
   case 1: // начальная
     lcd.clear();
-    show();
+    showOnce();
     lcd.cursor();
     lcd.blink();
     nField = maxFields;
@@ -121,8 +123,13 @@ LPModeType LcdScreen::edit(char key) {
   case 'b': // выходим без записи
     lcd.noCursor();
     lcd.noBlink();
-    return LPModeType::show;
+    mode = LPModeType::show;
+    return;
   }
   fields[nField].showField(nPosit);
-  return LPModeType::edit;
+//  mode = LPModeType::edit;
+}
+
+void LcdScreen::control(char key) {
+
 }

@@ -19,8 +19,8 @@ SetScreen::SetScreen() {
 /**
  * выводим содержимое на LCD.
  */
-void SetScreen::show() {
-  LcdScreen::show();
+void SetScreen::showOnce() {
+  LcdScreen::showOnce();
   lcd.print("Buzzer = ");
   lcd.print(buzzerfactor);
 }
@@ -28,7 +28,7 @@ void SetScreen::show() {
 /**
  * Редактирование настроек
  */
-LPModeType SetScreen::edit(char key) {
+void SetScreen::edit(char key) {
   switch(key) {
   case 1: // начальная
     fields[0].val = buzzerfactor;
@@ -39,5 +39,5 @@ LPModeType SetScreen::edit(char key) {
   case 'b': // выходим без записи
     break;
   }
-  return LcdScreen::edit(key);
+  LcdScreen::edit(key);
 }

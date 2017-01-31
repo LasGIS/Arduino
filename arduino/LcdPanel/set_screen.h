@@ -7,8 +7,8 @@ class SetScreen : public LcdScreen
 {
 public:
   SetScreen();
-  void show();
-  LPModeType edit(char key);
+  void showOnce();
+  void edit(char key);
 };
 
 #endif // SETSCREEN_H

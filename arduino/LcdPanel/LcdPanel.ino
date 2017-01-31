@@ -8,6 +8,7 @@
 #include <DS1302.h>
 #include <DHT.h>
 #include <EEPROM.h>
+#include "main_screen.h"
 #include "set_screen.h"
 #include "real_time_screen.h"
 
@@ -25,9 +26,9 @@ const int kSclkPin = 5;  // Serial Clock
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 // текущая команда
-CurrentCommandType currentCommand;
-LPModeType mode = show;
-LPShowModeType showMode;
+uint8_t currentCommand;
+//LPModeType mode = show;
+//LPShowModeType showMode;
 int count = 0;
 
 // начальная страница для показа раскладки символов (0-15)
@@ -39,8 +40,15 @@ char comBuffer[50];
 /** настраиваем измеритель влажности. */
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
+
+#define LCD_SCREEN_MAX 2
+MainScreen mainScreen;
 SetScreen setScreen;
-RealTimeScreen realTimeScreen;
+//RealTimeScreen realTimeScreen;
+LcdScreen * screens = new LcdScreen[LCD_SCREEN_MAX] {
+  mainScreen, setScreen
+};
+
 
 extern uint8_t buzzerfactor;
 
@@ -81,27 +89,27 @@ void setup() {
 }
 
 void eepromSet() {
-  currentCommand = (CurrentCommandType) EEPROM.read(CUR_COMMAND_ADR);
-  if (currentCommand > showIRkey) {
-    currentCommand = mainCommand;
+  currentCommand = EEPROM.read(CUR_COMMAND_ADR);
+  if (currentCommand > CURRENT_COMMAND_TYPE_MAX) {
+    currentCommand = 0;
     EEPROM.update(CUR_COMMAND_ADR, currentCommand);
-  }
-  showMode = (LPShowModeType) EEPROM.read(SHOW_MODE_ADR);
-  if (showMode > Battery) {
-    showMode = BigTime;
-    EEPROM.update(SHOW_MODE_ADR, showMode);
   }
   buzzerfactor = EEPROM.read(BUZZER_FACTOR_ADR);
   if (buzzerfactor > 8) {
     buzzerfactor = 1;
-    EEPROM.update(BUZZER_FACTOR_ADR, showMode);
+    EEPROM.update(BUZZER_FACTOR_ADR, buzzerfactor);
   }
 }
 
 /** Общий цикл */
 void loop() {
-  showEveryTime();
+  LcdScreen screen = screens[currentCommand];
+  // показываем экран каждые 1/10 секунды.
+  screen.showEveryTime();
+
+  // если нажали кнопку
   if (control.hasCode()) {
+    static bool isLcdBacklight = true;
     long code = control.getCode();
     IrControlKey* controlKey = control.toControlKey(code);
     char key = 0;
@@ -109,22 +117,20 @@ void loop() {
       key = controlKey->key;
       buzzerOut(controlKey->tone, 200);
     }
-    if (mode == edit) {
-      if (currentCommand == mainCommand) {
-        mode = realTimeScreen.edit(key);
-      } else if (currentCommand == settingsScreen) {
-        mode = setScreen.edit(key);
-      }
-      return;
-    }
-    
 #ifdef HAS_SERIAL
     serIRkey(code, key);
 #endif
     if (currentCommand == showIRkey) {
       lcdIRkey(code, key);
     }
-    static bool isLcdBacklight = true;
+
+    // редактирование
+    if (screen.mode == edit) {
+      screen.edit(key);
+      return;
+    }
+
+    // управление экраном
     switch (key) {
     case 'q':
       if (isLcdBacklight) {
@@ -141,55 +147,59 @@ void loop() {
     case '<':
       lcd.scrollDisplayRight();
       break;
-    case '+':
-      if (currentCommand == mainCommand) {
-        lcd.clear();
-        showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : Battery;
-        EEPROM.update(SHOW_MODE_ADR, showMode);
-        count = 0;
-      } else if (currentCommand == showLCDchars) {
-        charsRow++;
-        lcdShowChars();
-      }
-      break;
-    case '-':
-      if (currentCommand == mainCommand) {
-        lcd.clear();
-        showMode = showMode < Battery ? (LPShowModeType) (showMode + 1) : BigTime;
-        EEPROM.update(SHOW_MODE_ADR, showMode);
-        count = 0;
-      } else if (currentCommand == showLCDchars) {
-        charsRow--;
-        lcdShowChars();
-      }
-      break;
-    case 'p':
-      if (currentCommand == mainCommand && showMode == DataTime) {
-        mode = realTimeScreen.edit(1);
-      } else if (currentCommand == settingsScreen) {
-        mode = setScreen.edit(1);
-      }
-      break;
+//    case '+':
+//      if (currentCommand == mainCommand) {
+//        lcd.clear();
+//        showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : Battery;
+//        EEPROM.update(SHOW_MODE_ADR, showMode);
+//        count = 0;
+//      } else if (currentCommand == showLCDchars) {
+//        charsRow++;
+//        lcdShowChars();
+//      }
+//      break;
+//    case '-':
+//      if (currentCommand == mainCommand) {
+//        lcd.clear();
+//        showMode = showMode < Battery ? (LPShowModeType) (showMode + 1) : BigTime;
+//        EEPROM.update(SHOW_MODE_ADR, showMode);
+//        count = 0;
+//      } else if (currentCommand == showLCDchars) {
+//        charsRow--;
+//        lcdShowChars();
+//      }
+//      break;
+//    case 'p':
+//      if (currentCommand == mainCommand && showMode == DataTime) {
+//        mode = mainScreen.edit(1);
+//      } else if (currentCommand == settingsScreen) {
+//        mode = setScreen.edit(1);
+//      }
+//      break;
     case 'm':
-      beforeCommandSet();
-      currentCommand = currentCommand < showIRkey ? (CurrentCommandType) (currentCommand + 1) : mainCommand;
+      lcd.clear();
+      currentCommand = currentCommand < CURRENT_COMMAND_TYPE_MAX ? currentCommand + 1 : 0;
       EEPROM.update(CUR_COMMAND_ADR, currentCommand);
       afterCommandSet();
       break;
     case 'b':
-      beforeCommandSet();
-      currentCommand = currentCommand > mainCommand ? (CurrentCommandType) (currentCommand - 1) : showIRkey;
+      lcd.clear();
+      currentCommand = currentCommand > 0 ? currentCommand - 1 : CURRENT_COMMAND_TYPE_MAX;
       EEPROM.update(CUR_COMMAND_ADR, currentCommand);
       afterCommandSet();
       break;
+    default:
+      screen.control(key);
     }
   }
   count++;
-  if (count > 1000) count = 0;
+  if (count >= 1000) count = 0;
   delay(100);
 }
 
-/** показываем экран каждые 1/10 секунды. */
+/***
+ * показываем экран каждые 1/10 секунды.
+ * /
 void showEveryTime() {
   switch (currentCommand) {
     case mainCommand: // показываем часы, температуру и влажность
@@ -204,12 +214,12 @@ void showEveryTime() {
         }
       }
       break;
-  case settingsScreen: // показываем часы, температуру и влажность
+  case settingsScreen: // показываем настройки
     if (mode == show) {
-      setScreen.show();
+      setScreen.showOnce();
     }
     break;
-      /*
+      / *
     case showLCDchars: // показываем раскладку LCD символов
       break;
     case showIRkey: // показываем ключ и код ИК пульта
@@ -217,15 +227,16 @@ void showEveryTime() {
     case showDistance: // дистанцию
       showDistance();
       break;
-  */
+  * /
     default:
       break;
   }
 }
+*/
 
-void beforeCommandSet() {
-  lcd.clear();
-}
+//void beforeCommandSet() {
+//  lcd.clear();
+//}
 
 void afterCommandSet() {
   switch (currentCommand) {
@@ -266,16 +277,20 @@ void serialEvent() {
   delay(2000);
 }
 
-/** Показываем время */
+/**
+ * Показываем время
+ */
 void lcdShowTime() {
   unsigned long msec = millis();
   if ((msec - milliSec) / 100 > 0) {
     milliSec = msec;
-    realTimeScreen.show();
+    mainScreen.showOnce();
   }
 }
 
-/** Показываем последовательно раскладку */
+/**
+ * Показываем последовательно раскладку
+ */
 void lcdShowChars() {
   if (charsRow > 15) {
     charsRow = 0;
@@ -367,7 +382,7 @@ void temperatureHumidity(DHT * dht, char n) {
   lcd.print("C ");
 }
 
-/*
+/**
  * Показываем уровень заряда батареи
  */
 void batteryCapasity() {

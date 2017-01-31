@@ -23,14 +23,19 @@ public:
 class LcdScreen {
 public:
 // --- данные ---
+  static LPModeType mode;
   uint8_t maxFields;
   uint8_t nField = 0;
   int8_t nPosit = 0;
   LcdField * fields;
 // --- методы ---
   LcdScreen();
-  virtual void show();
-  virtual LPModeType edit(char key);
+  /** показываем каждые 100 мс */
+  virtual void showEveryTime() {}
+  /** показываем один раз */
+  virtual void showOnce();
+  virtual void edit(char key);
+  virtual void control(char key);
 };
 
 #endif // LCDSCREEN_H
