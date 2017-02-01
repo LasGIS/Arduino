@@ -4,10 +4,10 @@
 
 #include "LcdPanel.h"
 #include <IrControl.h>
+#include <EEPROM.h>
 #include <LiquidCrystal_I2C.h>
 #include <DS1302.h>
 #include <DHT.h>
-#include <EEPROM.h>
 #include "main_screen.h"
 #include "set_screen.h"
 #include "real_time_screen.h"
@@ -27,7 +27,7 @@ DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 // текущая команда
 uint8_t currentCommand;
-//LPModeType mode = show;
+LPModeType mode = show;
 //LPShowModeType showMode;
 int count = 0;
 
@@ -42,11 +42,12 @@ DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
 
 #define LCD_SCREEN_MAX 2
-MainScreen mainScreen;
-SetScreen setScreen;
+//MainScreen mainScreen;
+//SetScreen setScreen;
 //RealTimeScreen realTimeScreen;
-LcdScreen * screens = new LcdScreen[LCD_SCREEN_MAX] {
-  mainScreen, setScreen
+LcdScreen* screens[LCD_SCREEN_MAX] = {
+  new MainScreen(),
+  new SetScreen()
 };
 
 
@@ -79,7 +80,9 @@ void setup() {
   // Print a message to the LCD.
   lcd.backlight();
   lcd.clear();
-  afterCommandSet();
+  screens[currentCommand]->showOnce();
+  Serial.print(currentCommand);
+  Serial.print(screens[currentCommand]->name);
 
   control.start();
   milliSec = millis();
@@ -103,9 +106,15 @@ void eepromSet() {
 
 /** Общий цикл */
 void loop() {
-  LcdScreen screen = screens[currentCommand];
+  LcdScreen * screen = screens[currentCommand];
+#ifdef HAS_SERIAL
+//  Serial.print("currentCommand = ");
+//  Serial.println(currentCommand);
+//  Serial.print("screen = ");
+//  Serial.println(screen->name);
+#endif
   // показываем экран каждые 1/10 секунды.
-  screen.showEveryTime();
+  screen->showEveryTime();
 
   // если нажали кнопку
   if (control.hasCode()) {
@@ -125,8 +134,9 @@ void loop() {
     }
 
     // редактирование
-    if (screen.mode == edit) {
-      screen.edit(key);
+    if (mode == edit) {
+      Serial.println("mode == edit");
+      screen->edit(key);
       return;
     }
 
@@ -171,30 +181,37 @@ void loop() {
 //      break;
 //    case 'p':
 //      if (currentCommand == mainCommand && showMode == DataTime) {
-//        mode = mainScreen.edit(1);
+//        mode = mainscreen->edit(1);
 //      } else if (currentCommand == settingsScreen) {
-//        mode = setScreen.edit(1);
+//        mode = setscreen->edit(1);
 //      }
 //      break;
     case 'm':
-      lcd.clear();
-      currentCommand = currentCommand < CURRENT_COMMAND_TYPE_MAX ? currentCommand + 1 : 0;
-      EEPROM.update(CUR_COMMAND_ADR, currentCommand);
-      afterCommandSet();
+      screen = changeCurrentCommand(true);
       break;
     case 'b':
-      lcd.clear();
-      currentCommand = currentCommand > 0 ? currentCommand - 1 : CURRENT_COMMAND_TYPE_MAX;
-      EEPROM.update(CUR_COMMAND_ADR, currentCommand);
-      afterCommandSet();
+      screen = changeCurrentCommand(false);
       break;
     default:
-      screen.control(key);
+      screen->control(key);
     }
   }
   count++;
   if (count >= 1000) count = 0;
   delay(100);
+}
+
+LcdScreen * changeCurrentCommand(bool isIncrement) {
+  lcd.clear();
+  if (isIncrement) {
+    currentCommand = currentCommand < CURRENT_COMMAND_TYPE_MAX ? currentCommand + 1 : 0;
+  } else {
+    currentCommand = currentCommand > 0 ? currentCommand - 1 : CURRENT_COMMAND_TYPE_MAX;
+  }
+  EEPROM.update(CUR_COMMAND_ADR, currentCommand);
+  LcdScreen* screen = screens[currentCommand];
+  screen->showOnce();
+  return screen;
 }
 
 /***
@@ -216,7 +233,7 @@ void showEveryTime() {
       break;
   case settingsScreen: // показываем настройки
     if (mode == show) {
-      setScreen.showOnce();
+      setscreen->showOnce();
     }
     break;
       / *
@@ -238,24 +255,24 @@ void showEveryTime() {
 //  lcd.clear();
 //}
 
-void afterCommandSet() {
-  switch (currentCommand) {
-  case showLCDchars:
-//    charsRow = 0;
-    lcdShowChars();
-    break;
-  case showIRkey:
-    lcd.print("Enter IR key");
-    break;
-/*
-    case showDistance:
-      lcd.print("Distance = ");
-      break;
-*/
-  default:
-    break;
-  }
-}
+//void afterCommandSet() {
+//  switch (currentCommand) {
+//  case showLCDchars:
+////    charsRow = 0;
+//    lcdShowChars();
+//    break;
+//  case showIRkey:
+//    lcd.print("Enter IR key");
+//    break;
+///*
+//    case showDistance:
+//      lcd.print("Distance = ");
+//      break;
+//*/
+//  default:
+//    break;
+//  }
+//}
 
 /** ввод значения извне. */
 void serialEvent() {
@@ -278,19 +295,7 @@ void serialEvent() {
 }
 
 /**
- * Показываем время
- */
-void lcdShowTime() {
-  unsigned long msec = millis();
-  if ((msec - milliSec) / 100 > 0) {
-    milliSec = msec;
-    mainScreen.showOnce();
-  }
-}
-
-/**
  * Показываем последовательно раскладку
- */
 void lcdShowChars() {
   if (charsRow > 15) {
     charsRow = 0;
@@ -309,6 +314,7 @@ void lcdShowChars() {
     }
   }
 }
+ */
 
 /**
  * Показываем полученное значение ИК пульта в Serial
@@ -343,82 +349,3 @@ void lcdIRkey(long code, char key) {
   lcd.print(code, HEX);
   lcd.print("       ");
 }
-
-/**
- * Показываем температуру и влажность
- */
-void temperatureHumidity() {
-  switch (showMode) {
-  case TimeHum:
-    lcd.setCursor(0, 1);
-    temperatureHumidity(&dht1, '1');
-    break;
-  case Humidity:
-    lcd.setCursor(0, 0);
-    temperatureHumidity(&dht1, '1');
-    lcd.setCursor(0, 1);
-    temperatureHumidity(&dht2, '2');
-    break;
-  default:
-    break;
-  }
-}
-
-/**
- * Показываем температуру и влажность
- */
-void temperatureHumidity(DHT * dht, char n) {
-  double h = dht->readHumidity();
-  double t = dht->readTemperature();
-  double hic = dht->computeHeatIndex(t, h, false);
-  lcd.print("T"); lcd.print(n); lcd.print("=");
-  lcd.print(t, 1);
-  lcd.print("C ");
-  lcd.print("H"); lcd.print(n); lcd.print("=");
-  lcd.print(h, 1);
-  lcd.print("% ");
-  lcd.print("I"); lcd.print(n); lcd.print("=");
-  lcd.print(hic, 2);
-  lcd.print("C ");
-}
-
-/**
- * Показываем уровень заряда батареи
- */
-void batteryCapasity() {
-  static unsigned long startTime = millis();
-  static float oldBat = 0.0;
-  static float oldCrg = 0.0;
-
-  analogReference(INTERNAL);
-  delay(100);
-  float vBattery = analogRead(A7) * 0.00630;
-  float vCharger = analogRead(A6) * 0.01175;
-  float vScheme = analogRead(A3) * 0.01175;
-  analogReference(DEFAULT);
-  if ((oldBat > vBattery + 0.05) && (oldCrg + 0.05 < vCharger)) {
-    startTime = millis();
-  }
-  oldBat = vBattery;
-  oldCrg = vCharger;
-
-  unsigned long milTime = (millis() - startTime) / 1000;
-  int sec = milTime % 60;
-  int min = (milTime / 60) % 60;
-  int hour = milTime / 3600;
-  snprintf(comBuffer, sizeof(comBuffer), "%d:%02d:%02d", hour, min, sec);
-    
-  lcd.setCursor(0, 0);
-  lcd.print("Bat ");
-  lcd.print(vBattery, 2);
-  lcd.print("V ");
-  lcd.print(comBuffer);
-  
-  lcd.setCursor(0, 1);
-  lcd.print("Crg ");
-  lcd.print(vCharger, 2);
-  lcd.print("V ");
-  lcd.print(vScheme, 2);
-  lcd.print("V ");
-}
-

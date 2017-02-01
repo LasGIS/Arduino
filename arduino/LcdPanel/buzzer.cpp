@@ -14,7 +14,7 @@ void buzzerOut(unsigned int hertz, unsigned long del) {
   long delayVal = (500000 / hertz) - 9;
   long delayHigh = 0x1 << (buzzerfactor - 1);
   long delayLow = (delayVal) - delayHigh;
-  int count = (del * 500) / delayVal;
+  int noteCount = (del * 500) / delayVal;
 #ifdef HAS_SERIAL
   Serial.print(delayVal);
   Serial.print(", (");
@@ -22,10 +22,10 @@ void buzzerOut(unsigned int hertz, unsigned long del) {
   Serial.print(", ");
   Serial.print(delayLow);
   Serial.print("), ");
-  Serial.print(count);
+  Serial.print(noteCount);
   Serial.println(";");
 #endif
-  for (int i = 0; i < count; i++) {
+  for (int i = 0; i < noteCount; i++) {
     digitalWrite(buzzerPin, HIGH);
     delayMicroseconds(delayHigh);
     digitalWrite(buzzerPin, LOW);

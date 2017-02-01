@@ -1,19 +1,22 @@
 #include "LcdPanel.h"
-#include "LcdPanel.h"
 #include <EEPROM.h>
 #include <LiquidCrystal_I2C.h>
 #include <DS1302.h>
+#include <DHT.h>
 #include "main_screen.h"
 
 #define RT_MAX_FIELDS 6
 
+extern LPModeType mode;
 // время в миллисекундах
-unsigned long milliSec;
-
+extern unsigned long milliSec;
+// отсчет в главном цикле
+extern int count;
 extern char comBuffer[50];
 extern DS1302 rtc;
 extern LiquidCrystal_I2C lcd;
-//extern LPShowModeType showMode;
+extern DHT dht1;
+extern DHT dht2;
 
 String dayAsString(const uint16_t val) {
   Time::Day day = (Time::Day) val;
@@ -30,6 +33,7 @@ String dayAsString(const uint16_t val) {
 }
 
 MainScreen::MainScreen(): LcdScreen() {
+  name = "MainScreen";
   maxFields = RT_MAX_FIELDS;
   fields = new LcdField[maxFields + 1];
   fields[0] = {0, 0,  1, 1, 7, 1, dayAsString};   // день недели
@@ -47,7 +51,13 @@ MainScreen::MainScreen(): LcdScreen() {
   }
 }
 
-void MainScreen::showEveryTime(int count) {
+void MainScreen::showEveryTime() {
+#ifdef HAS_SERIAL
+  Serial.print("mode = ");
+  Serial.println(mode);
+//  Serial.print("screen = ");
+//  Serial.println(screen.name);
+#endif
   if (mode == show) {
     /* Показываем время */
     unsigned long msec = millis();
@@ -65,6 +75,13 @@ void MainScreen::showEveryTime(int count) {
   }
 }
 
+/** временнАя часть. */
+void printOnlyTime(uint8_t row, Time* t) {
+  snprintf(comBuffer, sizeof(comBuffer), "Time = %02d:%02d:%02d", t->hr, t->min, t->sec);
+  lcd.setCursor(0, row);
+  lcd.print(comBuffer);
+}
+
 /**
  * выводим время и дату на LCD.
  */
@@ -74,7 +91,7 @@ void MainScreen::showOnce() {
 
   const String day = dayAsString(t.day);
 
-  switch (mode) {
+  switch (showMode) {
   case BigTime:
     viewCustomDigit(0, t.hr / 10);
     viewCustomDigit(4, t.hr % 10);
@@ -142,7 +159,7 @@ void MainScreen::edit(char key) {
   LcdScreen::edit(key);
 }
 
-LPModeType MainScreen::control(char key) {
+void MainScreen::control(char key) {
   switch (key) {
   case '+':
     lcd.clear();
@@ -158,8 +175,86 @@ LPModeType MainScreen::control(char key) {
     break;
   case 'p':
     if (showMode == DataTime) {
-      mode = realTimeScreen.edit(1);
+      edit(1);
     }
     break;
   }
+}
+
+/**
+ * Показываем температуру и влажность
+ */
+void MainScreen::temperatureHumidity() {
+  switch (showMode) {
+  case TimeHum:
+    lcd.setCursor(0, 1);
+    temperatureHumidity(&dht1, '1');
+    break;
+  case Humidity:
+    lcd.setCursor(0, 0);
+    temperatureHumidity(&dht1, '1');
+    lcd.setCursor(0, 1);
+    temperatureHumidity(&dht2, '2');
+    break;
+  default:
+    break;
+  }
+}
+
+/**
+ * Показываем температуру и влажность
+ */
+void MainScreen::temperatureHumidity(DHT * dht, char n) {
+  double h = dht->readHumidity();
+  double t = dht->readTemperature();
+  double hic = dht->computeHeatIndex(t, h, false);
+  lcd.print("T"); lcd.print(n); lcd.print("=");
+  lcd.print(t, 1);
+  lcd.print("C ");
+  lcd.print("H"); lcd.print(n); lcd.print("=");
+  lcd.print(h, 1);
+  lcd.print("% ");
+  lcd.print("I"); lcd.print(n); lcd.print("=");
+  lcd.print(hic, 2);
+  lcd.print("C ");
+}
+
+/**
+ * Показываем уровень заряда батареи
+ */
+void MainScreen::batteryCapasity() {
+  static unsigned long startTime = millis();
+  static float oldBat = 0.0;
+  static float oldCrg = 0.0;
+
+  analogReference(INTERNAL);
+  delay(100);
+  float vBattery = analogRead(A7) * 0.00630;
+  float vCharger = analogRead(A6) * 0.01175;
+  float vScheme = analogRead(A3) * 0.01175;
+  analogReference(DEFAULT);
+  if ((oldBat > vBattery + 0.05) && (oldCrg + 0.05 < vCharger)) {
+    startTime = millis();
+  }
+  oldBat = vBattery;
+  oldCrg = vCharger;
+
+  unsigned long milTime = (millis() - startTime) / 1000;
+  int sec = milTime % 60;
+  int min = (milTime / 60) % 60;
+  int hour = milTime / 3600;
+  snprintf(comBuffer, sizeof(comBuffer), "%d:%02d:%02d", hour, min, sec);
+
+  lcd.setCursor(0, 0);
+  lcd.print("Bat ");
+  lcd.print(vBattery, 2);
+  lcd.print("V ");
+  lcd.print(comBuffer);
+
+  lcd.setCursor(0, 1);
+  lcd.print("Crg ");
+  lcd.print(vCharger, 2);
+  lcd.print("V ");
+  lcd.print(vScheme, 2);
+  lcd.print("V ");
 }

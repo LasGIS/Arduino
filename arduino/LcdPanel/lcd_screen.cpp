@@ -4,6 +4,7 @@
 #include "lcd_screen.h"
 
 extern LiquidCrystal_I2C lcd;
+extern LPModeType mode;
 
 /**
  * устанавливаем значение поля
@@ -63,13 +64,21 @@ void LcdField::showField(int nPosit) {
 }
 
 LcdScreen::LcdScreen() {
-  mode = show;
+  name = "LcdScreen";
   nField = 0;
   nPosit = 0;
 }
 
+void LcdScreen::showEveryTime() {
+//  lcd.setCursor(0, 0);
+//  lcd.print("showEveryTime");
+//  lcd.setCursor(0, 1);
+//  lcd.print(name);
+}
+
 void LcdScreen::showOnce() {
-  lcd.setCursor(0, 0);
+//  lcd.setCursor(0, 0);
+//  lcd.print("showOnce");
 }
 
 void LcdScreen::edit(char key) {
@@ -94,6 +103,7 @@ void LcdScreen::edit(char key) {
     lcd.blink();
     nField = maxFields;
     nPosit = 0;
+    mode = LPModeType::edit;
     break;
   case '>':
     nPosit++;
@@ -127,7 +137,6 @@ void LcdScreen::edit(char key) {
     return;
   }
   fields[nField].showField(nPosit);
-//  mode = LPModeType::edit;
 }
 
 void LcdScreen::control(char key) {

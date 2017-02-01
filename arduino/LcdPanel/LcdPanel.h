@@ -10,7 +10,7 @@
 // установка режима вывода отладочной информации
 //#define HAS_SERIAL
 
-#define CURRENT_COMMAND_TYPE_MAX 3
+#define CURRENT_COMMAND_TYPE_MAX 1
 /* текущий экран. */
 enum CurrentCommandType : uint8_t {
   mainCommand = 0,

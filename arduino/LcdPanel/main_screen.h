@@ -18,11 +18,15 @@ public:
   LPShowModeType showMode;
 // --- методы ---
   MainScreen();
-  void showEveryTime(int count);
+  void showEveryTime();
   void showOnce();
   void edit(char key);
+  void control(char key);
   void Time2Fields(Time tm);
   Time Fields2Time();
+  void temperatureHumidity();
+  void temperatureHumidity(DHT * dht, char n);
+  void batteryCapasity();
 };
 
 #endif // MAINSCREEN_H
