@@ -10,7 +10,9 @@ extern uint8_t buzzerfactor;
 extern LiquidCrystal_I2C lcd;
 
 SetScreen::SetScreen(): LcdScreen() {
+#ifdef HAS_DEBUG
   name = "SetScreen";
+#endif
   maxFields = SS_MAX_FIELDS;
   fields = new LcdField[maxFields + 1];
   fields[0] = {0, 9, 1, 0, 8, 6, NULL};   // сила звука
@@ -45,10 +47,10 @@ void SetScreen::edit(char key) {
 
 void SetScreen::control(char key) {
   switch (key) {
-  case '+':
-    break;
-  case '-':
-    break;
+//  case '+':
+//    break;
+//  case '-':
+//    break;
   case 'p':
     edit(1);
     break;

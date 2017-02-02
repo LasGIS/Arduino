@@ -64,29 +64,38 @@ void LcdField::showField(int nPosit) {
 }
 
 LcdScreen::LcdScreen() {
+#ifdef HAS_DEBUG
   name = "LcdScreen";
+#endif
   nField = 0;
   nPosit = 0;
 }
 
 void LcdScreen::showEveryTime() {
-//  lcd.setCursor(0, 0);
-//  lcd.print("showEveryTime");
-//  lcd.setCursor(0, 1);
-//  lcd.print(name);
+#ifdef HAS_DEBUG
+  lcd.setCursor(0, 0);
+  lcd.print("showEveryTime");
+  lcd.setCursor(0, 1);
+  lcd.print(name);
+#endif
 }
 
 void LcdScreen::showOnce() {
-//  lcd.setCursor(0, 0);
-//  lcd.print("showOnce");
+#ifdef HAS_DEBUG
+  lcd.setCursor(0, 0);
+  lcd.print("showOnce");
+#endif
+  lcd.print("Enter IR key");
 }
 
 void LcdScreen::edit(char key) {
 #ifdef HAS_SERIAL
+#ifdef HAS_DEBUG
   Serial.print(nField);
   Serial.print(", ");
   Serial.print(nPosit);
   Serial.println(";");
+#endif
 #endif
 
   if (key >= '0' && key <= '9') {
@@ -137,8 +146,4 @@ void LcdScreen::edit(char key) {
     return;
   }
   fields[nField].showField(nPosit);
-}
-
-void LcdScreen::control(char key) {
-
 }

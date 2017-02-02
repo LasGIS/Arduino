@@ -10,7 +10,7 @@
 #include <DHT.h>
 #include "main_screen.h"
 #include "set_screen.h"
-#include "real_time_screen.h"
+#include "show_char_screen.h"
 
 // указываем пин для ИК датчика 
 IrControl control(2);
@@ -28,11 +28,8 @@ DS1302 rtc(kCePin, kIoPin, kSclkPin);
 // текущая команда
 uint8_t currentCommand;
 LPModeType mode = show;
-//LPShowModeType showMode;
 int count = 0;
 
-// начальная страница для показа раскладки символов (0-15)
-int charsRow = 0;
 // время в миллисекундах
 unsigned long milliSec;
 char comBuffer[50];
@@ -41,38 +38,19 @@ char comBuffer[50];
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
 
-#define LCD_SCREEN_MAX 2
-//MainScreen mainScreen;
-//SetScreen setScreen;
-//RealTimeScreen realTimeScreen;
-LcdScreen* screens[LCD_SCREEN_MAX] = {
+LcdScreen* screens[CURRENT_COMMAND_TYPE_MAX + 1] = {
   new MainScreen(),
-  new SetScreen()
+  new SetScreen(),
+  new ShowCharScreen(),
+  new LcdScreen()
 };
 
 
 extern uint8_t buzzerfactor;
 
-/*
-void SerialEEPROM() {
-  //for (int i = 0; i < 255; i++) EEPROM.update(i, i);
-  for (int i = 0; i < 8; i++) {
-    byte b = EEPROM.read(i);
-    Serial.print(b, HEX);
-    if (i % 16 == 15) {
-      Serial.println(";");
-    } else {
-      Serial.print(",");
-    }
-  }
-  Serial.println(";");
-}
-*/
 void setup() {
   Serial.begin(9600);
-//  SerialEEPROM();  
   eepromSet();
-//  SerialEEPROM();  
 
   // initialize the lcd 
   lcd.init();
@@ -81,8 +59,10 @@ void setup() {
   lcd.backlight();
   lcd.clear();
   screens[currentCommand]->showOnce();
+#ifdef HAS_DEBUG
   Serial.print(currentCommand);
   Serial.print(screens[currentCommand]->name);
+#endif
 
   control.start();
   milliSec = millis();
@@ -108,10 +88,12 @@ void eepromSet() {
 void loop() {
   LcdScreen * screen = screens[currentCommand];
 #ifdef HAS_SERIAL
-//  Serial.print("currentCommand = ");
-//  Serial.println(currentCommand);
-//  Serial.print("screen = ");
-//  Serial.println(screen->name);
+#ifdef HAS_DEBUG
+  Serial.print("currentCommand = ");
+  Serial.println(currentCommand);
+  Serial.print("screen = ");
+  Serial.println(screen->name);
+#endif
 #endif
   // показываем экран каждые 1/10 секунды.
   screen->showEveryTime();
@@ -157,35 +139,6 @@ void loop() {
     case '<':
       lcd.scrollDisplayRight();
       break;
-//    case '+':
-//      if (currentCommand == mainCommand) {
-//        lcd.clear();
-//        showMode = showMode > BigTime ? (LPShowModeType) (showMode - 1) : Battery;
-//        EEPROM.update(SHOW_MODE_ADR, showMode);
-//        count = 0;
-//      } else if (currentCommand == showLCDchars) {
-//        charsRow++;
-//        lcdShowChars();
-//      }
-//      break;
-//    case '-':
-//      if (currentCommand == mainCommand) {
-//        lcd.clear();
-//        showMode = showMode < Battery ? (LPShowModeType) (showMode + 1) : BigTime;
-//        EEPROM.update(SHOW_MODE_ADR, showMode);
-//        count = 0;
-//      } else if (currentCommand == showLCDchars) {
-//        charsRow--;
-//        lcdShowChars();
-//      }
-//      break;
-//    case 'p':
-//      if (currentCommand == mainCommand && showMode == DataTime) {
-//        mode = mainscreen->edit(1);
-//      } else if (currentCommand == settingsScreen) {
-//        mode = setscreen->edit(1);
-//      }
-//      break;
     case 'm':
       screen = changeCurrentCommand(true);
       break;
@@ -194,6 +147,10 @@ void loop() {
       break;
     default:
       screen->control(key);
+      if (mode == show) {
+        screen->showOnce();
+      }
+      break;
     }
   }
   count++;
@@ -214,67 +171,7 @@ LcdScreen * changeCurrentCommand(bool isIncrement) {
   return screen;
 }
 
-/***
- * показываем экран каждые 1/10 секунды.
- * /
-void showEveryTime() {
-  switch (currentCommand) {
-    case mainCommand: // показываем часы, температуру и влажность
-      if (mode == show) {
-        lcdShowTime();
-        if (count % 20 == 1) {
-          if (showMode == TimeHum || showMode == Humidity) {
-            temperatureHumidity();
-          } else if (showMode == Battery) {
-            batteryCapasity();
-          }
-        }
-      }
-      break;
-  case settingsScreen: // показываем настройки
-    if (mode == show) {
-      setscreen->showOnce();
-    }
-    break;
-      / *
-    case showLCDchars: // показываем раскладку LCD символов
-      break;
-    case showIRkey: // показываем ключ и код ИК пульта
-      break;
-    case showDistance: // дистанцию
-      showDistance();
-      break;
-  * /
-    default:
-      break;
-  }
-}
-*/
-
-//void beforeCommandSet() {
-//  lcd.clear();
-//}
-
-//void afterCommandSet() {
-//  switch (currentCommand) {
-//  case showLCDchars:
-////    charsRow = 0;
-//    lcdShowChars();
-//    break;
-//  case showIRkey:
-//    lcd.print("Enter IR key");
-//    break;
-///*
-//    case showDistance:
-//      lcd.print("Distance = ");
-//      break;
-//*/
-//  default:
-//    break;
-//  }
-//}
-
-/** ввод значения извне. */
+/** ввод значения извне.
 void serialEvent() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -292,29 +189,7 @@ void serialEvent() {
     }
   }
   delay(2000);
-}
-
-/**
- * Показываем последовательно раскладку
-void lcdShowChars() {
-  if (charsRow > 15) {
-    charsRow = 0;
-  }
-  if (charsRow < 0) {
-    charsRow = 15;
-  }
-  int row = charsRow;
-  for (int i = 0; i < 2; i++, row++) {
-    lcd.setCursor(0, i);
-    if (row > 16) {
-      row = 0;
-    }
-    for (int col = 0; col < 16; col++) {
-      lcd.write(row * 16 + col);
-    }
-  }
-}
- */
+} */
 
 /**
  * Показываем полученное значение ИК пульта в Serial

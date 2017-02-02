@@ -8,9 +8,10 @@
 #define BUZZER_FACTOR_ADR 2
 
 // установка режима вывода отладочной информации
-//#define HAS_SERIAL
+#define HAS_SERIAL
+#define HAS_DEBUG
 
-#define CURRENT_COMMAND_TYPE_MAX 1
+#define CURRENT_COMMAND_TYPE_MAX 3
 /* текущий экран. */
 enum CurrentCommandType : uint8_t {
   mainCommand = 0,
@@ -21,7 +22,6 @@ enum CurrentCommandType : uint8_t {
 };
 
 void buzzerOut(unsigned int hertz, unsigned long del);
-//void buzzerOutTest(unsigned int hertz, unsigned long del);
 void loadCustomChars();
 void viewCustomDigit(int offset, int digit);
 

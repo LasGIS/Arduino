@@ -33,7 +33,9 @@ String dayAsString(const uint16_t val) {
 }
 
 MainScreen::MainScreen(): LcdScreen() {
+#ifdef HAS_DEBUG
   name = "MainScreen";
+#endif
   maxFields = RT_MAX_FIELDS;
   fields = new LcdField[maxFields + 1];
   fields[0] = {0, 0,  1, 1, 7, 1, dayAsString};   // день недели
@@ -53,10 +55,12 @@ MainScreen::MainScreen(): LcdScreen() {
 
 void MainScreen::showEveryTime() {
 #ifdef HAS_SERIAL
+#ifdef HAS_DEBUG
   Serial.print("mode = ");
   Serial.println(mode);
-//  Serial.print("screen = ");
-//  Serial.println(screen.name);
+  Serial.print("screen = ");
+  Serial.println(name);
+#endif
 #endif
   if (mode == show) {
     /* Показываем время */

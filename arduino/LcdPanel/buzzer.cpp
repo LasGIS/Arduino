@@ -33,22 +33,3 @@ void buzzerOut(unsigned int hertz, unsigned long del) {
   }
   interrupts();
 }
-
-/**
- * для проверки и валидации параметров 
-void buzzerOutTest(unsigned int hertz, unsigned long del) {
-  long msecs = millis();
-  //noInterrupts();
-  tone(buzzerPin, hertz, del);
-  delay(del + 100);
-  buzzerOut(hertz, del);
-  //interrupts();
-  msecs = millis() - msecs;
-#ifdef HAS_SERIAL
-  Serial.println(msecs, DEC);
-#endif
-  lcd.print(msecs);
-  delay(1000);
-}
-*/
-

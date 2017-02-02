@@ -23,10 +23,12 @@ public:
 class LcdScreen {
 public:
 // --- данные ---
+#ifdef HAS_DEBUG
   char* name;
+#endif
   uint8_t maxFields;
-  uint8_t nField = 0;
-  int8_t nPosit = 0;
+  uint8_t nField;
+  int8_t nPosit;
   LcdField * fields;
 // --- методы ---
   LcdScreen();
@@ -35,7 +37,7 @@ public:
   /** показываем один раз */
   virtual void showOnce();
   virtual void edit(char key);
-  virtual void control(char key);
+  virtual void control(char key) {}
 };
 
 #endif // LCDSCREEN_H
