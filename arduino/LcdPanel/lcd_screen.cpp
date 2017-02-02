@@ -122,6 +122,7 @@ void LcdScreen::edit(char key) {
         nPosit = 0;
       } else {
         nPosit--;
+        hasBeyond(key);
       }
     }
     break;
@@ -130,6 +131,9 @@ void LcdScreen::edit(char key) {
     if (nPosit < 0) {
       if (nField > 0) {
         nField--;
+      } else {
+        nPosit++;
+        hasBeyond(key);
       }
       nPosit = fields[nField].len - 1;
     }

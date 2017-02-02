@@ -18,7 +18,7 @@ extern LiquidCrystal_I2C lcd;
 extern DHT dht1;
 extern DHT dht2;
 
-String dayAsString(const uint16_t val) {
+const char* dayAsString(const uint16_t val) {
   Time::Day day = (Time::Day) val;
   switch (day) {
     case Time::kSunday: return "Sun";
@@ -93,7 +93,7 @@ void MainScreen::showOnce() {
   // Get the current time and date from the chip.
   Time t = rtc.time();
 
-  const String day = dayAsString(t.day);
+  const char* day = dayAsString(t.day);
 
   switch (showMode) {
   case BigTime:
@@ -106,7 +106,7 @@ void MainScreen::showOnce() {
     lcd.print(comBuffer);
     break;
   case DataTime:
-    snprintf(comBuffer, sizeof(comBuffer), "%s %04d-%02d-%02d ", day.c_str(), t.yr, t.mon, t.date);
+    snprintf(comBuffer, sizeof(comBuffer), "%s %04d-%02d-%02d ", day, t.yr, t.mon, t.date);
     lcd.setCursor(0, 0);
     lcd.print(comBuffer);
     printOnlyTime(1, &t);

@@ -8,8 +8,8 @@
 #define BUZZER_FACTOR_ADR 2
 
 // установка режима вывода отладочной информации
-#define HAS_SERIAL
-#define HAS_DEBUG
+//#define HAS_SERIAL
+//#define HAS_DEBUG
 
 #define CURRENT_COMMAND_TYPE_MAX 3
 /* текущий экран. */

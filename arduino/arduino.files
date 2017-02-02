@@ -170,3 +170,5 @@ LcdPanel/main_screen.h
 LcdPanel/main_screen.cpp
 LcdPanel/show_char_screen.h
 LcdPanel/show_char_screen.cpp
+LcdPanel/alarm_clock.h
+LcdPanel/alarm_clock.cpp

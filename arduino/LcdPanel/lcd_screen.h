@@ -1,6 +1,8 @@
 #ifndef LCDSCREEN_H
 #define LCDSCREEN_H
 
+#include <stdint.h>
+
 enum LPModeType : uint8_t {
   show, edit
 };
@@ -14,7 +16,7 @@ public:
   uint16_t minVal;
   uint16_t maxVal;
   uint16_t val;
-  String (*getValue) (const uint16_t val);
+  const char* (*getValue) (const uint16_t val);
 // --- методы ---
   void setValue(int nPosit, char key);
   void showField(int nPosit);
@@ -38,6 +40,8 @@ public:
   virtual void showOnce();
   virtual void edit(char key);
   virtual void control(char key) {}
+  /** вышли за пределы дозволенной области редактирования */
+  virtual void hasBeyond(char key) {}
 };
 
 #endif // LCDSCREEN_H
