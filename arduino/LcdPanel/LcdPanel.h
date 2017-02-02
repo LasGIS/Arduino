@@ -6,6 +6,8 @@
 #define CUR_COMMAND_ADR 0
 #define SHOW_MODE_ADR 1
 #define BUZZER_FACTOR_ADR 2
+#define ALARM_CLOCK_ADR 16
+#define ALARM_CLOCK_ADR_SIZE 4
 
 // установка режима вывода отладочной информации
 //#define HAS_SERIAL

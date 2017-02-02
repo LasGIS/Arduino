@@ -1,4 +1,5 @@
 #include "LcdPanel.h"
+#include <EEPROM.h>
 #include "alarm_clock.h"
 
 AlarmClock::AlarmClock(uint8_t _number) {
@@ -26,4 +27,11 @@ void AlarmClock::toString(char *str, uint16_t size) {
     toChar(isSunday),
     hour, min
   );
+}
+
+void AlarmClock::eepromSave(int start) {
+  //EEPROM.update(start, buzzerfactor);
+}
+void AlarmClock::eepromLoad(int start) {
+
 }

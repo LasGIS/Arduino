@@ -45,11 +45,26 @@ LcdScreen* screens[CURRENT_COMMAND_TYPE_MAX + 1] = {
   new LcdScreen()
 };
 
-
 extern uint8_t buzzerfactor;
 
+/*
+void SerialEEPROM() {
+  //for (int i = 0; i < 255; i++) EEPROM.update(i, i);
+  for (int i = 0; i < 8; i++) {
+    byte b = EEPROM.read(i);
+    Serial.print(b, HEX);
+    if (i % 16 == 15) {
+      Serial.println(";");
+    } else {
+      Serial.print(",");
+    }
+  }
+  Serial.println(";");
+}
+*/
 void setup() {
   Serial.begin(9600);
+//  SerialEEPROM();  
   eepromSet();
 
   // initialize the lcd 
