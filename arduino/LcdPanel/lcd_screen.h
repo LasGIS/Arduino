@@ -25,9 +25,6 @@ public:
 class LcdScreen {
 public:
 // --- данные ---
-#ifdef HAS_DEBUG
-  char* name;
-#endif
   uint8_t maxFields;
   uint8_t nField;
   int8_t nPosit;

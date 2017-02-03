@@ -8,9 +8,11 @@
 #include <LiquidCrystal_I2C.h>
 #include <DS1302.h>
 #include <DHT.h>
+#include "alarm_clock.h"
 #include "main_screen.h"
 #include "set_screen.h"
 #include "show_char_screen.h"
+#include "pitches.h"
 
 // указываем пин для ИК датчика 
 IrControl control(2);
@@ -45,12 +47,18 @@ LcdScreen* screens[CURRENT_COMMAND_TYPE_MAX + 1] = {
   new LcdScreen()
 };
 
+AlarmClock alarmClocks[4] = {
+  AlarmClock(0),
+  AlarmClock(1),
+  AlarmClock(2),
+  AlarmClock(3)
+};
+
 extern uint8_t buzzerfactor;
 
-/*
 void SerialEEPROM() {
-  //for (int i = 0; i < 255; i++) EEPROM.update(i, i);
-  for (int i = 0; i < 8; i++) {
+//  for (int i = 0; i < 255; i++) EEPROM.update(i, 0xfe);
+  for (int i = 0; i < 64; i++) {
     byte b = EEPROM.read(i);
     Serial.print(b, HEX);
     if (i % 16 == 15) {
@@ -61,10 +69,10 @@ void SerialEEPROM() {
   }
   Serial.println(";");
 }
-*/
+
 void setup() {
   Serial.begin(9600);
-//  SerialEEPROM();  
+  SerialEEPROM();
   eepromSet();
 
   // initialize the lcd 
@@ -74,10 +82,6 @@ void setup() {
   lcd.backlight();
   lcd.clear();
   screens[currentCommand]->showOnce();
-#ifdef HAS_DEBUG
-  Serial.print(currentCommand);
-  Serial.print(screens[currentCommand]->name);
-#endif
 
   control.start();
   milliSec = millis();
@@ -99,19 +103,56 @@ void eepromSet() {
   }
 }
 
+/** проверить будильник  */
+bool checkOnAlarm(Time time) {
+  for (int i = 0; i < 4; i++) {
+    if (alarmClocks[i].equal(time)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+int music[] = {
+  NOTE_F4, 1, NOTE_E4, 1, NOTE_D4, 1, NOTE_C4, 1, NOTE_G4, 3, NOTE_G4, 3,
+  NOTE_F4, 1, NOTE_E4, 1, NOTE_D4, 1, NOTE_C4, 1, NOTE_G4, 3, NOTE_G4, 3,
+  NOTE_F4, 1, NOTE_A4, 1, NOTE_A4, 1, NOTE_F4, 1,
+  NOTE_E4, 1, NOTE_G4, 1, NOTE_G4, 1, NOTE_E4, 1,
+  NOTE_D4, 1, NOTE_E4, 1, NOTE_F4, 1, NOTE_D4, 1, NOTE_C4, 3, NOTE_C4, 3,
+  NOTE_F4, 1, NOTE_A4, 1, NOTE_A4, 1, NOTE_F4, 1,
+  NOTE_E4, 1, NOTE_G4, 1, NOTE_G4, 1, NOTE_E4, 1,
+  NOTE_D4, 1, NOTE_E4, 1, NOTE_F4, 1, NOTE_D4, 1, NOTE_C4, 3, NOTE_C4, 3
+};
+
+/**
+ * @brief alarm
+ */
+void alarm() {
+  lcd.clear();
+  lcd.setCursor(3, 0);
+  lcd.print("-!ALARM!-");
+  uint8_t old_bf = buzzerfactor;
+  buzzerfactor = 8;
+  for (int i = 0; i < sizeof(music) / sizeof(int); i+=2) {
+    buzzerOut(music[i], 300 * music[i + 1]);
+    delay(100);
+  }
+  buzzerfactor = old_bf;
+  //delay(2000);
+  lcd.clear();
+}
+
 /** Общий цикл */
 void loop() {
   LcdScreen * screen = screens[currentCommand];
-#ifdef HAS_SERIAL
-#ifdef HAS_DEBUG
-  Serial.print("currentCommand = ");
-  Serial.println(currentCommand);
-  Serial.print("screen = ");
-  Serial.println(screen->name);
-#endif
-#endif
+
   // показываем экран каждые 1/10 секунды.
+  if (count % 10 == 1 && checkOnAlarm(rtc.time())) {
+    alarm();
+    screen->showOnce();
+  }
   screen->showEveryTime();
+
 
   // если нажали кнопку
   if (control.hasCode()) {
@@ -128,11 +169,11 @@ void loop() {
 #endif
     if (currentCommand == showIRkey) {
       lcdIRkey(code, key);
+      SerialEEPROM();
     }
 
     // редактирование
     if (mode == edit) {
-      Serial.println("mode == edit");
       screen->edit(key);
       return;
     }

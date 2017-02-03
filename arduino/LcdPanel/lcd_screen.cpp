@@ -64,27 +64,14 @@ void LcdField::showField(int nPosit) {
 }
 
 LcdScreen::LcdScreen() {
-#ifdef HAS_DEBUG
-  name = "LcdScreen";
-#endif
   nField = 0;
   nPosit = 0;
 }
 
 void LcdScreen::showEveryTime() {
-#ifdef HAS_DEBUG
-  lcd.setCursor(0, 0);
-  lcd.print("showEveryTime");
-  lcd.setCursor(0, 1);
-  lcd.print(name);
-#endif
 }
 
 void LcdScreen::showOnce() {
-#ifdef HAS_DEBUG
-  lcd.setCursor(0, 0);
-  lcd.print("showOnce");
-#endif
   lcd.print("Enter IR key");
 }
 

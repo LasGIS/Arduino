@@ -20,8 +20,9 @@ public:
 // --- методы ---
   AlarmClock(uint8_t number);
   void toString(char* str, uint16_t size);
-  void eepromSave(int start);
-  void eepromLoad(int start);
+  void eepromSave();
+  void eepromLoad(uint8_t _number);
+  bool equal(Time time);
 };
 
 #endif // ALARMCLOCK_H

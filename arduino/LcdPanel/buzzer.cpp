@@ -5,7 +5,7 @@ extern int buzzerPin;
 uint8_t buzzerfactor = 1;
 
 /**
- * пищит <del> секунд с частотой <hertz> герц  
+ * пищит <del> милисекунд с частотой <hertz> герц
  */
 void buzzerOut(unsigned int hertz, unsigned long del) {
 //  tone(buzzerPin, hertz, del);

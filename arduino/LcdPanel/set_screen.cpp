@@ -1,18 +1,13 @@
 #include "LcdPanel.h"
 #include <EEPROM.h>
 #include <LiquidCrystal_I2C.h>
+#include "alarm_clock.h"
 #include "set_screen.h"
 
 extern uint8_t buzzerfactor;
 extern char comBuffer[50];
 extern LiquidCrystal_I2C lcd;
-
-AlarmClock alarmClocks[4] = {
-  AlarmClock(1),
-  AlarmClock(2),
-  AlarmClock(3),
-  AlarmClock(4)
-};
+extern AlarmClock alarmClocks[];
 
 const char* toText(const uint8_t val) {
   return val ? "\07" : "-";
@@ -27,9 +22,6 @@ Buzzer = 1
 4v MTWTFSS 24:59
  */
 SetScreen::SetScreen(): LcdScreen() {
-#ifdef HAS_DEBUG
-  name = "SetScreen";
-#endif
   commonMaxFields = 0;
   commonFields = new LcdField[commonMaxFields + 1] {
     {0, 9, 1, 0, 8, 6, NULL},   // сила звука
@@ -144,7 +136,9 @@ void SetScreen::save() {
     buzzerfactor = fields[0].val;
     EEPROM.update(BUZZER_FACTOR_ADR, buzzerfactor);
   } else {
-    AlarmClock * alarm = &alarmClocks[offset + editRow - 1];
+    int idx = offset + editRow - 1;
+    AlarmClock * alarm = &alarmClocks[idx];
+    alarm->number      = idx;
     alarm->active      = fields[0].val;
     alarm->isMonday    = fields[1].val;
     alarm->isTuesday   = fields[2].val;
@@ -155,6 +149,7 @@ void SetScreen::save() {
     alarm->isSunday    = fields[7].val;
     alarm->hour        = fields[8].val;
     alarm->min         = fields[9].val;
+    alarm->eepromSave();
   }
 }
 
@@ -162,6 +157,7 @@ void SetScreen::load() {
   if (offset == 0 && editRow == 0) {
     maxFields = commonMaxFields;
     fields = commonFields;
+    buzzerfactor = EEPROM.read(BUZZER_FACTOR_ADR);
     fields[0].val = buzzerfactor;
   } else {
     maxFields = alarmMaxFields;
@@ -169,7 +165,9 @@ void SetScreen::load() {
     for (int i = 0; i <= maxFields; i++) {
       fields[i].row = editRow;
     }
-    AlarmClock * alarm = &alarmClocks[offset + editRow - 1];
+    uint8_t idx = offset + editRow - 1;
+    AlarmClock * alarm = &alarmClocks[idx];
+    alarm->eepromLoad(idx);
     fields[0].val = alarm->active;
     fields[1].val = alarm->isMonday;
     fields[2].val = alarm->isTuesday;

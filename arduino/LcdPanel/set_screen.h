@@ -1,7 +1,6 @@
 #ifndef SETSCREEN_H
 #define SETSCREEN_H
 
-#include "alarm_clock.h"
 #include "lcd_screen.h"
 
 class SetScreen : public LcdScreen {
