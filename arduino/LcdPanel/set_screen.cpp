@@ -4,7 +4,8 @@
 #include "alarm_clock.h"
 #include "set_screen.h"
 
-extern uint8_t buzzerfactor;
+extern uint8_t keySoundVolume;
+extern uint8_t musicSoundVolume;
 extern char comBuffer[50];
 extern LiquidCrystal_I2C lcd;
 extern AlarmClock alarmClocks[];
@@ -22,9 +23,20 @@ Buzzer = 1
 4v MTWTFSS 24:59
  */
 SetScreen::SetScreen(): LcdScreen() {
-  commonMaxFields = 0;
+  keySoundVolume = EEPROM.read(KEY_SOUND_VOLUME_ADR);
+  if (keySoundVolume > 8) {
+    keySoundVolume = 1;
+    EEPROM.update(KEY_SOUND_VOLUME_ADR, keySoundVolume);
+  }
+  musicSoundVolume = EEPROM.read(MUSIC_SOUND_VOLUME_ADR);
+  if (musicSoundVolume > 8) {
+    musicSoundVolume = 1;
+    EEPROM.update(MUSIC_SOUND_VOLUME_ADR, musicSoundVolume);
+  }
+  commonMaxFields = 1;
   commonFields = new LcdField[commonMaxFields + 1] {
-    {0, 9, 1, 0, 8, 6, NULL},   // сила звука
+    {0, 4, 1, 0, 8, 6, NULL},   // сила звука кнопок
+    {0, 13, 1, 0, 8, 6, NULL},   // сила звука кнопок
   };
   alarmMaxFields = 9;
   alarmFields = new LcdField[alarmMaxFields + 1] {
@@ -51,8 +63,8 @@ void SetScreen::showOnce() {
   int row = 0;
   int i = offset - 1;
   if (offset == 0) {
-    lcd.print("Buzzer = ");
-    lcd.print(buzzerfactor);
+    snprintf(comBuffer, sizeof(comBuffer), "Key %1d; Music %1d", keySoundVolume, musicSoundVolume);
+    lcd.print(comBuffer);
     row++;
     i = 0;
   }
@@ -133,8 +145,10 @@ void SetScreen::hasBeyond(char key) {
 
 void SetScreen::save() {
   if (offset == 0 && editRow == 0) {
-    buzzerfactor = fields[0].val;
-    EEPROM.update(BUZZER_FACTOR_ADR, buzzerfactor);
+    keySoundVolume = fields[0].val;
+    EEPROM.update(KEY_SOUND_VOLUME_ADR, keySoundVolume);
+    musicSoundVolume = fields[1].val;
+    EEPROM.update(MUSIC_SOUND_VOLUME_ADR, musicSoundVolume);
   } else {
     int idx = offset + editRow - 1;
     AlarmClock * alarm = &alarmClocks[idx];
@@ -157,8 +171,10 @@ void SetScreen::load() {
   if (offset == 0 && editRow == 0) {
     maxFields = commonMaxFields;
     fields = commonFields;
-    buzzerfactor = EEPROM.read(BUZZER_FACTOR_ADR);
-    fields[0].val = buzzerfactor;
+    keySoundVolume = EEPROM.read(KEY_SOUND_VOLUME_ADR);
+    fields[0].val = keySoundVolume;
+    musicSoundVolume = EEPROM.read(MUSIC_SOUND_VOLUME_ADR);
+    fields[1].val = musicSoundVolume;
   } else {
     maxFields = alarmMaxFields;
     fields = alarmFields;

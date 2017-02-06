@@ -18,8 +18,6 @@
 IrControl control(2);
 // initialize the library with the numbers of the interface pins
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
-// пин для жужалки
-int buzzerPin = 8;
 
 /** настраиваем real time clock. */
 const int kCePin   = 3;  // Chip Enable
@@ -54,7 +52,7 @@ AlarmClock alarmClocks[4] = {
   AlarmClock(3)
 };
 
-extern uint8_t buzzerfactor;
+extern uint8_t keySoundVolume;
 
 void SerialEEPROM() {
 //  for (int i = 0; i < 255; i++) EEPROM.update(i, 0xfe);
@@ -85,7 +83,6 @@ void setup() {
 
   control.start();
   milliSec = millis();
-  pinMode(buzzerPin, OUTPUT);
   dht1.begin();
   dht2.begin();
 }
@@ -95,11 +92,6 @@ void eepromSet() {
   if (currentCommand > CURRENT_COMMAND_TYPE_MAX) {
     currentCommand = 0;
     EEPROM.update(CUR_COMMAND_ADR, currentCommand);
-  }
-  buzzerfactor = EEPROM.read(BUZZER_FACTOR_ADR);
-  if (buzzerfactor > 8) {
-    buzzerfactor = 1;
-    EEPROM.update(BUZZER_FACTOR_ADR, buzzerfactor);
   }
 }
 
@@ -113,32 +105,14 @@ bool checkOnAlarm(Time time) {
   return false;
 }
 
-int music[] = {
-  NOTE_F4, 1, NOTE_E4, 1, NOTE_D4, 1, NOTE_C4, 1, NOTE_G4, 3, NOTE_G4, 3,
-  NOTE_F4, 1, NOTE_E4, 1, NOTE_D4, 1, NOTE_C4, 1, NOTE_G4, 3, NOTE_G4, 3,
-  NOTE_F4, 1, NOTE_A4, 1, NOTE_A4, 1, NOTE_F4, 1,
-  NOTE_E4, 1, NOTE_G4, 1, NOTE_G4, 1, NOTE_E4, 1,
-  NOTE_D4, 1, NOTE_E4, 1, NOTE_F4, 1, NOTE_D4, 1, NOTE_C4, 3, NOTE_C4, 3,
-  NOTE_F4, 1, NOTE_A4, 1, NOTE_A4, 1, NOTE_F4, 1,
-  NOTE_E4, 1, NOTE_G4, 1, NOTE_G4, 1, NOTE_E4, 1,
-  NOTE_D4, 1, NOTE_E4, 1, NOTE_F4, 1, NOTE_D4, 1, NOTE_C4, 3, NOTE_C4, 3
-};
-
 /**
- * @brief alarm
+ *  musicAlarm
  */
-void alarm() {
+void showAlarm() {
   lcd.clear();
   lcd.setCursor(3, 0);
   lcd.print("-!ALARM!-");
-  uint8_t old_bf = buzzerfactor;
-  buzzerfactor = 8;
-  for (int i = 0; i < sizeof(music) / sizeof(int); i+=2) {
-    buzzerOut(music[i], 300 * music[i + 1]);
-    delay(100);
-  }
-  buzzerfactor = old_bf;
-  //delay(2000);
+  musicAlarm();
   lcd.clear();
 }
 
@@ -148,7 +122,7 @@ void loop() {
 
   // показываем экран каждые 1/10 секунды.
   if (count % 10 == 1 && checkOnAlarm(rtc.time())) {
-    alarm();
+    showAlarm();
     screen->showOnce();
   }
   screen->showEveryTime();
@@ -162,7 +136,7 @@ void loop() {
     char key = 0;
     if (controlKey != NULL) {
       key = controlKey->key;
-      buzzerOut(controlKey->tone, 200);
+      buzzerOut(controlKey->tone, 200, keySoundVolume);
     }
 #ifdef HAS_SERIAL
     serIRkey(code, key);
