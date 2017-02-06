@@ -30,7 +30,7 @@ enum CurrentCommandType : uint8_t {
 };
 
 void musicAlarm();
-void buzzerOut(unsigned int hertz, unsigned long del, uint8_t soundVolume);
+void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume);
 void loadCustomChars();
 void viewCustomDigit(int offset, int digit);
 

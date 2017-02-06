@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     lcd_screen.cpp \
     main_screen.cpp \
     set_screen.cpp \
-    show_char_screen.cpp
+    show_char_screen.cpp \
+    note.cpp
 
 RESOURCES += qml.qrc
 
@@ -60,7 +61,8 @@ HEADERS += \
     main_screen.h \
     pitches.h \
     set_screen.h \
-    show_char_screen.h
+    show_char_screen.h \
+    note.h
 
 DISTFILES += \
     LcdPanel.fzz

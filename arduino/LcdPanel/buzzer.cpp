@@ -1,40 +1,46 @@
 #include "LcdPanel.h"
 #include "pitches.h"
+#include "note.h"
 
 uint8_t keySoundVolume = 1;
 uint8_t musicSoundVolume = 1;
 
-int music[] = {
-  NOTE_F4, 1, NOTE_E4, 1, NOTE_D4, 1, NOTE_C4, 1, NOTE_G4, 3, NOTE_G4, 3,
-  NOTE_F4, 1, NOTE_E4, 1, NOTE_D4, 1, NOTE_C4, 1, NOTE_G4, 3, NOTE_G4, 3,
-  NOTE_F4, 1, NOTE_A4, 1, NOTE_A4, 1, NOTE_F4, 1,
-  NOTE_E4, 1, NOTE_G4, 1, NOTE_G4, 1, NOTE_E4, 1,
-  NOTE_D4, 1, NOTE_E4, 1, NOTE_F4, 1, NOTE_D4, 1, NOTE_C4, 3, NOTE_C4, 3,
-  NOTE_F4, 1, NOTE_A4, 1, NOTE_A4, 1, NOTE_F4, 1,
-  NOTE_E4, 1, NOTE_G4, 1, NOTE_G4, 1, NOTE_E4, 1,
-  NOTE_D4, 1, NOTE_E4, 1, NOTE_F4, 1, NOTE_D4, 1, NOTE_C4, 3, NOTE_C4, 3
+Note music[] = {
+  Note(Fa, 4, 2), Note(Mi, 4, 2), Note(Re, 4, 2), Note(Do, 4, 2), Note(Sl, 4, 1),  Note(Sl, 4, 1),
+  Note(Fa, 4, 2), Note(Mi, 4, 2), Note(Re, 4, 2), Note(Do, 4, 2), Note(Sl, 4, 1),  Note(Sl, 4, 1),
+  Note(Fa, 4, 2), Note(La, 4, 2), Note(La, 4, 2), Note(Fa, 4, 2),
+  Note(Mi, 4, 2), Note(Sl, 4, 2), Note(Sl, 4, 2), Note(Mi, 4, 2),
+  Note(Re, 4, 2), Note(Mi, 4, 2), Note(Fa, 4, 2), Note(Re, 4, 2), Note(Do, 4, 1),  Note(Do, 4, 1),
+  Note(Fa, 4, 2), Note(La, 4, 2), Note(La, 4, 2), Note(Fa, 4, 2),
+  Note(Mi, 4, 2), Note(Sl, 4, 2), Note(Sl, 4, 2), Note(Mi, 4, 2),
+  Note(Re, 4, 2), Note(Mi, 4, 2), Note(Fa, 4, 2), Note(Re, 4, 2), Note(Do, 4, 1),  Note(Do, 4, 1)
 };
 
 /**
  *  musicAlarm
  */
 void musicAlarm() {
-  for (int i = 0; i < sizeof(music) / sizeof(int); i+=2) {
-    buzzerOut(music[i], 300 * music[i + 1], musicSoundVolume);
-    delay(100);
+  for (int i = 0; i < sizeof(music) / sizeof(int); i++) {
+    Note note = music[i];
+//    Serial.print("note.tone() = ");
+//    Serial.print(note.tone());
+//    Serial.print("; note.delay() = ");
+//    Serial.println(note.delay());
+    buzzerOut(note.tone(), note.delay(), musicSoundVolume);
+    delay(30);
   }
 }
 
 /**
  * пищит <del> милисекунд с частотой <hertz> герц
  */
-void buzzerOut(unsigned int hertz, unsigned long del, uint8_t soundVolume) {
+void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume) {
   if (soundVolume == 0) return;
   pinMode(BUZZER_PIN, OUTPUT);
   noInterrupts();
-  long delayVal = (500000 / hertz) - 9;
-  long delayHigh = 0x1 << (soundVolume - 1);
-  long delayLow = (delayVal) - delayHigh;
+  uint32_t delayVal = (500000 / hertz) - 9;
+  uint32_t delayHigh = 0x1 << (soundVolume - 1);
+  uint32_t delayLow = (delayVal) - delayHigh;
   int noteCount = (del * 500) / delayVal;
 #ifdef HAS_SERIAL
   Serial.print(delayVal);

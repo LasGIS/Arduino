@@ -38,5 +38,8 @@ void ShowCharScreen::control(char key) {
       charsRow--;
     }
     break;
+  case 'p':
+    musicAlarm();
+    break;
   }
 }
