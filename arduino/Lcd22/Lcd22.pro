@@ -1,23 +1,15 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2017-02-09T13:21:05
+#
+#-------------------------------------------------
+
+QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = Lcd22
 TEMPLATE = app
-
-QT += qml quick
-CONFIG += c++11
-
-SOURCES += \
-    ../libraries/arduino-ds1302-master/DS1302.cpp \
-    ../libraries/DHT-sensor-library-master/DHT.cpp \
-    ../libraries/IrControl/IrControl.cpp \
-    ../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.cpp \
-    ../libraries/MsTimer2/MsTimer2.cpp \
-    ../libraries/ili9341-arduino-master/font.c \
-    alarm_clock.cpp \
-    buzzer.cpp \
-    CustomChars.cpp \
-    lcd_screen.cpp \
-    main_screen.cpp \
-    set_screen.cpp \
-    show_char_screen.cpp \
-    note.cpp
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += ../libraries/arduino-ds1302-master \
@@ -38,21 +30,28 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
   D:/local/Arduino/libraries/SD/src \
   D:/local/Arduino/libraries/Servo/src
 
+
+SOURCES += \
+    ../libraries/arduino-ds1302-master/DS1302.cpp \
+    ../libraries/DHT-sensor-library-master/DHT.cpp \
+    ../libraries/IrControl/IrControl.cpp \
+    ../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.cpp \
+    ../libraries/MsTimer2/MsTimer2.cpp \
+    ../libraries/ili9341-arduino-master/font.c \
+    ../libraries/ili9341-arduino-master/font.c \
+    ../libraries/ili9341-arduino-master/TFTv2.cpp \
+    Lcd22.ino
+
 HEADERS += \
     ../libraries/arduino-ds1302-master/DS1302.h \
     ../libraries/DHT-sensor-library-master/DHT.h \
     ../libraries/IrControl/IrControl.h \
     ../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h \
     ../libraries/MsTimer2/MsTimer2.h \
-    alarm_clock.h \
-    lcd_screen.h \
-    LcdPanel.h \
-    LcdPanel.ino \
-    main_screen.h \
-    pitches.h \
-    set_screen.h \
-    show_char_screen.h \
-    note.h
+    ../libraries/ili9341-arduino-master/TFTv2.h \
+    Lcd22.h
 
+#FORMS    += mainwindow.ui
 DISTFILES += \
-    LcdPanel.fzz
+    ../libraries/ili9341-arduino-master/README.md \
+    ../libraries/ili9341-arduino-master/keywords.txt
