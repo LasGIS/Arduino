@@ -3,6 +3,14 @@ TEMPLATE = app
 QT += qml quick
 CONFIG += c++11
 
+#// THE_ANSWER 42
+DEFINES += ARDUINO=10612
+DEFINES += F_CPU 16000000L
+DEFINES += ARDUINO_AVR_PRO
+DEFINES += ARDUINO_ARCH_AVR
+DEFINES += __AVR__
+DEFINES += __AVR_ATmega328P__
+
 SOURCES += \
     ../libraries/arduino-ds1302-master/DS1302.cpp \
     ../libraries/DHT-sensor-library-master/DHT.cpp \

@@ -4,12 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Lcd22
 TEMPLATE = app
+
+#// THE_ANSWER 42
+DEFINES += ARDUINO=10612
+DEFINES += F_CPU 16000000L
+DEFINES += ARDUINO_AVR_PRO
+DEFINES += ARDUINO_ARCH_AVR
+DEFINES += __AVR__
+DEFINES += __AVR_ATmega328P__
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += ../libraries/arduino-ds1302-master \
@@ -18,17 +26,17 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
   ../libraries/IrControl \
   ../libraries/LiquidCrystal_I2C \
   ../libraries/MsTimer2 \
-  D:/local/Arduino/hardware/arduino/avr/cores/arduino \
-  D:/local/Arduino/hardware/tools/avr/avr/include \
-  D:/local/Arduino/hardware/arduino/avr/variants/standard \
-  D:/local/Arduino/hardware/arduino/avr/libraries/EEPROM/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/HID/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/SPI/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src/utility \
-  D:/local/Arduino/libraries/SD/src \
-  D:/local/Arduino/libraries/Servo/src
+  C:/local/Arduino/hardware/arduino/avr/cores/arduino \
+  C:/local/Arduino/hardware/tools/avr/avr/include \
+  C:/local/Arduino/hardware/arduino/avr/variants/standard \
+  C:/local/Arduino/hardware/arduino/avr/libraries/EEPROM \
+  C:/local/Arduino/hardware/arduino/avr/libraries/HID \
+  C:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial \
+  C:/local/Arduino/hardware/arduino/avr/libraries/SPI \
+  C:/local/Arduino/hardware/arduino/avr/libraries/Wire \
+  C:/local/Arduino/hardware/arduino/avr/libraries/Wire/utility \
+  C:/local/Arduino/libraries/SD/src \
+  C:/local/Arduino/libraries/Servo/src
 
 
 SOURCES += \
