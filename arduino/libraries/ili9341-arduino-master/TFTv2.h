@@ -29,11 +29,16 @@
 #include <WProgram.h>
 #endif
 #include <avr/pgmspace.h>
-
+#include "RussFontANSI.c"
 #include <SPI.h>
 
+//#define HAS_SERIAL
+#define FONT_SPACE 6
+#define FONT_X 5
+#define FONT_Y 8
+
 //Basic Colors
-#define RED	0xf800
+#define RED	    0xf800
 #define GREEN	0x07e0
 #define BLUE	0x001f
 #define BLACK	0x0000
@@ -114,10 +119,9 @@
 #define INT16U unsigned int
 #endif
 
-extern INT8U simpleFont[][8];
+//extern INT8U simpleFont[][8];
 
-class TFT
-{
+class TFT {
 public:
 	void TFTinit (void);
 	void setCol(INT16U StartCol,INT16U EndCol);

@@ -21,29 +21,22 @@
 */
 
 #include <TFTv2.h>
-#include <SPI.h>
-#define FONT_SPACE 6
-#define FONT_X 8
-#define FONT_Y 8
 
-void TFT::sendCMD(INT8U index)
-{
+void TFT::sendCMD(INT8U index) {
     TFT_DC_LOW;
     TFT_CS_LOW;
     SPI.transfer(index);
     TFT_CS_HIGH;
 }
 
-void TFT::WRITE_DATA(INT8U data)
-{
+void TFT::WRITE_DATA(INT8U data) {
     TFT_DC_HIGH;
     TFT_CS_LOW;
     SPI.transfer(data);
     TFT_CS_HIGH;
 }
 
-void TFT::sendData(INT16U data)
-{
+void TFT::sendData(INT16U data) {
     INT8U data1 = data>>8;
     INT8U data2 = data&0xff;
     TFT_DC_HIGH;
@@ -53,16 +46,14 @@ void TFT::sendData(INT16U data)
     TFT_CS_HIGH;
 }
 
-void TFT::WRITE_Package(INT16U *data, INT8U howmany)
-{
+void TFT::WRITE_Package(INT16U *data, INT8U howmany) {
     INT16U    data1 = 0;
     INT8U   data2 = 0;
 
     TFT_DC_HIGH;
     TFT_CS_LOW;
     INT8U count=0;
-    for(count=0;count<howmany;count++)
-    {
+    for(count=0;count<howmany;count++) {
         data1 = data[count]>>8;
         data2 = data[count]&0xff;
         SPI.transfer(data1);
@@ -71,8 +62,7 @@ void TFT::WRITE_Package(INT16U *data, INT8U howmany)
     TFT_CS_HIGH;
 }
 
-INT8U TFT::Read_Register(INT8U Addr, INT8U xParameter)
-{
+INT8U TFT::Read_Register(INT8U Addr, INT8U xParameter) {
     INT8U data=0;
     sendCMD(0xd9);                                                      /* ext command                  */
     WRITE_DATA(0x10+xParameter);                                        /* 0x11 is the first Parameter  */
@@ -85,8 +75,7 @@ INT8U TFT::Read_Register(INT8U Addr, INT8U xParameter)
     return data;
 }
 
-void TFT::TFTinit (void)
-{
+void TFT::TFTinit(void) {
     SPI.begin();
     TFT_CS_HIGH;
     TFT_DC_HIGH;
@@ -96,8 +85,7 @@ void TFT::TFTinit (void)
 	delay(10);
 	TFT_RST_OFF;
 
-    for(i=0;i<3;i++)
-    {
+    for(i=0;i<3;i++) {
         TFTDriver = readID();
     }
 
@@ -207,67 +195,64 @@ void TFT::TFTinit (void)
 	fillScreen();
 }
 
-INT8U TFT::readID(void)
-{
+INT8U TFT::readID(void) {
     INT8U i=0;
     INT8U data[3] ;
     INT8U ID[3] = {0x00, 0x93, 0x41};
     INT8U ToF=1;
-    for(i=0;i<3;i++)
-    {
+    for(i=0;i<3;i++) {
         data[i]=Read_Register(0xd3,i+1);
-        if(data[i] != ID[i])
-        {
+        if(data[i] != ID[i]) {
             ToF=0;
         }
     }
-    if(!ToF)                                                            /* data!=ID                     */
-    {
+#ifdef HAS_SERIAL
+    if(!ToF) {
+        // data != ID
         Serial.print("Read TFT ID failed, ID should be 0x09341, but read ID = 0x");
-        for(i=0;i<3;i++)
-        {
+        for(i=0;i<3;i++) {
             Serial.print(data[i],HEX);
         }
         Serial.println();
     }
+#else
+    delay(10);
+#endif
     return ToF;
 }
 
-void TFT::setCol(INT16U StartCol,INT16U EndCol)
-{
-    sendCMD(0x2A);                                                      /* Column Command address       */
+void TFT::setCol(INT16U StartCol,INT16U EndCol) {
+  /* Column Command address */
+    sendCMD(0x2A);
     sendData(StartCol);
     sendData(EndCol);
 }
 
-void TFT::setPage(INT16U StartPage,INT16U EndPage)
-{
-    sendCMD(0x2B);                                                      /* Column Command address       */
+void TFT::setPage(INT16U StartPage,INT16U EndPage) {
+  /* Column Command address */
+    sendCMD(0x2B);
     sendData(StartPage);
     sendData(EndPage);
 }
 
-void TFT::fillScreen(INT16U XL, INT16U XR, INT16U YU, INT16U YD, INT16U color)
-{
-    unsigned long  XY=0;
+void TFT::fillScreen(INT16U XL, INT16U XR, INT16U YU, INT16U YD, INT16U color) {
+    unsigned long XY=0;
     unsigned long i=0;
 
-    if(XL > XR)
-    {
+    if (XL > XR) {
         XL = XL^XR;
         XR = XL^XR;
         XL = XL^XR;
     }
-    if(YU > YD)
-    {
+    if (YU > YD) {
         YU = YU^YD;
         YD = YU^YD;
         YU = YU^YD;
     }
-    XL = constrain(XL, MIN_X,MAX_X);
-    XR = constrain(XR, MIN_X,MAX_X);
-    YU = constrain(YU, MIN_Y,MAX_Y);
-    YD = constrain(YD, MIN_Y,MAX_Y);
+    XL = constrain(XL, MIN_X, MAX_X);
+    XR = constrain(XR, MIN_X, MAX_X);
+    YU = constrain(YU, MIN_Y, MAX_Y);
+    YD = constrain(YD, MIN_Y, MAX_Y);
 
     XY = (XR-XL+1);
     XY = XY*(YD-YU+1);
@@ -282,8 +267,7 @@ void TFT::fillScreen(INT16U XL, INT16U XR, INT16U YU, INT16U YD, INT16U color)
 
     INT8U Hcolor = color>>8;
     INT8U Lcolor = color&0xff;
-    for(i=0; i < XY; i++)
-    {
+    for(i=0; i < XY; i++) {
         SPI.transfer(Hcolor);
         SPI.transfer(Lcolor);
     }
@@ -291,17 +275,15 @@ void TFT::fillScreen(INT16U XL, INT16U XR, INT16U YU, INT16U YD, INT16U color)
     TFT_CS_HIGH;
 }
 
-void TFT::fillScreen(void)
-{
+void TFT::fillScreen(void) {
     Tft.setCol(0, 239);
     Tft.setPage(0, 319);
-    Tft.sendCMD(0x2c);                                                  /* start to write to display ra */
-                                                                        /* m                            */
+    /* start to write to display ram */
+    Tft.sendCMD(0x2c);
 
     TFT_DC_HIGH;
     TFT_CS_LOW;
-    for(INT16U i=0; i<38400; i++)
-    {
+    for(INT16U i = 0; i < 38400; i++) {
         SPI.transfer(0);
         SPI.transfer(0);
         SPI.transfer(0);
@@ -311,8 +293,7 @@ void TFT::fillScreen(void)
 }
 
 
-void TFT::setXY(INT16U poX, INT16U poY)
-{
+void TFT::setXY(INT16U poX, INT16U poY) {
     setCol(poX, poX);
     setPage(poY, poY);
     sendCMD(0x2c);
@@ -324,48 +305,38 @@ void TFT::setPixel(INT16U poX, INT16U poY,INT16U color)
     sendData(color);
 }
 
-void TFT::drawChar( INT8U ascii, INT16U poX, INT16U poY,INT16U size, INT16U fgcolor)
-{
-    if((ascii>=32)&&(ascii<=127))
-    {
-        ;
+void TFT::drawChar(INT8U ascii, INT16U poX, INT16U poY,INT16U size, INT16U fgcolor) {
+#ifdef STANDART_FONT
+    if(/*(ascii>=32)&&(*/ascii<=127) {
+        ascii -= 0x20;
+    } else {
+        ascii = '?' - 0x20;
     }
-    else
-    {
-        ascii = '?'-32;
-    }
-    for (int i =0; i<FONT_X; i++ ) {
-        INT8U temp = pgm_read_byte(&simpleFont[ascii-0x20][i]);
-        for(INT8U f=0;f<8;f++)
-        {
-            if((temp>>f)&0x01)
-            {
-                fillRectangle(poX+i*size, poY+f*size, size, size, fgcolor);
+#endif
+    for (INT8U i = 0; i < FONT_X; i++) {
+        INT8U temp = pgm_read_byte(&simpleFont[ascii][i]);
+        for (INT8U f = 0; f < 8; f++) {
+            if ((temp >> f)&0x01) {
+                fillRectangle(poX + i * size, poY + f * size, size, size, fgcolor);
             }
-
         }
-
     }
 }
 
-void TFT::drawString(char *string,INT16U poX, INT16U poY, INT16U size,INT16U fgcolor)
-{
-    while(*string)
-    {
+void TFT::drawString(char *string, INT16U poX, INT16U poY, INT16U size, INT16U fgcolor) {
+    while(*string) {
         drawChar(*string, poX, poY, size, fgcolor);
         *string++;
 
-        if(poX < MAX_X)
-        {
-            poX += FONT_SPACE*size;                                     /* Move cursor right            */
+        if (poX < MAX_X) {
+            poX += FONT_SPACE * size;                                     /* Move cursor right            */
         }
     }
 }
 
 //fillRectangle(poX+i*size, poY+f*size, size, size, fgcolor);
-void TFT::fillRectangle(INT16U poX, INT16U poY, INT16U length, INT16U width, INT16U color)
-{
-    fillScreen(poX, poX+length, poY, poY+width, color);
+void TFT::fillRectangle(INT16U poX, INT16U poY, INT16U length, INT16U width, INT16U color) {
+    fillScreen(poX, poX + length - 1, poY, poY + width - 1, color);
 }
 
 void  TFT::drawHorizontalLine( INT16U poX, INT16U poY,
