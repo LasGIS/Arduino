@@ -7,9 +7,8 @@
 #define MEASURIES_SIZE 6
 #define FONT_SIZE 2
 
-LgMeasure::LgMeasure(
-    const char* _description,
-    uint8_t _pin,
+LgMeasure::LgMeasure(const char* _description,
+    uint8_t _pin, uint8_t _decimal,
     uint16_t _color,
     float _factor
 ) {
@@ -17,6 +16,7 @@ LgMeasure::LgMeasure(
     strcpy_P(buffer, _description);
     description = buffer;
     pin = _pin;
+    decimal = _decimal;
     color = _color;
     factor = _factor;
 }
@@ -29,12 +29,12 @@ const char prgm_str04[] PROGMEM = "напр +5     = ";
 const char prgm_str05[] PROGMEM = "напр +3.3   = ";
 
 const LgMeasure* measuries[] = {
-    new LgMeasure(prgm_str00, A0, BLUE,  0.01175),
-    new LgMeasure(prgm_str01, A1, RED,   1.0),
-    new LgMeasure(prgm_str02, A2, BLUE,  0.00630),
-    new LgMeasure(prgm_str03, A3, RED,   1.0),
-    new LgMeasure(prgm_str04, A6, BLUE,  0.01175),
-    new LgMeasure(prgm_str05, A7, BLUE,  0.00630),
+    new LgMeasure(prgm_str00, A0, 2, BLUE,  0.01175),
+    new LgMeasure(prgm_str01, A1, 3, RED,   0.00106818),
+    new LgMeasure(prgm_str02, A2, 2, BLUE,  0.00630),
+    new LgMeasure(prgm_str03, A3, 3, RED,   0.0007477),
+    new LgMeasure(prgm_str04, A6, 2, BLUE,  0.01175),
+    new LgMeasure(prgm_str05, A7, 2, BLUE,  0.00630),
 };
 
 void setup() {
@@ -72,13 +72,13 @@ void loop() {
       FONT_SPACE * FONT_SIZE * 6, FONT_Y * FONT_SIZE, BLACK
     );
     Tft.drawFloat(
-      val, FONT_SPACE * FONT_SIZE * 14, 0 + (FONT_Y + 1) * FONT_SIZE * i, FONT_SIZE,
+      val, measuries[i]->decimal, FONT_SPACE * FONT_SIZE * 14, 0 + (FONT_Y + 1) * FONT_SIZE * i, FONT_SIZE,
       measuries[i]->color
     );
   }
 #ifdef HAS_SERIAL
   Serial.println(" ----------- ");
 #endif
-  delay(2000);
+  delay(500);
 }
 
