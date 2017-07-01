@@ -33,6 +33,7 @@
 #include <SPI.h>
 
 //#define HAS_SERIAL
+//#define HAS_SERIAL_DEBUG
 #define FONT_SPACE 6
 #define FONT_X 5
 #define FONT_Y 8
@@ -56,6 +57,13 @@
 #define MIN_Y	0
 #define MAX_X	239
 #define MAX_Y	319
+
+// ROTATION may be
+// ROTATION_UP, ROTATION_RIGHT, ROTATION_LEFT or ROTATION_DOWN
+//#define ROTATION_UP
+//#define ROTATION_RIGHT
+#define ROTATION_LEFT
+//#define ROTATION_DOWN
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 
@@ -118,20 +126,20 @@
 #ifndef INT16U
 #define INT16U unsigned int
 #endif
+#ifndef INT32U
+#define INT32U unsigned long
+#endif
 
 //extern INT8U simpleFont[][8];
 
 class TFT {
 public:
 	void TFTinit (void);
-	void setCol(INT16U StartCol,INT16U EndCol);
-	void setPage(INT16U StartPage,INT16U EndPage);
-	void setXY(INT16U poX, INT16U poY);
-	void setPixel(INT16U poX, INT16U poY,INT16U color);
-	void sendCMD(INT8U index);
+    INT32U setInterval(
+      int StartCol, int StartPage, int EndCol, int EndPage
+    );
+    void setPixel(INT16U poX, INT16U poY, INT16U color);
 	void WRITE_Package(INT16U *data,INT8U howmany);
-	void WRITE_DATA(INT8U data);
-	void sendData(INT16U data);
 	INT8U Read_Register(INT8U Addr,INT8U xParameter);
 	void fillScreen(INT16U XL,INT16U XR,INT16U YU,INT16U YD,INT16U color);
 	void fillScreen(void);
@@ -154,6 +162,12 @@ public:
 	INT8U drawFloat(float floatNumber,INT8U decimal,INT16U poX, INT16U poY,INT16U size,INT16U fgcolor);
 	INT8U drawFloat(float floatNumber,INT16U poX, INT16U poY,INT16U size,INT16U fgcolor);
 
+private:
+    void setCol(INT16U StartCol,INT16U EndCol);
+    void setPage(INT16U StartPage,INT16U EndPage);
+    void sendCMD(INT8U index);
+    void WRITE_DATA(INT8U data);
+    void sendData(INT16U data);
 };
 
 extern TFT Tft;

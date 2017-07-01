@@ -47,7 +47,7 @@ void TFT::sendData(INT16U data) {
 }
 
 void TFT::WRITE_Package(INT16U *data, INT8U howmany) {
-    INT16U    data1 = 0;
+    INT16U  data1 = 0;
     INT8U   data2 = 0;
 
     TFT_DC_HIGH;
@@ -229,45 +229,78 @@ void TFT::setCol(INT16U StartCol,INT16U EndCol) {
 }
 
 void TFT::setPage(INT16U StartPage,INT16U EndPage) {
-  /* Column Command address */
+  /* Page Command address */
     sendCMD(0x2B);
     sendData(StartPage);
     sendData(EndPage);
 }
 
-void TFT::fillScreen(INT16U XL, INT16U XR, INT16U YU, INT16U YD, INT16U color) {
-    unsigned long XY=0;
-    unsigned long i=0;
+/**
+ * Set Interval with normalization on rotation
+ * @brief TFT::setInterval
+ * @param StartPos
+ * @param StartLine
+ * @param EndPos
+ * @param EndLine
+ */
+INT32U TFT::setInterval(
+  int StartPos, int StartLine, int EndPos, int EndLine
+) {
+#if defined(ROTATION_RIGHT)
+    int XL = MAX_X - EndLine;
+    int XR = MAX_X - StartLine;
+    int YU = StartPos;
+    int YD = EndPos;
+#elif defined(ROTATION_LEFT)
+    int XL = StartLine;
+    int XR = EndLine;
+    int YU = MAX_Y - EndPos;
+    int YD = MAX_Y - StartPos;
+#elif defined(ROTATION_DOWN)
+    int XL = MAX_X - EndPos;
+    int XR = MAX_X - StartPos;
+    int YU = MAX_Y - EndLine;
+    int YD = MAX_Y - StartLine;
+#else /* ROTATION_UP */
+    int XL = StartPos;
+    int XR = EndPos;
+    int YU = StartLine;
+    int YD = EndLine;
+#endif
 
-    if (XL > XR) {
-        XL = XL^XR;
-        XR = XL^XR;
-        XL = XL^XR;
+   if (XL > XR) {
+        int XLR = XR;
+        XR = XL;
+        XL = XLR;
     }
     if (YU > YD) {
-        YU = YU^YD;
-        YD = YU^YD;
-        YU = YU^YD;
+        int YUD = YD;
+        YD = YU;
+        YU = YUD;
     }
     XL = constrain(XL, MIN_X, MAX_X);
     XR = constrain(XR, MIN_X, MAX_X);
     YU = constrain(YU, MIN_Y, MAX_Y);
     YD = constrain(YD, MIN_Y, MAX_Y);
 
-    XY = (XR-XL+1);
-    XY = XY*(YD-YU+1);
+    setCol(XL, XR);
+    setPage(YU, YD);
+    sendCMD(0x2c); /* start to write to display ram */
 
-    Tft.setCol(XL,XR);
-    Tft.setPage(YU, YD);
-    Tft.sendCMD(0x2c);                                                  /* start to write to display ra */
-                                                                        /* m                            */
+    return (INT32U)(XR - XL + 1) * (YD - YU + 1);
+}
+
+void TFT::fillScreen(INT16U XL, INT16U XR, INT16U YU, INT16U YD, INT16U color) {
+
+    INT32U XY = setInterval(XL, YU, XR, YD);
+    INT32U i;
 
     TFT_DC_HIGH;
     TFT_CS_LOW;
 
-    INT8U Hcolor = color>>8;
-    INT8U Lcolor = color&0xff;
-    for(i=0; i < XY; i++) {
+    INT8U Hcolor = color >> 8;
+    INT8U Lcolor = color & 0xff;
+    for (i = 0; i < XY; i++) {
         SPI.transfer(Hcolor);
         SPI.transfer(Lcolor);
     }
@@ -276,14 +309,15 @@ void TFT::fillScreen(INT16U XL, INT16U XR, INT16U YU, INT16U YD, INT16U color) {
 }
 
 void TFT::fillScreen(void) {
-    Tft.setCol(0, 239);
-    Tft.setPage(0, 319);
-    /* start to write to display ram */
-    Tft.sendCMD(0x2c);
+#if defined(ROTATION_LEFT) || defined(ROTATION_RIGHT)
+    INT32U XY = setInterval(0, 0, MAX_Y, MAX_X);
+#else /* ROTATION_UP || ROTATION_DOWN */
+    INT32U XY = setInterval(0, 0, MAX_X, MAX_Y);
+#endif
 
     TFT_DC_HIGH;
     TFT_CS_LOW;
-    for(INT16U i = 0; i < 38400; i++) {
+    for(INT32U i = 0; i < XY; i++) {
         SPI.transfer(0);
         SPI.transfer(0);
         SPI.transfer(0);
@@ -292,16 +326,8 @@ void TFT::fillScreen(void) {
     TFT_CS_HIGH;
 }
 
-
-void TFT::setXY(INT16U poX, INT16U poY) {
-    setCol(poX, poX);
-    setPage(poY, poY);
-    sendCMD(0x2c);
-}
-
-void TFT::setPixel(INT16U poX, INT16U poY,INT16U color)
-{
-    setXY(poX, poY);
+void TFT::setPixel(INT16U poX, INT16U poY,INT16U color) {
+    setInterval(poX, poY, poX, poY);
     sendData(color);
 }
 
@@ -335,17 +361,17 @@ void TFT::drawString(char *string, INT16U poX, INT16U poY, INT16U size, INT16U f
 }
 
 //fillRectangle(poX+i*size, poY+f*size, size, size, fgcolor);
-void TFT::fillRectangle(INT16U poX, INT16U poY, INT16U length, INT16U width, INT16U color) {
-    fillScreen(poX, poX + length - 1, poY, poY + width - 1, color);
+void TFT::fillRectangle(
+  INT16U poX, INT16U poY, INT16U width, INT16U height, INT16U color
+) {
+  fillScreen(poX, poX + width - 1, poY, poY + height - 1, color);
 }
 
-void  TFT::drawHorizontalLine( INT16U poX, INT16U poY,
-INT16U length,INT16U color)
-{
-    setCol(poX,poX + length);
-    setPage(poY,poY);
-    sendCMD(0x2c);
-    for(int i=0; i<length; i++)
+void  TFT::drawHorizontalLine(
+    INT16U poX, INT16U poY, INT16U length,INT16U color
+) {
+    INT16U XY = setInterval(poX, poY, poX + length, poY);
+    for (INT16U i = 0; i < XY; i++)
     sendData(color);
 }
 
@@ -372,12 +398,11 @@ void TFT::drawLine( INT16U x0,INT16U y0,INT16U x1, INT16U y1,INT16U color)
 
 }
 
-void TFT::drawVerticalLine( INT16U poX, INT16U poY, INT16U length,INT16U color)
-{
-    setCol(poX,poX);
-    setPage(poY,poY+length);
-    sendCMD(0x2c);
-    for(int i=0; i<length; i++)
+void TFT::drawVerticalLine(
+    INT16U poX, INT16U poY, INT16U length, INT16U color
+) {
+    INT16U XY = setInterval(poX, poY, poX, poY + length);
+    for (INT16U i = 0; i < XY; i++)
     sendData(color);
 }
 
