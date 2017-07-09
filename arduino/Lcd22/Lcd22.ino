@@ -31,12 +31,19 @@ const char prgm_str04[] PROGMEM = "напр +5     = ";
 const char prgm_str05[] PROGMEM = "напр +3.3   = ";
 
 const LgMeasure* measuries[] = {
-    new LgMeasure(prgm_str00, A0, 2, BLUE,  0.01175),
-    new LgMeasure(prgm_str01, A1, 3, RED,   0.00106818),
-    new LgMeasure(prgm_str02, A2, 2, BLUE,  0.00630),
-    new LgMeasure(prgm_str03, A3, 3, RED,   0.0007477),
-    new LgMeasure(prgm_str04, A6, 2, BLUE,  0.01175),
-    new LgMeasure(prgm_str05, A7, 2, BLUE,  0.00630),
+  /* нап Зарядка */
+  new LgMeasure(prgm_str00, A0, 2, CHARGER_VT_COLOR, 0.01175),
+  /* нап Батарея                   __RRRRRggggggBBBBB */
+  new LgMeasure(prgm_str02, A2, 2, BATTERY_VT_COLOR, 0.00630),
+  /* напр +5                       __RRRRRggggggBBBBB */
+  new LgMeasure(prgm_str04, A6, 2, SUPPLY5_VT_COLOR, 0.01175),
+
+  /* напр +3.3                      __RRRRRggggggBBBBB */
+  new LgMeasure(prgm_str05, A7, 2, SUPPLY3_VT_COLOR, 0.00630),
+  /* ток Батареи                   __RRRRRggggggBBBBB */
+  new LgMeasure(prgm_str01, A1, 3, BATTERY_IT_COLOR, 0.00106818),
+  /* ток  +5                       __RRRRRggggggBBBBB */
+  new LgMeasure(prgm_str03, A3, 3, SUPPLY5_IT_COLOR, 0.0007477),
 };
 
 void setup() {
