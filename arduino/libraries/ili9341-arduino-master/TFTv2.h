@@ -65,6 +65,12 @@
 #define ROTATION_LEFT
 //#define ROTATION_DOWN
 
+#if defined(ROTATION_LEFT) || defined(ROTATION_RIGHT)
+  #define MAX_POSITION_X	MAX_X
+#else /* ROTATION_UP || ROTATION_DOWN */
+  #define MAX_POSITION_X	MAX_Y
+#endif
+
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 
 #define TFT_CS_LOW  {DDRE |= 0x08;PORTE &=~ 0x08;}

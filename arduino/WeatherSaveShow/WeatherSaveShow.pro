@@ -26,17 +26,17 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
   ../libraries/TFT_lg/src/utility \
   ../libraries/IrControl \
   ../libraries/MsTimer2 \
-  C:/local/Arduino/hardware/arduino/avr/cores/arduino \
-  C:/local/Arduino/hardware/tools/avr/avr/include \
-  C:/local/Arduino/hardware/arduino/avr/variants/standard \
-  C:/local/Arduino/hardware/arduino/avr/libraries/EEPROM \
-  C:/local/Arduino/hardware/arduino/avr/libraries/HID \
-  C:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial \
-  C:/local/Arduino/hardware/arduino/avr/libraries/SPI \
-  C:/local/Arduino/hardware/arduino/avr/libraries/Wire \
-  C:/local/Arduino/hardware/arduino/avr/libraries/Wire/utility \
-  C:/local/Arduino/libraries/SD/src \
-  C:/local/Arduino/libraries/Servo/src
+  D:/local/Arduino/hardware/arduino/avr/cores/arduino \
+  D:/local/Arduino/hardware/tools/avr/avr/include \
+  D:/local/Arduino/hardware/arduino/avr/variants/standard \
+  D:/local/Arduino/hardware/arduino/avr/libraries/EEPROM/src \
+  D:/local/Arduino/hardware/arduino/avr/libraries/HID/src \
+  D:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/src \
+  D:/local/Arduino/hardware/arduino/avr/libraries/SPI/src \
+  D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src \
+  D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src/utility \
+  D:/local/Arduino/libraries/SD/src \
+  D:/local/Arduino/libraries/Servo/src
 
 
 SOURCES += \
@@ -44,26 +44,26 @@ SOURCES += \
     ../libraries/DHT-sensor-library-master/DHT.cpp \
     ../libraries/IrControl/IrControl.cpp \
     ../libraries/MsTimer2/MsTimer2.cpp \
-    WeatherSaveShow.ino \
-    RealTime.cpp \
     ../libraries/TFT_lg/src/TFT_lg.cpp \
     ../libraries/TFT_lg/src/utility/Adafruit_GFX_lg.cpp \
     ../libraries/TFT_lg/src/utility/Adafruit_ST7735_lg.cpp \
     ../libraries/TFT_lg/src/utility/glcdfont.c \
     ../libraries/TFT_lg/src/utility/russfont1.c \
     ../libraries/TFT_lg/src/utility/RussFontANSI.c \
-    ../libraries/TFT_lg/src/utility/RussFontOEM.c
+    ../libraries/TFT_lg/src/utility/RussFontOEM.c \
+    WeatherSaveShow.ino \
+    RealTime.cpp
 
 HEADERS += \
     ../libraries/arduino-ds1302-master/DS1302.h \
     ../libraries/DHT-sensor-library-master/DHT.h \
     ../libraries/IrControl/IrControl.h \
     ../libraries/MsTimer2/MsTimer2.h \
-    WeatherSaveShow.h \
     ../libraries/TFT_lg/src/TFT_lg.h \
     ../libraries/TFT_lg/src/utility/Adafruit_GFX_lg.h \
     ../libraries/TFT_lg/src/utility/Adafruit_ST7735_lg.h \
-    ../libraries/TFT_lg/src/utility/PImage_lg.h
+    ../libraries/TFT_lg/src/utility/PImage_lg.h \
+    WeatherSaveShow.h
 
 #FORMS    += mainwindow.ui
 DISTFILES += \

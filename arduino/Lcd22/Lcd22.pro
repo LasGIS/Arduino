@@ -43,9 +43,7 @@ SOURCES += \
     ../libraries/arduino-ds1302-master/DS1302.cpp \
     ../libraries/DHT-sensor-library-master/DHT.cpp \
     ../libraries/IrControl/IrControl.cpp \
-    ../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.cpp \
     ../libraries/MsTimer2/MsTimer2.cpp \
-    ../libraries/ili9341-arduino-master/font.c \
     ../libraries/ili9341-arduino-master/font.c \
     ../libraries/ili9341-arduino-master/TFTv2.cpp \
     Lcd22.ino \
@@ -56,7 +54,6 @@ HEADERS += \
     ../libraries/arduino-ds1302-master/DS1302.h \
     ../libraries/DHT-sensor-library-master/DHT.h \
     ../libraries/IrControl/IrControl.h \
-    ../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h \
     ../libraries/MsTimer2/MsTimer2.h \
     ../libraries/ili9341-arduino-master/TFTv2.h \
     Lcd22.h

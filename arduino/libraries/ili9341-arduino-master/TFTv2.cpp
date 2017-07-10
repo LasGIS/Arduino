@@ -53,7 +53,7 @@ void TFT::WRITE_Package(INT16U *data, INT8U howmany) {
     TFT_DC_HIGH;
     TFT_CS_LOW;
     INT8U count=0;
-    for(count=0;count<howmany;count++) {
+    for (count=0;count<howmany;count++) {
         data1 = data[count]>>8;
         data2 = data[count]&0xff;
         SPI.transfer(data1);
@@ -64,8 +64,8 @@ void TFT::WRITE_Package(INT16U *data, INT8U howmany) {
 
 INT8U TFT::Read_Register(INT8U Addr, INT8U xParameter) {
     INT8U data=0;
-    sendCMD(0xd9);                                                      /* ext command                  */
-    WRITE_DATA(0x10+xParameter);                                        /* 0x11 is the first Parameter  */
+    sendCMD(0xd9);                                                      /* ext command */
+    WRITE_DATA(0x10+xParameter);                                        /* 0x11 is the first Parameter */
     TFT_DC_LOW;
     TFT_CS_LOW;
     SPI.transfer(Addr);
@@ -79,14 +79,14 @@ void TFT::TFTinit(void) {
     SPI.begin();
     TFT_CS_HIGH;
     TFT_DC_HIGH;
-    INT8U i=0, TFTDriver=0;
+    INT8U i=0;//, TFTDriver=0;
 
 	TFT_RST_ON;
 	delay(10);
 	TFT_RST_OFF;
 
-    for(i=0;i<3;i++) {
-        TFTDriver = readID();
+    for (i=0;i<3;i++) {
+        /*TFTDriver = */readID();
     }
 
 	sendCMD(0xCB);  
@@ -200,17 +200,17 @@ INT8U TFT::readID(void) {
     INT8U data[3] ;
     INT8U ID[3] = {0x00, 0x93, 0x41};
     INT8U ToF=1;
-    for(i=0;i<3;i++) {
+    for (i=0;i<3;i++) {
         data[i]=Read_Register(0xd3,i+1);
-        if(data[i] != ID[i]) {
+        if (data[i] != ID[i]) {
             ToF=0;
         }
     }
 #ifdef HAS_SERIAL
-    if(!ToF) {
+    if (!ToF) {
         // data != ID
         Serial.print("Read TFT ID failed, ID should be 0x09341, but read ID = 0x");
-        for(i=0;i<3;i++) {
+        for (i=0;i<3;i++) {
             Serial.print(data[i],HEX);
         }
         Serial.println();
@@ -317,7 +317,7 @@ void TFT::fillScreen(void) {
 
     TFT_DC_HIGH;
     TFT_CS_LOW;
-    for(INT32U i = 0; i < XY; i++) {
+    for (INT32U i = 0; i < XY; i++) {
         SPI.transfer(0);
         SPI.transfer(0);
         SPI.transfer(0);
@@ -333,7 +333,7 @@ void TFT::setPixel(INT16U poX, INT16U poY,INT16U color) {
 
 void TFT::drawChar(INT8U ascii, INT16U poX, INT16U poY,INT16U size, INT16U fgcolor) {
 #ifdef STANDART_FONT
-    if(/*(ascii>=32)&&(*/ascii<=127) {
+    if (/*(ascii>=32)&&(*/ascii<=127) {
         ascii -= 0x20;
     } else {
         ascii = '?' - 0x20;
@@ -353,9 +353,13 @@ void TFT::drawString(char *string, INT16U poX, INT16U poY, INT16U size, INT16U f
     while(*string) {
         drawChar(*string, poX, poY, size, fgcolor);
         *string++;
-
-        if (poX < MAX_X) {
-            poX += FONT_SPACE * size;                                     /* Move cursor right            */
+        if (poX < MAX_POSITION_X) {
+          /* Move cursor right */
+            poX += FONT_SPACE * size;
+        } else {
+          /* Move cursor to next line */
+          poX = 0;
+          poY += FONT_Y * size;
         }
     }
 }
@@ -368,33 +372,34 @@ void TFT::fillRectangle(
 }
 
 void  TFT::drawHorizontalLine(
-    INT16U poX, INT16U poY, INT16U length,INT16U color
+    INT16U poX, INT16U poY, INT16U length, INT16U color
 ) {
     INT16U XY = setInterval(poX, poY, poX + length, poY);
     for (INT16U i = 0; i < XY; i++)
     sendData(color);
 }
 
-void TFT::drawLine( INT16U x0,INT16U y0,INT16U x1, INT16U y1,INT16U color)
-{
-
-    int x = x1-x0;
-    int y = y1-y0;
-    int dx = abs(x), sx = x0<x1 ? 1 : -1;
-    int dy = -abs(y), sy = y0<y1 ? 1 : -1;
-    int err = dx+dy, e2;                                                /* error value e_xy             */
-    for (;;){                                                           /* loop                         */
-        setPixel(x0,y0,color);
-        e2 = 2*err;
-        if (e2 >= dy) {                                                 /* e_xy+e_x > 0                 */
-            if (x0 == x1) break;
-            err += dy; x0 += sx;
-        }
-        if (e2 <= dx) {                                                 /* e_xy+e_y < 0                 */
-            if (y0 == y1) break;
-            err += dx; y0 += sy;
-        }
+void TFT::drawLine(INT16U x0, INT16U y0, INT16U x1, INT16U y1, INT16U color) {
+  int x = x1-x0;
+  int y = y1-y0;
+  int dx = abs(x), sx = x0<x1 ? 1 : -1;
+  int dy = -abs(y), sy = y0<y1 ? 1 : -1;
+  int err = dx+dy, e2; /* error value e_xy */
+  /* loop */
+  for (;;) {
+    setPixel(x0, y0, color);
+    e2 = 2*err;
+    if (e2 >= dy) {
+      /* e_xy+e_x > 0 */
+      if (x0 == x1) break;
+      err += dy; x0 += sx;
     }
+    if (e2 <= dx) {
+      /* e_xy+e_y < 0 */
+      if (y0 == y1) break;
+      err += dx; y0 += sy;
+    }
+  }
 
 }
 
@@ -436,7 +441,6 @@ void TFT::fillCircle(int poX, int poY, int r,INT16U color)
 {
     int x = -r, y = 0, err = 2-2*r, e2;
     do {
-
         drawVerticalLine(poX-x, poY-y, 2*y, color);
         drawVerticalLine(poX+x, poY-y, 2*y, color);
 
@@ -447,137 +451,121 @@ void TFT::fillCircle(int poX, int poY, int r,INT16U color)
         }
         if (e2 > x) err += ++x*2+1;
     } while (x <= 0);
-
 }
 
-void TFT::drawTraingle( int poX1, int poY1, int poX2, int poY2, int poX3, int poY3, INT16U color)
-{
+void TFT::drawTraingle( int poX1, int poY1, int poX2, int poY2, int poX3, int poY3, INT16U color) {
     drawLine(poX1, poY1, poX2, poY2,color);
     drawLine(poX1, poY1, poX3, poY3,color);
     drawLine(poX2, poY2, poX3, poY3,color);
 }
 
-INT8U TFT::drawNumber(long long_num,INT16U poX, INT16U poY,INT16U size,INT16U fgcolor)
-{
+INT8U TFT::drawNumber(long long_num,INT16U poX, INT16U poY,INT16U size,INT16U fgcolor) {
     INT8U char_buffer[10] = "";
     INT8U i = 0;
     INT8U f = 0;
 
-    if (long_num < 0)
-    {
+    if (long_num < 0) {
         f=1;
         drawChar('-',poX, poY, size, fgcolor);
         long_num = -long_num;
-        if(poX < MAX_X)
-        {
-            poX += FONT_SPACE*size;                                     /* Move cursor right            */
+        if (poX < MAX_POSITION_X) {
+          /* Move cursor right */
+          poX += FONT_SPACE*size;
         }
-    }
-    else if (long_num == 0)
-    {
+    } else if (long_num == 0) {
         f=1;
         drawChar('0',poX, poY, size, fgcolor);
         return f;
-        if(poX < MAX_X)
-        {
-            poX += FONT_SPACE*size;                                     /* Move cursor right            */
+        if (poX < MAX_POSITION_X) {
+          /* Move cursor right */
+          poX += FONT_SPACE*size;
         }
     }
 
 
-    while (long_num > 0)
-    {
+    while (long_num > 0) {
         char_buffer[i++] = long_num % 10;
         long_num /= 10;
     }
 
     f = f+i;
-    for(; i > 0; i--)
-    {
+    for (; i > 0; i--) {
         drawChar('0'+ char_buffer[i - 1],poX, poY, size, fgcolor);
-        if(poX < MAX_X)
-        {
-            poX+=FONT_SPACE*size;                                       /* Move cursor right            */
+        if (poX < MAX_POSITION_X) {
+          /* Move cursor right */
+          poX+=FONT_SPACE*size;
         }
     }
     return f;
 }
 
-INT8U TFT::drawFloat(float floatNumber,INT8U decimal,INT16U poX, INT16U poY,INT16U size,INT16U fgcolor)
-{
-    INT16U temp=0;
-    float decy=0.0;
-    float rounding = 0.5;
-    INT8U f=0;
-    if(floatNumber<0.0)
-    {
-        drawChar('-',poX, poY, size, fgcolor);
-        floatNumber = -floatNumber;
-        if(poX < MAX_X)
-        {
-            poX+=FONT_SPACE*size;                                       /* Move cursor right            */
-        }
-        f =1;
+INT8U TFT::drawFloat(float floatNumber,INT8U decimal,INT16U poX, INT16U poY,INT16U size,INT16U fgcolor) {
+  INT16U temp=0;
+  float decy=0.0;
+  float rounding = 0.5;
+  INT8U f=0;
+  if (floatNumber<0.0) {
+    drawChar('-',poX, poY, size, fgcolor);
+    floatNumber = -floatNumber;
+    if (poX < MAX_POSITION_X) {
+      /* Move cursor right */
+      poX+=FONT_SPACE*size;
     }
-    for (INT8U i=0; i<decimal; ++i)
-    {
-        rounding /= 10.0;
-    }
-    floatNumber += rounding;
+    f =1;
+  }
+  for (INT8U i=0; i<decimal; ++i) {
+      rounding /= 10.0;
+  }
+  floatNumber += rounding;
 
-    temp = (INT16U)floatNumber;
-    INT8U howlong=drawNumber(temp,poX, poY, size, fgcolor);
-    f += howlong;
-    if((poX+8*size*howlong) < MAX_X)
-    {
-        poX+=FONT_SPACE*size*howlong;                                   /* Move cursor right            */
-    }
+  temp = (INT16U)floatNumber;
+  INT8U howlong=drawNumber(temp,poX, poY, size, fgcolor);
+  f += howlong;
+  if ((poX+8*size*howlong) < MAX_POSITION_X) {
+    /* Move cursor right */
+    poX+=FONT_SPACE*size*howlong;
+  }
 
-    if(decimal>0)
-    {
-        drawChar('.',poX, poY, size, fgcolor);
-        if(poX < MAX_X)
-        {
-            poX+=FONT_SPACE*size;                                       /* Move cursor right            */
-        }
-        f +=1;
-    }
-    decy = floatNumber-temp;                                            /* decimal part,  4             */
-    for(INT8U i=0;i<decimal;i++)                                      
-    {
-        decy *=10;                                                      /* for the next decimal         */
-        temp = decy;                                                    /* get the decimal              */
-        drawNumber(temp,poX, poY, size, fgcolor);
-        floatNumber = -floatNumber;
-        if(poX < MAX_X)
-        {
-            poX+=FONT_SPACE*size;                                       /* Move cursor right            */
-        }
-        decy -= temp;
-    }
-    f +=decimal;
-    return f;
+  if (decimal>0) {
+      drawChar('.',poX, poY, size, fgcolor);
+      if (poX < MAX_POSITION_X) {
+        /* Move cursor right */
+          poX+=FONT_SPACE*size;
+      }
+      f +=1;
+  }
+  decy = floatNumber-temp; // decimal part,  4
+  for (INT8U i=0;i<decimal;i++) {
+      decy *= 10;                                                     /* for the next decimal */
+      temp = decy;                                                    /* get the decimal */
+      drawNumber(temp,poX, poY, size, fgcolor);
+      floatNumber = -floatNumber;
+      if (poX < MAX_POSITION_X) {
+        /* Move cursor right */
+        poX += FONT_SPACE * size;
+      }
+      decy -= temp;
+  }
+  f +=decimal;
+  return f;
 }
 
-INT8U TFT::drawFloat(float floatNumber,INT16U poX, INT16U poY,INT16U size,INT16U fgcolor)
-{
+INT8U TFT::drawFloat(float floatNumber,INT16U poX, INT16U poY,INT16U size,INT16U fgcolor) {
     INT8U decimal=2;
-    INT16U temp=0;
-    float decy=0.0;
+    INT16U temp = 0;
+    float decy = 0.0;
     float rounding = 0.5;
-    INT8U f=0;
-    if(floatNumber<0.0)                                                 /* floatNumber < 0              */
-    {
-        drawChar('-',poX, poY, size, fgcolor);                          /* add a '-'                    */
-        floatNumber = -floatNumber;
-        if(poX < MAX_X)
-        {
-            poX+=FONT_SPACE*size;                                       /* Move cursor right            */
-        }
-        f =1;
+    INT8U f = 0;
+    if (floatNumber < 0.0) {
+      drawChar('-', poX, poY, size, fgcolor); /* add a '-' */
+      floatNumber = -floatNumber;
+      if (poX < MAX_POSITION_X) {
+        /* Move cursor right */
+        poX+=FONT_SPACE*size;
+      }
+      f =1;
     }
-    for (INT8U i=0; i<decimal; ++i)
-    {
+    for (INT8U i=0; i<decimal; ++i) {
         rounding /= 10.0;
     }
     floatNumber += rounding;
@@ -585,39 +573,35 @@ INT8U TFT::drawFloat(float floatNumber,INT16U poX, INT16U poY,INT16U size,INT16U
     temp = (INT16U)floatNumber;
     INT8U howlong=drawNumber(temp,poX, poY, size, fgcolor);
     f += howlong;
-    if((poX+8*size*howlong) < MAX_X)
-    {
-        poX+=FONT_SPACE*size*howlong;                                   /* Move cursor right            */
+    if ((poX+8*size*howlong) < MAX_POSITION_X) {
+      /* Move cursor right */
+      poX+=FONT_SPACE*size*howlong;
     }
 
-
-    if(decimal>0)
-    {
-        drawChar('.',poX, poY, size, fgcolor);
-        if(poX < MAX_X)
-        {
-            poX += FONT_SPACE*size;                                     /* Move cursor right            */
-        }
-        f +=1;
+    if (decimal > 0) {
+      drawChar('.',poX, poY, size, fgcolor);
+      if (poX < MAX_POSITION_X) {
+        poX += FONT_SPACE*size;                                     /* Move cursor right */
+      }
+      f +=1;
     }
-    decy = floatNumber-temp;                                            /* decimal part,                */
-    for(INT8U i=0;i<decimal;i++)
-    {
-        decy *=10;                                                      /* for the next decimal         */
-        temp = decy;                                                    /* get the decimal              */
-        drawNumber(temp,poX, poY, size, fgcolor);
-        floatNumber = -floatNumber;
-        if(poX < MAX_X)
-        {
-            poX += FONT_SPACE*size;                                     /* Move cursor right            */
-        }
-        decy -= temp;
+    decy = floatNumber-temp;                                            /* decimal part, */
+    for (INT8U i=0;i<decimal;i++) {
+      decy *=10;                                                      /* for the next decimal */
+      temp = decy;                                                    /* get the decimal */
+      drawNumber(temp,poX, poY, size, fgcolor);
+      floatNumber = -floatNumber;
+      if (poX < MAX_POSITION_X) {
+        /* Move cursor right */
+        poX += FONT_SPACE*size;
+      }
+      decy -= temp;
     }
     f += decimal;
     return f;
 }
 
-TFT Tft=TFT();
+TFT Tft = TFT();
 /*********************************************************************************************************
   END FILE
 *********************************************************************************************************/
