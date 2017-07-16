@@ -7,6 +7,17 @@
 #include <TFTv2.h>
 #include <SPI.h>
 
+void testColor() {
+  for (int r = 0; r < 256; r ++) {
+    for (int g = 0; g < 256; g ++) {
+      for (int b = 0; b < 256; b ++) {
+        Tft.setPixel(11 + g, 31 + b / 2, COLOR(r,g,b));
+      }
+    }
+    Tft.drawVerticalLine(11 + r, 160, 70, COLOR(r,r,r));
+  }
+}
+
 void setup()
 {
     TFT_BL_ON;      // turn on the background light
@@ -26,6 +37,8 @@ void setup()
     
     Tft.drawString("World!!",60,220,4,WHITE);    // draw string: "world!!", (80, 230), size: 4, color: WHITE
     
+    Tft.drawRectangle(10, 30, 300, 201, WHITE);
+    testColor();
 
 }
 

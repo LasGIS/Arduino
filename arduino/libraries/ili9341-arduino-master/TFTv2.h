@@ -38,8 +38,11 @@
 #define FONT_X 5
 #define FONT_Y 8
 
+#define COLOR(red, green, blue) \
+  ((((red) << 8) & 0xf800) | (((green) << 3) & 0x07e0) | (((blue) >> 3) & 0x001f))
+
 //Basic Colors
-#define RED	    0xf800
+#define RED	0xf800
 #define GREEN	0x07e0
 #define BLUE	0x001f
 #define BLACK	0x0000
@@ -66,9 +69,9 @@
 //#define ROTATION_DOWN
 
 #if defined(ROTATION_LEFT) || defined(ROTATION_RIGHT)
-  #define MAX_POSITION_X	MAX_X
-#else /* ROTATION_UP || ROTATION_DOWN */
   #define MAX_POSITION_X	MAX_Y
+#else /* ROTATION_UP || ROTATION_DOWN */
+  #define MAX_POSITION_X	MAX_X
 #endif
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
