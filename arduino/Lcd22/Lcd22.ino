@@ -55,7 +55,6 @@ void setup() {
     Serial.begin(9600);
     TFT_BL_ON;        // turn on the background light
     Tft.TFTinit();    //init TFT library
-    //Tft.drawRectangle(screenLeft, screenTop, 300, 201, WHITE);
     drawFirst();
     drawGrid();
 }
@@ -104,14 +103,34 @@ void drawGrid() {
     );
   }
 
+  // весь экран - 1 час
+  for (int time = 0; time <= 6; time++) {
+    int tx = (int) (screenLeft + time * 48);
+    Tft.drawNumber(time * 10,
+      time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6,
+      screenBottom + 2, FONT_SIZE, colorTime
+    );
+  }
+/*
+  // весь экран - 8 часов
+  for (int time = 0; time <= 8; time++) {
+    int tx = (int) (screenLeft + time * 36);
+    Tft.drawNumber(time,
+      time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6,
+      screenBottom + 2, FONT_SIZE, colorTime
+    );
+  }
+*/
+/*
+  // весь экран - 24 часа
   for (int time = 0; time <= 24; time += 3) {
     int tx = (int) (screenLeft + time * 12);
     Tft.drawNumber(time,
       time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6,
-      screenBottom + 2,
-      FONT_SIZE, colorTime
+      screenBottom + 2, FONT_SIZE, colorTime
     );
   }
+*/
 }
 
 /**
