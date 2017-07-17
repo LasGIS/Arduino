@@ -228,9 +228,10 @@ void measuring() {
   long time = millis();
   printTime(time);
   long timeInval = time % TIME_FUL_SCREEN;
+  int curXCalc = screenLeft + timeInval / TIME_MULTIPLIER;
 
-  if (curX != timeInval / TIME_MULTIPLIER) {
-    curX = screenLeft + timeInval / TIME_MULTIPLIER;
+  if (curX != curXCalc) {
+    curX = curXCalc;
     if (curX >= screenRigth) curX = screenLeft;
     curNextX = curX + 1;
     if (curNextX >= screenRigth) curNextX = screenLeft;
