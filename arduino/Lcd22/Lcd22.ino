@@ -49,6 +49,7 @@ const LgMeasure* measuries[] = {
 
 int curX = screenLeft - 1;
 int curNextX = curX + 1;
+char comBuffer[20];
 
 void setup() {
     analogReference(INTERNAL);
@@ -89,20 +90,30 @@ void drawGrid() {
     temp += CURRENT_DELTA
   ) {
     int ty = (int) (screenBottom - (temp - CURRENT_START) * CURRENT_MULTIPLIER);
-    Tft.drawFloat(temp * 1000, 1, screenRigth + 3, ty - 8,
+    Tft.drawFloat(temp * 1000, 0, screenRigth + 3, ty - 4,
       FONT_SIZE, BATTERY_IT_COLOR
     );
   }
-  for (float temp = VOLTAGE_START;
-    temp <= VOLTAGE_START + screenVSize / VOLTAGE_MULTIPLIER;
-    temp += VOLTAGE_DELTA
+  for (float volt = VOLTAGE_START;
+    volt <= VOLTAGE_START + screenVSize / VOLTAGE_MULTIPLIER;
+    volt += VOLTAGE_DELTA
   ) {
-    int ty = (int) (screenBottom - (temp - VOLTAGE_START) * VOLTAGE_MULTIPLIER);
-    Tft.drawFloat(temp, 1, screenRigth + 3, ty - 0,
+    int ty = (int) (screenBottom - (volt - VOLTAGE_START) * VOLTAGE_MULTIPLIER);
+    Tft.drawFloat(volt, 1, 0, ty - 4,
       FONT_SIZE, voltColor
     );
   }
 
+#if defined (TIME_TYPE_6_MIN)
+  /* весь экран - 6 мин */
+  for (int time = 0; time <= 6; time++) {
+    int tx = (int) (screenLeft + time * 48);
+    Tft.drawNumber(time,
+      time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6,
+      screenBottom + 2, FONT_SIZE, colorTime
+    );
+  }
+#elif defined (TIME_TYPE_60_MIN)
   // весь экран - 1 час
   for (int time = 0; time <= 6; time++) {
     int tx = (int) (screenLeft + time * 48);
@@ -111,7 +122,7 @@ void drawGrid() {
       screenBottom + 2, FONT_SIZE, colorTime
     );
   }
-/*
+#elif defined (TIME_TYPE_8_HOUR)
   // весь экран - 8 часов
   for (int time = 0; time <= 8; time++) {
     int tx = (int) (screenLeft + time * 36);
@@ -120,8 +131,7 @@ void drawGrid() {
       screenBottom + 2, FONT_SIZE, colorTime
     );
   }
-*/
-/*
+#elif defined (TIME_TYPE_24_HOUR)
   // весь экран - 24 часа
   for (int time = 0; time <= 24; time += 3) {
     int tx = (int) (screenLeft + time * 12);
@@ -130,7 +140,7 @@ void drawGrid() {
       screenBottom + 2, FONT_SIZE, colorTime
     );
   }
-*/
+#endif
 }
 
 /**
@@ -149,6 +159,19 @@ void showTempMarks() {
   }
   Tft.setPixel(curX, screenBottom, markHourColor);
   Tft.setPixel(curX, screenTop, markHourColor);
+}
+
+/**
+ * выводим время и дату в формате.
+ */
+void printTime(long time) {
+  unsigned long milTime = time / 1000;
+  int sec = milTime % 60;
+  int min = (milTime / 60) % 60;
+  int hour = milTime / 3600;
+  snprintf(comBuffer, sizeof(comBuffer), "%d:%02d:%02d", hour, min, sec);
+  Tft.fillRectangle(260, 0, 60, CHAR_HEIGHT, BLACK);
+  Tft.drawString(comBuffer, 260, 0, FONT_SIZE, colorTime);
 }
 
 /**
@@ -203,25 +226,23 @@ void measury() {
 void measuring() {
 
   long time = millis();
+  printTime(time);
+  long timeInval = time % TIME_FUL_SCREEN;
 
-  if (curX != time / TIME_MULTIPLIER) {
-    curX = time / TIME_MULTIPLIER;
+  if (curX != timeInval / TIME_MULTIPLIER) {
+    curX = screenLeft + timeInval / TIME_MULTIPLIER;
     if (curX >= screenRigth) curX = screenLeft;
     curNextX = curX + 1;
     if (curNextX >= screenRigth) curNextX = screenLeft;
     Tft.drawVerticalLine(curNextX, screenTop, screenVSize, WHITE);
 
     uint16_t color;
-    // 3 часа
-    if (time % 10800000 < TIME_MULTIPLIER) {
+    // главная метка времени (3 часа)
+    if (timeInval % TIME_MAIN_MARK < TIME_MULTIPLIER) {
       color = markHourColor;
     }
-//    // 1 час
-//    else if (time % 3600000 < TIME_MULTIPLIER) {
-//      color = markMinColor;
-//    }
-    // 5 мин
-    else if (time % 300000 < TIME_MULTIPLIER) {
+    // дополнительная метка времени (1 час)
+    else if (timeInval % TIME_HALF_MARK < TIME_MULTIPLIER) {
       color = markMinColor;
     }
     else {
