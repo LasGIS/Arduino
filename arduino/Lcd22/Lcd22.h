@@ -25,9 +25,9 @@
 #define CURRENT_MULTIPLIER 2000.0
 
 //#define TIME_TYPE_6_MIN
-#define TIME_TYPE_60_MIN
+//#define TIME_TYPE_60_MIN
 //#define TIME_TYPE_8_HOUR
-//#define TIME_TYPE_24_HOUR
+#define TIME_TYPE_24_HOUR
 
 #if defined (TIME_TYPE_6_MIN)
   /* весь экран - 6 мин */
@@ -64,11 +64,17 @@
 #define SUPPLY3_IT_COLOR    COLOR(255,0,255)
 
 #define voltColor        COLOR(32,32,255)
-#define colorTime        COLOR(120,120,255)
+#define colorTime        COLOR(255,0,255)
 #define markColor        COLOR(96,96,96)
 #define markHourColor    COLOR(144,144,144)
 #define markMinColor     COLOR(96,96,96)
 #define foneColor        COLOR(24,24,24)
+
+enum MeasureType : uint8_t {
+    TEMPERATURE,
+    VOLTAGE,
+    CURRENT
+};
 
 class LgMeasure {
 public:
@@ -77,9 +83,17 @@ public:
     uint8_t decimal;
     uint16_t color;
     float factor;
-    uint8_t typeOut;
-    LgMeasure(const char* _description, uint8_t _pin, uint8_t _decimal,
-              uint16_t _color, float _value, uint8_t typeOut);
+    MeasureType typeOut;
+    bool isGraph;
+    LgMeasure(
+        const char* _description,
+        uint8_t _pin,
+        uint8_t _decimal,
+        uint16_t _color,
+        float _value,
+        MeasureType _typeOut,
+        bool _isGraph
+    );
 };
 
 #endif
