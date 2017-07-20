@@ -565,12 +565,12 @@ INT8U TFT::drawFloat(float floatNumber,INT16U poX, INT16U poY,INT16U size,INT16U
       }
       f =1;
     }
-    for (INT8U i=0; i<decimal; ++i) {
+    for (INT8U i = 0; i < decimal; ++i) {
         rounding /= 10.0;
     }
     floatNumber += rounding;
 
-    temp = (INT16U)floatNumber;
+    temp = (INT16U) floatNumber;
     INT8U howlong=drawNumber(temp,poX, poY, size, fgcolor);
     f += howlong;
     if ((poX+8*size*howlong) < MAX_POSITION_X) {

@@ -18,16 +18,16 @@
 
 #define VOLTAGE_START 3.0
 #define VOLTAGE_DELTA 0.5
-#define VOLTAGE_MULTIPLIER 66.66
+#define VOLTAGE_MULTIPLIER 80.0
 
 #define CURRENT_START 0.0
-#define CURRENT_DELTA 0.01
-#define CURRENT_MULTIPLIER 2000.0
+#define CURRENT_DELTA 0.05
+#define CURRENT_MULTIPLIER 800.0
 
 //#define TIME_TYPE_6_MIN
 //#define TIME_TYPE_60_MIN
-//#define TIME_TYPE_8_HOUR
-#define TIME_TYPE_24_HOUR
+#define TIME_TYPE_8_HOUR
+//#define TIME_TYPE_24_HOUR
 
 #if defined (TIME_TYPE_6_MIN)
   /* весь экран - 6 мин */

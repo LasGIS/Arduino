@@ -45,9 +45,9 @@ const LgMeasure* measuries[] = {
   /* напр +3.3 */
   new LgMeasure(prgm_str05, A7, 2, SUPPLY3_VT_COLOR, 0.00630, VOLTAGE, true),
   /* ток Батареи */
-  new LgMeasure(prgm_str01, A1, 3, BATTERY_IT_COLOR, 0.00106818, CURRENT, false),
+  new LgMeasure(prgm_str01, A1, 3, BATTERY_IT_COLOR, 0.00106818, CURRENT, true),
   /* ток  +5 */
-  new LgMeasure(prgm_str03, A3, 3, SUPPLY5_IT_COLOR, 0.0007477, CURRENT, false),
+  new LgMeasure(prgm_str03, A3, 3, SUPPLY5_IT_COLOR, 0.0007477, CURRENT, true),
 };
 
 int curX = screenLeft - 1;
@@ -83,6 +83,17 @@ void drawFirst(){
   }
 }
 
+int calcY(int ty) {
+  ty -= 4;
+  return (ty < screenTop) ? screenTop
+    : ((ty > screenBottom - 6) ? screenBottom - 6 : ty);
+}
+
+inline int calcX(int time, int tx) {
+  return time < 10 ? tx - 2 : tx - 6;
+  //return time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6;
+}
+
 /**
  * показываем решётку
  */
@@ -93,7 +104,7 @@ void drawGrid() {
     temp += CURRENT_DELTA
   ) {
     int ty = (int) (screenBottom - (temp - CURRENT_START) * CURRENT_MULTIPLIER);
-    Tft.drawFloat(temp * 1000, 0, screenRigth + 3, ty - 4,
+    Tft.drawFloat(temp, 2, screenRigth - 7, calcY(ty),
       FONT_SIZE, BATTERY_IT_COLOR
     );
   }
@@ -102,7 +113,7 @@ void drawGrid() {
     volt += VOLTAGE_DELTA
   ) {
     int ty = (int) (screenBottom - (volt - VOLTAGE_START) * VOLTAGE_MULTIPLIER);
-    Tft.drawFloat(volt, 1, 0, ty - 4,
+    Tft.drawFloat(volt, 1, 0, calcY(ty),
       FONT_SIZE, voltColor
     );
   }
@@ -111,8 +122,7 @@ void drawGrid() {
   /* весь экран - 6 мин */
   for (int time = 0; time <= 6; time++) {
     int tx = (int) (screenLeft + time * 48);
-    Tft.drawNumber(time,
-      time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6,
+    Tft.drawNumber(time, calcX(time, tx),
       screenBottom + 2, FONT_SIZE, colorTime
     );
   }
@@ -120,8 +130,7 @@ void drawGrid() {
   // весь экран - 1 час
   for (int time = 0; time <= 6; time++) {
     int tx = (int) (screenLeft + time * 48);
-    Tft.drawNumber(time * 10,
-      time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6,
+    Tft.drawNumber(time * 10, calcX(time, tx),
       screenBottom + 2, FONT_SIZE, colorTime
     );
   }
@@ -129,8 +138,7 @@ void drawGrid() {
   // весь экран - 8 часов
   for (int time = 0; time <= 8; time++) {
     int tx = (int) (screenLeft + time * 36);
-    Tft.drawNumber(time,
-      time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6,
+    Tft.drawNumber(time, calcX(time, tx),
       screenBottom + 2, FONT_SIZE, colorTime
     );
   }
@@ -138,8 +146,7 @@ void drawGrid() {
   // весь экран - 24 часа
   for (int time = 0; time <= 24; time += 3) {
     int tx = (int) (screenLeft + time * 12);
-    Tft.drawNumber(time,
-      time < 10 ? (time == 0 ? tx : tx - 2) : tx - 6,
+    Tft.drawNumber(time, calcX(time, tx),
       screenBottom + 2, FONT_SIZE, colorTime
     );
   }
@@ -152,12 +159,12 @@ void drawGrid() {
 void showTempMarks() {
   for (float val = VOLTAGE_START;
        val <= VOLTAGE_START + screenVSize / VOLTAGE_MULTIPLIER;
-       val += 0.2
+       val += 0.25
   ) {
     Tft.setPixel(
       curX,
       (int) (screenBottom - (val - VOLTAGE_START) * VOLTAGE_MULTIPLIER),
-      ((int) (val * 10) % 10 == 0) ? markHourColor : markMinColor
+      ((int) (val * 10) % 5 == 0) ? markHourColor : markMinColor
     );
   }
   Tft.setPixel(curX, screenBottom, markHourColor);
