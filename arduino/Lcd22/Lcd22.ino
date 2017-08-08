@@ -2,6 +2,8 @@
 #include <avr/pgmspace.h>
 #include <TFTv2.h>
 #include <SPI.h>
+#include <Wire.h>
+#include <DS3231.h>
 #include "Lcd22.h"
 
 #define MEASURIES_SIZE 6
