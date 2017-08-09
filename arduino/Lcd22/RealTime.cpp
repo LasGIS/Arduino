@@ -69,17 +69,17 @@ void printTime(long time) {
 }
 
 void beforePrintBigTime() {
-  int x = 261, y = CHAR_HEIGHT + 2;
+  int x = 259, y = CHAR_HEIGHT + 2;
   Tft.drawChar(':', x, y, 2, WHITE);
-  x += 33; y += 6;
-  Tft.drawChar(':', x, y, 1, WHITE);
+  x += 30;// y += 6;
+  Tft.drawChar(':', x, y, 2, WHITE);
 }
 
 /**
  * выводим время Крупно.
  */
 void printBigTime() {
-  int x = 240, y = CHAR_HEIGHT + 2;
+  int x = 238, y = CHAR_HEIGHT + 2;
   int sec  = Clock.getSecond();
   int min  = Clock.getMinute();
   int hour   = Clock.getHour(h12, PM);
@@ -88,9 +88,9 @@ void printBigTime() {
   x += 30;
   snprintf(comBuffer, sizeof(comBuffer), "%02d", min);
   drawFillString(comBuffer, x, y, 2, BLACK, colorRealTime);
-  x += 30; y += 6;
+  x += 30;// y += 6;
   snprintf(comBuffer, sizeof(comBuffer), "%02d", sec);
-  drawFillString(comBuffer, x, y, 1, BLACK, colorRealTime);
+  drawFillString(comBuffer, x, y, 2, BLACK, colorRealTime);
 }
 
 /**

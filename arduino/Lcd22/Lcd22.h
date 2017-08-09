@@ -31,10 +31,10 @@
 #define CURRENT_DELTA 0.05
 #define CURRENT_MULTIPLIER 800.0
 
-#define TIME_TYPE_6_MIN
+//#define TIME_TYPE_6_MIN
 //#define TIME_TYPE_60_MIN
 //#define TIME_TYPE_8_HOUR
-//#define TIME_TYPE_24_HOUR
+#define TIME_TYPE_24_HOUR
 
 #if defined (TIME_TYPE_6_MIN)
   /* весь экран - 6 мин */
