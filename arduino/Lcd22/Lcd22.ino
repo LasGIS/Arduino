@@ -11,6 +11,9 @@
 #define CHAR_WIDTH FONT_SPACE * FONT_SIZE
 #define CHAR_HEIGHT FONT_Y * FONT_SIZE
 
+DS3231 Clock;
+bool Century = false;
+bool h12, PM;
 LgMeasure::LgMeasure(const char* _description,
     uint8_t _pin, uint8_t _decimal,
     uint16_t _color,
@@ -57,17 +60,48 @@ int curNextX = curX + 1;
 char comBuffer[20];
 
 void setup() {
-    analogReference(INTERNAL);
-    Serial.begin(9600);
-    TFT_BL_ON;        // turn on the background light
-    Tft.TFTinit();    //init TFT library
-    drawFirst();
-    drawGrid();
+  analogReference(INTERNAL);
+  Wire.begin();
+  Serial.begin(9600);
+  TFT_BL_ON;        // turn on the background light
+  Tft.TFTinit();    //init TFT library
+  drawFirst();
+  drawGrid();
 }
 
 void loop() {
   measuring();
+  ReadDS3231();
   delay(500);
+}
+
+void ReadDS3231() {
+  int second,minute,hour,date,month,year,temperature;
+  second=Clock.getSecond();
+  minute=Clock.getMinute();
+  hour=Clock.getHour(h12, PM);
+  date=Clock.getDate();
+  month=Clock.getMonth(Century);
+  year=Clock.getYear();
+
+  temperature=Clock.getTemperature();
+
+  Serial.print("20");
+  Serial.print(year,DEC);
+  Serial.print('-');
+  Serial.print(month,DEC);
+  Serial.print('-');
+  Serial.print(date,DEC);
+  Serial.print(' ');
+  Serial.print(hour,DEC);
+  Serial.print(':');
+  Serial.print(minute,DEC);
+  Serial.print(':');
+  Serial.print(second,DEC);
+  Serial.print("; ");
+  Serial.print("Temperature=");
+  Serial.print(temperature);
+  Serial.print('\n');
 }
 
 /**
