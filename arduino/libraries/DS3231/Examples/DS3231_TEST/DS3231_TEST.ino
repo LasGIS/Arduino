@@ -64,7 +64,9 @@ void ReadDS3231()
   Serial.print(temperature); 
   Serial.print('\n');
 }
-void loop() {ReadDS3231();delay(1000);
+void loop() {
+  ReadDS3231();
+  delay(1000);
 	// send what's going on to the serial monitor.
 	// Start with the year
 /*	Serial.print("2");

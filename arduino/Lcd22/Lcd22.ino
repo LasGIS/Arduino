@@ -1,35 +1,24 @@
-#include <Arduino.h>
-#include <avr/pgmspace.h>
-#include <TFTv2.h>
-#include <SPI.h>
-#include <Wire.h>
-#include <DS3231.h>
 #include "Lcd22.h"
 
 #define MEASURIES_SIZE 6
-#define FONT_SIZE 1
-#define CHAR_WIDTH FONT_SPACE * FONT_SIZE
-#define CHAR_HEIGHT FONT_Y * FONT_SIZE
 
-DS3231 Clock;
-bool Century = false;
-bool h12, PM;
-LgMeasure::LgMeasure(const char* _description,
-    uint8_t _pin, uint8_t _decimal,
-    uint16_t _color,
-    float _factor,
-    MeasureType _typeOut,
-    bool _isGraph
+LgMeasure::LgMeasure(
+  const char* _description,
+  uint8_t _pin, uint8_t _decimal,
+  uint16_t _color,
+  float _factor,
+  MeasureType _typeOut,
+  bool _isGraph
 ) {
-    char* buffer = new char[strlen_P(_description) + 2];
-    strcpy_P(buffer, _description);
-    description = buffer;
-    pin = _pin;
-    decimal = _decimal;
-    color = _color;
-    factor = _factor;
-    typeOut = _typeOut;
-    isGraph = _isGraph;
+  char* buffer = new char[strlen_P(_description) + 2];
+  strcpy_P(buffer, _description);
+  description = buffer;
+  pin = _pin;
+  decimal = _decimal;
+  color = _color;
+  factor = _factor;
+  typeOut = _typeOut;
+  isGraph = _isGraph;
 }
 
 const char prgm_str00[] PROGMEM = "нап Зарядка = ";
@@ -67,41 +56,16 @@ void setup() {
   Tft.TFTinit();    //init TFT library
   drawFirst();
   drawGrid();
+  beforePrintBigTime();
 }
 
 void loop() {
   measuring();
-  ReadDS3231();
+  printBigTime();
+//  printRealTime();
+//  printRealDate();
+//  ReadDS3231();
   delay(500);
-}
-
-void ReadDS3231() {
-  int second,minute,hour,date,month,year,temperature;
-  second=Clock.getSecond();
-  minute=Clock.getMinute();
-  hour=Clock.getHour(h12, PM);
-  date=Clock.getDate();
-  month=Clock.getMonth(Century);
-  year=Clock.getYear();
-
-  temperature=Clock.getTemperature();
-
-  Serial.print("20");
-  Serial.print(year,DEC);
-  Serial.print('-');
-  Serial.print(month,DEC);
-  Serial.print('-');
-  Serial.print(date,DEC);
-  Serial.print(' ');
-  Serial.print(hour,DEC);
-  Serial.print(':');
-  Serial.print(minute,DEC);
-  Serial.print(':');
-  Serial.print(second,DEC);
-  Serial.print("; ");
-  Serial.print("Temperature=");
-  Serial.print(temperature);
-  Serial.print('\n');
 }
 
 /**
@@ -134,7 +98,9 @@ inline int calcX(int time, int tx) {
  * показываем решётку
  */
 void drawGrid() {
-  Tft.drawRectangle(screenLeft, screenTop, screenHSize, screenVSize, markHourColor);
+  Tft.drawRectangle(
+    screenLeft, screenTop, screenHSize, screenVSize, markHourColor
+  );
   for (float temp = CURRENT_START;
     temp <= CURRENT_START + screenVSize / CURRENT_MULTIPLIER;
     temp += CURRENT_DELTA
@@ -205,19 +171,6 @@ void showTempMarks() {
   }
   Tft.setPixel(curX, screenBottom, markHourColor);
   Tft.setPixel(curX, screenTop, markHourColor);
-}
-
-/**
- * выводим время и дату в формате.
- */
-void printTime(long time) {
-  unsigned long milTime = time / 1000;
-  int sec = milTime % 60;
-  int min = (milTime / 60) % 60;
-  int hour = milTime / 3600;
-  snprintf(comBuffer, sizeof(comBuffer), "%d:%02d:%02d", hour, min, sec);
-  Tft.fillRectangle(260, 0, 60, CHAR_HEIGHT, BLACK);
-  Tft.drawString(comBuffer, 260, 0, FONT_SIZE, colorTime);
 }
 
 /**

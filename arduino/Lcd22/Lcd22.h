@@ -2,10 +2,17 @@
 #define LCD22_h
 
 #include <Arduino.h>
-#include "TFTv2.h"
+#include <avr/pgmspace.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <TFTv2.h>
 
 #define screenVSize   200
 #define screenHSize   288
+
+#define FONT_SIZE 1
+#define CHAR_WIDTH FONT_SPACE * FONT_SIZE
+#define CHAR_HEIGHT FONT_Y * FONT_SIZE
 
 #define screenTop     29
 #define screenBottom  screenTop + screenVSize
@@ -24,9 +31,9 @@
 #define CURRENT_DELTA 0.05
 #define CURRENT_MULTIPLIER 800.0
 
-//#define TIME_TYPE_6_MIN
+#define TIME_TYPE_6_MIN
 //#define TIME_TYPE_60_MIN
-#define TIME_TYPE_8_HOUR
+//#define TIME_TYPE_8_HOUR
 //#define TIME_TYPE_24_HOUR
 
 #if defined (TIME_TYPE_6_MIN)
@@ -65,6 +72,7 @@
 
 #define voltColor        COLOR(32,32,255)
 #define colorTime        COLOR(255,0,255)
+#define colorRealTime    COLOR(180,180,255)
 #define markColor        COLOR(96,96,96)
 #define markHourColor    COLOR(144,144,144)
 #define markMinColor     COLOR(96,96,96)
@@ -95,5 +103,18 @@ public:
         bool _isGraph
     );
 };
+
+extern char comBuffer[20];
+//extern void ReadDS3231();
+extern void drawFillString(
+  char *string,
+  INT16U poX, INT16U poY, INT16U size,
+  INT16U bgColor, INT16U color
+);
+extern void printTime(long time);
+extern void beforePrintBigTime();
+extern void printBigTime();
+extern void printRealTime();
+extern void printRealDate();
 
 #endif

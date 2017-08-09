@@ -29,7 +29,7 @@
 #include <WProgram.h>
 #endif
 #include <avr/pgmspace.h>
-#include "RussFontANSI.c"
+#include <RussFontANSI.c>
 #include <SPI.h>
 
 //#define HAS_SERIAL
