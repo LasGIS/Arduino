@@ -58,7 +58,9 @@ SOURCES += \
     ../libraries/SD/src/utility/SdFile.cpp \
     ../libraries/SD/src/utility/SdVolume.cpp \
     ../libraries/SD/src/File.cpp \
-    ../libraries/SD/src/SD.cpp
+    ../libraries/SD/src/SD.cpp \
+    RealTime.cpp \
+    ../libraries/Adafruit_ADXL345-master/Adafruit_ADXL345_U.cpp
 
 HEADERS += \
     ../libraries/arduino-ds1302-master/DS1302.h \
@@ -88,7 +90,9 @@ HEADERS += \
     ../libraries/SD/src/utility/SdFatmainpage.h \
     ../libraries/SD/src/utility/SdFatUtil.h \
     ../libraries/SD/src/utility/SdInfo.h \
-    ../libraries/SD/src/SD.h
+    ../libraries/SD/src/SD.h \
+    ../libraries/Adafruit_ADXL345-master/Adafruit_ADXL345_U.h \
+    ../libraries/Adafruit_Sensor-master/Adafruit_Sensor.h
 
 #FORMS    += mainwindow.ui
 DISTFILES += \

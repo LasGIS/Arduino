@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <ADXL345.h>
 
-ADXL345 accel(ADXL345_STD);
+ADXL345 accel(ADXL345_ALT);
 
 void setup() {
   Serial.begin(9600);
