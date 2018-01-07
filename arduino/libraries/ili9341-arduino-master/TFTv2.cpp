@@ -379,7 +379,11 @@ void  TFT::drawHorizontalLine(
     sendData(color);
 }
 
-void TFT::drawLine(INT16U x0, INT16U y0, INT16U x1, INT16U y1, INT16U color) {
+void TFT::drawLine(
+  INT16U x0, INT16U y0,
+  INT16U x1, INT16U y1,
+  INT16U color
+) {
   int x = x1-x0;
   int y = y1-y0;
   int dx = abs(x), sx = x0<x1 ? 1 : -1;
@@ -400,7 +404,6 @@ void TFT::drawLine(INT16U x0, INT16U y0, INT16U x1, INT16U y1, INT16U color) {
       err += dx; y0 += sy;
     }
   }
-
 }
 
 void TFT::drawVerticalLine(
