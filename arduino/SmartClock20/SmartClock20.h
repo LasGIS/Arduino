@@ -4,10 +4,12 @@
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 #include <SPI.h>
-//#include <Wire.h>
+#include <Wire.h>
 #include <TFT_22_ILI9225.h>
 //#include <DS3231.h>
 //#include <ADXL345.h>
+
+//#define ADXL345_ENABLED
 
 #define TFT_RST 8
 #define TFT_RS  9
@@ -27,8 +29,11 @@ extern TFT_22_ILI9225 tft;
 extern char comBuffer[20];
 extern void printRealTime();
 extern void printRealDate();
+extern void drawFloat(uint16_t x, uint16_t y, double val, uint16_t color);
 
+#ifdef ADXL345_ENABLED
 extern void accelBegin();
 extern void accelUpdate();
+#endif
 
 #endif // SMARTCLOCK20_H

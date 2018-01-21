@@ -1,5 +1,6 @@
-#include <DS3231.h>
 #include "SmartClock20.h"
+#include <DS3231.h>
+//#include <Wire.h>
 
 DS3231 Clock;
 bool Century = false;

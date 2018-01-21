@@ -1,25 +1,9 @@
+#include "SmartClock20.h"
+#ifdef ADXL345_ENABLED
 #include <Wire.h>
 #include <ADXL345.h>
-#include "SmartClock20.h"
 
 ADXL345 accel(ADXL345_ALT);
-
-/**
- * @brief drawFloat
- * @param x
- * @param y
- * @param val
- * @param color
- */
-void drawFloat(uint16_t x, uint16_t y, double val, uint16_t color) {
-  char buf[10];
-  //buf[0] = val > 0 ? ' ' : '-';
-  dtostrf(val, 5, 2, buf);
-  int len = strlen(buf);
-  buf[len] = ' ';
-  buf[len + 1] = 0;
-  tft.drawText(x, y, buf, color);
-}
 
 /**
  * @brief drawBobber
@@ -64,8 +48,6 @@ void drawBobber(double X, double Y, double Z) {
  * начальный старт
  */
 void accelBegin() {
-
-  Wire.begin();
 
   byte deviceID = accel.readDeviceID();
   if (deviceID != 0) {
@@ -130,3 +112,4 @@ void accelUpdate() {
     return;
   }
 }
+#endif
