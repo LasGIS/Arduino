@@ -81,118 +81,118 @@ void TFT::TFTinit(void) {
     TFT_DC_HIGH;
     INT8U i=0;//, TFTDriver=0;
 
-	TFT_RST_ON;
-	delay(10);
-	TFT_RST_OFF;
+    TFT_RST_ON;
+    delay(10);
+    TFT_RST_OFF;
 
     for (i=0;i<3;i++) {
         /*TFTDriver = */readID();
     }
 
-	sendCMD(0xCB);  
-	WRITE_DATA(0x39); 
-	WRITE_DATA(0x2C); 
-	WRITE_DATA(0x00); 
-	WRITE_DATA(0x34); 
-	WRITE_DATA(0x02); 
+    sendCMD(0xCB);
+    WRITE_DATA(0x39);
+    WRITE_DATA(0x2C);
+    WRITE_DATA(0x00);
+    WRITE_DATA(0x34);
+    WRITE_DATA(0x02);
 
-	sendCMD(0xCF);  
-	WRITE_DATA(0x00); 
-	WRITE_DATA(0XC1); 
-	WRITE_DATA(0X30); 
+    sendCMD(0xCF);
+    WRITE_DATA(0x00);
+    WRITE_DATA(0XC1);
+    WRITE_DATA(0X30);
 
-	sendCMD(0xE8);  
-	WRITE_DATA(0x85); 
-	WRITE_DATA(0x00); 
-	WRITE_DATA(0x78); 
+    sendCMD(0xE8);
+    WRITE_DATA(0x85);
+    WRITE_DATA(0x00);
+    WRITE_DATA(0x78);
 
-	sendCMD(0xEA);  
-	WRITE_DATA(0x00); 
-	WRITE_DATA(0x00); 
+    sendCMD(0xEA);
+    WRITE_DATA(0x00);
+    WRITE_DATA(0x00);
 
-	sendCMD(0xED);  
-	WRITE_DATA(0x64); 
-	WRITE_DATA(0x03); 
-	WRITE_DATA(0X12); 
-	WRITE_DATA(0X81); 
+    sendCMD(0xED);
+    WRITE_DATA(0x64);
+    WRITE_DATA(0x03);
+    WRITE_DATA(0X12);
+    WRITE_DATA(0X81);
 
-	sendCMD(0xF7);  
-	WRITE_DATA(0x20); 
+    sendCMD(0xF7);
+    WRITE_DATA(0x20);
 
-	sendCMD(0xC0);    	//Power control 
-	WRITE_DATA(0x23);   	//VRH[5:0] 
+    sendCMD(0xC0);        //Power control
+    WRITE_DATA(0x23);     //VRH[5:0]
 
-	sendCMD(0xC1);    	//Power control 
-	WRITE_DATA(0x10);   	//SAP[2:0];BT[3:0] 
+    sendCMD(0xC1);        //Power control
+    WRITE_DATA(0x10);     //SAP[2:0];BT[3:0]
 
-	sendCMD(0xC5);    	//VCM control 
-	WRITE_DATA(0x3e);   	//Contrast
-	WRITE_DATA(0x28); 
+    sendCMD(0xC5);        //VCM control
+    WRITE_DATA(0x3e);     //Contrast
+    WRITE_DATA(0x28);
 
-	sendCMD(0xC7);    	//VCM control2 
-	WRITE_DATA(0x86);  	 //--
+    sendCMD(0xC7);        //VCM control2
+    WRITE_DATA(0x86);     //--
 
-	sendCMD(0x36);    	// Memory Access Control 
-	WRITE_DATA(0x48);  	//C8	   //48 68绔栧睆//28 E8 妯睆
+    sendCMD(0x36);        // Memory Access Control
+    WRITE_DATA(0x48);     //C8       //48 68绔栧睆//28 E8 妯睆
 
-	sendCMD(0x3A);    
-	WRITE_DATA(0x55); 
+    sendCMD(0x3A);
+    WRITE_DATA(0x55);
 
-	sendCMD(0xB1);    
-	WRITE_DATA(0x00);  
-	WRITE_DATA(0x18); 
+    sendCMD(0xB1);
+    WRITE_DATA(0x00);
+    WRITE_DATA(0x18);
 
-	sendCMD(0xB6);    	// Display Function Control 
-	WRITE_DATA(0x08); 
-	WRITE_DATA(0x82);
-	WRITE_DATA(0x27);  
+    sendCMD(0xB6);        // Display Function Control
+    WRITE_DATA(0x08);
+    WRITE_DATA(0x82);
+    WRITE_DATA(0x27);
  
-	sendCMD(0xF2);    	// 3Gamma Function Disable 
-	WRITE_DATA(0x00); 
+    sendCMD(0xF2);        // 3Gamma Function Disable
+    WRITE_DATA(0x00);
 
-	sendCMD(0x26);    	//Gamma curve selected 
-	WRITE_DATA(0x01); 
+    sendCMD(0x26);        //Gamma curve selected
+    WRITE_DATA(0x01);
 
-	sendCMD(0xE0);    	//Set Gamma 
-	WRITE_DATA(0x0F); 
-	WRITE_DATA(0x31); 
-	WRITE_DATA(0x2B); 
-	WRITE_DATA(0x0C); 
-	WRITE_DATA(0x0E); 
-	WRITE_DATA(0x08); 
-	WRITE_DATA(0x4E); 
-	WRITE_DATA(0xF1); 
-	WRITE_DATA(0x37); 
-	WRITE_DATA(0x07); 
-	WRITE_DATA(0x10); 
-	WRITE_DATA(0x03); 
-	WRITE_DATA(0x0E); 
-	WRITE_DATA(0x09); 
-	WRITE_DATA(0x00); 
+    sendCMD(0xE0);        //Set Gamma
+    WRITE_DATA(0x0F);
+    WRITE_DATA(0x31);
+    WRITE_DATA(0x2B);
+    WRITE_DATA(0x0C);
+    WRITE_DATA(0x0E);
+    WRITE_DATA(0x08);
+    WRITE_DATA(0x4E);
+    WRITE_DATA(0xF1);
+    WRITE_DATA(0x37);
+    WRITE_DATA(0x07);
+    WRITE_DATA(0x10);
+    WRITE_DATA(0x03);
+    WRITE_DATA(0x0E);
+    WRITE_DATA(0x09);
+    WRITE_DATA(0x00);
 
-	sendCMD(0XE1);    	//Set Gamma 
-	WRITE_DATA(0x00); 
-	WRITE_DATA(0x0E); 
-	WRITE_DATA(0x14); 
-	WRITE_DATA(0x03); 
-	WRITE_DATA(0x11); 
-	WRITE_DATA(0x07); 
-	WRITE_DATA(0x31); 
-	WRITE_DATA(0xC1); 
-	WRITE_DATA(0x48); 
-	WRITE_DATA(0x08); 
-	WRITE_DATA(0x0F); 
-	WRITE_DATA(0x0C); 
-	WRITE_DATA(0x31); 
-	WRITE_DATA(0x36); 
-	WRITE_DATA(0x0F); 
+    sendCMD(0XE1);        //Set Gamma
+    WRITE_DATA(0x00);
+    WRITE_DATA(0x0E);
+    WRITE_DATA(0x14);
+    WRITE_DATA(0x03);
+    WRITE_DATA(0x11);
+    WRITE_DATA(0x07);
+    WRITE_DATA(0x31);
+    WRITE_DATA(0xC1);
+    WRITE_DATA(0x48);
+    WRITE_DATA(0x08);
+    WRITE_DATA(0x0F);
+    WRITE_DATA(0x0C);
+    WRITE_DATA(0x31);
+    WRITE_DATA(0x36);
+    WRITE_DATA(0x0F);
 
-	sendCMD(0x11);    	//Exit Sleep 
-	delay(120); 
+    sendCMD(0x11);        //Exit Sleep
+    delay(120);
 
-	sendCMD(0x29);    //Display on 
-	sendCMD(0x2c);   
-	fillScreen();
+    sendCMD(0x29);        //Display on
+    sendCMD(0x2c);
+    fillScreen();
 }
 
 INT8U TFT::readID(void) {

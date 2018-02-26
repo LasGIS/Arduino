@@ -56,7 +56,7 @@
 
 
 /* RGB 24-bits color table definition (RGB888). */
-#define RGB888_RGB565(color) ((((color) >> 19) & 0x1f) << 11) | ((((color) >> 10) & 0x3f) << 5) | (((color) >> 3) & 0x1f)
+#define RGB888_RGB565(color) (((color) >> 8 & 0xf800) | ((color) >> 5 & 0x07e0) | ((color) >> 3 & 0x001f))
 
 #define COLOR_BLACK          RGB888_RGB565(0x000000u)
 #define COLOR_WHITE          RGB888_RGB565(0xFFFFFFu)
@@ -284,28 +284,28 @@ class TFT_22_ILI9225 {
 
   private:
 
-     void _spiwrite(uint8_t);
-     void _writecommand(uint8_t c);
-     void _writedata(uint8_t d);
+    void _spiwrite(uint8_t);
+    void _writecommand(uint8_t c);
+    void _writedata(uint8_t d);
 
-        void _swap(uint16_t &a, uint16_t &b);
-        void _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-        void _orientCoordinates(uint16_t &x1, uint16_t &y1);
-        void _writeRegister(uint16_t reg, uint16_t data);
-        void _writeData(uint8_t HI, uint8_t LO);
-        void _writeCommand(uint8_t HI, uint8_t LO);
+    void _swap(uint16_t &a, uint16_t &b);
+    void _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    void _orientCoordinates(uint16_t &x1, uint16_t &y1);
+    void _writeRegister(uint16_t reg, uint16_t data);
+    void _writeData(uint8_t HI, uint8_t LO);
+    void _writeCommand(uint8_t HI, uint8_t LO);
 
-        uint16_t _maxX, _maxY, _bgColor;
+    uint16_t _maxX, _maxY, _bgColor;
 
-        volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
-        // int8_t   _rst, _dc, _cs, _mosi, _sclk, _led,
-        uint8_t  _rst, _rs, _cs, _sdi, _clk, _led,
-                 _orientation;
-        uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+    volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
+    // int8_t   _rst, _dc, _cs, _mosi, _sclk, _led,
+    uint8_t  _rst, _rs, _cs, _sdi, _clk, _led,
+             _orientation;
+    uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
 
-        boolean  hwSPI, checkSPI;
+    boolean  hwSPI, checkSPI;
 
-        _currentFont cfont;
+    _currentFont cfont;
 
 };
 

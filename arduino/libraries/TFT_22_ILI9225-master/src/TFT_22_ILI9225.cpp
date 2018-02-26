@@ -427,9 +427,9 @@ void TFT_22_ILI9225::fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t
  * @param color
  */
 void TFT_22_ILI9225::drawLine(
-uint16_t x0, uint16_t y0,
-uint16_t x1, uint16_t y1,
-uint16_t color
+    uint16_t x0, uint16_t y0,
+    uint16_t x1, uint16_t y1,
+    uint16_t color
 ) {
   int x = x1 - x0;
   int y = y1 - y0;
@@ -455,7 +455,7 @@ uint16_t color
 
 void TFT_22_ILI9225::drawPixel(uint16_t x1, uint16_t y1, uint16_t color) {
 
-  if((x1 < 0) || (x1 >= _maxX) || (y1 < 0) || (y1 >= _maxY)) return;
+  if(x1 >= _maxX || y1 >= _maxY) return;
 
   _setWindow(x1, y1, x1+1, y1+1);
   _orientCoordinates(x1, y1);
@@ -636,7 +636,7 @@ void TFT_22_ILI9225::drawText(uint16_t x, uint16_t y, String s, uint16_t color) 
 uint16_t TFT_22_ILI9225::drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color) {
 
   uint8_t charData, charWidth;
-  uint8_t h, i, j, k;
+  uint8_t h, i, j;
   uint16_t charOffset;
 
   charOffset = (cfont.width * cfont.nbrows) + 1;  // bytes used by each character
