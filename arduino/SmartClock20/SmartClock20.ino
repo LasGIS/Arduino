@@ -8,13 +8,13 @@ TFT_22_ILI9225 tft(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
 char comBuffer[20];
 
 /**
- * @brief drawFloat
+ * @brief drawDouble
  * @param x
  * @param y
  * @param val
  * @param color
  */
-void drawFloat(uint16_t x, uint16_t y, double val, uint16_t color) {
+void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color) {
   char buf[10];
   //buf[0] = val > 0 ? ' ' : '-';
   dtostrf(val, 5, 2, buf);
@@ -24,26 +24,55 @@ void drawFloat(uint16_t x, uint16_t y, double val, uint16_t color) {
   tft.drawText(x, y, buf, color);
 }
 
+/**
+ * @brief setOrientation
+ * Поправляем ориентацию в зависимости от показаний гравитационного датчика
+ */
+GravVector setOrientation(GravVector vec) {
+  static uint8_t oldOrientation = 20;
+  uint8_t orientation = 0;
+  if (vec.Y > 0.577) {
+    orientation = 2;
+  } else if (vec.Y < -0.577) {
+    orientation = 0;
+  } else if (vec.X > 0.577) {
+    orientation = 1;
+  } else if (vec.X < -0.577) {
+    orientation = 3;
+  } else {
+    orientation = oldOrientation;
+  }
+  Serial.println(orientation);
+  if (orientation != oldOrientation) {
+    tft.clear();
+    tft.setOrientation(orientation);
+    tft.drawRectangle(BOX_X0, BOX_Y0, BOX_X1, BOX_Y1, COLOR_WHITE);
+  #ifdef ADXL345_ENABLED
+    tft.drawText(0, 16, "X=");
+    tft.drawText(58, 16, "Y=");
+    tft.drawText(116, 16, "Z=");
+  #endif
+    tft.drawText(0, 28, "Battery=");
+    tft.drawText(88, 28, "Charger=");
+    oldOrientation = orientation;
+  }
+}
+
+/**
+ * @brief setup
+ */
 void setup() {
   analogReference(INTERNAL);
   tft.begin();
   tft.setFont(Terminal6x8);
-  tft.clear();
-  tft.setOrientation(2);
-  tft.drawRectangle(BOX_X0, BOX_Y0, BOX_X1, BOX_Y1, COLOR_WHITE);
-#ifdef ADXL345_ENABLED
-  tft.drawText(0, 16, "X=");
-  tft.drawText(58, 16, "Y=");
-  tft.drawText(116, 16, "Z=");
-#endif
-  tft.drawText(0, 28, "Battery=");
-  tft.drawText(88, 28, "Charger=");
-
   //delay(300);
   Serial.begin(9600);
   Wire.begin();
 #ifdef ADXL345_ENABLED
   accelBegin();
+  setOrientation(accelReadVector());
+#else
+  setOrientation(GravVector());
 #endif
 }
 
@@ -52,32 +81,41 @@ void setup() {
  */
 void printVolts() {
   // 1 сборка
-  double vBattery = analogRead(A7) * 0.00664;
-  double vCharger = analogRead(A6) * 0.00664;
+//  double vBattery = analogRead(A7) * 0.00664;
+//  double vCharger = analogRead(A6) * 0.00664;
   // 2 сборка
-//  double vBattery = analogRead(A7) * 0.00661;
-//  double vCharger = analogRead(A6) * 0.00654;
+  double vBattery = analogRead(A7) * 0.00661;
+  double vCharger = analogRead(A6) * 0.00654;
   // 3 сборка
 //  double vBattery = analogRead(A7) * 0.00631;
 //  double vCharger = analogRead(A6) * 0.00630;
+#ifdef HAS_SERIAL
   Serial.print("vBattery = ");
   Serial.println(vBattery);
   Serial.print("vCharger = ");
   Serial.println(vCharger);
-  drawFloat(52, 28, vBattery, COLOR_BLUE);
-  drawFloat(140, 28, vCharger, COLOR_BLUEVIOLET);
+#endif
+  drawDouble(52, 28, vBattery, COLOR_BLUE);
+  drawDouble(140, 28, vCharger, COLOR_BLUEVIOLET);
 }
 
 void loop() {
-  //tft.fillRectangle(BOX_X0, 0, BOX_X1, BOX_Y0 - 1, COLOR_GRAY);
-  //tft.drawText(0, 0, "hello!");
-  printRealTime();
-  printRealDate();
-  printVolts();
+  static long last = 0L;
+  long time = millis();
 #ifdef ADXL345_ENABLED
-  accelUpdate();
+  GravVector vec = accelReadVector();
+  setOrientation(vec);
 #endif
-  delay(1000);
+  if (last != time / 1000) {
+    printRealTime();
+    printRealDate();
+    printVolts();
+    last = time / 1000;
+  }
+#ifdef ADXL345_ENABLED
+  accelUpdate(vec);
+#endif
+  delay(10);
 }
 
 

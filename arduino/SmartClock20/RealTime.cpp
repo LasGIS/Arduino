@@ -100,7 +100,9 @@ void printRealTime() {
   int min  = Clock.getMinute();
   int hour   = Clock.getHour(h12, PM);
   snprintf(comBuffer, sizeof(comBuffer), "%02d:%02d:%02d ", hour, min, sec);
+#ifdef HAS_SERIAL
   Serial.println(comBuffer);
+#endif
   tft.drawText(80, 4, comBuffer);
 }
 
@@ -112,7 +114,9 @@ void printRealDate() {
   int month  = Clock.getMonth(Century);
   int year   = Clock.getYear();
   snprintf(comBuffer, sizeof(comBuffer), "%02d.%02d.20%02d ", date, month, year);
+#ifdef HAS_SERIAL
   Serial.println(comBuffer);
+#endif
   tft.drawText(0, 4, comBuffer);
 }
 

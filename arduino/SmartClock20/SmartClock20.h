@@ -6,10 +6,10 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <TFT_22_ILI9225.h>
-//#include <DS3231.h>
-//#include <ADXL345.h>
 
-//#define ADXL345_ENABLED
+//#define HAS_SERIAL
+//#define HAS_SERIAL_DEBUG
+#define ADXL345_ENABLED
 
 #define TFT_RST 8
 #define TFT_RS  9
@@ -29,11 +29,30 @@ extern TFT_22_ILI9225 tft;
 extern char comBuffer[20];
 extern void printRealTime();
 extern void printRealDate();
-extern void drawFloat(uint16_t x, uint16_t y, double val, uint16_t color);
+extern void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color);
+
+class GravVector {
+public:
+  GravVector() {
+    X = 0.0;
+    Y = 0.0;
+    Z = 0.0;
+  }
+  GravVector(double _X, double _Y, double _Z) {
+    X = _X;
+    Y = _Y;
+    Z = _Z;
+  }
+  double X;
+  double Y;
+  double Z;
+};
+
 
 #ifdef ADXL345_ENABLED
 extern void accelBegin();
-extern void accelUpdate();
+extern GravVector accelReadVector();
+extern void accelUpdate(GravVector vec);
 #endif
 
 #endif // SMARTCLOCK20_H

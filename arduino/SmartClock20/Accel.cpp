@@ -12,19 +12,21 @@ ADXL345 accel(ADXL345_ALT);
  * @param Z
  * @param isReal
  */
-void drawBobber(double X, double Y, double Z, bool isReal) {
-  tft.fillCircle(
-    BOX_CENTER_X + X * 60,
-    BOX_CENTER_Y + Y * 60,
-    7 - Z * 5, isReal ? COLOR_CYAN : COLOR_BLACK
+void drawBobber(GravVector vec, bool isReal) {
+  tft.drawCircle(
+    BOX_CENTER_X + vec.X * 60,
+    BOX_CENTER_Y + vec.Y * 60,
+    7 - vec.Z * 3, isReal ? COLOR_CYAN : COLOR_BLACK
   );
-  tft.drawLine(
+/*
+   tft.drawLine(
     BOX_CENTER_X,
     BOX_CENTER_Y,
-    BOX_CENTER_X + X * 60,
-    BOX_CENTER_Y + Y * 60,
+    BOX_CENTER_X + vec.X * 60,
+    BOX_CENTER_Y + vec.Y * 60,
     isReal ? COLOR_RED : COLOR_BLACK
   );
+*/
 }
 
 /**
@@ -33,15 +35,13 @@ void drawBobber(double X, double Y, double Z, bool isReal) {
  * @param Y
  * @param Z
  */
-void drawBobber(double X, double Y, double Z) {
-  static double oldX = 0.0;
-  static double oldY = 0.0;
-  static double oldZ = 0.0;
-  drawBobber(oldX, oldY, oldZ, false);
-  drawBobber(X, Y, Z, true);
-  oldX = X;
-  oldY = Y;
-  oldZ = Z;
+void drawBobber(GravVector vec) {
+  static GravVector old;
+  drawBobber(old, false);
+  drawBobber(vec, true);
+  old.X = vec.X;
+  old.Y = vec.Y;
+  old.Z = vec.Z;
 }
 
 /**
@@ -50,6 +50,7 @@ void drawBobber(double X, double Y, double Z) {
 void accelBegin() {
 
   byte deviceID = accel.readDeviceID();
+#ifdef HAS_SERIAL
   if (deviceID != 0) {
     Serial.print("0x");
     Serial.print(deviceID, HEX);
@@ -58,6 +59,7 @@ void accelBegin() {
     Serial.println("read device id: failed");
     return;
   }
+#endif
 
   // Data Rate
   // - ADXL345_RATE_3200HZ: 3200 Hz
@@ -70,7 +72,9 @@ void accelBegin() {
   // - ADXL345_RATE_25HZ:   25 Hz
   // - ...
   if (!accel.writeRate(ADXL345_RATE_200HZ)) {
+#ifdef HAS_SERIAL
     Serial.println("write rate: failed");
+#endif
     return;
   }
 
@@ -80,36 +84,49 @@ void accelBegin() {
   // - ADXL345_RANGE_8G: +-8 g
   // - ADXL345_RANGE_16G: +-16 g
   if (!accel.writeRange(ADXL345_RANGE_16G)) {
+#ifdef HAS_SERIAL
     Serial.println("write range: failed");
+#endif
     return;
   }
 
   if (!accel.start()) {
+#ifdef HAS_SERIAL
     Serial.println("start: failed");
+#endif
+  }
+}
+
+/**
+ * @brief accelReadVector
+ * @return
+ */
+GravVector accelReadVector() {
+  if (accel.update()) {
+    return GravVector(-accel.getX(), accel.getY(), accel.getZ());
+  } else {
+#ifdef HAS_SERIAL
+    Serial.println("update failed");
+#endif
+    return GravVector();
   }
 }
 
 /**
  * @brief accelUpdate
  */
-void accelUpdate() {
-  if (accel.update()) {
-    double X = accel.getX();
-    double Y = accel.getY();
-    double Z = accel.getZ();
-    Serial.print(X);
+void accelUpdate(GravVector vec) {
+#ifdef HAS_SERIAL
+    Serial.print(vec.X);
     Serial.print(",");
-    Serial.print(Y);
+    Serial.print(vec.Y);
     Serial.print(",");
-    Serial.print(Z);
+    Serial.print(vec.Z);
     Serial.println("");
-    drawFloat(12, 16, X, COLOR_BLUE);
-    drawFloat(70, 16, Y, COLOR_GREEN);
-    drawFloat(128, 16, Z, COLOR_RED);
-    drawBobber(-X, Y, Z);
-  } else {
-    Serial.println("update failed");
-    return;
-  }
+#endif
+    drawDouble(12, 16, -vec.X, COLOR_BLUE);
+    drawDouble(70, 16, vec.Y, COLOR_GREEN);
+    drawDouble(128, 16, vec.Z, COLOR_RED);
+    drawBobber(vec);
 }
 #endif
