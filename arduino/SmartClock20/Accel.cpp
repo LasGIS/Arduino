@@ -14,19 +14,17 @@ ADXL345 accel(ADXL345_ALT);
  */
 void drawBobber(GravVector vec, bool isReal) {
   tft.drawCircle(
-    BOX_CENTER_X + vec.X * 60,
-    BOX_CENTER_Y + vec.Y * 60,
+    boxCenterX + vec.X * 60,
+    boxCenterY + vec.Y * 60,
     7 - vec.Z * 3, isReal ? COLOR_CYAN : COLOR_BLACK
   );
-/*
    tft.drawLine(
-    BOX_CENTER_X,
-    BOX_CENTER_Y,
-    BOX_CENTER_X + vec.X * 60,
-    BOX_CENTER_Y + vec.Y * 60,
+    boxCenterX,
+    boxCenterY,
+    boxCenterX + vec.X * 60,
+    boxCenterY + vec.Y * 60,
     isReal ? COLOR_RED : COLOR_BLACK
   );
-*/
 }
 
 /**
@@ -57,6 +55,10 @@ void accelBegin() {
     Serial.println("");
   } else {
     Serial.println("read device id: failed");
+    return;
+  }
+#else
+  if (deviceID == 0) {
     return;
   }
 #endif

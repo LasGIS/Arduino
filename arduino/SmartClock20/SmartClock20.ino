@@ -6,6 +6,8 @@ TFT_22_ILI9225 tft(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
 //TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_SDI, TFT_CLK, TFT_LED);
 
 char comBuffer[20];
+uint16_t boxCenterX;
+uint16_t boxCenterY;
 
 /**
  * @brief drawDouble
@@ -29,24 +31,46 @@ void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color) {
  * Поправляем ориентацию в зависимости от показаний гравитационного датчика
  */
 GravVector setOrientation(GravVector vec) {
-  static uint8_t oldOrientation = 20;
+  static uint8_t oldOrientation = 2;
   uint8_t orientation = 0;
-  if (vec.Y > 0.577) {
+  uint16_t X0, X1, Y0, Y1;
+  if (vec.Y > GRAVI_FACTOR) {
     orientation = 2;
-  } else if (vec.Y < -0.577) {
+  } else if (vec.Y < -GRAVI_FACTOR) {
     orientation = 0;
-  } else if (vec.X > 0.577) {
+  } else if (vec.X > GRAVI_FACTOR) {
     orientation = 1;
-  } else if (vec.X < -0.577) {
+  } else if (vec.X < -GRAVI_FACTOR) {
     orientation = 3;
   } else {
     orientation = oldOrientation;
   }
   Serial.println(orientation);
+  switch (orientation) {
+  default:
+  case 2:
+  case 0:
+    X0 = BOXV_X0;
+    X1 = BOXV_X1;
+    Y0 = BOXV_Y0;
+    Y1 = BOXV_Y1;
+    boxCenterX = BOXV_CENTER_X;
+    boxCenterY = BOXV_CENTER_Y;
+    break;
+  case 1:
+  case 3:
+    X0 = BOXH_X0;
+    X1 = BOXH_X1;
+    Y0 = BOXH_Y0;
+    Y1 = BOXH_Y1;
+    boxCenterX = BOXH_CENTER_X;
+    boxCenterY = BOXH_CENTER_Y;
+    break;
+  }
   if (orientation != oldOrientation) {
     tft.clear();
     tft.setOrientation(orientation);
-    tft.drawRectangle(BOX_X0, BOX_Y0, BOX_X1, BOX_Y1, COLOR_WHITE);
+    tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
   #ifdef ADXL345_ENABLED
     tft.drawText(0, 16, "X=");
     tft.drawText(58, 16, "Y=");
@@ -55,6 +79,19 @@ GravVector setOrientation(GravVector vec) {
     tft.drawText(0, 28, "Battery=");
     tft.drawText(88, 28, "Charger=");
     oldOrientation = orientation;
+  }
+
+  switch (orientation) {
+  case 2:
+    return GravVector(vec.X, vec.Y, vec.Z);
+  case 0:
+    return GravVector(-vec.X, -vec.Y, vec.Z);
+  case 1:
+    return GravVector(-vec.Y, vec.X, vec.Z);
+  case 3:
+    return GravVector(vec.Y, -vec.X, vec.Z);
+  default:
+    return vec;
   }
 }
 
@@ -103,8 +140,7 @@ void loop() {
   static long last = 0L;
   long time = millis();
 #ifdef ADXL345_ENABLED
-  GravVector vec = accelReadVector();
-  setOrientation(vec);
+  GravVector vec = setOrientation(accelReadVector());
 #endif
   if (last != time / 1000) {
     printRealTime();

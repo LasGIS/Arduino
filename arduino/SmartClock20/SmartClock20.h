@@ -18,15 +18,25 @@
 #define TFT_CLK 13  // SCK
 #define TFT_LED 3   // 0 if wired to +5V directly
 
-#define BOX_X0 0
-#define BOX_X1 175
-#define BOX_Y0 44
-#define BOX_Y1 219
-#define BOX_CENTER_X 87
-#define BOX_CENTER_Y 131
+#define GRAVI_FACTOR 0.577
+#define BOXV_X0 0
+#define BOXV_X1 175
+#define BOXV_Y0 44
+#define BOXV_Y1 219
+#define BOXH_X0 0
+#define BOXH_X1 219
+#define BOXH_Y0 44
+#define BOXH_Y1 175
+#define BOXV_CENTER_X 87
+#define BOXV_CENTER_Y 109
+#define BOXH_CENTER_X 109
+#define BOXH_CENTER_Y 87
 
 extern TFT_22_ILI9225 tft;
 extern char comBuffer[20];
+extern uint16_t boxCenterX;
+extern uint16_t boxCenterY;
+
 extern void printRealTime();
 extern void printRealDate();
 extern void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color);
