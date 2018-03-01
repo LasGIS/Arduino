@@ -31,8 +31,8 @@ void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color) {
  * Поправляем ориентацию в зависимости от показаний гравитационного датчика
  */
 GravVector setOrientation(GravVector vec) {
-  static uint8_t oldOrientation = 2;
-  uint8_t orientation = 0;
+  static uint8_t oldOrientation = -2;
+  static uint8_t orientation = 2;
   uint16_t X0, X1, Y0, Y1;
   if (vec.Y > GRAVI_FACTOR) {
     orientation = 2;
@@ -42,8 +42,6 @@ GravVector setOrientation(GravVector vec) {
     orientation = 1;
   } else if (vec.X < -GRAVI_FACTOR) {
     orientation = 3;
-  } else {
-    orientation = oldOrientation;
   }
   Serial.println(orientation);
   switch (orientation) {

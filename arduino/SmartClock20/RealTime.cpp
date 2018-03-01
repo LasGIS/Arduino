@@ -103,6 +103,9 @@ void printRealTime() {
 #ifdef HAS_SERIAL
   Serial.println(comBuffer);
 #endif
+  tft.setFont(Terminal12x16);
+  tft.drawText(50, 50, comBuffer);
+  tft.setFont(Terminal6x8);
   tft.drawText(80, 4, comBuffer);
 }
 
