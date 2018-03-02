@@ -126,9 +126,9 @@ void accelUpdate(GravVector vec) {
     Serial.print(vec.Z);
     Serial.println("");
 #endif
-    drawDouble(12, 16, -vec.X, COLOR_BLUE);
-    drawDouble(70, 16, vec.Y, COLOR_GREEN);
-    drawDouble(128, 16, vec.Z, COLOR_RED);
+    drawDouble(12, 8, vec.X, COLOR_BLUE);
+    drawDouble(76, 8, vec.Y, COLOR_GREEN);
+    drawDouble(140, 8, vec.Z, COLOR_RED);
     drawBobber(vec);
 }
 #endif

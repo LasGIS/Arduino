@@ -6,6 +6,8 @@ TFT_22_ILI9225 tft(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
 //TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_SDI, TFT_CLK, TFT_LED);
 
 char comBuffer[20];
+uint16_t clockX;
+uint16_t clockY;
 uint16_t boxCenterX;
 uint16_t boxCenterY;
 
@@ -34,6 +36,7 @@ GravVector setOrientation(GravVector vec) {
   static uint8_t oldOrientation = -2;
   static uint8_t orientation = 2;
   uint16_t X0, X1, Y0, Y1;
+  uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
   if (vec.Y > GRAVI_FACTOR) {
     orientation = 2;
   } else if (vec.Y < -GRAVI_FACTOR) {
@@ -52,6 +55,12 @@ GravVector setOrientation(GravVector vec) {
     X1 = BOXV_X1;
     Y0 = BOXV_Y0;
     Y1 = BOXV_Y1;
+    clockX = CLOCKV_X;
+    clockY = CLOCKV_Y;
+    ClockX0 = BOXCLOCKV_X0;
+    ClockX1 = BOXCLOCKV_X1;
+    ClockY0 = BOXCLOCKV_Y0;
+    ClockY1 = BOXCLOCKV_Y1;
     boxCenterX = BOXV_CENTER_X;
     boxCenterY = BOXV_CENTER_Y;
     break;
@@ -61,6 +70,12 @@ GravVector setOrientation(GravVector vec) {
     X1 = BOXH_X1;
     Y0 = BOXH_Y0;
     Y1 = BOXH_Y1;
+    clockX = CLOCKH_X;
+    clockY = CLOCKH_Y;
+    ClockX0 = BOXCLOCKH_X0;
+    ClockX1 = BOXCLOCKH_X1;
+    ClockY0 = BOXCLOCKH_Y0;
+    ClockY1 = BOXCLOCKH_Y1;
     boxCenterX = BOXH_CENTER_X;
     boxCenterY = BOXH_CENTER_Y;
     break;
@@ -69,13 +84,14 @@ GravVector setOrientation(GravVector vec) {
     tft.clear();
     tft.setOrientation(orientation);
     tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
+    tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
   #ifdef ADXL345_ENABLED
-    tft.drawText(0, 16, "X=");
-    tft.drawText(58, 16, "Y=");
-    tft.drawText(116, 16, "Z=");
+    tft.drawText(0, 8, "X=", COLOR_GRAY);
+    tft.drawText(64, 8, "Y=", COLOR_GRAY);
+    tft.drawText(128, 8, "Z=", COLOR_GRAY);
   #endif
-    tft.drawText(0, 28, "Battery=");
-    tft.drawText(88, 28, "Charger=");
+    tft.drawText(0, 16, "Battery=", COLOR_GRAY);
+    tft.drawText(88, 16, "Charger=", COLOR_GRAY);
     oldOrientation = orientation;
   }
 
@@ -130,8 +146,8 @@ void printVolts() {
   Serial.print("vCharger = ");
   Serial.println(vCharger);
 #endif
-  drawDouble(52, 28, vBattery, COLOR_BLUE);
-  drawDouble(140, 28, vCharger, COLOR_BLUEVIOLET);
+  drawDouble(52, 16, vBattery, COLOR_BLUE);
+  drawDouble(140, 16, vCharger, COLOR_BLUEVIOLET);
 }
 
 void loop() {

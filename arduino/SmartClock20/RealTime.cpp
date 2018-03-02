@@ -104,9 +104,10 @@ void printRealTime() {
   Serial.println(comBuffer);
 #endif
   tft.setFont(Terminal12x16);
-  tft.drawText(50, 50, comBuffer);
+  tft.drawText(clockX, clockY, comBuffer, COLOR_TOMATO);
+//  tft.drawText(clockX, clockY, "99:99:00", COLOR_TOMATO);
   tft.setFont(Terminal6x8);
-  tft.drawText(80, 4, comBuffer);
+  tft.drawText(80, 0, comBuffer, COLOR_WHITE);
 }
 
 /**
@@ -120,6 +121,6 @@ void printRealDate() {
 #ifdef HAS_SERIAL
   Serial.println(comBuffer);
 #endif
-  tft.drawText(0, 4, comBuffer);
+  tft.drawText(0, 0, comBuffer, COLOR_WHITE);
 }
 
