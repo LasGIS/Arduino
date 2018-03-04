@@ -5,7 +5,12 @@ TFT_22_ILI9225 tft(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
 // Use software SPI (slower)
 //TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_SDI, TFT_CLK, TFT_LED);
 
+// указываем пин для ИК датчика
+IrControl irControl(2);
+
 char comBuffer[20];
+uint16_t X0, X1, Y0, Y1;
+uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
 uint16_t clockX;
 uint16_t clockY;
 uint16_t boxCenterX;
@@ -19,13 +24,12 @@ uint16_t boxCenterY;
  * @param color
  */
 void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color) {
-  char buf[10];
-  //buf[0] = val > 0 ? ' ' : '-';
-  dtostrf(val, 5, 2, buf);
-  int len = strlen(buf);
-  buf[len] = ' ';
-  buf[len + 1] = 0;
-  tft.drawText(x, y, buf, color);
+  //comBuffer[0] = val > 0 ? ' ' : '-';
+  dtostrf(val, 5, 2, comBuffer);
+  int len = strlen(comBuffer);
+  comBuffer[len] = ' ';
+  comBuffer[len + 1] = 0;
+  tft.drawText(x, y, comBuffer, color);
 }
 
 /**
@@ -35,8 +39,6 @@ void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color) {
 GravVector setOrientation(GravVector vec) {
   static uint8_t oldOrientation = -2;
   static uint8_t orientation = 2;
-  uint16_t X0, X1, Y0, Y1;
-  uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
   if (vec.Y > GRAVI_FACTOR) {
     orientation = 2;
   } else if (vec.Y < -GRAVI_FACTOR) {
@@ -128,7 +130,7 @@ void setup() {
 }
 
 /**
- * выводим реальное время.
+ * выводим батарейки.
  */
 void printVolts() {
   // 1 сборка
@@ -152,11 +154,24 @@ void printVolts() {
 
 void loop() {
   static long last = 0L;
-  long time = millis();
+  if (irControl.hasCode()) {
+    long code = irControl.getCode();
+//    IrControlKey* irControlKey = irControl.toControlKey(code);
+//    char key = irControlKey->key;
+    char key = irControl.toKey(code);
+#ifdef HAS_SERIAL_DEBUG
+    Serial.print("IR key = ");
+    Serial.print(key);
+    Serial.print("; code = ");
+    Serial.println(code, HEX);
+#endif
+  }
 #ifdef ADXL345_ENABLED
   GravVector vec = setOrientation(accelReadVector());
 #endif
+  long time = millis();
   if (last != time / 1000) {
+    drawDouble(80, 0, time/1000.0, COLOR_BLUE);
     printRealTime();
     printRealDate();
     printVolts();

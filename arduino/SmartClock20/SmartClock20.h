@@ -6,9 +6,10 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <TFT_22_ILI9225.h>
+#include <IrControl.h>
 
 //#define HAS_SERIAL
-//#define HAS_SERIAL_DEBUG
+#define HAS_SERIAL_DEBUG
 #define ADXL345_ENABLED
 
 #define TFT_RST 8
@@ -29,19 +30,19 @@
 #define BOXH_Y0 25
 #define BOXH_Y1 175
 
-#define CLOCKV_X 42
-#define CLOCKV_Y 54
-#define BOXCLOCKV_X0 34
-#define BOXCLOCKV_X1 142
-#define BOXCLOCKV_Y0 50
-#define BOXCLOCKV_Y1 71
+#define BOXCLOCKV_X0 26
+#define BOXCLOCKV_X1 150
+#define CLOCKV_X 30
+#define BOXCLOCKV_Y0 25
+#define BOXCLOCKV_Y1 53
+#define CLOCKV_Y 29
 
-#define CLOCKH_X 64
-#define CLOCKH_Y 54
-#define BOXCLOCKH_X0 56
-#define BOXCLOCKH_X1 164
-#define BOXCLOCKH_Y0 50
-#define BOXCLOCKH_Y1 71
+#define BOXCLOCKH_X0 48
+#define BOXCLOCKH_X1 172
+#define CLOCKH_X 52
+#define BOXCLOCKH_Y0 25
+#define BOXCLOCKH_Y1 53
+#define CLOCKH_Y 29
 
 #define BOXV_CENTER_X 87
 #define BOXV_CENTER_Y 109
@@ -50,6 +51,8 @@
 
 extern TFT_22_ILI9225 tft;
 extern char comBuffer[20];
+extern uint16_t X0, X1, Y0, Y1;
+extern uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
 extern uint16_t clockX;
 extern uint16_t clockY;
 extern uint16_t boxCenterX;

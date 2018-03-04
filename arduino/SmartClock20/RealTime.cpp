@@ -98,16 +98,17 @@ void printBigTime() {
 void printRealTime() {
   int sec  = Clock.getSecond();
   int min  = Clock.getMinute();
-  int hour   = Clock.getHour(h12, PM);
-  snprintf(comBuffer, sizeof(comBuffer), "%02d:%02d:%02d ", hour, min, sec);
+  int hour = Clock.getHour(h12, PM);
+  snprintf(comBuffer, sizeof(comBuffer), "%02d:%02d:%02d", hour, min, sec);
 #ifdef HAS_SERIAL
   Serial.println(comBuffer);
 #endif
-  tft.setFont(Terminal12x16);
-  tft.drawText(clockX, clockY, comBuffer, COLOR_TOMATO);
+  tft.setFont(Trebuchet_MS16x21);
+  uint16_t lastX = tft.drawText(clockX, clockY, comBuffer, COLOR_TOMATO);
 //  tft.drawText(clockX, clockY, "99:99:00", COLOR_TOMATO);
+  tft.fillRectangle(lastX, clockY, ClockX1 - 1, clockY + 21, COLOR_BLACK);
   tft.setFont(Terminal6x8);
-  tft.drawText(80, 0, comBuffer, COLOR_WHITE);
+//  tft.drawText(80, 0, comBuffer, COLOR_WHITE);
 }
 
 /**

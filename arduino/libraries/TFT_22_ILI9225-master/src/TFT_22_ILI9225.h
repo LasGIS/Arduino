@@ -101,8 +101,8 @@
 #define readFontByte(x) pgm_read_byte(&cfont.font[x])  
 
 extern uint8_t Terminal6x8[];
-extern uint8_t Terminal11x16[];
-extern uint8_t Terminal12x16[];
+//extern uint8_t Terminal11x16[];
+//extern uint8_t Terminal12x16[];
 extern uint8_t Trebuchet_MS16x21[];
 
 struct _currentFont
@@ -120,59 +120,59 @@ class TFT_22_ILI9225 {
 
   public:
 
-        TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t SDI, uint8_t CLK, uint8_t LED);
-        TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t LED);
+    TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t SDI, uint8_t CLK, uint8_t LED);
+    TFT_22_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t LED);
 
-        /// Initialization
-        void begin(void);
+    /// Initialization
+    void begin(void);
 
-        /// Clear the screen
-        void clear(void);
+    /// Clear the screen
+    void clear(void);
 
-        /// Invert screen
-        /// @param  flag true to invert, false for normal screen
-        void invert(boolean flag);
+    /// Invert screen
+    /// @param  flag true to invert, false for normal screen
+    void invert(boolean flag);
 
-        /// Switch backlight on or off
-        /// @param  flag true=on, false=off
-        void setBacklight(boolean flag);
+    /// Switch backlight on or off
+    /// @param  flag true=on, false=off
+    void setBacklight(boolean flag);
 
-        /// Switch display on or off
-        /// @param  flag true=on, false=off
-        void setDisplay(boolean flag);
+    /// Switch display on or off
+    /// @param  flag true=on, false=off
+    void setDisplay(boolean flag);
 
-        /// Set orientation
-        /// @param  orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
-        void setOrientation(uint8_t orientation);
+    /// Set orientation
+    /// @param  orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
+    void setOrientation(uint8_t orientation);
 
-        /// Get orientation
-        /// @return  orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
-        uint8_t getOrientation(void);
+    /// Get orientation
+    /// @return  orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
+    uint8_t getOrientation(void);
 
-        /// Font size, x-axis
-        /// @return  horizontal size of current font, in pixels
-        // uint8_t fontX(void);
+    /// Font size, x-axis
+    /// @return  horizontal size of current font, in pixels
+    // uint8_t fontX(void);
 
-        /// Font size, y-axis
-        /// @return  vertical size of current font, in pixels
-        // uint8_t fontY(void);
+    /// Font size, y-axis
+    /// @return  vertical size of current font, in pixels
+    // uint8_t fontY(void);
 
-        /// Screen size, x-axis
-        /// @return  horizontal size of the screen, in pixels
-        /// @note  240 means 240 pixels and thus 0..239 coordinates (decimal)
-        uint16_t maxX(void);
+    /// Screen size, x-axis
+    /// @return  horizontal size of the screen, in pixels
+    /// @note  240 means 240 pixels and thus 0..239 coordinates (decimal)
+    uint16_t maxX(void);
 
-        /// Screen size, y-axis
-        /// @return  vertical size of the screen, in pixels
-        /// @note  220 means 220 pixels and thus 0..219 coordinates (decimal)
-        uint16_t maxY(void);
+    /// Screen size, y-axis
+    /// @return  vertical size of the screen, in pixels
+    /// @note  220 means 220 pixels and thus 0..219 coordinates (decimal)
+    uint16_t maxY(void);
 
-        /// Draw circle
-        /// @param x0 center, point coordinate, x-axis
-        /// @param y0 center, point coordinate, y-axis
-        /// @param radius radius
-        /// @param color 16-bit color
-        void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color);
+    /// Draw circle
+    /// @param x0 center, point coordinate, x-axis
+    /// @param y0 center, point coordinate, y-axis
+    /// @param radius radius
+    /// @param color 16-bit color
+    void drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t color);
 
 		/// Draw solid circle
 		/// @param  x0 center, point coordinate, x-axis
@@ -220,67 +220,67 @@ class TFT_22_ILI9225 {
 		/// @param  y point coordinate, y-axis
 		/// @param  s text string
 		/// @param  color 16-bit color, default=white
-        void drawText(uint16_t x, uint16_t y, String  s, uint16_t color = COLOR_WHITE);
+    uint16_t drawText(uint16_t x, uint16_t y, String  s, uint16_t color = COLOR_WHITE);
 
-        /// Calculate 16-bit color from 8-bit Red-Green-Blue components
-        /// @param  red red component, 0x00..0xff
-        /// @param  green green component, 0x00..0xff
-        /// @param  blue blue component, 0x00..0xff
-        /// @return  16-bit color
-        uint16_t setColor(uint8_t red, uint8_t green, uint8_t blue);
+    /// Calculate 16-bit color from 8-bit Red-Green-Blue components
+    /// @param  red red component, 0x00..0xff
+    /// @param  green green component, 0x00..0xff
+    /// @param  blue blue component, 0x00..0xff
+    /// @return  16-bit color
+    uint16_t setColor(uint8_t red, uint8_t green, uint8_t blue);
 
-        /// Calculate 8-bit Red-Green-Blue components from 16-bit color
-        /// @param  rgb 16-bit color
-        /// @param  red red component, 0x00..0xff
-        /// @param  green green component, 0x00..0xff
-        /// @param  blue blue component, 0x00..0xff
-        void splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue);
+    /// Calculate 8-bit Red-Green-Blue components from 16-bit color
+    /// @param  rgb 16-bit color
+    /// @param  red red component, 0x00..0xff
+    /// @param  green green component, 0x00..0xff
+    /// @param  blue blue component, 0x00..0xff
+    void splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue);
 
-        /// Draw triangle, triangle coordinates
-        /// @param  x1 corner 1 coordinate, x-axis
-        /// @param  y1 corner 1 coordinate, y-axis
-        /// @param  x2 corner 2 coordinate, x-axis
-        /// @param  y2 corner 2 coordinate, y-axis
-        /// @param  x3 corner 3 coordinate, x-axis
-        /// @param  y3 corner 3 coordinate, y-axis
-        /// @param  color 16-bit color
-        void drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
+    /// Draw triangle, triangle coordinates
+    /// @param  x1 corner 1 coordinate, x-axis
+    /// @param  y1 corner 1 coordinate, y-axis
+    /// @param  x2 corner 2 coordinate, x-axis
+    /// @param  y2 corner 2 coordinate, y-axis
+    /// @param  x3 corner 3 coordinate, x-axis
+    /// @param  y3 corner 3 coordinate, y-axis
+    /// @param  color 16-bit color
+    void drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
 
-        /// Draw solid triangle, triangle coordinates
-        /// @param  x1 corner 1 coordinate, x-axis
-        /// @param  y1 corner 1 coordinate, y-axis
-        /// @param  x2 corner 2 coordinate, x-axis
-        /// @param  y2 corner 2 coordinate, y-axis
-        /// @param  x3 corner 3 coordinate, x-axis
-        /// @param  y3 corner 3 coordinate, y-axis
-        /// @param  color 16-bit color
-        void fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
+    /// Draw solid triangle, triangle coordinates
+    /// @param  x1 corner 1 coordinate, x-axis
+    /// @param  y1 corner 1 coordinate, y-axis
+    /// @param  x2 corner 2 coordinate, x-axis
+    /// @param  y2 corner 2 coordinate, y-axis
+    /// @param  x3 corner 3 coordinate, x-axis
+    /// @param  y3 corner 3 coordinate, y-axis
+    /// @param  color 16-bit color
+    void fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
 
-        /// Set current font
-        /// @param  font Font name
-        void setFont(uint8_t* font);
+    /// Set current font
+    /// @param  font Font name
+    void setFont(uint8_t* font);
 
-        /// Draw single character (pixel coordinates)
-        /// @param  x point coordinate, x-axis
-        /// @param  y point coordinate, y-axis
-        /// @param  ch ASCII character
-        /// @param  color 16-bit color, default=white
-        uint16_t drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color = COLOR_WHITE);
+    /// Draw single character (pixel coordinates)
+    /// @param  x point coordinate, x-axis
+    /// @param  y point coordinate, y-axis
+    /// @param  ch ASCII character
+    /// @param  color 16-bit color, default=white
+    uint16_t drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color = COLOR_WHITE);
 
-        /// Draw bitmap
-        /// @param  x point coordinate, x-axis
-        /// @param  y point coordinate, y-axis
-        /// @param  bitmap
-        /// @param  w width
-        /// @param  h height
-        /// @param  color 16-bit color, default=white
-        /// @param  bg 16-bit color, background
-        void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
-        void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
-        void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
-        void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
+    /// Draw bitmap
+    /// @param  x point coordinate, x-axis
+    /// @param  y point coordinate, y-axis
+    /// @param  bitmap
+    /// @param  w width
+    /// @param  h height
+    /// @param  color 16-bit color, default=white
+    /// @param  bg 16-bit color, background
+    void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
+    void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
+    void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
+    void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
 
-        void drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
+    void drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
 
   private:
 
