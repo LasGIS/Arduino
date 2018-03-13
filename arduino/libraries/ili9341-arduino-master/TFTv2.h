@@ -148,8 +148,8 @@ public:
       int StartCol, int StartPage, int EndCol, int EndPage
     );
     void setPixel(INT16U poX, INT16U poY, INT16U color);
-    void WRITE_Package(INT16U *data,INT8U howmany);
-    INT8U Read_Register(INT8U Addr,INT8U xParameter);
+    void WRITE_Package(INT16U *data, INT8U howmany);
+    INT8U Read_Register(INT8U Addr, INT8U xParameter);
     void fillScreen(INT16U XL,INT16U XR,INT16U YU,INT16U YD,INT16U color);
     void fillScreen(void);
     INT8U readID(void);

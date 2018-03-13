@@ -1,0 +1,11 @@
+{
+  "name": "TFT LasGIS ILI9225",
+  "description": "Arduino driver for the ILI9225 based TFT with SPI Interface",
+  "keywords": "tft,22,lcd",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LasGIS/TFT_LG_ILI9225.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

@@ -52,8 +52,8 @@ void TFT::WRITE_Package(INT16U *data, INT8U howmany) {
 
     TFT_DC_HIGH;
     TFT_CS_LOW;
-    INT8U count=0;
-    for (count=0;count<howmany;count++) {
+    INT8U count = 0;
+    for (count = 0; count < howmany; count++) {
         data1 = data[count]>>8;
         data2 = data[count]&0xff;
         SPI.transfer(data1);
@@ -242,6 +242,7 @@ void TFT::setPage(INT16U StartPage,INT16U EndPage) {
  * @param StartLine
  * @param EndPos
  * @param EndLine
+ * @return количество необходимых байт для передачи цвета
  */
 INT32U TFT::setInterval(
   int StartPos, int StartLine, int EndPos, int EndLine

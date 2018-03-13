@@ -5,7 +5,7 @@
 #include <avr/pgmspace.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <TFT_22_ILI9225.h>
+#include <TFT_LG_ILI9225.h>
 #include <IrControl.h>
 
 //#define HAS_SERIAL
@@ -49,7 +49,7 @@
 #define BOXH_CENTER_X 109
 #define BOXH_CENTER_Y 87
 
-extern TFT_22_ILI9225 tft;
+extern TFT_LG_ILI9225 tft;
 extern char comBuffer[20];
 extern uint16_t X0, X1, Y0, Y1;
 extern uint16_t ClockX0, ClockX1, ClockY0, ClockY1;

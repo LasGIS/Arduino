@@ -1,9 +1,7 @@
 #include "SmartClock20.h"
 
 // Use hardware SPI (faster - on Uno: 13-SCK, 12-MISO, 11-MOSI)
-TFT_22_ILI9225 tft(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
-// Use software SPI (slower)
-//TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_SDI, TFT_CLK, TFT_LED);
+TFT_LG_ILI9225 tft(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
 
 // указываем пин для ИК датчика
 IrControl irControl(2);
