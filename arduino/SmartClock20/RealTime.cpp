@@ -43,9 +43,9 @@ void ReadDS3231() {
  * @param string
  * @param poX
  * @param poY
- * @param size СЂР°Р·РјРµСЂ С€СЂРёС„С‚Р°
- * @param bgColor С†РІРµС‚ С„РѕРЅР°
- * @param color С†РІРµС‚ СЃРёРјРІРѕР»РѕРІ
+ * @param size размер шрифта
+ * @param bgColor цвет фона
+ * @param color цвет символов
 void drawFillString(
   char *string,
   INT16U poX, INT16U poY, INT16U fontSize,
@@ -57,7 +57,7 @@ void drawFillString(
 }*/
 
 /**
- * РІС‹РІРѕРґРёРј РІСЂРµРјСЏ Рё РґР°С‚Сѓ РІ С„РѕСЂРјР°С‚Рµ.
+ * выводим время и дату в формате.
 void printTime(long time) {
   unsigned long milTime = time / 1000;
   int sec = milTime % 60;
@@ -76,7 +76,7 @@ void beforePrintBigTime() {
 }*/
 
 /**
- * РІС‹РІРѕРґРёРј РІСЂРµРјСЏ РљСЂСѓРїРЅРѕ.
+ * выводим время Крупно.
 void printBigTime() {
   int x = 238, y = CHAR_HEIGHT + 2;
   int sec  = Clock.getSecond();
@@ -93,7 +93,7 @@ void printBigTime() {
 }*/
 
 /**
- * РІС‹РІРѕРґРёРј СЂРµР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ.
+ * выводим реальное время.
  */
 void printRealTime() {
   int sec  = Clock.getSecond();
@@ -103,16 +103,16 @@ void printRealTime() {
 #ifdef HAS_SERIAL
   Serial.println(comBuffer);
 #endif
-  tft.setFont(Trebuchet_MS16x21);
+  tft.setFontSize(3);
   uint16_t lastX = tft.drawText(clockX, clockY, comBuffer, COLOR_TOMATO);
 //  tft.drawText(clockX, clockY, "99:99:00", COLOR_TOMATO);
-  tft.fillRectangle(lastX, clockY, ClockX1 - 1, clockY + 21, COLOR_BLACK);
-  tft.setFont(Terminal6x8);
+//  tft.fillRectangle(lastX, clockY, ClockX1 - 1, clockY + 21, COLOR_BLACK);
+  tft.setFontSize(1);
 //  tft.drawText(80, 0, comBuffer, COLOR_WHITE);
 }
 
 /**
- * РІС‹РІРѕРґРёРј СЂРµР°Р»СЊРЅСѓСЋ РґР°С‚Сѓ.
+ * выводим реальную дату.
  */
 void printRealDate() {
   int date   = Clock.getDate();

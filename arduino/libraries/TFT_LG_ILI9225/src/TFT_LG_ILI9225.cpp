@@ -101,7 +101,7 @@ void TFT_LG_ILI9225::_orientCoordinates(uint16_t &x1, uint16_t &y1) {
 }
 
 
-void TFT_LG_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+uint16_t TFT_LG_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
   _orientCoordinates(x0, y0);
   _orientCoordinates(x1, y1);
 
@@ -122,6 +122,8 @@ void TFT_LG_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
   _writeCommand(0x00, 0x22);
 
   if (hwSPI) spi_end();
+
+  return (y1 - y0 + 1) * (x1 - x0 + 1);
 }
 
 
@@ -250,6 +252,7 @@ void TFT_LG_ILI9225::begin() {
 
 
 void TFT_LG_ILI9225::clear() {
+  _fontSize = 1;
   uint8_t old = _orientation;
   setOrientation(0);
   fillRectangle(0, 0, _maxX - 1, _maxY - 1, COLOR_BLACK);
@@ -339,10 +342,10 @@ void TFT_LG_ILI9225::drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16
 
 void TFT_LG_ILI9225::fillRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 
-  _setWindow(x1, y1, x2, y2);
+  uint16_t count = _setWindow(x1, y1, x2, y2);
 
   if (hwSPI) spi_begin();
-  for(uint16_t t=(y2 - y1 + 1) * (x2 - x1 + 1); t > 0; t--)
+  for(uint16_t t = count; t > 0; t--)
     _writeData(color >> 8, color);
   if (hwSPI) spi_end();
 }
@@ -360,7 +363,7 @@ void TFT_LG_ILI9225::drawCircle(uint16_t x0, uint16_t y0, uint16_t r, uint16_t c
   checkSPI = false;
 
   drawPixel(x0, y0 + r, color);
-  drawPixel(x0, y0-  r, color);
+  drawPixel(x0, y0 - r, color);
   drawPixel(x0 + r, y0, color);
   drawPixel(x0 - r, y0, color);
 
@@ -457,7 +460,7 @@ void TFT_LG_ILI9225::drawPixel(uint16_t x1, uint16_t y1, uint16_t color) {
 
   if(x1 >= _maxX || y1 >= _maxY) return;
 
-  _setWindow(x1, y1, x1+1, y1+1);
+  _setWindow(x1, y1, x1 + 1, y1 + 1);
   _orientCoordinates(x1, y1);
   if (hwSPI && checkSPI) spi_begin();
   _writeData(color >> 8, color);
@@ -608,32 +611,36 @@ void TFT_LG_ILI9225::setBackgroundColor(uint16_t color) {
   _bgColor = color;
 }
 
-
-void TFT_LG_ILI9225::setFont(uint8_t* font) {
-
-  cfont.font     = font;
-  cfont.width    = readFontByte(0);
-  cfont.height   = readFontByte(1);
-  cfont.offset   = readFontByte(2);
-  cfont.numchars = readFontByte(3);
-  cfont.nbrows   = cfont.height / 8;
-
-  if (cfont.height % 8) cfont.nbrows++;  // Set number of bytes used by height of font in multiples of 8
+void TFT_LG_ILI9225::setFontSize(uint8_t fontSize) {
+  _fontSize = fontSize;
 }
 
-
-uint16_t TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, String s, uint16_t color) {
+uint16_t TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, char * string, uint16_t color) {
 
   uint16_t currx = x;
-
   // Print every character in string
-  for (uint8_t k = 0; k < s.length(); k++) {
-    currx += drawChar(currx, y, s.charAt(k), color) + 1;
+  while (*string) {
+    currx += drawChar(currx, y, *string, color) + _fontSize;
+    *string++;
   }
   return currx;
 }
 
-
+uint8_t TFT_LG_ILI9225::drawChar(uint16_t x, uint16_t y, uint8_t ascii, uint16_t color) {
+  for (uint8_t i = 0; i < FONT_X; i++) {
+    uint8_t temp = pgm_read_byte(&russFontANSI[ascii][i]);
+    uint16_t xCur = x + i * _fontSize;
+    for (uint8_t f = 0; f < 8; f++) {
+      uint16_t yCur = y + f * _fontSize;
+      fillRectangle(
+        xCur, yCur, xCur + _fontSize - 1, yCur + _fontSize - 1,
+        ((temp >> f) & 0x01) ? color : _bgColor
+      );
+    }
+  }
+  return FONT_X * _fontSize;
+}
+/*
 uint16_t TFT_LG_ILI9225::drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color) {
 
   uint8_t charData, charWidth;
@@ -668,7 +675,8 @@ uint16_t TFT_LG_ILI9225::drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t 
 
   return charWidth;
 }
-
+*/
+/*
 // Draw a 1-bit image (bitmap) at the specified (x,y) position from the
 // provided bitmap buffer (must be PROGMEM memory) using the specified
 // foreground color (unset bits are transparent).
@@ -776,3 +784,4 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
   checkSPI = true;
   if (hwSPI) spi_end();
 }
+*/

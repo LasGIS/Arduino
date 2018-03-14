@@ -7,6 +7,7 @@
     #include "WProgram.h"
 #endif
 #include <avr/pgmspace.h>
+#include <RussFontANSI.c>
 
 /* ILI9225 screen size */
 #define ILI9225_LCD_WIDTH  176
@@ -97,23 +98,23 @@
 #define COLOR_YELLOW         RGB888_RGB565(0xFFFF00u)
 
 /* Font defines */
-#define FONT_HEADER_SIZE 4 // 1: pixel width of 1 font character, 2: pixel height, 
-#define readFontByte(x) pgm_read_byte(&cfont.font[x])  
+//#define FONT_HEADER_SIZE 4 // 1: pixel width of 1 font character, 2: pixel height,
+//#define readFontByte(x) pgm_read_byte(&cfont.font[x])
 
-extern uint8_t Terminal6x8[];
+//extern uint8_t Terminal6x8[];
 //extern uint8_t Terminal11x16[];
 //extern uint8_t Terminal12x16[];
-extern uint8_t Trebuchet_MS16x21[];
+//extern uint8_t Trebuchet_MS16x21[];
 
-struct _currentFont
-{
-  uint8_t* font;
-  uint8_t width;
-  uint8_t height;
-  uint8_t offset;
-  uint8_t numchars;
-  uint8_t nbrows;
-};
+//struct _currentFont
+//{
+//  uint8_t* font;
+//  uint8_t width;
+//  uint8_t height;
+//  uint8_t offset;
+//  uint8_t numchars;
+//  uint8_t nbrows;
+//};
 
 /// Main and core class
 class TFT_LG_ILI9225 {
@@ -220,7 +221,7 @@ class TFT_LG_ILI9225 {
     /// @param  y point coordinate, y-axis
     /// @param  s text string
     /// @param  color 16-bit color, default=white
-    uint16_t drawText(uint16_t x, uint16_t y, String  s, uint16_t color = COLOR_WHITE);
+    uint16_t drawText(uint16_t x, uint16_t y, char * s, uint16_t color = COLOR_WHITE);
 
     /// Calculate 16-bit color from 8-bit Red-Green-Blue components
     /// @param  red red component, 0x00..0xff
@@ -257,15 +258,15 @@ class TFT_LG_ILI9225 {
     void fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
 
     /// Set current font
-    /// @param  font Font name
-    void setFont(uint8_t* font);
+    /// @param fontSize Font Size
+    void setFontSize(uint8_t fontSize);
 
     /// Draw single character (pixel coordinates)
     /// @param  x point coordinate, x-axis
     /// @param  y point coordinate, y-axis
     /// @param  ch ASCII character
     /// @param  color 16-bit color, default=white
-    uint16_t drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color = COLOR_WHITE);
+    uint8_t drawChar(uint16_t x, uint16_t y, uint8_t ch, uint16_t color = COLOR_WHITE);
 
     /// Draw bitmap
     /// @param  x point coordinate, x-axis
@@ -289,7 +290,7 @@ class TFT_LG_ILI9225 {
     void _writedata(uint8_t d);
 
     void _swap(uint16_t &a, uint16_t &b);
-    void _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+    uint16_t _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
     void _orientCoordinates(uint16_t &x1, uint16_t &y1);
     void _writeRegister(uint16_t reg, uint16_t data);
     void _writeData(uint8_t HI, uint8_t LO);
@@ -304,7 +305,7 @@ class TFT_LG_ILI9225 {
 
     boolean  hwSPI, checkSPI;
 
-    _currentFont cfont;
+    uint8_t _fontSize = 1;
 
 };
 

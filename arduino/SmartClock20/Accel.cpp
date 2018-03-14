@@ -43,7 +43,7 @@ void drawBobber(GravVector vec) {
 }
 
 /**
- * РЅР°С‡Р°Р»СЊРЅС‹Р№ СЃС‚Р°СЂС‚
+ * начальный старт
  */
 void accelBegin() {
 

@@ -9,7 +9,7 @@
 #include <IrControl.h>
 
 //#define HAS_SERIAL
-#define HAS_SERIAL_DEBUG
+//#define HAS_SERIAL_DEBUG
 #define ADXL345_ENABLED
 
 #define TFT_RST 8
@@ -30,19 +30,19 @@
 #define BOXH_Y0 25
 #define BOXH_Y1 175
 
-#define BOXCLOCKV_X0 26
-#define BOXCLOCKV_X1 150
-#define CLOCKV_X 30
+#define BOXCLOCKV_X0 12
+#define BOXCLOCKV_X1 164
+#define CLOCKV_X 18
 #define BOXCLOCKV_Y0 25
-#define BOXCLOCKV_Y1 53
-#define CLOCKV_Y 29
+#define BOXCLOCKV_Y1 54
+#define CLOCKV_Y 30
 
-#define BOXCLOCKH_X0 48
-#define BOXCLOCKH_X1 172
-#define CLOCKH_X 52
+#define BOXCLOCKH_X0 34
+#define BOXCLOCKH_X1 186
+#define CLOCKH_X 40
 #define BOXCLOCKH_Y0 25
-#define BOXCLOCKH_Y1 53
-#define CLOCKH_Y 29
+#define BOXCLOCKH_Y1 54
+#define CLOCKH_Y 30
 
 #define BOXV_CENTER_X 87
 #define BOXV_CENTER_Y 109

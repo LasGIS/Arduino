@@ -3,7 +3,7 @@
 // Use hardware SPI (faster - on Uno: 13-SCK, 12-MISO, 11-MOSI)
 TFT_LG_ILI9225 tft(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
 
-// СѓРєР°Р·С‹РІР°РµРј РїРёРЅ РґР»СЏ РРљ РґР°С‚С‡РёРєР°
+// указываем пин для ИК датчика
 IrControl irControl(2);
 
 char comBuffer[20];
@@ -32,7 +32,7 @@ void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color) {
 
 /**
  * @brief setOrientation
- * РџРѕРїСЂР°РІР»СЏРµРј РѕСЂРёРµРЅС‚Р°С†РёСЋ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РїРѕРєР°Р·Р°РЅРёР№ РіСЂР°РІРёС‚Р°С†РёРѕРЅРЅРѕРіРѕ РґР°С‚С‡РёРєР°
+ * Поправляем ориентацию в зависимости от показаний гравитационного датчика
  */
 GravVector setOrientation(GravVector vec) {
   static uint8_t oldOrientation = -2;
@@ -46,7 +46,9 @@ GravVector setOrientation(GravVector vec) {
   } else if (vec.X < -GRAVI_FACTOR) {
     orientation = 3;
   }
+#ifdef HAS_SERIAL
   Serial.println(orientation);
+#endif
   switch (orientation) {
   default:
   case 2:
@@ -90,8 +92,8 @@ GravVector setOrientation(GravVector vec) {
     tft.drawText(64, 8, "Y=", COLOR_GRAY);
     tft.drawText(128, 8, "Z=", COLOR_GRAY);
   #endif
-    tft.drawText(0, 16, "Battery=", COLOR_GRAY);
-    tft.drawText(88, 16, "Charger=", COLOR_GRAY);
+    tft.drawText(0, 16,  "Батарея=", COLOR_GRAY);
+    tft.drawText(88, 16, "Зарядка=", COLOR_GRAY);
     oldOrientation = orientation;
   }
 
@@ -115,7 +117,6 @@ GravVector setOrientation(GravVector vec) {
 void setup() {
   analogReference(INTERNAL);
   tft.begin();
-  tft.setFont(Terminal6x8);
   //delay(300);
   Serial.begin(9600);
   Wire.begin();
@@ -128,16 +129,16 @@ void setup() {
 }
 
 /**
- * РІС‹РІРѕРґРёРј Р±Р°С‚Р°СЂРµР№РєРё.
+ * выводим батарейки.
  */
 void printVolts() {
-  // 1 СЃР±РѕСЂРєР°
+  // 1 сборка
 //  double vBattery = analogRead(A7) * 0.00664;
 //  double vCharger = analogRead(A6) * 0.00664;
-  // 2 СЃР±РѕСЂРєР°
+  // 2 сборка
   double vBattery = analogRead(A7) * 0.00661;
   double vCharger = analogRead(A6) * 0.00654;
-  // 3 СЃР±РѕСЂРєР°
+  // 3 сборка
 //  double vBattery = analogRead(A7) * 0.00631;
 //  double vCharger = analogRead(A6) * 0.00630;
 #ifdef HAS_SERIAL

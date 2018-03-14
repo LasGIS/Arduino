@@ -1,11 +1,11 @@
-#include <avr/pgmspace.h>
-
 #ifndef FONT5X7_H
 #define FONT5X7_H
 
+#include <avr/pgmspace.h>
+
 #define RUSS_OEM_FONT
 
-static const unsigned char simpleFont[][8] PROGMEM = {
+static const unsigned char russFontOEM[][5] PROGMEM = {
   {0x00, 0x00, 0x00, 0x00, 0x00},      // 0x00
   {0x3E, 0x5B, 0x4F, 0x5B, 0x3E},      // 0x01
   {0x3E, 0x6B, 0x4F, 0x6B, 0x3E},      // 0x02

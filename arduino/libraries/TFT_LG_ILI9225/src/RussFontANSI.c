@@ -4,8 +4,11 @@
 #include <avr/pgmspace.h>
 
 #define RUSS_ANSI_FONT
+#define FONT_SPACE 6
+#define FONT_X 5
+#define FONT_Y 8
 
-static const unsigned char simpleFont[][8] PROGMEM = {
+static const unsigned char russFontANSI[][5] PROGMEM = {
   {0x00, 0x00, 0x00, 0x00, 0x00},      // 0x00
   {0x3E, 0x5B, 0x4F, 0x5B, 0x3E},      // 0x01
   {0x3E, 0x6B, 0x4F, 0x6B, 0x3E},      // 0x02
