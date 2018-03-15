@@ -10,6 +10,7 @@
 
 //#define HAS_SERIAL
 //#define HAS_SERIAL_DEBUG
+
 #define ADXL345_ENABLED
 
 #define TFT_RST 8
@@ -31,17 +32,17 @@
 #define BOXH_Y1 175
 
 #define BOXCLOCKV_X0 12
-#define BOXCLOCKV_X1 164
+#define BOXCLOCKV_X1 162
 #define CLOCKV_X 18
 #define BOXCLOCKV_Y0 25
-#define BOXCLOCKV_Y1 54
+#define BOXCLOCKV_Y1 55
 #define CLOCKV_Y 30
 
 #define BOXCLOCKH_X0 34
-#define BOXCLOCKH_X1 186
+#define BOXCLOCKH_X1 184
 #define CLOCKH_X 40
 #define BOXCLOCKH_Y0 25
-#define BOXCLOCKH_Y1 54
+#define BOXCLOCKH_Y1 55
 #define CLOCKH_Y 30
 
 #define BOXV_CENTER_X 87

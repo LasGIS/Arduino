@@ -158,6 +158,8 @@ void loop() {
 //    IrControlKey* irControlKey = irControl.toControlKey(code);
 //    char key = irControlKey->key;
     char key = irControl.toKey(code);
+    ltoa(code, comBuffer, 16);
+    tft.drawText(135, 0, comBuffer, COLOR_CYAN);
 #ifdef HAS_SERIAL_DEBUG
     Serial.print("IR key = ");
     Serial.print(key);
@@ -170,7 +172,7 @@ void loop() {
 #endif
   long time = millis();
   if (last != time / 1000) {
-    drawDouble(80, 0, time/1000.0, COLOR_BLUE);
+    //drawDouble(80, 0, time/1000.0, COLOR_BLUE);
     printRealTime();
     printRealDate();
     printVolts();

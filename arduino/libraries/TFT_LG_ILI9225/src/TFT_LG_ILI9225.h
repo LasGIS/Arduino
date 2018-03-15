@@ -55,7 +55,6 @@
 #define ILI9225C_INVOFF  0x20
 #define ILI9225C_INVON   0x21
 
-
 /* RGB 24-bits color table definition (RGB888). */
 #define RGB888_RGB565(color) (((color) >> 8 & 0xf800) | ((color) >> 5 & 0x07e0) | ((color) >> 3 & 0x001f))
 
@@ -96,25 +95,6 @@
 #define COLOR_ORANGE         RGB888_RGB565(0xFFA500u)
 #define COLOR_SNOW           RGB888_RGB565(0xFFFAFAu)
 #define COLOR_YELLOW         RGB888_RGB565(0xFFFF00u)
-
-/* Font defines */
-//#define FONT_HEADER_SIZE 4 // 1: pixel width of 1 font character, 2: pixel height,
-//#define readFontByte(x) pgm_read_byte(&cfont.font[x])
-
-//extern uint8_t Terminal6x8[];
-//extern uint8_t Terminal11x16[];
-//extern uint8_t Terminal12x16[];
-//extern uint8_t Trebuchet_MS16x21[];
-
-//struct _currentFont
-//{
-//  uint8_t* font;
-//  uint8_t width;
-//  uint8_t height;
-//  uint8_t offset;
-//  uint8_t numchars;
-//  uint8_t nbrows;
-//};
 
 /// Main and core class
 class TFT_LG_ILI9225 {
@@ -221,7 +201,7 @@ class TFT_LG_ILI9225 {
     /// @param  y point coordinate, y-axis
     /// @param  s text string
     /// @param  color 16-bit color, default=white
-    uint16_t drawText(uint16_t x, uint16_t y, char * s, uint16_t color = COLOR_WHITE);
+    void drawText(uint16_t x, uint16_t y, char * s, uint16_t color = COLOR_WHITE);
 
     /// Calculate 16-bit color from 8-bit Red-Green-Blue components
     /// @param  red red component, 0x00..0xff

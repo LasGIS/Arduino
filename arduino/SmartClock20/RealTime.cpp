@@ -104,11 +104,11 @@ void printRealTime() {
   Serial.println(comBuffer);
 #endif
   tft.setFontSize(3);
-  uint16_t lastX = tft.drawText(clockX, clockY, comBuffer, COLOR_TOMATO);
-//  tft.drawText(clockX, clockY, "99:99:00", COLOR_TOMATO);
-//  tft.fillRectangle(lastX, clockY, ClockX1 - 1, clockY + 21, COLOR_BLACK);
+//  tft.setBackgroundColor(COLOR_BLUEVIOLET);
+  tft.drawText(clockX, clockY, comBuffer, COLOR_TOMATO);
+//  tft.setBackgroundColor(COLOR_BLACK);
   tft.setFontSize(1);
-//  tft.drawText(80, 0, comBuffer, COLOR_WHITE);
+  tft.drawText(80, 0, comBuffer, COLOR_WHITE);
 }
 
 /**

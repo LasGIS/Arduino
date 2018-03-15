@@ -615,20 +615,19 @@ void TFT_LG_ILI9225::setFontSize(uint8_t fontSize) {
   _fontSize = fontSize;
 }
 
-uint16_t TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, char * string, uint16_t color) {
+void TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, char * string, uint16_t color) {
 
   uint16_t currx = x;
   // Print every character in string
   while (*string) {
-    currx += drawChar(currx, y, *string, color) + _fontSize;
+    currx += drawChar(currx, y, *string, color);
     *string++;
   }
-  return currx;
 }
 
 uint8_t TFT_LG_ILI9225::drawChar(uint16_t x, uint16_t y, uint8_t ascii, uint16_t color) {
-  for (uint8_t i = 0; i < FONT_X; i++) {
-    uint8_t temp = pgm_read_byte(&russFontANSI[ascii][i]);
+  for (uint8_t i = 0; i <= FONT_X; i++) {
+    uint8_t temp = (i == FONT_X) ? 0 : pgm_read_byte(&russFontANSI[ascii][i]);
     uint16_t xCur = x + i * _fontSize;
     for (uint8_t f = 0; f < 8; f++) {
       uint16_t yCur = y + f * _fontSize;
@@ -638,45 +637,9 @@ uint8_t TFT_LG_ILI9225::drawChar(uint16_t x, uint16_t y, uint8_t ascii, uint16_t
       );
     }
   }
-  return FONT_X * _fontSize;
+  return (FONT_X + 1) * _fontSize;
 }
-/*
-uint16_t TFT_LG_ILI9225::drawChar(uint16_t x, uint16_t y, uint16_t ch, uint16_t color) {
 
-  uint8_t charData, charWidth;
-  uint8_t h, i, j;
-  uint16_t charOffset;
-
-  charOffset = (cfont.width * cfont.nbrows) + 1;  // bytes used by each character
-  charOffset = (charOffset * (ch - cfont.offset)) + FONT_HEADER_SIZE;  // char offset (add 4 for font header)
-  charWidth  = readFontByte(charOffset);  // get font width from 1st byte
-  charOffset++;  // increment pointer to first character data byte
-
-  if (hwSPI) spi_begin();
-  checkSPI = false;
-  for (i = 0; i <= charWidth; i++) {  // each font "column" (+1 blank column for spacing)
-    h = 0;  // keep track of char height
-    for (j = 0; j < cfont.nbrows; j++)  {  // each column byte
-      if (i == charWidth) charData = (uint8_t)0x0; // Insert blank column
-      else                charData = readFontByte(charOffset);
-      charOffset++;
-
-      // Process every row in font character
-      for (uint8_t k = 0; k < 8; k++) {
-        if (h >= cfont.height ) break;  // No need to process excess bits
-        if (bitRead(charData, k)) drawPixel(x + i, y + (j * 8) + k, color);
-        else                      drawPixel(x + i, y + (j * 8) + k, _bgColor);
-        h++;
-      };
-    };
-  };
-  checkSPI = true;
-  if (hwSPI) spi_end();
-
-  return charWidth;
-}
-*/
-/*
 // Draw a 1-bit image (bitmap) at the specified (x,y) position from the
 // provided bitmap buffer (must be PROGMEM memory) using the specified
 // foreground color (unset bits are transparent).
@@ -784,4 +747,3 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
   checkSPI = true;
   if (hwSPI) spi_end();
 }
-*/
