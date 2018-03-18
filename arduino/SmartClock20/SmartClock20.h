@@ -13,6 +13,9 @@
 
 #define ADXL345_ENABLED
 
+// пин для жужалки
+#define BUZZER_PIN 7
+
 #define TFT_RST 8
 #define TFT_RS  9
 #define TFT_CS  10  // SS
@@ -33,14 +36,14 @@
 
 #define BOXCLOCKV_X0 12
 #define BOXCLOCKV_X1 162
-#define CLOCKV_X 18
+#define CLOCKV_X 17
 #define BOXCLOCKV_Y0 25
 #define BOXCLOCKV_Y1 55
 #define CLOCKV_Y 30
 
 #define BOXCLOCKH_X0 34
 #define BOXCLOCKH_X1 184
-#define CLOCKH_X 40
+#define CLOCKH_X 39
 #define BOXCLOCKH_Y0 25
 #define BOXCLOCKH_Y1 55
 #define CLOCKH_Y 30
@@ -58,7 +61,10 @@ extern uint16_t clockX;
 extern uint16_t clockY;
 extern uint16_t boxCenterX;
 extern uint16_t boxCenterY;
+extern uint8_t keySoundVolume;
 
+extern void musicAlarm();
+extern void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume);
 extern void printRealTime();
 extern void printRealDate();
 extern void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color);

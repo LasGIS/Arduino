@@ -201,7 +201,7 @@ class TFT_LG_ILI9225 {
     /// @param  y point coordinate, y-axis
     /// @param  s text string
     /// @param  color 16-bit color, default=white
-    void drawText(uint16_t x, uint16_t y, char * s, uint16_t color = COLOR_WHITE);
+    void drawText(uint16_t x, uint16_t y, const char * s, uint16_t color = COLOR_WHITE);
 
     /// Calculate 16-bit color from 8-bit Red-Green-Blue components
     /// @param  red red component, 0x00..0xff

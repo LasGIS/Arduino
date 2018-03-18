@@ -87,6 +87,7 @@ GravVector setOrientation(GravVector vec) {
     tft.setOrientation(orientation);
     tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
     tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
+//    tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
   #ifdef ADXL345_ENABLED
     tft.drawText(0, 8, "X=", COLOR_GRAY);
     tft.drawText(64, 8, "Y=", COLOR_GRAY);
@@ -119,6 +120,7 @@ void setup() {
   tft.begin();
   //delay(300);
   Serial.begin(9600);
+//  Serial.begin(115200);
   Wire.begin();
 #ifdef ADXL345_ENABLED
   accelBegin();
@@ -155,17 +157,24 @@ void loop() {
   static long last = 0L;
   if (irControl.hasCode()) {
     long code = irControl.getCode();
-//    IrControlKey* irControlKey = irControl.toControlKey(code);
-//    char key = irControlKey->key;
-    char key = irControl.toKey(code);
+    IrControlKey* controlKey = irControl.toControlKey(code);
+    char key = 0;
+    if (controlKey != NULL) {
+      key = controlKey->key;
+      if (key == 'p') {
+        musicAlarm();
+      } else {
+        buzzerOut(controlKey->tone, 200, keySoundVolume);
+      }
+    }
     ltoa(code, comBuffer, 16);
     tft.drawText(135, 0, comBuffer, COLOR_CYAN);
-#ifdef HAS_SERIAL_DEBUG
+//#ifdef HAS_SERIAL_DEBUG
     Serial.print("IR key = ");
     Serial.print(key);
     Serial.print("; code = ");
     Serial.println(code, HEX);
-#endif
+//#endif
   }
 #ifdef ADXL345_ENABLED
   GravVector vec = setOrientation(accelReadVector());

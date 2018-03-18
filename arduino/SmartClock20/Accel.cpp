@@ -18,13 +18,15 @@ void drawBobber(GravVector vec, bool isReal) {
     boxCenterY + vec.Y * 60,
     7 - vec.Z * 3, isReal ? COLOR_CYAN : COLOR_BLACK
   );
-   tft.drawLine(
+/*
+  tft.drawLine(
     boxCenterX,
     boxCenterY,
     boxCenterX + vec.X * 60,
     boxCenterY + vec.Y * 60,
     isReal ? COLOR_RED : COLOR_BLACK
   );
+*/
 }
 
 /**
@@ -124,7 +126,7 @@ void accelUpdate(GravVector vec) {
     Serial.print(vec.Y);
     Serial.print(",");
     Serial.print(vec.Z);
-    Serial.println("");
+    Serial.println(";");
 #endif
     drawDouble(12, 8, vec.X, COLOR_BLUE);
     drawDouble(76, 8, vec.Y, COLOR_GREEN);

@@ -24,7 +24,9 @@ SOURCES += \
     ../libraries/DS3231/DS3231.cpp \
     SmartClock20.ino \
     Accel.cpp \
-    RealTime.cpp
+    RealTime.cpp \
+    buzzer.cpp \
+    note.cpp
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += ../libraries/arduino-ds1302-master \
@@ -34,17 +36,17 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
     ../libraries/DHT-sensor-library-master \
     ../libraries/IrControl \
     ../libraries/MsTimer2 \
-    D:/local/Arduino/hardware/arduino/avr/cores/arduino \
-    D:/local/Arduino/hardware/tools/avr/avr/include \
-    D:/local/Arduino/hardware/arduino/avr/variants/standard \
-    D:/local/Arduino/hardware/arduino/avr/libraries/EEPROM/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/HID/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/SPI/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src/utility \
-    D:/local/Arduino/libraries/SD/src \
-    D:/local/Arduino/libraries/Servo/src
+    C:/local/Arduino/hardware/arduino/avr/cores/arduino \
+    C:/local/Arduino/hardware/tools/avr/avr/include \
+    C:/local/Arduino/hardware/arduino/avr/variants/standard \
+    C:/local/Arduino/hardware/arduino/avr/libraries/EEPROM \
+    C:/local/Arduino/hardware/arduino/avr/libraries/HID \
+    C:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial \
+    C:/local/Arduino/hardware/arduino/avr/libraries/SPI \
+    C:/local/Arduino/hardware/arduino/avr/libraries/Wire \
+    C:/local/Arduino/hardware/arduino/avr/libraries/Wire/utility \
+    C:/local/Arduino/libraries/SD/src \
+    C:/local/Arduino/libraries/Servo/src
 
 HEADERS += \
     ../libraries/DHT-sensor-library-master/DHT.h \
@@ -55,7 +57,9 @@ HEADERS += \
     ../libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.h \
     ../libraries/DS3231/Examples/DS3231_TEST/DS3231_TEST.ino \
     ../libraries/DS3231/DS3231.h \
-    SmartClock20.h
+    SmartClock20.h \
+    pitches.h \
+    note.h
 
 DISTFILES += \
     ../libraries/ADXL345/library.json \

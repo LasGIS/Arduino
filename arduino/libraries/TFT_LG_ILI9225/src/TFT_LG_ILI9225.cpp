@@ -83,17 +83,17 @@ void TFT_LG_ILI9225::_writedata(uint8_t c) {
 void TFT_LG_ILI9225::_orientCoordinates(uint16_t &x1, uint16_t &y1) {
 
   switch (_orientation) {
-  case 0:  // ok
+  case 0:
     break;
-  case 1: // ok
+  case 1:
     y1 = _maxY - y1 - 1;
     _swap(x1, y1);
     break;
-  case 2: // ok
+  case 2:
     x1 = _maxX - x1 - 1;
     y1 = _maxY - y1 - 1;
     break;
-  case 3: // ok
+  case 3:
     x1 = _maxX - x1 - 1;
     _swap(x1, y1);
     break;
@@ -436,8 +436,8 @@ void TFT_LG_ILI9225::drawLine(
 ) {
   int x = x1 - x0;
   int y = y1 - y0;
-  int dx = abs(x), sx = x0 < x1 ? 1 : -1;
-  int dy = -abs(y), sy = y0 < y1 ? 1 : -1;
+  int dx = abs(x), sx = x0 <= x1 ? 1 : -1;
+  int dy = -abs(y), sy = y0 <= y1 ? 1 : -1;
   int err = dx + dy, e2; /* error value e_xy */
   /* loop */
   for (;;) {
@@ -460,8 +460,7 @@ void TFT_LG_ILI9225::drawPixel(uint16_t x1, uint16_t y1, uint16_t color) {
 
   if(x1 >= _maxX || y1 >= _maxY) return;
 
-  _setWindow(x1, y1, x1 + 1, y1 + 1);
-  _orientCoordinates(x1, y1);
+  _setWindow(x1, y1, x1, y1);
   if (hwSPI && checkSPI) spi_begin();
   _writeData(color >> 8, color);
   if (hwSPI && checkSPI) spi_end();
@@ -615,7 +614,7 @@ void TFT_LG_ILI9225::setFontSize(uint8_t fontSize) {
   _fontSize = fontSize;
 }
 
-void TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, char * string, uint16_t color) {
+void TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, const char * string, uint16_t color) {
 
   uint16_t currx = x;
   // Print every character in string
