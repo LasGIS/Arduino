@@ -169,12 +169,12 @@ void loop() {
     }
     ltoa(code, comBuffer, 16);
     tft.drawText(135, 0, comBuffer, COLOR_CYAN);
-//#ifdef HAS_SERIAL_DEBUG
+#ifdef HAS_SERIAL_DEBUG
     Serial.print("IR key = ");
     Serial.print(key);
     Serial.print("; code = ");
     Serial.println(code, HEX);
-//#endif
+#endif
   }
 #ifdef ADXL345_ENABLED
   GravVector vec = setOrientation(accelReadVector());

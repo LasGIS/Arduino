@@ -14,34 +14,63 @@ ADXL345 accel(ADXL345_ALT);
  */
 void drawBobber(GravVector vec, bool isReal) {
   tft.drawCircle(
-    boxCenterX + vec.X * 60,
-    boxCenterY + vec.Y * 60,
-    7 - vec.Z * 3, isReal ? COLOR_CYAN : COLOR_BLACK
+    vec.X, vec.Y,
+    vec.Z, isReal ? COLOR_CYAN : COLOR_BLACK
   );
+}
+/**
+ * @brief calcMoving
+ * @param old старые координаты м€чика
+ * @param grv
+ * @return новые координаты м€чика
+ */
+GravVector calcMoving(GravVector old, GravVector grv) {
 /*
-  tft.drawLine(
-    boxCenterX,
-    boxCenterY,
-    boxCenterX + vec.X * 60,
-    boxCenterY + vec.Y * 60,
-    isReal ? COLOR_RED : COLOR_BLACK
-  );
+  static double vx = 0.0, vy = 0.0;
+  static long timePoint = millis();
+  double dX0 = X0, dX1 = X1, dY0 = Y0, dY1 = Y1;
+  long deltaTime = millis() - timePoint;
+  timePoint += deltaTime;
+  double dTime = deltaTime / 500.0;
+  vx = vx + grv.X * dTime;
+  vy = vy + grv.Y * dTime;
+  old.X = old.X + vx * dTime;
+  old.Y = old.Y + vy * dTime;
+  old.Z = 7 - grv.Z * 3;
+  if (old.X > (dX1 - old.Z)) {
+    old.X = (dX1 - old.Z) * 2 - old.X; vx = -vx;
+  }
+  if (old.X < (dX0 + old.Z)) {
+    old.X = (old.Z - dX0) * 2 + old.X; vx = -vx;
+  }
+  if (old.Y > (dY1 - old.Z)) {
+    old.Y = (dY1 - old.Z) * 2 - old.Y; vy = -vy;
+  }
+  if (old.Y < (dY0 + old.Z)) {
+    old.Y = (old.Z - dY0) * 2 - old.Y; vy = -vy;
+  }
+//#ifdef HAS_SERIAL
+  Serial.print("old.X = ");
+  Serial.print(old.X);
+  Serial.print(", old.Y = ");
+  Serial.print(old.Y);
+  Serial.println(";");
+//#endif
+  return old;
 */
+  return GravVector(boxCenterX + grv.X * 60, boxCenterY + grv.Y * 60, 7 - grv.Z * 3);
 }
 
 /**
- * @brief drawBobber
- * @param X
- * @param Y
- * @param Z
+ * @brief –исуем прыгающий м€чик
+ * @param vec вектор гравитации
  */
-void drawBobber(GravVector vec) {
-  static GravVector old;
+void drawBobber(GravVector grv) {
+  static GravVector old(boxCenterX, boxCenterY, 7);
+  GravVector crd = calcMoving(old, grv);
   drawBobber(old, false);
-  drawBobber(vec, true);
-  old.X = vec.X;
-  old.Y = vec.Y;
-  old.Z = vec.Z;
+  drawBobber(crd, true);
+  old = crd;
 }
 
 /**
@@ -119,7 +148,7 @@ GravVector accelReadVector() {
 /**
  * @brief accelUpdate
  */
-void accelUpdate(GravVector vec) {
+void accelUpdate(GravVector grav) {
 #ifdef HAS_SERIAL
     Serial.print(vec.X);
     Serial.print(",");
@@ -128,9 +157,9 @@ void accelUpdate(GravVector vec) {
     Serial.print(vec.Z);
     Serial.println(";");
 #endif
-    drawDouble(12, 8, vec.X, COLOR_BLUE);
-    drawDouble(76, 8, vec.Y, COLOR_GREEN);
-    drawDouble(140, 8, vec.Z, COLOR_RED);
-    drawBobber(vec);
+    drawDouble(12, 8, grav.X, COLOR_BLUE);
+    drawDouble(76, 8, grav.Y, COLOR_GREEN);
+    drawDouble(140, 8, grav.Z, COLOR_RED);
+    drawBobber(grav);
 }
 #endif
