@@ -25,40 +25,46 @@ void drawBobber(GravVector vec, bool isReal) {
  * @return новые координаты м€чика
  */
 GravVector calcMoving(GravVector old, GravVector grv) {
-/*
   static double vx = 0.0, vy = 0.0;
   static long timePoint = millis();
-  double dX0 = X0, dX1 = X1, dY0 = Y0, dY1 = Y1;
+  double dX0 = X0, dX1 = X1, dY0 = ClockY1, dY1 = Y1;
   long deltaTime = millis() - timePoint;
   timePoint += deltaTime;
   double dTime = deltaTime / 500.0;
+  old.X = old.X + vx * dTime + grv.X * dTime * dTime / 2;
+  old.Y = old.Y + vy * dTime + grv.Y * dTime * dTime / 2;
   vx = vx + grv.X * dTime;
   vy = vy + grv.Y * dTime;
-  old.X = old.X + vx * dTime;
-  old.Y = old.Y + vy * dTime;
-  old.Z = 7 - grv.Z * 3;
+  old.Z = 10 + grv.Z * 3;
   if (old.X > (dX1 - old.Z)) {
-    old.X = (dX1 - old.Z) * 2 - old.X; vx = -vx;
+    old.X = (dX1 - old.Z) * 2 - old.X;
+//    old.X = dX1 - old.Z;
+    vx = grv.X * dTime - vx;
   }
   if (old.X < (dX0 + old.Z)) {
-    old.X = (old.Z - dX0) * 2 + old.X; vx = -vx;
+    old.X = (old.Z + dX0) * 2 - old.X;
+//    old.X = old.Z + dX0;
+    vx = grv.X * dTime - vx;
   }
   if (old.Y > (dY1 - old.Z)) {
-    old.Y = (dY1 - old.Z) * 2 - old.Y; vy = -vy;
+    old.Y = (dY1 - old.Z) * 2 - old.Y;
+//    old.Y = dY1 - old.Z;
+    vy = grv.Y * dTime - vy;
   }
   if (old.Y < (dY0 + old.Z)) {
-    old.Y = (old.Z - dY0) * 2 - old.Y; vy = -vy;
+    old.Y = (dY0 + old.Z) * 2 - old.Y;
+//    old.Y = dY0 + old.Z;
+    vy = grv.Y * dTime - vy;
   }
-//#ifdef HAS_SERIAL
+#ifdef HAS_SERIAL
   Serial.print("old.X = ");
   Serial.print(old.X);
   Serial.print(", old.Y = ");
   Serial.print(old.Y);
   Serial.println(";");
-//#endif
+#endif
   return old;
-*/
-  return GravVector(boxCenterX + grv.X * 60, boxCenterY + grv.Y * 60, 7 - grv.Z * 3);
+//  return GravVector(boxCenterX + grv.X * 60, boxCenterY + grv.Y * 60, 7 - grv.Z * 3);
 }
 
 /**
