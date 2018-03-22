@@ -331,10 +331,10 @@ uint8_t TFT_LG_ILI9225::getOrientation() {
 void TFT_LG_ILI9225::drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
   if (hwSPI) spi_begin();
   checkSPI = false;
-  drawLine(x1, y1, x1, y2, color);
-  drawLine(x1, y1, x2, y1, color);
-  drawLine(x1, y2, x2, y2, color);
-  drawLine(x2, y1, x2, y2, color);
+  fillRectangle(x1, y1, x1, y2, color);
+  fillRectangle(x1, y1, x2, y1, color);
+  fillRectangle(x1, y2, x2, y2, color);
+  fillRectangle(x2, y1, x2, y2, color);
   checkSPI = true;
   if (hwSPI) spi_end();
 }
@@ -612,6 +612,10 @@ void TFT_LG_ILI9225::setBackgroundColor(uint16_t color) {
 
 void TFT_LG_ILI9225::setFontSize(uint8_t fontSize) {
   _fontSize = fontSize;
+}
+
+uint8_t TFT_LG_ILI9225::getFontSize() {
+  return _fontSize;
 }
 
 void TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, const char * string, uint16_t color) {

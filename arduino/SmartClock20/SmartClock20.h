@@ -55,6 +55,7 @@
 
 extern TFT_LG_ILI9225 tft;
 extern char comBuffer[20];
+extern uint8_t isChangeOrientation;
 extern uint16_t X0, X1, Y0, Y1;
 extern uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
 extern uint16_t clockX;
@@ -65,6 +66,7 @@ extern uint8_t keySoundVolume;
 
 extern void musicAlarm();
 extern void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume);
+extern void printText(uint16_t col, uint16_t row, const char * text, uint16_t color);
 extern void printRealTime();
 extern void printRealDate();
 extern void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color);

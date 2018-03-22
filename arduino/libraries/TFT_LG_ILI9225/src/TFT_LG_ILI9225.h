@@ -241,6 +241,10 @@ class TFT_LG_ILI9225 {
     /// @param fontSize Font Size
     void setFontSize(uint8_t fontSize);
 
+    /// Set current font
+    /// @return Font Size
+    uint8_t getFontSize();
+
     /// Draw single character (pixel coordinates)
     /// @param  x point coordinate, x-axis
     /// @param  y point coordinate, y-axis

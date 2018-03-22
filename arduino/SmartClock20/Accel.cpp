@@ -13,10 +13,10 @@ ADXL345 accel(ADXL345_ALT);
  * @param isReal
  */
 void drawBobber(GravVector vec, bool isReal) {
-  tft.drawCircle(
-    vec.X, vec.Y,
-    vec.Z, isReal ? COLOR_CYAN : COLOR_BLACK
-  );
+  uint16_t x = vec.X, y = vec.Y, z = vec.Z,
+      color = isReal ? COLOR_CYAN : COLOR_BLACK;
+  tft.drawRectangle(x - z + 1, y - z + 1, x + z, y + z, color);
+//  tft.drawCircle(x, y, z, color);
 }
 /**
  * @brief calcMoving
@@ -156,16 +156,16 @@ GravVector accelReadVector() {
  */
 void accelUpdate(GravVector grav) {
 #ifdef HAS_SERIAL
-    Serial.print(vec.X);
+    Serial.print(grav.X);
     Serial.print(",");
-    Serial.print(vec.Y);
+    Serial.print(grav.Y);
     Serial.print(",");
-    Serial.print(vec.Z);
+    Serial.print(grav.Z);
     Serial.println(";");
 #endif
-    drawDouble(12, 8, grav.X, COLOR_BLUE);
-    drawDouble(76, 8, grav.Y, COLOR_GREEN);
-    drawDouble(140, 8, grav.Z, COLOR_RED);
+    drawDouble(2,  1, grav.X, COLOR_BLUE);
+    drawDouble(10, 1, grav.Y, COLOR_GREEN);
+    drawDouble(18, 1, grav.Z, COLOR_RED);
     drawBobber(grav);
 }
 #endif

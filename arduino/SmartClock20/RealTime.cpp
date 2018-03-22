@@ -37,38 +37,68 @@ void ReadDS3231() {
 #endif
 }
 */
-
+void toTwoChar(uint8_t val, char * str, uint8_t start) {
+  uint8_t fst = (val % 100)/ 10;
+  uint8_t lst = val % 10;
+  str[start] = 0x30 + fst;
+  str[start + 1] = 0x30 + lst;
+}
 
 /**
  * выводим реальное время.
  */
 void printRealTime() {
-  int sec  = Clock.getSecond();
-  int min  = Clock.getMinute();
-  int hour = Clock.getHour(h12, PM);
-  snprintf(comBuffer, sizeof(comBuffer), "%02d:%02d:%02d", hour, min, sec);
+  static char * buf = (char *) "xx:xx:xx";
+  static uint8_t minLast  = 0xff;
+  static uint8_t hourLast = 0xff;
+  uint8_t sec  = Clock.getSecond();
+  uint8_t min  = Clock.getMinute();
+  uint8_t hour = Clock.getHour(h12, PM);
+  if (isChangeOrientation || minLast != min || hourLast != hour) {
+    toTwoChar(hour, buf, 0);
+    toTwoChar(min, buf, 3);
+    toTwoChar(sec, buf, 6);
+
 #ifdef HAS_SERIAL
-  Serial.println(comBuffer);
+    Serial.println(buf);
 #endif
-  tft.setFontSize(3);
-//  tft.setBackgroundColor(COLOR_BLUEVIOLET);
-  tft.drawText(clockX, clockY, comBuffer, COLOR_TOMATO);
-//  tft.setBackgroundColor(COLOR_BLACK);
-  tft.setFontSize(1);
-  tft.drawText(80, 0, comBuffer, COLOR_WHITE);
+    tft.setFontSize(3);
+    tft.drawText(clockX, clockY, buf, COLOR_TOMATO);
+    tft.setFontSize(1);
+    printText(12, 0, buf, COLOR_WHITE);
+    minLast = min;
+    hourLast = hour;
+  } else {
+    toTwoChar(sec, buf, 6);
+    tft.setFontSize(3);
+    tft.drawText(clockX + 108, clockY, buf + 6, COLOR_TOMATO);
+    tft.setFontSize(1);
+    printText(18, 0, buf + 6, COLOR_WHITE);
+  }
 }
 
 /**
  * выводим реальную дату.
  */
 void printRealDate() {
-  int date   = Clock.getDate();
-  int month  = Clock.getMonth(Century);
-  int year   = Clock.getYear();
-  snprintf(comBuffer, sizeof(comBuffer), "%02d.%02d.20%02d ", date, month, year);
+  static char * buf = (char *) "xx.xx.xx";
+  static uint8_t dateLast   = 0xff;
+  static uint8_t monthLast  = 0xff;
+  static uint8_t yearLast   = 0xff;
+  uint8_t date   = Clock.getDate();
+  uint8_t month  = Clock.getMonth(Century);
+  uint8_t year   = Clock.getYear();
+  if (isChangeOrientation || dateLast != date || monthLast != month || yearLast != year) {
+    toTwoChar(date, buf, 0);
+    toTwoChar(month, buf, 3);
+    toTwoChar(year, buf, 6);
 #ifdef HAS_SERIAL
-  Serial.println(comBuffer);
+    Serial.println(buf);
 #endif
-  tft.drawText(0, 0, comBuffer, COLOR_WHITE);
+    printText(0, 0, buf, COLOR_WHITE);
+    dateLast  = date;
+    monthLast = month;
+    yearLast  = year;
+  }
 }
 
