@@ -81,7 +81,7 @@ void printRealTime() {
  * выводим реальную дату.
  */
 void printRealDate() {
-  static char * buf = (char *) "xx.xx.xx";
+  static char * buf = (char *) "xx.xx.20xx";
   static uint8_t dateLast   = 0xff;
   static uint8_t monthLast  = 0xff;
   static uint8_t yearLast   = 0xff;
@@ -91,7 +91,7 @@ void printRealDate() {
   if (isChangeOrientation || dateLast != date || monthLast != month || yearLast != year) {
     toTwoChar(date, buf, 0);
     toTwoChar(month, buf, 3);
-    toTwoChar(year, buf, 6);
+    toTwoChar(year, buf, 8);
 #ifdef HAS_SERIAL
     Serial.println(buf);
 #endif

@@ -102,7 +102,7 @@ GravVector setOrientation(GravVector vec) {
     tft.clear();
     tft.setOrientation(orientation);
     tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
-    tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
+//    tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
 //    tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
   #ifdef ADXL345_ENABLED
     printText(0,  1, "X=", COLOR_GRAY);
@@ -184,6 +184,12 @@ void loop() {
       }
     }
     ltoa(code, comBuffer, 16);
+    if (key > 0) {
+      uint16_t len = strlen(comBuffer);
+      comBuffer[len++] = ' ';
+      comBuffer[len++] = key;
+      comBuffer[len++] = 0;
+    }
     printText(22, 0, comBuffer, COLOR_CYAN);
 #ifdef HAS_SERIAL_DEBUG
     Serial.print("IR key = ");

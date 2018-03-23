@@ -5,29 +5,56 @@
 
 IrControl* IrControl::_activeIrControlObject = 0;
 
+#if (KEYBOARD_LAYOUT == FIRST_KEYBOARD)
 IrControlKey irControlKeyMap[] {
   {'q', 0xFFA25D, 220}, // quit
-  {'m', 0xFFE21D, 233}, // menu
-  {'b', 0xFFC23D, 247}, // back
-  {'t', 0xFF22DD, 262}, // test
-  {'p', 0xFFA857, 277}, // play
+  {'m', 0xFFE21D, 247}, // menu
+  {'b', 0xFFC23D, 262}, // back
+  {'t', 0xFF22DD, 277}, // test
+  {'p', 0xFFA857, 294}, // play
 
-  {'<', 0xFFE01F, 294},
-  {'+', 0xFF02FD, 311},
-  {'>', 0xFF906F, 330},
-  {'-', 0xFF9867, 349},
-  {'C', 0xFFB04F, 370},
-  {'0', 0xFF6897, 392},
-  {'1', 0xFF30CF, 415},
-  {'2', 0xFF18E7, 440},
-  {'3', 0xFF7A85, 466},
-  {'4', 0xFF10EF, 494},
-  {'5', 0xFF38C7, 523},
-  {'6', 0xFF5AA5, 554},
-  {'7', 0xFF42BD, 587},
-  {'8', 0xFF4AB5, 622},
-  {'9', 0xFF52AD, 659}
+  {'<', 0xFFE01F, 311},
+  {'+', 0xFF02FD, 330},
+  {'>', 0xFF906F, 349},
+  {'-', 0xFF9867, 370},
+  {'C', 0xFFB04F, 392},
+  {'0', 0xFF6897, 415},
+  {'1', 0xFF30CF, 440},
+  {'2', 0xFF18E7, 466},
+  {'3', 0xFF7A85, 494},
+  {'4', 0xFF10EF, 523},
+  {'5', 0xFF38C7, 554},
+  {'6', 0xFF5AA5, 587},
+  {'7', 0xFF42BD, 622},
+  {'8', 0xFF4AB5, 659},
+  {'9', 0xFF52AD, 698}
 };
+#elif (KEYBOARD_LAYOUT == PLAY_KEYBOARD)
+IrControlKey irControlKeyMap[] {
+  {'q', 0xFFA25D, 220}, // quit
+  {'s', 0xFF629D, 233}, // stop
+  {'m', 0xFFE21D, 247}, // mute
+  {'M', 0xFF22DD, 262}, // mode
+  {'r', 0xFF02FD, 277}, // return
+  {'e', 0xFFC23D, 294}, // EQ
+  {'<', 0xFFE01F, 311}, // tape back
+  {'>', 0xFFA857, 330}, // tape forward
+  {'p', 0xFF906F, 349}, // pause
+
+ {'\\', 0xFF6897, 370}, // уменьшение
+  {'/', 0xFF9867, 392}, // увеличение
+  {'0', 0xFFB04F, 415},
+  {'1', 0xFF30CF, 440},
+  {'2', 0xFF18E7, 466},
+  {'3', 0xFF7A85, 494},
+  {'4', 0xFF10EF, 523},
+  {'5', 0xFF38C7, 554},
+  {'6', 0xFF5AA5, 587},
+  {'7', 0xFF42BD, 622},
+  {'8', 0xFF4AB5, 659},
+  {'9', 0xFF52AD, 698}
+};
+#endif
 
 /*IrControlKey::IrControlKey(char _key, long _code) {
   key = _key;

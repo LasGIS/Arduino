@@ -15,8 +15,8 @@ ADXL345 accel(ADXL345_ALT);
 void drawBobber(GravVector vec, bool isReal) {
   uint16_t x = vec.X, y = vec.Y, z = vec.Z,
       color = isReal ? COLOR_CYAN : COLOR_BLACK;
-  tft.drawRectangle(x - z + 1, y - z + 1, x + z, y + z, color);
-//  tft.drawCircle(x, y, z, color);
+//  tft.drawRectangle(x - z + 1, y - z + 1, x + z, y + z, color);
+  tft.drawCircle(x, y, z - 1, color);
 }
 /**
  * @brief calcMoving
@@ -27,33 +27,34 @@ void drawBobber(GravVector vec, bool isReal) {
 GravVector calcMoving(GravVector old, GravVector grv) {
   static double vx = 0.0, vy = 0.0;
   static long timePoint = millis();
+  double x = old.X, y = old.Y;
   double dX0 = X0, dX1 = X1, dY0 = ClockY1, dY1 = Y1;
   long deltaTime = millis() - timePoint;
   timePoint += deltaTime;
   double dTime = deltaTime / 500.0;
-  old.X = old.X + vx * dTime + grv.X * dTime * dTime / 2;
-  old.Y = old.Y + vy * dTime + grv.Y * dTime * dTime / 2;
+  old.X = x + vx * dTime + grv.X * dTime * dTime / 2;
+  old.Y = y + vy * dTime + grv.Y * dTime * dTime / 2;
   vx = vx + grv.X * dTime;
   vy = vy + grv.Y * dTime;
   old.Z = 10 + grv.Z * 3;
   if (old.X > (dX1 - old.Z)) {
-    old.X = (dX1 - old.Z) * 2 - old.X;
-//    old.X = dX1 - old.Z;
+//    old.X = (dX1 - old.Z) * 2 - old.X;
+    old.X = x;
     vx = grv.X * dTime - vx;
   }
   if (old.X < (dX0 + old.Z)) {
-    old.X = (old.Z + dX0) * 2 - old.X;
-//    old.X = old.Z + dX0;
+//    old.X = (old.Z + dX0) * 2 - old.X;
+    old.X = x;
     vx = grv.X * dTime - vx;
   }
   if (old.Y > (dY1 - old.Z)) {
-    old.Y = (dY1 - old.Z) * 2 - old.Y;
-//    old.Y = dY1 - old.Z;
+//    old.Y = (dY1 - old.Z) * 2 - old.Y;
+    old.Y = y;
     vy = grv.Y * dTime - vy;
   }
   if (old.Y < (dY0 + old.Z)) {
-    old.Y = (dY0 + old.Z) * 2 - old.Y;
-//    old.Y = dY0 + old.Z;
+//    old.Y = (dY0 + old.Z) * 2 - old.Y;
+    old.Y = y;
     vy = grv.Y * dTime - vy;
   }
 #ifdef HAS_SERIAL
@@ -163,9 +164,9 @@ void accelUpdate(GravVector grav) {
     Serial.print(grav.Z);
     Serial.println(";");
 #endif
-    drawDouble(2,  1, grav.X, COLOR_BLUE);
-    drawDouble(10, 1, grav.Y, COLOR_GREEN);
-    drawDouble(18, 1, grav.Z, COLOR_RED);
+//    drawDouble(2,  1, grav.X, COLOR_BLUE);
+//    drawDouble(10, 1, grav.Y, COLOR_GREEN);
+//    drawDouble(18, 1, grav.Z, COLOR_RED);
     drawBobber(grav);
 }
 #endif
