@@ -3,31 +3,31 @@
  *************************************************/
 
 #define NOTE_P0 3
-// СЃРё
+// си
 #define NOTE_B0  31
-// РґРѕ
+// до
 #define NOTE_C1  33
-// РґРѕ dies
+// до dies
 #define NOTE_CS1 35
-// СЂРµ
+// ре
 #define NOTE_D1  37
-// СЂРµ dies
+// ре dies
 #define NOTE_DS1 39
-// РјРё
+// ми
 #define NOTE_E1  41
-// С„Р°
+// фа
 #define NOTE_F1  44
-// С„Р° dies
+// фа dies
 #define NOTE_FS1 46
-// СЃРѕР»СЊ
+// соль
 #define NOTE_G1  49
-// СЃРѕР»СЊ dies
+// соль dies
 #define NOTE_GS1 52
-// Р»СЏ
+// ля
 #define NOTE_A1  55
-// Р»СЏ dies
+// ля dies
 #define NOTE_AS1 58
-// СЃРё
+// си
 #define NOTE_B1  62
 #define NOTE_C2  65
 #define NOTE_CS2 69

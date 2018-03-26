@@ -169,8 +169,11 @@ void printVolts() {
   drawDouble(23, 2, vCharger, COLOR_BLUEVIOLET);
 }
 
+/**
+ * @brief loop
+ */
 void loop() {
-  static long last = 0L;
+  static long lastTime = 0L;
   if (irControl.hasCode()) {
     long code = irControl.getCode();
     IrControlKey* controlKey = irControl.toControlKey(code);
@@ -202,12 +205,12 @@ void loop() {
   GravVector vec = setOrientation(accelReadVector());
 #endif
   long time = millis();
-  if (last != time / 1000) {
+  if (lastTime != time / 1000) {
     //drawDouble(12, 0, time/1000.0, COLOR_BLUE);
     printRealTime();
     printRealDate();
     printVolts();
-    last = time / 1000;
+    lastTime = time / 1000;
     isChangeOrientation = false;
   }
 #ifdef ADXL345_ENABLED

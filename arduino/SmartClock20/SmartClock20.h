@@ -13,7 +13,7 @@
 
 #define ADXL345_ENABLED
 
-// РїРёРЅ РґР»СЏ Р¶СѓР¶Р°Р»РєРё
+// пин для жужалки
 #define BUZZER_PIN 7
 
 #define TFT_RST 8
