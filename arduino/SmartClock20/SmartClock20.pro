@@ -39,12 +39,12 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
     C:/local/Arduino/hardware/arduino/avr/cores/arduino \
     C:/local/Arduino/hardware/tools/avr/avr/include \
     C:/local/Arduino/hardware/arduino/avr/variants/standard \
-    C:/local/Arduino/hardware/arduino/avr/libraries/EEPROM \
-    C:/local/Arduino/hardware/arduino/avr/libraries/HID \
-    C:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial \
-    C:/local/Arduino/hardware/arduino/avr/libraries/SPI \
-    C:/local/Arduino/hardware/arduino/avr/libraries/Wire \
-    C:/local/Arduino/hardware/arduino/avr/libraries/Wire/utility \
+    C:/local/Arduino/hardware/arduino/avr/libraries/EEPROM/src \
+    C:/local/Arduino/hardware/arduino/avr/libraries/HID/src \
+    C:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/src \
+    C:/local/Arduino/hardware/arduino/avr/libraries/SPI/src \
+    C:/local/Arduino/hardware/arduino/avr/libraries/Wire/src \
+    C:/local/Arduino/hardware/arduino/avr/libraries/Wire/src/utility \
     C:/local/Arduino/libraries/SD/src \
     C:/local/Arduino/libraries/Servo/src
 

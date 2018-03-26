@@ -1,59 +1,163 @@
 /*
 DS3231.cpp: DS3231 Real-Time Clock library
-original code by
 Eric Ayars
 4/1/11
 
-updated to Arduino 1.0 
-John Hubert
-Feb 7, 2012
+Spliced in DateTime all-at-once reading (to avoid rollover) and unix time
+from Jean-Claude Wippler and Limor Fried
+Andy Wickert
+5/15/11
 
 Released into the public domain.
 */
 
 #include <DS3231.h>
 
+// These included for the DateTime class inclusion; will try to find a way to
+// not need them in the future...
+#if defined(__AVR__)
+#include <avr/pgmspace.h>
+#elif defined(ESP8266)
+#include <pgmspace.h>
+#endif
+// Changed the following to work on 1.0
+//#include "WProgram.h"
+#include <Arduino.h>
+
+
 #define CLOCK_ADDRESS 0x68
+
+#define SECONDS_FROM_1970_TO_2000 946684800
+
 
 // Constructor
 DS3231::DS3231() {
 	// nothing to do for this constructor.
 }
 
+// Utilities from JeeLabs/Ladyada
+
+////////////////////////////////////////////////////////////////////////////////
+// utility code, some of this could be exposed in the DateTime API if needed
+
+// DS3231 is smart enough to know this, but keeping it for now so I don't have
+// to rewrite their code. -ADW
+static const uint8_t daysInMonth [] PROGMEM = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+
+// number of days since 2000/01/01, valid for 2001..2099
+static uint16_t date2days(uint16_t y, uint8_t m, uint8_t d) {
+    if (y >= 2000)
+        y -= 2000;
+    uint16_t days = d;
+    for (uint8_t i = 1; i < m; ++i)
+        days += pgm_read_byte(daysInMonth + i - 1);
+    if (m > 2 && y % 4 == 0)
+        ++days;
+    return days + 365 * y + (y + 3) / 4 - 1;
+}
+
+static long time2long(uint16_t days, uint8_t h, uint8_t m, uint8_t s) {
+    return ((days * 24L + h) * 60 + m) * 60 + s;
+}
+
 /***************************************** 
 	Public Functions
  *****************************************/
 
-void DS3231::getTime(byte& year, byte& month, byte& date, byte& DoW, byte& hour, byte& minute, byte& second) {
-	byte tempBuffer;
-	bool PM;
-	bool h12;
+/*******************************************************************************
+ * TO GET ALL DATE/TIME INFORMATION AT ONCE AND AVOID THE CHANCE OF ROLLOVER
+ * DateTime implementation spliced in here from Jean-Claude Wippler's (JeeLabs)
+ * RTClib, as modified by Limor Fried (Ladyada); source code at:
+ * https://github.com/adafruit/RTClib
+ ******************************************************************************/
 
-	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x00));
-	Wire.endTransmission();
-	
-	Wire.requestFrom(CLOCK_ADDRESS, 7);
+////////////////////////////////////////////////////////////////////////////////
+// DateTime implementation - ignores time zones and DST changes
+// NOTE: also ignores leap seconds, see http://en.wikipedia.org/wiki/Leap_second
 
-	second = bcdToDec(Wire.read());
-	minute = bcdToDec(Wire.read());
-	tempBuffer = bcdToDec(Wire.read());
-	h12 = tempBuffer & 0b01000000;
-	if (h12) {
-		PM = tempBuffer & 0b00100000;
-		hour = bcdToDec(tempBuffer & 0b00011111);
-	} else {
-		hour = bcdToDec(tempBuffer & 0b00111111);
-	}
-	DoW = bcdToDec(Wire.read());
-	date = bcdToDec(Wire.read());
-	month = bcdToDec(Wire.read() & 0b01111111);
-	year = bcdToDec(Wire.read());
+DateTime::DateTime (uint32_t t) {
+  t -= SECONDS_FROM_1970_TO_2000;    // bring to 2000 timestamp from 1970
+
+    ss = t % 60;
+    t /= 60;
+    mm = t % 60;
+    t /= 60;
+    hh = t % 24;
+    uint16_t days = t / 24;
+    uint8_t leap;
+    for (yOff = 0; ; ++yOff) {
+        leap = yOff % 4 == 0;
+        if (days < 365 + leap)
+            break;
+        days -= 365 + leap;
+    }
+    for (m = 1; ; ++m) {
+        uint8_t daysPerMonth = pgm_read_byte(daysInMonth + m - 1);
+        if (leap && m == 2)
+            ++daysPerMonth;
+        if (days < daysPerMonth)
+            break;
+        days -= daysPerMonth;
+    }
+    d = days + 1;
 }
+
+DateTime::DateTime (uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec) {
+    if (year >= 2000)
+        year -= 2000;
+    yOff = year;
+    m = month;
+    d = day;
+    hh = hour;
+    mm = min;
+    ss = sec;
+}
+
+static uint8_t conv2d(const char* p) {
+    uint8_t v = 0;
+    if ('0' <= *p && *p <= '9')
+        v = *p - '0';
+    return 10 * v + *++p - '0';
+}
+
+// UNIX time: IS CORRECT ONLY WHEN SET TO UTC!!!
+uint32_t DateTime::unixtime(void) const {
+  uint32_t t;
+  uint16_t days = date2days(yOff, m, d);
+  t = time2long(days, hh, mm, ss);
+  t += SECONDS_FROM_1970_TO_2000;  // seconds from 1970 to 2000
+
+  return t;
+}
+
+// Slightly modified from JeeLabs / Ladyada
+// Get all date/time at once to avoid rollover (e.g., minute/second don't match)
+static uint8_t bcd2bin (uint8_t val) { return val - 6 * (val >> 4); }
+static uint8_t bin2bcd (uint8_t val) { return val + 6 * (val / 10); }
+
+DateTime RTClib::now() {
+  Wire.beginTransmission(CLOCK_ADDRESS);
+  Wire.write(0);	// This is the first register address (Seconds)
+  			// We'll read from here on for 7 bytes: secs reg, minutes reg, hours, days, months and years.
+  Wire.endTransmission();
+  
+  Wire.requestFrom(CLOCK_ADDRESS, 7);
+  uint8_t ss = bcd2bin(Wire.read() & 0x7F);
+  uint8_t mm = bcd2bin(Wire.read());
+  uint8_t hh = bcd2bin(Wire.read());
+  Wire.read();
+  uint8_t d = bcd2bin(Wire.read());
+  uint8_t m = bcd2bin(Wire.read());
+  uint16_t y = bcd2bin(Wire.read()) + 2000;
+  
+  return DateTime (y, m, d, hh, mm, ss);
+}
+
+///// ERIC'S ORIGINAL CODE FOLLOWS /////
 
 byte DS3231::getSecond() {
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x00));
+	Wire.write(0x00);
 	Wire.endTransmission();
 
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
@@ -90,7 +194,7 @@ byte DS3231::getHour(bool& h12, bool& PM) {
 
 byte DS3231::getDoW() {
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x03));
+	Wire.write(0x03);
 	Wire.endTransmission();
 
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
@@ -99,7 +203,7 @@ byte DS3231::getDoW() {
 
 byte DS3231::getDate() {
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x04));
+	Wire.write(0x04);
 	Wire.endTransmission();
 
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
@@ -110,7 +214,7 @@ byte DS3231::getMonth(bool& Century) {
 	byte temp_buffer;
 	byte hour;
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x05));
+	Wire.write(0x05);
 	Wire.endTransmission();
 
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
@@ -121,7 +225,7 @@ byte DS3231::getMonth(bool& Century) {
 
 byte DS3231::getYear() {
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x06));
+	Wire.write(0x06);
 	Wire.endTransmission();
 
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
@@ -133,7 +237,7 @@ void DS3231::setSecond(byte Second) {
 	// This function also resets the Oscillator Stop Flag, which is set
 	// whenever power is interrupted.
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x00));
+	Wire.write(0x00);
 	Wire.write(decToBcd(Second));	
 	Wire.endTransmission();
 	// Clear OSF flag
@@ -144,7 +248,7 @@ void DS3231::setSecond(byte Second) {
 void DS3231::setMinute(byte Minute) {
 	// Sets the minutes 
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x01));
+	Wire.write(0x01);
 	Wire.write(decToBcd(Minute));	
 	Wire.endTransmission();
 }
@@ -157,7 +261,7 @@ void DS3231::setHour(byte Hour) {
 
 	// Start by figuring out what the 12/24 mode is
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x02));
+	Wire.write(0x02);
 	Wire.endTransmission();
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
 	h12 = (Wire.read() & 0b01000000);
@@ -176,7 +280,7 @@ void DS3231::setHour(byte Hour) {
 	}
 
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x02));
+	Wire.write(0x02);
 	Wire.write(Hour);
 	Wire.endTransmission();
 }
@@ -184,7 +288,7 @@ void DS3231::setHour(byte Hour) {
 void DS3231::setDoW(byte DoW) {
 	// Sets the Day of Week
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x03));
+	Wire.write(0x03);
 	Wire.write(decToBcd(DoW));	
 	Wire.endTransmission();
 }
@@ -192,7 +296,7 @@ void DS3231::setDoW(byte DoW) {
 void DS3231::setDate(byte Date) {
 	// Sets the Date
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x04));
+	Wire.write(0x04);
 	Wire.write(decToBcd(Date));	
 	Wire.endTransmission();
 }
@@ -200,7 +304,7 @@ void DS3231::setDate(byte Date) {
 void DS3231::setMonth(byte Month) {
 	// Sets the month
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x05));
+	Wire.write(0x05);
 	Wire.write(decToBcd(Month));	
 	Wire.endTransmission();
 }
@@ -208,7 +312,7 @@ void DS3231::setMonth(byte Month) {
 void DS3231::setYear(byte Year) {
 	// Sets the year
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x06));
+	Wire.write(0x06);
 	Wire.write(decToBcd(Year));	
 	Wire.endTransmission();
 }
@@ -227,7 +331,7 @@ void DS3231::setClockMode(bool h12) {
 
 	// Start by reading byte 0x02.
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x02));
+	Wire.write(0x02);
 	Wire.endTransmission();
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
 	temp_buffer = Wire.read();
@@ -241,7 +345,7 @@ void DS3231::setClockMode(bool h12) {
 
 	// Write the byte
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x02));
+	Wire.write(0x02);
 	Wire.write(temp_buffer);
 	Wire.endTransmission();
 }
@@ -249,20 +353,37 @@ void DS3231::setClockMode(bool h12) {
 float DS3231::getTemperature() {
 	// Checks the internal thermometer on the DS3231 and returns the 
 	// temperature as a floating-point value.
-	byte temp;
-	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x11));
-	Wire.endTransmission();
 
-	Wire.requestFrom(CLOCK_ADDRESS, 2);
-	temp = Wire.read();	// Here's the MSB
-	return float(temp) + 0.25*(Wire.read()>>6);
+  // Updated / modified a tiny bit from "Coding Badly" and "Tri-Again"
+  // http://forum.arduino.cc/index.php/topic,22301.0.html
+  
+  byte tMSB, tLSB;
+  float temp3231;
+  
+  // temp registers (11h-12h) get updated automatically every 64s
+  Wire.beginTransmission(CLOCK_ADDRESS);
+  Wire.write(0x11);
+  Wire.endTransmission();
+  Wire.requestFrom(CLOCK_ADDRESS, 2);
+
+  // Should I do more "if available" checks here?
+  if(Wire.available()) {
+    tMSB = Wire.read(); //2's complement int portion
+    tLSB = Wire.read(); //fraction portion
+
+    temp3231 = ((((short)tMSB << 8) | (short)tLSB) >> 6) / 4.0;
+  }
+  else {
+    temp3231 = -9999; // Some obvious error value
+  }
+   
+  return temp3231;
 }
 
 void DS3231::getA1Time(byte& A1Day, byte& A1Hour, byte& A1Minute, byte& A1Second, byte& AlarmBits, bool& A1Dy, bool& A1h12, bool& A1PM) {
 	byte temp_buffer;
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x07));
+	Wire.write(0x07);
 	Wire.endTransmission();
 
 	Wire.requestFrom(CLOCK_ADDRESS, 4);
@@ -306,7 +427,7 @@ void DS3231::getA1Time(byte& A1Day, byte& A1Hour, byte& A1Minute, byte& A1Second
 void DS3231::getA2Time(byte& A2Day, byte& A2Hour, byte& A2Minute, byte& AlarmBits, bool& A2Dy, bool& A2h12, bool& A2PM) {
 	byte temp_buffer;
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x0b));
+	Wire.write(0x0b);
 	Wire.endTransmission();
 
 	Wire.requestFrom(CLOCK_ADDRESS, 3); 
@@ -345,7 +466,7 @@ void DS3231::setA1Time(byte A1Day, byte A1Hour, byte A1Minute, byte A1Second, by
 	//	Sets the alarm-1 date and time on the DS3231, using A1* information
 	byte temp_buffer;
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x07));	// A1 starts at 07h
+	Wire.write(0x07);	// A1 starts at 07h
 	// Send A1 second and A1M1
 	Wire.write(decToBcd(A1Second) | ((AlarmBits & 0b00000001) << 7));
 	// Send A1 Minute and A1M2
@@ -389,7 +510,7 @@ void DS3231::setA2Time(byte A2Day, byte A2Hour, byte A2Minute, byte AlarmBits, b
 	//	Sets the alarm-2 date and time on the DS3231, using A2* information
 	byte temp_buffer;
 	Wire.beginTransmission(CLOCK_ADDRESS);
-	Wire.write(uint8_t(0x0b));	// A1 starts at 0bh
+	Wire.write(0x0b);	// A1 starts at 0bh
 	// Send A2 Minute and A2M2
 	Wire.write(decToBcd(A2Minute) | ((AlarmBits & 0b00010000) << 3));
 	// Figure out A2 hour 
@@ -564,10 +685,10 @@ byte DS3231::readControlByte(bool which) {
 	Wire.beginTransmission(CLOCK_ADDRESS);
 	if (which) {
 		// second control byte
-		Wire.write(uint8_t(0x0f));
+		Wire.write(0x0f);
 	} else {
 		// first control byte
-		Wire.write(uint8_t(0x0e));
+		Wire.write(0x0e);
 	}
 	Wire.endTransmission();
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
@@ -579,9 +700,9 @@ void DS3231::writeControlByte(byte control, bool which) {
 	// which=false -> 0x0e, true->0x0f.
 	Wire.beginTransmission(CLOCK_ADDRESS);
 	if (which) {
-		Wire.write(uint8_t(0x0f));
+		Wire.write(0x0f);
 	} else {
-		Wire.write(uint8_t(0x0e));
+		Wire.write(0x0e);
 	}
 	Wire.write(control);
 	Wire.endTransmission();

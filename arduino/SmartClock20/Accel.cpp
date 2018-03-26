@@ -15,8 +15,8 @@ ADXL345 accel(ADXL345_ALT);
 void drawBobber(GravVector vec, bool isReal) {
   uint16_t x = vec.X, y = vec.Y, z = vec.Z,
       color = isReal ? COLOR_CYAN : COLOR_BLACK;
-//  tft.drawRectangle(x - z + 1, y - z + 1, x + z, y + z, color);
-  tft.drawCircle(x, y, z - 1, color);
+  tft.drawRectangle(x - z + 1, y - z + 1, x + z, y + z, color);
+//  tft.drawCircle(x, y, z - 1, color);
 }
 /**
  * @brief calcMoving

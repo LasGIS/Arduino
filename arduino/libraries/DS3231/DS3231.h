@@ -5,20 +5,58 @@
  *
  * (c) Eric Ayars
  * 4/1/11
- * Updated to Arduino 1.0 By john Hubert
- * Feb 7 2012
  * released into the public domain. If you use this, please let me know
  * (just out of pure curiosity!) by sending me an email:
  * eric@ayars.org
  *
  */
 
+// Modified by Andy Wickert 5/15/11: Spliced in stuff from RTClib
+
 #ifndef DS3231_h
 #define DS3231_h
 
+// Changed the following to work on 1.0
+//#include "WProgram.h"
 #include <Arduino.h>
+
 #include <Wire.h>
 
+// DateTime (get everything at once) from JeeLabs / Adafruit
+// Simple general-purpose date/time class (no TZ / DST / leap second handling!)
+class DateTime {
+public:
+    DateTime (uint32_t t =0);
+    DateTime (uint16_t year, uint8_t month, uint8_t day,
+                uint8_t hour =0, uint8_t min =0, uint8_t sec =0);
+    DateTime (const char* date, const char* time);
+    uint16_t year() const       { return 2000 + yOff; }
+    uint8_t month() const       { return m; }
+    uint8_t day() const         { return d; }
+    uint8_t hour() const        { return hh; }
+    uint8_t minute() const      { return mm; }
+    uint8_t second() const      { return ss; }
+    uint8_t dayOfTheWeek() const;
+
+    // 32-bit times as seconds since 1/1/2000
+    long secondstime() const;
+    // 32-bit times as seconds since 1/1/1970
+    // THE ABOVE COMMENT IS CORRECT FOR LOCAL TIME; TO USE THIS COMMAND TO
+    // OBTAIN TRUE UNIX TIME SINCE EPOCH, YOU MUST CALL THIS COMMAND AFTER
+    // SETTING YOUR CLOCK TO UTC
+    uint32_t unixtime(void) const;
+
+protected:
+    uint8_t yOff, m, d, hh, mm, ss;
+};
+
+class RTClib {
+  public:
+		// Get date and time snapshot
+    static DateTime now();
+};
+
+// Eric's original code is everything below this line
 class DS3231 {
 	public:
 			
@@ -26,12 +64,8 @@ class DS3231 {
 		DS3231();
 
 		// Time-retrieval functions
-	
+    
 		// the get*() functions retrieve current values of the registers.
-		// If you only need one element, use that one for simplicity; but 
-		// if you need the whole passel then use getTime() to avoid
-		// the chance of rollover between reads of the different components.
-		void getTime(byte& year, byte& month, byte& date, byte& DoW, byte& hour, byte& minute, byte& second); 
 		byte getSecond(); 
 		byte getMinute(); 
 		byte getHour(bool& h12, bool& PM); 
