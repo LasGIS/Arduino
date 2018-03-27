@@ -1,5 +1,5 @@
 /**
- * real time С‡Р°СЃС‹ + РёРє РїСѓР»СЊС‚ + РґР°С‚С‡РёРє РІР»Р°Р¶РЅРѕСЃС‚Рё + Р¶СѓР¶Р°Р»РєР°
+ * real time часы + ик пульт + датчик влажности + жужалка
  */
 
 #include "LcdPanel.h"
@@ -14,27 +14,27 @@
 #include "show_char_screen.h"
 #include "pitches.h"
 
-// СѓРєР°Р·С‹РІР°РµРј РїРёРЅ РґР»СЏ РРљ РґР°С‚С‡РёРєР° 
+// указываем пин для ИК датчика 
 IrControl control(2);
 // initialize the library with the numbers of the interface pins
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
-/** РЅР°СЃС‚СЂР°РёРІР°РµРј real time clock. */
+/** настраиваем real time clock. */
 const int kCePin   = 3;  // Chip Enable
 const int kIoPin   = 4;  // Input/Output
 const int kSclkPin = 5;  // Serial Clock
 DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
-// С‚РµРєСѓС‰Р°СЏ РєРѕРјР°РЅРґР°
+// текущая команда
 uint8_t currentCommand;
 LPModeType mode = show;
 int count = 0;
 
-// РІСЂРµРјСЏ РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С…
+// время в миллисекундах
 unsigned long milliSec;
 char comBuffer[50];
 
-/** РЅР°СЃС‚СЂР°РёРІР°РµРј РёР·РјРµСЂРёС‚РµР»СЊ РІР»Р°Р¶РЅРѕСЃС‚Рё. */
+/** настраиваем измеритель влажности. */
 DHT dht1(7, DHT22);
 DHT dht2(6, DHT22);
 
@@ -95,7 +95,7 @@ void eepromSet() {
   }
 }
 
-/** РїСЂРѕРІРµСЂРёС‚СЊ Р±СѓРґРёР»СЊРЅРёРє  */
+/** проверить будильник  */
 bool checkOnAlarm(Time time) {
   for (int i = 0; i < 4; i++) {
     if (alarmClocks[i].equal(time)) {
@@ -116,11 +116,11 @@ void showAlarm() {
   lcd.clear();
 }
 
-/** РћР±С‰РёР№ С†РёРєР» */
+/** Общий цикл */
 void loop() {
   LcdScreen * screen = screens[currentCommand];
 
-  // РїРѕРєР°Р·С‹РІР°РµРј СЌРєСЂР°РЅ РєР°Р¶РґС‹Рµ 1/10 СЃРµРєСѓРЅРґС‹.
+  // показываем экран каждые 1/10 секунды.
   if (count % 10 == 1 && checkOnAlarm(rtc.time())) {
     showAlarm();
     screen->showOnce();
@@ -128,7 +128,7 @@ void loop() {
   screen->showEveryTime();
 
 
-  // РµСЃР»Рё РЅР°Р¶Р°Р»Рё РєРЅРѕРїРєСѓ
+  // если нажали кнопку
   if (control.hasCode()) {
     static bool isLcdBacklight = true;
     long code = control.getCode();
@@ -146,13 +146,13 @@ void loop() {
       SerialEEPROM();
     }
 
-    // СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ
+    // редактирование
     if (mode == edit) {
       screen->edit(key);
       return;
     }
 
-    // СѓРїСЂР°РІР»РµРЅРёРµ СЌРєСЂР°РЅРѕРј
+    // управление экраном
     switch (key) {
     case 'q':
       if (isLcdBacklight) {
@@ -201,7 +201,7 @@ LcdScreen * changeCurrentCommand(bool isIncrement) {
   return screen;
 }
 
-/** РІРІРѕРґ Р·РЅР°С‡РµРЅРёСЏ РёР·РІРЅРµ.
+/** ввод значения извне.
 void serialEvent() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -222,7 +222,7 @@ void serialEvent() {
 } */
 
 /**
- * РџРѕРєР°Р·С‹РІР°РµРј РїРѕР»СѓС‡РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РРљ РїСѓР»СЊС‚Р° РІ Serial
+ * Показываем полученное значение ИК пульта в Serial
  */
 #ifdef HAS_SERIAL
 void serIRkey(long code, char key) {
@@ -238,7 +238,7 @@ void serIRkey(long code, char key) {
 #endif
 
 /**
- * РџРѕРєР°Р·С‹РІР°РµРј РїРѕР»СѓС‡РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РРљ РїСѓР»СЊС‚Р° РЅР° РґРёСЃРїР»РµРµ
+ * Показываем полученное значение ИК пульта на дисплее
  */
 void lcdIRkey(long code, char key) {
   lcd.setCursor(0, 0);

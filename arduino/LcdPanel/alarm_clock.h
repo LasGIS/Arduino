@@ -5,7 +5,7 @@
 
 class AlarmClock {
 public:
-  // --- РґР°РЅРЅС‹Рµ ---
+  // --- данные ---
   uint8_t number;
   uint8_t active      : 1;
   uint8_t isMonday    : 1;
@@ -17,7 +17,7 @@ public:
   uint8_t isSunday    : 1;
   uint8_t min;
   uint8_t hour;
-// --- РјРµС‚РѕРґС‹ ---
+// --- методы ---
   AlarmClock(uint8_t number);
   void toString(char* str, uint16_t size);
   void eepromSave();

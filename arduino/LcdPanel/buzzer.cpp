@@ -32,7 +32,7 @@ void musicAlarm() {
 }
 
 /**
- * РїРёС‰РёС‚ <del> РјРёР»РёСЃРµРєСѓРЅРґ СЃ С‡Р°СЃС‚РѕС‚РѕР№ <hertz> РіРµСЂС†
+ * пищит <del> милисекунд с частотой <hertz> герц
  */
 void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume) {
   if (soundVolume == 0) return;

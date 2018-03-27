@@ -7,7 +7,7 @@ extern LiquidCrystal_I2C lcd;
 ShowCharScreen::ShowCharScreen(): LcdScreen() { }
 
 /**
- * РџРѕРєР°Р·С‹РІР°РµРј РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕ СЂР°СЃРєР»Р°РґРєСѓ
+ * Показываем последовательно раскладку
  */
 void ShowCharScreen::showOnce() {
   int row = charsRow;

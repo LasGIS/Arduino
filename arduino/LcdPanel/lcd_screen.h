@@ -9,7 +9,7 @@ enum LPModeType : uint8_t {
 
 class LcdField {
 public:
-// --- РґР°РЅРЅС‹Рµ ---
+// --- данные ---
   uint8_t row;
   uint8_t col;
   uint8_t len;
@@ -17,27 +17,27 @@ public:
   uint16_t maxVal;
   uint16_t val;
   const char* (*getValue) (const uint16_t val);
-// --- РјРµС‚РѕРґС‹ ---
+// --- методы ---
   void setValue(int nPosit, char key);
   void showField(int nPosit);
 };
 
 class LcdScreen {
 public:
-// --- РґР°РЅРЅС‹Рµ ---
+// --- данные ---
   uint8_t maxFields;
   uint8_t nField;
   int8_t nPosit;
   LcdField * fields;
-// --- РјРµС‚РѕРґС‹ ---
+// --- методы ---
   LcdScreen();
-  /** РїРѕРєР°Р·С‹РІР°РµРј РєР°Р¶РґС‹Рµ 100 РјСЃ */
+  /** показываем каждые 100 мс */
   virtual void showEveryTime();
-  /** РїРѕРєР°Р·С‹РІР°РµРј РѕРґРёРЅ СЂР°Р· */
+  /** показываем один раз */
   virtual void showOnce();
   virtual void edit(char key);
   virtual void control(char key) {}
-  /** РІС‹С€Р»Рё Р·Р° РїСЂРµРґРµР»С‹ РґРѕР·РІРѕР»РµРЅРЅРѕР№ РѕР±Р»Р°СЃС‚Рё СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ */
+  /** вышли за пределы дозволенной области редактирования */
   virtual void hasBeyond(char key) {}
 };
 

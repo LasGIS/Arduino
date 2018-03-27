@@ -7,7 +7,7 @@ extern LiquidCrystal_I2C lcd;
 extern LPModeType mode;
 
 /**
- * СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р·РЅР°С‡РµРЅРёРµ РїРѕР»СЏ
+ * устанавливаем значение поля
  */
 void LcdField::setValue(int nPosit, char key) {
   byte buf[5];
@@ -44,7 +44,7 @@ void LcdField::setValue(int nPosit, char key) {
 }
 
 /**
- * СЂРёСЃСѓРµРј РѕС‡РµСЂРµРґРЅРѕР№ С„РёР»Рґ
+ * рисуем очередной филд
  */
 void LcdField::showField(int nPosit) {
   char buf[5];
@@ -92,7 +92,7 @@ void LcdScreen::edit(char key) {
   }
 
   switch(key) {
-  case 1: // РЅР°С‡Р°Р»СЊРЅР°СЏ
+  case 1: // начальная
     lcd.clear();
     showOnce();
     lcd.cursor();
@@ -129,8 +129,8 @@ void LcdScreen::edit(char key) {
   case '-':
     fields[nField].setValue(nPosit, key);
     break;
-  case 'p': // Р·Р°РїРёСЃС‹РІР°РµРј Рё РІС‹С…РѕРґРёРј
-  case 'b': // РІС‹С…РѕРґРёРј Р±РµР· Р·Р°РїРёСЃРё
+  case 'p': // записываем и выходим
+  case 'b': // выходим без записи
     lcd.noCursor();
     lcd.noBlink();
     mode = LPModeType::show;

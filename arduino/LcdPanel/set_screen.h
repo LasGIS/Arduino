@@ -5,14 +5,14 @@
 
 class SetScreen : public LcdScreen {
 public:
-  // --- РґР°РЅРЅС‹Рµ ---
+  // --- данные ---
   uint8_t offset = 0;
   uint8_t editRow = 0;
   uint8_t commonMaxFields;
   LcdField * commonFields;
   uint8_t alarmMaxFields;
   LcdField * alarmFields;
-  // --- РјРµС‚РѕРґС‹ ---
+  // --- методы ---
   SetScreen();
   void showOnce();
   void edit(char key);

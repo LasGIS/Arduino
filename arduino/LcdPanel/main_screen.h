@@ -3,7 +3,7 @@
 
 #include "lcd_screen.h"
 
-/* РјРѕРґРµР»СЊ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РґР»СЏ РіР»Р°РІРЅРѕРіРѕ СЌРєСЂР°РЅР° */
+/* модель отображения для главного экрана */
 enum LPShowModeType : uint8_t {
   BigTime = 0,
   DataTime = 1,
@@ -14,9 +14,9 @@ enum LPShowModeType : uint8_t {
 
 class MainScreen : public LcdScreen {
 public:
-// --- РґР°РЅРЅС‹Рµ ---
+// --- данные ---
   LPShowModeType showMode;
-// --- РјРµС‚РѕРґС‹ ---
+// --- методы ---
   MainScreen();
   void showEveryTime();
   void showOnce();

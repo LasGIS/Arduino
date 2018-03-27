@@ -8,9 +8,9 @@
 #define RT_MAX_FIELDS 6
 
 extern LPModeType mode;
-// РІСЂРµРјСЏ РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С…
+// время в миллисекундах
 extern unsigned long milliSec;
-// РѕС‚СЃС‡РµС‚ РІ РіР»Р°РІРЅРѕРј С†РёРєР»Рµ
+// отсчет в главном цикле
 extern int count;
 extern char comBuffer[50];
 extern DS1302 rtc;
@@ -35,13 +35,13 @@ const char* dayAsString(const uint16_t val) {
 MainScreen::MainScreen(): LcdScreen() {
   maxFields = RT_MAX_FIELDS;
   fields = new LcdField[maxFields + 1];
-  fields[0] = {0, 0,  1, 1, 7, 1, dayAsString};   // РґРµРЅСЊ РЅРµРґРµР»Рё
-  fields[1] = {0, 4,  4, 1, 9999, 2015, NULL};    // РіРѕРґ
-  fields[2] = {0, 9,  2, 1, 12, 1, NULL};         // РјРµСЃСЏС†
-  fields[3] = {0, 12, 2, 1, 31, 1, NULL};         // РґРµРЅСЊ РјРµСЃСЏС†Р°
-  fields[4] = {1, 7,  2, 0, 23, 0, NULL};         // С‡Р°СЃ
-  fields[5] = {1, 10, 2, 0, 59, 0, NULL};         // РјРёРЅСѓС‚Р°
-  fields[6] = {1, 13, 2, 0, 59, 0, NULL};         // СЃРµРєСѓРЅРґР°
+  fields[0] = {0, 0,  1, 1, 7, 1, dayAsString};   // день недели
+  fields[1] = {0, 4,  4, 1, 9999, 2015, NULL};    // год
+  fields[2] = {0, 9,  2, 1, 12, 1, NULL};         // месяц
+  fields[3] = {0, 12, 2, 1, 31, 1, NULL};         // день месяца
+  fields[4] = {1, 7,  2, 0, 23, 0, NULL};         // час
+  fields[5] = {1, 10, 2, 0, 59, 0, NULL};         // минута
+  fields[6] = {1, 13, 2, 0, 59, 0, NULL};         // секунда
 
   showMode = (LPShowModeType) EEPROM.read(SHOW_MODE_ADR);
   if (showMode > Battery) {
@@ -58,7 +58,7 @@ void MainScreen::showEveryTime() {
 #endif
 #endif
   if (mode == show) {
-    /* РџРѕРєР°Р·С‹РІР°РµРј РІСЂРµРјСЏ */
+    /* Показываем время */
     unsigned long msec = millis();
     if ((msec - milliSec) / 100 > 0) {
       milliSec = msec;
@@ -74,7 +74,7 @@ void MainScreen::showEveryTime() {
   }
 }
 
-/** РІСЂРµРјРµРЅРЅРђСЏ С‡Р°СЃС‚СЊ. */
+/** временнАя часть. */
 void printOnlyTime(uint8_t row, Time* t) {
   snprintf(comBuffer, sizeof(comBuffer), "Time = %02d:%02d:%02d", t->hr, t->min, t->sec);
   lcd.setCursor(0, row);
@@ -82,7 +82,7 @@ void printOnlyTime(uint8_t row, Time* t) {
 }
 
 /**
- * РІС‹РІРѕРґРёРј РІСЂРµРјСЏ Рё РґР°С‚Сѓ РЅР° LCD.
+ * выводим время и дату на LCD.
  */
 void MainScreen::showOnce() {
   // Get the current time and date from the chip.
@@ -139,19 +139,19 @@ Time MainScreen::Fields2Time() {
 }
 
 /**
- * Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РІСЂРµРјРµРЅРё
+ * Редактирование времени
  */
 void MainScreen::edit(char key) {
   switch(key) {
-  case 1: // РЅР°С‡Р°Р»СЊРЅР°СЏ
+  case 1: // начальная
     Time2Fields(rtc.time());
     break;
-  case 'p': // Р·Р°РїРёСЃС‹РІР°РµРј Рё РІС‹С…РѕРґРёРј
+  case 'p': // записываем и выходим
     // initialize real time clock.
     rtc.writeProtect(false);
     rtc.halt(false);
     rtc.time(Fields2Time());
-  case 'b': // РІС‹С…РѕРґРёРј Р±РµР· Р·Р°РїРёСЃРё
+  case 'b': // выходим без записи
     break;
   }
   LcdScreen::edit(key);
@@ -180,7 +180,7 @@ void MainScreen::control(char key) {
 }
 
 /**
- * РџРѕРєР°Р·С‹РІР°РµРј С‚РµРјРїРµСЂР°С‚СѓСЂСѓ Рё РІР»Р°Р¶РЅРѕСЃС‚СЊ
+ * Показываем температуру и влажность
  */
 void MainScreen::temperatureHumidity() {
   switch (showMode) {
@@ -200,7 +200,7 @@ void MainScreen::temperatureHumidity() {
 }
 
 /**
- * РџРѕРєР°Р·С‹РІР°РµРј С‚РµРјРїРµСЂР°С‚СѓСЂСѓ Рё РІР»Р°Р¶РЅРѕСЃС‚СЊ
+ * Показываем температуру и влажность
  */
 void MainScreen::temperatureHumidity(DHT * dht, char n) {
   double h = dht->readHumidity();
@@ -218,7 +218,7 @@ void MainScreen::temperatureHumidity(DHT * dht, char n) {
 }
 
 /**
- * РџРѕРєР°Р·С‹РІР°РµРј СѓСЂРѕРІРµРЅСЊ Р·Р°СЂСЏРґР° Р±Р°С‚Р°СЂРµРё
+ * Показываем уровень заряда батареи
  */
 void MainScreen::batteryCapasity() {
   static unsigned long startTime = millis();

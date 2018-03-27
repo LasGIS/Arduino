@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-/* Р°РґСЂРµСЃР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РґР°РЅРЅС‹С… РІ EEPROM */
+/* адреса для хранения данных в EEPROM */
 #define CUR_COMMAND_ADR 0
 #define SHOW_MODE_ADR 1
 #define KEY_SOUND_VOLUME_ADR 2
@@ -11,16 +11,16 @@
 #define ALARM_CLOCK_ADR 16
 #define ALARM_CLOCK_ADR_SIZE 4
 
-/* РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РїРёРЅС‹ */
-// РїРёРЅ РґР»СЏ Р¶СѓР¶Р°Р»РєРё
+/* используемые пины */
+// пин для жужалки
 #define BUZZER_PIN 8
 
-// СѓСЃС‚Р°РЅРѕРІРєР° СЂРµР¶РёРјР° РІС‹РІРѕРґР° РѕС‚Р»Р°РґРѕС‡РЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё
+// установка режима вывода отладочной информации
 //#define HAS_SERIAL
 //#define HAS_DEBUG
 
 #define CURRENT_COMMAND_TYPE_MAX 3
-/* С‚РµРєСѓС‰РёР№ СЌРєСЂР°РЅ. */
+/* текущий экран. */
 enum CurrentCommandType : uint8_t {
   mainCommand = 0,
   settingsScreen= 1,

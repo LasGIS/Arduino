@@ -35,8 +35,8 @@ SetScreen::SetScreen(): LcdScreen() {
   }
   commonMaxFields = 1;
   commonFields = new LcdField[commonMaxFields + 1] {
-    {0, 4, 1, 0, 8, 6, NULL},   // СЃРёР»Р° Р·РІСѓРєР° РєРЅРѕРїРѕРє
-    {0, 13, 1, 0, 8, 6, NULL},   // СЃРёР»Р° Р·РІСѓРєР° РєРЅРѕРїРѕРє
+    {0, 4, 1, 0, 8, 6, NULL},   // сила звука кнопок
+    {0, 13, 1, 0, 8, 6, NULL},   // сила звука кнопок
   };
   alarmMaxFields = 9;
   alarmFields = new LcdField[alarmMaxFields + 1] {
@@ -55,7 +55,7 @@ SetScreen::SetScreen(): LcdScreen() {
 }
 
 /**
- * РІС‹РІРѕРґРёРј СЃРѕРґРµСЂР¶РёРјРѕРµ РЅР° LCD.
+ * выводим содержимое на LCD.
  */
 void SetScreen::showOnce() {
   lcd.clear();
@@ -76,16 +76,16 @@ void SetScreen::showOnce() {
 }
 
 /**
- * Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РЅР°СЃС‚СЂРѕРµРє
+ * Редактирование настроек
  */
 void SetScreen::edit(char key) {
   switch(key) {
-  case 1: // РЅР°С‡Р°Р»СЊРЅР°СЏ
+  case 1: // начальная
     load();
     break;
-  case 'p': // Р·Р°РїРёСЃС‹РІР°РµРј Рё РІС‹С…РѕРґРёРј
+  case 'p': // записываем и выходим
     save();
-  case 'b': // РІС‹С…РѕРґРёРј Р±РµР· Р·Р°РїРёСЃРё
+  case 'b': // выходим без записи
     break;
   }
   LcdScreen::edit(key);
@@ -114,7 +114,7 @@ void SetScreen::control(char key) {
 }
 
 /**
- * РІС‹С€Р»Рё Р·Р° РїСЂРµРґРµР»С‹ РґРѕР·РІРѕР»РµРЅРЅРѕР№ РѕР±Р»Р°СЃС‚Рё СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
+ * вышли за пределы дозволенной области редактирования
  */
 void SetScreen::hasBeyond(char key) {
   save();
