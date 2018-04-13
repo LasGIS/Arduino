@@ -180,11 +180,7 @@ void loop() {
     char key = 0;
     if (controlKey != NULL) {
       key = controlKey->key;
-      if (key == 'p') {
-        musicAlarm();
-      } else {
-        buzzerOut(controlKey->tone, 200, keySoundVolume);
-      }
+      buzzerOut(controlKey->tone, 200, keySoundVolume);
     }
     ltoa(code, comBuffer, 16);
     if (key > 0) {
