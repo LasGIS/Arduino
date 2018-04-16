@@ -59,7 +59,8 @@ HEADERS += \
     ../libraries/DS3231/DS3231.h \
     SmartClock20.h \
     pitches.h \
-    note.h
+    note.h \
+    TftScreen.h
 
 DISTFILES += \
     ../libraries/ADXL345/library.json \
