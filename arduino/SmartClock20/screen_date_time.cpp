@@ -34,4 +34,5 @@ void ScreenDateTime::edit(char key) {
 }
 
 void ScreenDateTime::control(char key) {
+  ScreenTft::control(key);
 }

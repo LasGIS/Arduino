@@ -5,7 +5,7 @@
 #include <avr/pgmspace.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <EEPROM.h>
+//#include <EEPROM.h>
 #include <TFT_LG_ILI9225.h>
 #include <IrControl.h>
 #include "screen_tft.h"

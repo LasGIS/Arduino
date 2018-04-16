@@ -21,7 +21,6 @@ SOURCES += \
     ../libraries/DHT-sensor-library-master/DHT.cpp \
     ../libraries/IrControl/IrControl.cpp \
     ../libraries/MsTimer2/MsTimer2.cpp \
-    ../libraries/DS3231/DS3231.cpp \
     SmartClock20.ino \
     Accel.cpp \
     RealTime.cpp \
@@ -58,8 +57,6 @@ HEADERS += \
     ../libraries/ADXL345/src/ADXL345.h \
     ../libraries/DS3231/DS3231.h \
     ../libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.h \
-    ../libraries/DS3231/Examples/DS3231_TEST/DS3231_TEST.ino \
-    ../libraries/DS3231/DS3231.h \
     SmartClock20.h \
     pitches.h \
     note.h \
