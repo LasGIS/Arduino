@@ -20,7 +20,7 @@ Note music[] = {
  *  musicAlarm
  */
 void musicAlarm() {
-  for (int i = 0; i < sizeof(music) / sizeof(int); i++) {
+  for (uint16_t i = 0; i < sizeof(music) / sizeof(Note); i++) {
     Note note = music[i];
 //    Serial.print("note.tone() = ");
 //    Serial.print(note.tone());

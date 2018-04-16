@@ -1,7 +1,11 @@
-#ifndef TFT_SCREEN_H
-#define TFT_SCREEN_H
+#ifndef SCREEN_TFT_H
+#define SCREEN_TFT_H
 
-class TftField {
+enum LPModeType : uint8_t {
+  show, edit
+};
+
+class FieldTft {
 public:
 // --- данные ---
   uint8_t row;
@@ -16,23 +20,23 @@ public:
   void showField(int nPosit);
 };
 
-class TftScreen {
+class ScreenTft {
 public:
 // --- данные ---
   uint8_t maxFields;
   uint8_t nField;
   int8_t nPosit;
-  TftField * fields;
+  FieldTft * fields;
 // --- методы ---
-  TftScreen();
-  /** показываем каждые 100 мс */
+  ScreenTft();
+  /** показываем часто 10 мс */
   virtual void showEveryTime();
-  /** показываем один раз */
+  /** показываем один раз при загрузке */
   virtual void showOnce();
+  /** работа с экраном в режиме редактирования */
   virtual void edit(char key);
-  virtual void control(char key) {}
-  /** вышли за пределы дозволенной области редактирования */
-  virtual void hasBeyond(char key) {}
+  /** работа в обычном режиме */
+  virtual void control(char key);
 };
 
-#endif // TFT_SCREEN_H
+#endif // SCREEN_TFT_H

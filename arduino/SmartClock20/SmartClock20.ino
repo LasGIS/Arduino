@@ -15,6 +15,15 @@ uint16_t clockY;
 uint16_t boxCenterX;
 uint16_t boxCenterY;
 
+// текущая команда
+uint8_t currentCommand;
+LPModeType mode = show;
+
+ScreenTft* screens[NUMBER_OF_SCREENS] = {
+  new ScreenDateTime(),
+  new ScreenTimer()
+};
+
 /**
  * @brief printText вывод текста на экран
  * @param col колонка (x * 6)

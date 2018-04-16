@@ -5,8 +5,13 @@
 #include <avr/pgmspace.h>
 #include <SPI.h>
 #include <Wire.h>
+#include <EEPROM.h>
 #include <TFT_LG_ILI9225.h>
 #include <IrControl.h>
+#include "screen_tft.h"
+#include "screen_date_time.h"
+#include "screen_timer.h"
+
 
 //#define HAS_SERIAL
 //#define HAS_SERIAL_DEBUG
@@ -52,6 +57,9 @@
 #define BOXV_CENTER_Y 109
 #define BOXH_CENTER_X 109
 #define BOXH_CENTER_Y 87
+
+/* количество экранов */
+#define NUMBER_OF_SCREENS 2
 
 extern TFT_LG_ILI9225 tft;
 extern char comBuffer[20];
