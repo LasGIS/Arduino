@@ -18,6 +18,7 @@ SOURCES += \
     ../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.cpp \
     ../libraries/MsTimer2/MsTimer2.cpp \
     ../libraries/ili9341-arduino-master/font.c \
+    LcdPanel.ino \
     alarm_clock.cpp \
     buzzer.cpp \
     CustomChars.cpp \
@@ -52,10 +53,9 @@ HEADERS += \
     ../libraries/IrControl/IrControl.h \
     ../libraries/LiquidCrystal_I2C/LiquidCrystal_I2C.h \
     ../libraries/MsTimer2/MsTimer2.h \
+    LcdPanel.h \
     alarm_clock.h \
     lcd_screen.h \
-    LcdPanel.h \
-    LcdPanel.ino \
     main_screen.h \
     pitches.h \
     set_screen.h \

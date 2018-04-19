@@ -4,6 +4,7 @@
 extern LPModeType mode;
 
 ScreenDateTime::ScreenDateTime(): ScreenTft() {
+  name = "Main  ";
   maxFields = 6;
   fields = new FieldTft[maxFields + 1];
   fields[0] = {0, 0,  1, 1, 7, 1, NULL};   // день недели
@@ -24,6 +25,7 @@ void ScreenDateTime::showEveryTime() {
  * выводим время и дату на LCD.
  */
 void ScreenDateTime::showOnce() {
+  ScreenTft::showOnce();
 }
 
 /**

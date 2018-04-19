@@ -71,6 +71,17 @@ void ScreenTft::showEveryTime() {
 }
 
 void ScreenTft::showOnce() {
+  tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
+//    tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
+//    tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
+//  #ifdef ADXL345_ENABLED
+//    printText(0,  2, "X=", COLOR_GRAY);
+//    printText(8,  2, "Y=", COLOR_GRAY);
+//    printText(16, 2, "Z=", COLOR_GRAY);
+//  #endif
+  printText(0,  1, "Бат.", COLOR_GRAY);
+  printText(11, 1, "Зар.", COLOR_GRAY);
+  printText(22, 1, name, COLOR_RED);
 }
 
 void ScreenTft::control(char key) {

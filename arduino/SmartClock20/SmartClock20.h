@@ -32,11 +32,11 @@
 #define GRAVI_FACTOR 0.8
 #define BOXV_X0 0
 #define BOXV_X1 175
-#define BOXV_Y0 25
+#define BOXV_Y0 17
 #define BOXV_Y1 219
 #define BOXH_X0 0
 #define BOXH_X1 219
-#define BOXH_Y0 25
+#define BOXH_Y0 17
 #define BOXH_Y1 175
 
 #define BOXCLOCKV_X0 12

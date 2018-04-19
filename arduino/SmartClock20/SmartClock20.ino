@@ -16,13 +16,14 @@ uint16_t boxCenterX;
 uint16_t boxCenterY;
 
 // текущая команда
-uint8_t currentCommand;
+uint8_t currentCommand = 0;
 LPModeType mode = show;
 
 ScreenTft* screens[NUMBER_OF_SCREENS] = {
   new ScreenDateTime(),
   new ScreenTimer()
 };
+ScreenTft * screen = screens[currentCommand];
 
 /**
  * @brief printText вывод текста на экран
@@ -110,16 +111,7 @@ GravVector setOrientation(GravVector vec) {
     isChangeOrientation = true;
     tft.clear();
     tft.setOrientation(orientation);
-    tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
-//    tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
-//    tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
-  #ifdef ADXL345_ENABLED
-    printText(0,  1, "X=", COLOR_GRAY);
-    printText(8,  1, "Y=", COLOR_GRAY);
-    printText(16, 1, "Z=", COLOR_GRAY);
-  #endif
-    printText(0,  2, "Батарея=", COLOR_GRAY);
-    printText(15, 2, "Зарядка=", COLOR_GRAY);
+    screen->showOnce();
     oldOrientation = orientation;
   }
 
@@ -174,15 +166,35 @@ void printVolts() {
   Serial.print("vCharger = ");
   Serial.println(vCharger);
 #endif
-  drawDouble(8, 2, vBattery, COLOR_BLUE);
-  drawDouble(23, 2, vCharger, COLOR_BLUEVIOLET);
+  drawDouble(4, 1, vBattery, COLOR_BLUE);
+  drawDouble(15, 1, vCharger, COLOR_BLUEVIOLET);
+}
+
+/**
+ * Показываем полученное значение ИК пульта в Serial
+ */
+void serIRkey(long code, char key) {
+  ltoa(code, comBuffer, 16);
+  if (key > 0) {
+    uint16_t len = strlen(comBuffer);
+    comBuffer[len++] = ' ';
+    comBuffer[len++] = key;
+    comBuffer[len++] = 0;
+  }
+  printText(22, 0, comBuffer, COLOR_CYAN);
+#ifdef HAS_SERIAL_DEBUG
+  Serial.print("IR key = ");
+  Serial.print(key);
+  Serial.print("; code = ");
+  Serial.println(code, HEX);
+#endif
 }
 
 /**
  * @brief loop
  */
 void loop() {
-  static long lastTime = 0L;
+
   if (irControl.hasCode()) {
     long code = irControl.getCode();
     IrControlKey* controlKey = irControl.toControlKey(code);
@@ -191,24 +203,34 @@ void loop() {
       key = controlKey->key;
       buzzerOut(controlKey->tone, 200, keySoundVolume);
     }
-    ltoa(code, comBuffer, 16);
-    if (key > 0) {
-      uint16_t len = strlen(comBuffer);
-      comBuffer[len++] = ' ';
-      comBuffer[len++] = key;
-      comBuffer[len++] = 0;
+    serIRkey(code, key);
+
+    // редактирование
+    if (mode == edit) {
+      screen->edit(key);
+      return;
     }
-    printText(22, 0, comBuffer, COLOR_CYAN);
-#ifdef HAS_SERIAL_DEBUG
-    Serial.print("IR key = ");
-    Serial.print(key);
-    Serial.print("; code = ");
-    Serial.println(code, HEX);
-#endif
+
+    // управление экраном
+    switch (key) {
+    case 'M':
+      screen = changeCurrentCommand(true);
+      break;
+    case 'e':
+      screen = changeCurrentCommand(false);
+      break;
+    default:
+      screen->control(key);
+      /*if (mode == show) {
+        screen->showOnce();
+      }*/
+      break;
+    }
   }
 #ifdef ADXL345_ENABLED
   GravVector vec = setOrientation(accelReadVector());
 #endif
+  static long lastTime = 0L;
   long time = millis();
   if (lastTime != time / 1000) {
     //drawDouble(12, 0, time/1000.0, COLOR_BLUE);
@@ -218,10 +240,24 @@ void loop() {
     lastTime = time / 1000;
     isChangeOrientation = false;
   }
+
+  screen->showEveryTime();
 #ifdef ADXL345_ENABLED
   accelUpdate(vec);
 #endif
   delay(10);
 }
+
+ScreenTft * changeCurrentCommand(bool isIncrement) {
+  if (isIncrement) {
+    currentCommand = (currentCommand < NUMBER_OF_SCREENS - 1) ? currentCommand + 1 : 0;
+  } else {
+    currentCommand = currentCommand > 0 ? currentCommand - 1 : NUMBER_OF_SCREENS - 1;
+  }
+  ScreenTft * screen = screens[currentCommand];
+  screen->showOnce();
+  return screen;
+}
+
 
 

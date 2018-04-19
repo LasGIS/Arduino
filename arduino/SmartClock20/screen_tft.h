@@ -23,6 +23,7 @@ public:
 class ScreenTft {
 public:
 // --- данные ---
+  char * name = "screen";
   uint8_t maxFields;
   uint8_t nField;
   int8_t nPosit;

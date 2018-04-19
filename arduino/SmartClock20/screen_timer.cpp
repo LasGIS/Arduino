@@ -4,6 +4,7 @@
 extern LPModeType mode;
 
 ScreenTimer::ScreenTimer(): ScreenTft() {
+  name = "Timer ";
   maxFields = 2;
   fields = new FieldTft[maxFields + 1];
   fields[0] = {1, 7,  2, 0, 23, 0, NULL};         // час
@@ -20,6 +21,7 @@ void ScreenTimer::showEveryTime() {
  * выводим время и дату на LCD.
  */
 void ScreenTimer::showOnce() {
+  ScreenTft::showOnce();
 }
 
 /**
