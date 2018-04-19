@@ -35,17 +35,17 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
   ../libraries/IrControl \
   ../libraries/LiquidCrystal_I2C \
   ../libraries/MsTimer2 \
-  D:/local/Arduino/hardware/arduino/avr/cores/arduino \
-  D:/local/Arduino/hardware/tools/avr/avr/include \
-  D:/local/Arduino/hardware/arduino/avr/variants/standard \
-  D:/local/Arduino/hardware/arduino/avr/libraries/EEPROM/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/HID/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/SPI/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src \
-  D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src/utility \
-  D:/local/Arduino/libraries/SD/src \
-  D:/local/Arduino/libraries/Servo/src
+  C:/local/Arduino/hardware/arduino/avr/cores/arduino \
+  C:/local/Arduino/hardware/tools/avr/avr/include \
+  C:/local/Arduino/hardware/arduino/avr/variants/standard \
+  C:/local/Arduino/hardware/arduino/avr/libraries/EEPROM/src \
+  C:/local/Arduino/hardware/arduino/avr/libraries/HID/src \
+  C:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/src \
+  C:/local/Arduino/hardware/arduino/avr/libraries/SPI/src \
+  C:/local/Arduino/hardware/arduino/avr/libraries/Wire/src \
+  C:/local/Arduino/hardware/arduino/avr/libraries/Wire/src/utility \
+  C:/local/Arduino/libraries/SD/src \
+  C:/local/Arduino/libraries/Servo/src
 
 HEADERS += \
     ../libraries/arduino-ds1302-master/DS1302.h \
