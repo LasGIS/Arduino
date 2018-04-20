@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-enum LPModeType : uint8_t {
+enum ModeType : uint8_t {
   show, edit
 };
 

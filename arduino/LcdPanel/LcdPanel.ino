@@ -27,7 +27,7 @@ DS1302 rtc(kCePin, kIoPin, kSclkPin);
 
 // текущая команда
 uint8_t currentCommand;
-LPModeType mode = show;
+ModeType mode = show;
 int count = 0;
 
 // время в миллисекундах

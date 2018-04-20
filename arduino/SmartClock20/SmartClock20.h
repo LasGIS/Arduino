@@ -60,7 +60,6 @@
 
 /* количество экранов */
 #define NUMBER_OF_SCREENS 2
-
 extern TFT_LG_ILI9225 tft;
 extern char comBuffer[20];
 extern uint8_t isChangeOrientation;

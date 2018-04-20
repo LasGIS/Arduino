@@ -4,7 +4,7 @@
 #include "lcd_screen.h"
 
 extern LiquidCrystal_I2C lcd;
-extern LPModeType mode;
+extern ModeType mode;
 
 /**
  * устанавливаем значение поля
@@ -99,7 +99,7 @@ void LcdScreen::edit(char key) {
     lcd.blink();
     nField = maxFields;
     nPosit = 0;
-    mode = LPModeType::edit;
+    mode = ModeType::edit;
     break;
   case '>':
     nPosit++;
@@ -133,7 +133,7 @@ void LcdScreen::edit(char key) {
   case 'b': // выходим без записи
     lcd.noCursor();
     lcd.noBlink();
-    mode = LPModeType::show;
+    mode = ModeType::show;
     return;
   }
   fields[nField].showField(nPosit);

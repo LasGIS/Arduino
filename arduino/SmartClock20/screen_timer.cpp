@@ -1,10 +1,10 @@
 #include "SmartClock20.h"
 #include "screen_timer.h"
 
-extern LPModeType mode;
+extern ModeType mode;
 
 ScreenTimer::ScreenTimer(): ScreenTft() {
-  name = "Timer ";
+  name = (char*) "Timer ";
   maxFields = 2;
   fields = new FieldTft[maxFields + 1];
   fields[0] = {1, 7,  2, 0, 23, 0, NULL};         // час

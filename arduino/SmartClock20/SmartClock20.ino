@@ -17,7 +17,7 @@ uint16_t boxCenterY;
 
 // текуща€ команда
 uint8_t currentCommand = 0;
-LPModeType mode = show;
+ModeType mode = show;
 
 ScreenTft* screens[NUMBER_OF_SCREENS] = {
   new ScreenDateTime(),
@@ -60,69 +60,35 @@ void drawDouble(uint16_t col, uint16_t row, double val, uint16_t color) {
  * ѕоправл€ем ориентацию в зависимости от показаний гравитационного датчика
  */
 GravVector setOrientation(GravVector vec) {
-  static uint8_t oldOrientation = -2;
-  static uint8_t orientation = 2;
+  static OrientationType oldOrientation = undefine;
+  static OrientationType orientation = top;
   if (vec.Y > GRAVI_FACTOR) {
-    orientation = 2;
+    orientation = top;
   } else if (vec.Y < -GRAVI_FACTOR) {
-    orientation = 0;
+    orientation = bottom;
   } else if (vec.X > GRAVI_FACTOR) {
-    orientation = 1;
+    orientation = right;
   } else if (vec.X < -GRAVI_FACTOR) {
-    orientation = 3;
+    orientation = left;
   }
-#ifdef HAS_SERIAL
-  Serial.println(orientation);
-#endif
-  switch (orientation) {
-  default:
-  case 2:
-  case 0:
-    X0 = BOXV_X0;
-    X1 = BOXV_X1;
-    Y0 = BOXV_Y0;
-    Y1 = BOXV_Y1;
-    clockX = CLOCKV_X;
-    clockY = CLOCKV_Y;
-    ClockX0 = BOXCLOCKV_X0;
-    ClockX1 = BOXCLOCKV_X1;
-    ClockY0 = BOXCLOCKV_Y0;
-    ClockY1 = BOXCLOCKV_Y1;
-    boxCenterX = BOXV_CENTER_X;
-    boxCenterY = BOXV_CENTER_Y;
-    break;
-  case 1:
-  case 3:
-    X0 = BOXH_X0;
-    X1 = BOXH_X1;
-    Y0 = BOXH_Y0;
-    Y1 = BOXH_Y1;
-    clockX = CLOCKH_X;
-    clockY = CLOCKH_Y;
-    ClockX0 = BOXCLOCKH_X0;
-    ClockX1 = BOXCLOCKH_X1;
-    ClockY0 = BOXCLOCKH_Y0;
-    ClockY1 = BOXCLOCKH_Y1;
-    boxCenterX = BOXH_CENTER_X;
-    boxCenterY = BOXH_CENTER_Y;
-    break;
-  }
+
   if (orientation != oldOrientation) {
     isChangeOrientation = true;
     tft.clear();
     tft.setOrientation(orientation);
+    screen->changeOrientation(orientation);
     screen->showOnce();
     oldOrientation = orientation;
   }
 
   switch (orientation) {
-  case 2:
+  case top:
     return GravVector(vec.X, vec.Y, vec.Z);
-  case 0:
+  case bottom:
     return GravVector(-vec.X, -vec.Y, vec.Z);
-  case 1:
+  case right:
     return GravVector(-vec.Y, vec.X, vec.Z);
-  case 3:
+  case left:
     return GravVector(vec.Y, -vec.X, vec.Z);
   default:
     return vec;

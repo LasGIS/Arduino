@@ -48,7 +48,7 @@ void toTwoChar(uint8_t val, char * str, uint8_t start) {
  * выводим реальное время.
  */
 void printRealTime() {
-  static char * buf = (char *) "xx:xx:xx";
+  static char * buf = (char*) "xx:xx:xx";
   static uint8_t minLast  = 0xff;
   static uint8_t hourLast = 0xff;
   uint8_t sec  = Clock.getSecond();
@@ -81,7 +81,7 @@ void printRealTime() {
  * выводим реальную дату.
  */
 void printRealDate() {
-  static char * buf = (char *) "xx.xx.20xx";
+  static char * buf = (char*) "xx.xx.20xx";
   static uint8_t dateLast   = 0xff;
   static uint8_t monthLast  = 0xff;
   static uint8_t yearLast   = 0xff;

@@ -7,7 +7,7 @@
 
 #define RT_MAX_FIELDS 6
 
-extern LPModeType mode;
+extern ModeType mode;
 // время в миллисекундах
 extern unsigned long milliSec;
 // отсчет в главном цикле

@@ -1,6 +1,6 @@
 #include "SmartClock20.h"
 
-extern LPModeType mode;
+extern ModeType mode;
 
 /**
  * устанавливаем значение поля
@@ -65,6 +65,39 @@ void FieldTft::showField(int nPosit) {
 ScreenTft::ScreenTft() {
   nField = 0;
   nPosit = 0;
+}
+
+void ScreenTft::changeOrientation(OrientationType orientation) {
+#ifdef HAS_SERIAL
+  Serial.println(orientation);
+#endif
+  if (orientation & ORIENTATION_HORISONTAL) {
+    X0 = BOXH_X0;
+    X1 = BOXH_X1;
+    Y0 = BOXH_Y0;
+    Y1 = BOXH_Y1;
+    clockX = CLOCKH_X;
+    clockY = CLOCKH_Y;
+    ClockX0 = BOXCLOCKH_X0;
+    ClockX1 = BOXCLOCKH_X1;
+    ClockY0 = BOXCLOCKH_Y0;
+    ClockY1 = BOXCLOCKH_Y1;
+    boxCenterX = BOXH_CENTER_X;
+    boxCenterY = BOXH_CENTER_Y;
+  } else {
+    X0 = BOXV_X0;
+    X1 = BOXV_X1;
+    Y0 = BOXV_Y0;
+    Y1 = BOXV_Y1;
+    clockX = CLOCKV_X;
+    clockY = CLOCKV_Y;
+    ClockX0 = BOXCLOCKV_X0;
+    ClockX1 = BOXCLOCKV_X1;
+    ClockY0 = BOXCLOCKV_Y0;
+    ClockY1 = BOXCLOCKV_Y1;
+    boxCenterX = BOXV_CENTER_X;
+    boxCenterY = BOXV_CENTER_Y;
+  }
 }
 
 void ScreenTft::showEveryTime() {
