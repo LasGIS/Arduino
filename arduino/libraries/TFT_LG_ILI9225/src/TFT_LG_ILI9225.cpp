@@ -610,6 +610,10 @@ void TFT_LG_ILI9225::setBackgroundColor(uint16_t color) {
   _bgColor = color;
 }
 
+uint16_t TFT_LG_ILI9225::getBackgroundColor() {
+  return _bgColor;
+}
+
 void TFT_LG_ILI9225::setFontSize(uint8_t fontSize) {
   _fontSize = fontSize;
 }

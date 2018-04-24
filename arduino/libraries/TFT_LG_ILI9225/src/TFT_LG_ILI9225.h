@@ -166,6 +166,10 @@ class TFT_LG_ILI9225 {
     /// @param  color background color, default=black
     void setBackgroundColor(uint16_t color = COLOR_BLACK);
 
+    /// Get background color
+    /// @return background color
+    uint16_t getBackgroundColor();
+
     /// Draw line, rectangle coordinates
     /// @param  x1 top left coordinate, x-axis
     /// @param  y1 top left coordinate, y-axis

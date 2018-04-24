@@ -44,10 +44,12 @@ public:
   ScreenTft();
   /** меняется ориентация */
   virtual void changeOrientation(OrientationType orientation);
-  /** показываем часто 10 мс */
-  virtual void showEveryTime();
   /** показываем один раз при загрузке */
   virtual void showOnce();
+  /** показываем раз в секунду */
+  virtual void showTime();
+  /** показываем часто ~10 мс */
+  virtual void showEveryTime();
   /** работа с экраном в режиме редактирования */
   virtual void edit(char key);
   /** работа в обычном режиме */

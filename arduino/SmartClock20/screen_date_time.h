@@ -7,8 +7,9 @@ class ScreenDateTime : public ScreenTft {
 public:
 // --- методы ---
   ScreenDateTime();
+  void showTime();
   void showEveryTime();
-  void showOnce();
+//  void showOnce();
   void edit(char key);
   void control(char key);
 };

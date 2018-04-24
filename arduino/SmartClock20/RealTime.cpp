@@ -63,16 +63,22 @@ void printRealTime() {
     Serial.println(buf);
 #endif
     tft.setFontSize(3);
-    tft.drawText(clockX, clockY, buf, COLOR_TOMATO);
+//    tft.setBackgroundColor(COLOR_GRAY);
+    printText(clockX, clockY, buf, COLOR_TOMATO);
+//    tft.drawText(clockX, clockY, buf, COLOR_TOMATO);
     tft.setFontSize(1);
+//    tft.setBackgroundColor(COLOR_BLACK);
     printText(12, 0, buf, COLOR_WHITE);
     minLast = min;
     hourLast = hour;
   } else {
     toTwoChar(sec, buf, 6);
     tft.setFontSize(3);
-    tft.drawText(clockX + 108, clockY, buf + 6, COLOR_TOMATO);
+//    tft.setBackgroundColor(COLOR_GRAY);
+    printText(clockX + 6, clockY, buf + 6, COLOR_TOMATO);
+//    tft.drawText(clockX + 108, clockY, buf + 6, COLOR_TOMATO);
     tft.setFontSize(1);
+//    tft.setBackgroundColor(COLOR_BLACK);
     printText(18, 0, buf + 6, COLOR_WHITE);
   }
 }

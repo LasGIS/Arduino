@@ -39,19 +39,23 @@
 #define BOXH_Y0 17
 #define BOXH_Y1 175
 
-#define BOXCLOCKV_X0 12
-#define BOXCLOCKV_X1 162
-#define CLOCKV_X 17
-#define BOXCLOCKV_Y0 25
-#define BOXCLOCKV_Y1 55
-#define CLOCKV_Y 30
+#define BOXCLOCKV_X0 13
+#define BOXCLOCKV_X1 163
+#define CLOCKV_X 1
+//#define CLOCKV_X 17
+#define BOXCLOCKV_Y0 19
+#define BOXCLOCKV_Y1 49
+#define CLOCKV_Y 1
+//#define CLOCKV_Y 30
 
-#define BOXCLOCKH_X0 34
-#define BOXCLOCKH_X1 184
-#define CLOCKH_X 39
-#define BOXCLOCKH_Y0 25
-#define BOXCLOCKH_Y1 55
-#define CLOCKH_Y 30
+#define BOXCLOCKH_X0 31
+#define BOXCLOCKH_X1 181
+#define CLOCKH_X 2
+//#define CLOCKH_X 39
+#define BOXCLOCKH_Y0 19
+#define BOXCLOCKH_Y1 49
+#define CLOCKH_Y 1
+//#define CLOCKH_Y 30
 
 #define BOXV_CENTER_X 87
 #define BOXV_CENTER_Y 109
@@ -74,32 +78,26 @@ extern uint8_t keySoundVolume;
 extern void musicAlarm();
 extern void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume);
 extern void printText(uint16_t col, uint16_t row, const char * text, uint16_t color);
+extern void setCursor(uint16_t col, uint16_t row);
 extern void printRealTime();
 extern void printRealDate();
 extern void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color);
 
 class GravVector {
 public:
-  GravVector() {
-    X = 0.0;
-    Y = 0.0;
-    Z = 0.0;
-  }
-  GravVector(double _X, double _Y, double _Z) {
-    X = _X;
-    Y = _Y;
-    Z = _Z;
-  }
+  GravVector();
+  GravVector(double _X, double _Y, double _Z);
+  void set(double _X, double _Y, double _Z);
   double X;
   double Y;
   double Z;
 };
-
+extern GravVector gravVector;
 
 #ifdef ADXL345_ENABLED
 extern void accelBegin();
 extern GravVector accelReadVector();
-extern void accelUpdate(GravVector vec);
+extern void accelUpdate();
 #endif
 
 #endif // SMARTCLOCK20_H

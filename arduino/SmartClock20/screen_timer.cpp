@@ -12,25 +12,29 @@ ScreenTimer::ScreenTimer(): ScreenTft() {
   fields[2] = {1, 13, 2, 0, 59, 0, NULL};         // секунда
 }
 
-void ScreenTimer::showEveryTime() {
+void ScreenTimer::showTime() {
+  ScreenTft::showTime();
+}
+
+/*void ScreenTimer::showEveryTime() {
   if (mode == show) {
   }
-}
+}*/
 
 /**
- * выводим время и дату на LCD.
+ *
  */
-void ScreenTimer::showOnce() {
+/*void ScreenTimer::showOnce() {
   ScreenTft::showOnce();
-}
+}*/
 
 /**
- * Редактирование времени
+ * Редактирование
  */
 void ScreenTimer::edit(char key) {
   ScreenTft::edit(key);
 }
 
-void ScreenTimer::control(char key) {
+/*void ScreenTimer::control(char key) {
   ScreenTft::control(key);
-}
+}*/

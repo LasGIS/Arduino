@@ -16,20 +16,27 @@ ScreenDateTime::ScreenDateTime(): ScreenTft() {
   fields[6] = {1, 13, 2, 0, 59, 0, NULL};         // секунда
 }
 
+void ScreenDateTime::showTime() {
+  ScreenTft::showTime();
+}
+
 void ScreenDateTime::showEveryTime() {
   if (mode == show) {
+#ifdef ADXL345_ENABLED
+    accelUpdate();
+#endif
   }
 }
 
 /**
- * выводим время и дату на LCD.
+ *
  */
-void ScreenDateTime::showOnce() {
+/*void ScreenDateTime::showOnce() {
   ScreenTft::showOnce();
-}
+}*/
 
 /**
- * Редактирование времени
+ *
  */
 void ScreenDateTime::edit(char key) {
   ScreenTft::edit(key);

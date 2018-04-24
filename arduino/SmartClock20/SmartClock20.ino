@@ -14,6 +14,7 @@ uint16_t clockX;
 uint16_t clockY;
 uint16_t boxCenterX;
 uint16_t boxCenterY;
+GravVector gravVector;
 
 // текущая команда
 uint8_t currentCommand = 0;
@@ -40,6 +41,22 @@ void printText(uint16_t col, uint16_t row, const char * text, uint16_t color) {
 }
 
 /**
+ * @brief setCursor
+ * @param col колонка (x * 6)
+ * @param row строка (y * 8)
+ */
+void setCursor(uint16_t col, uint16_t row) {
+  static uint16_t x0 = -1, x1 = -1, y0 = -1, y1 = -1;
+  uint8_t fontSize = tft.getFontSize();
+  tft.drawRectangle(x0, y0, x1, y1, tft.getBackgroundColor());
+  x0 = col * fontSize * FONT_SPACE;
+  x1 = x0 + fontSize * FONT_SPACE;
+  y0 = row * fontSize * FONT_Y;
+  y1 = y0 + fontSize * FONT_Y;
+  tft.drawRectangle(x0, y0, x1, y1, COLOR_MAGENTA);
+}
+
+/**
  * @brief drawDouble
  * @param x
  * @param y
@@ -59,7 +76,7 @@ void drawDouble(uint16_t col, uint16_t row, double val, uint16_t color) {
  * @brief setOrientation
  * Поправляем ориентацию в зависимости от показаний гравитационного датчика
  */
-GravVector setOrientation(GravVector vec) {
+void setOrientation(GravVector vec) {
   static OrientationType oldOrientation = undefine;
   static OrientationType orientation = top;
   if (vec.Y > GRAVI_FACTOR) {
@@ -72,6 +89,22 @@ GravVector setOrientation(GravVector vec) {
     orientation = left;
   }
 
+  switch (orientation) {
+  case top:
+  default:
+    gravVector.set(vec.X, vec.Y, vec.Z);
+    break;
+  case bottom:
+    gravVector.set(-vec.X, -vec.Y, vec.Z);
+    break;
+  case right:
+    gravVector.set(-vec.Y, vec.X, vec.Z);
+    break;
+  case left:
+    gravVector.set(vec.Y, -vec.X, vec.Z);
+    break;
+  }
+
   if (orientation != oldOrientation) {
     isChangeOrientation = true;
     tft.clear();
@@ -79,19 +112,6 @@ GravVector setOrientation(GravVector vec) {
     screen->changeOrientation(orientation);
     screen->showOnce();
     oldOrientation = orientation;
-  }
-
-  switch (orientation) {
-  case top:
-    return GravVector(vec.X, vec.Y, vec.Z);
-  case bottom:
-    return GravVector(-vec.X, -vec.Y, vec.Z);
-  case right:
-    return GravVector(-vec.Y, vec.X, vec.Z);
-  case left:
-    return GravVector(vec.Y, -vec.X, vec.Z);
-  default:
-    return vec;
   }
 }
 
@@ -111,29 +131,6 @@ void setup() {
 #else
   setOrientation(GravVector());
 #endif
-}
-
-/**
- * выводим батарейки.
- */
-void printVolts() {
-  // 1 сборка
-  double vBattery = analogRead(A7) * 0.00664;
-  double vCharger = analogRead(A6) * 0.00664;
-  // 2 сборка
-//  double vBattery = analogRead(A7) * 0.00661;
-//  double vCharger = analogRead(A6) * 0.00654;
-  // 3 сборка
-//  double vBattery = analogRead(A7) * 0.00631;
-//  double vCharger = analogRead(A6) * 0.00630;
-#ifdef HAS_SERIAL
-  Serial.print("vBattery = ");
-  Serial.println(vBattery);
-  Serial.print("vCharger = ");
-  Serial.println(vCharger);
-#endif
-  drawDouble(4, 1, vBattery, COLOR_BLUE);
-  drawDouble(15, 1, vCharger, COLOR_BLUEVIOLET);
 }
 
 /**
@@ -179,11 +176,13 @@ void loop() {
 
     // управление экраном
     switch (key) {
+    // меняем режим
     case 'M':
-      screen = changeCurrentCommand(true);
+      mode = ModeType::edit;
       break;
+    // меняем экран
     case 'e':
-      screen = changeCurrentCommand(false);
+      screen = changeCurrentCommand(true);
       break;
     default:
       screen->control(key);
@@ -194,23 +193,18 @@ void loop() {
     }
   }
 #ifdef ADXL345_ENABLED
-  GravVector vec = setOrientation(accelReadVector());
+  setOrientation(accelReadVector());
 #endif
   static long lastTime = 0L;
   long time = millis();
   if (lastTime != time / 1000) {
     //drawDouble(12, 0, time/1000.0, COLOR_BLUE);
-    printRealTime();
-    printRealDate();
-    printVolts();
+    screen->showTime();
     lastTime = time / 1000;
     isChangeOrientation = false;
   }
 
   screen->showEveryTime();
-#ifdef ADXL345_ENABLED
-  accelUpdate(vec);
-#endif
   delay(10);
 }
 

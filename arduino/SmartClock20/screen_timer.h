@@ -7,10 +7,11 @@ class ScreenTimer : public ScreenTft {
 public:
 // --- методы ---
   ScreenTimer();
-  void showEveryTime();
-  void showOnce();
+  void showTime();
+//  void showEveryTime();
+//  void showOnce();
   void edit(char key);
-  void control(char key);
+//  void control(char key);
 };
 
 #endif // SCREEN_TIMER_H

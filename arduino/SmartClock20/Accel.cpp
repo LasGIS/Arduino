@@ -5,6 +5,19 @@
 
 ADXL345 accel(ADXL345_ALT);
 
+GravVector::GravVector() {
+  set(0.0, 0.0, 0.0);
+}
+GravVector::GravVector(double _X, double _Y, double _Z) {
+  set(_X, _Y, _Z);
+}
+void GravVector::set(double _X, double _Y, double _Z) {
+  X = _X;
+  Y = _Y;
+  Z = _Z;
+}
+
+
 /**
  * @brief drawBobber
  * @param X
@@ -155,18 +168,18 @@ GravVector accelReadVector() {
 /**
  * @brief accelUpdate
  */
-void accelUpdate(GravVector grav) {
+void accelUpdate() {
 #ifdef HAS_SERIAL
-    Serial.print(grav.X);
+    Serial.print(gravVector.X);
     Serial.print(",");
-    Serial.print(grav.Y);
+    Serial.print(gravVector.Y);
     Serial.print(",");
-    Serial.print(grav.Z);
+    Serial.print(gravVector.Z);
     Serial.println(";");
 #endif
 //    drawDouble(2,  1, grav.X, COLOR_BLUE);
 //    drawDouble(10, 1, grav.Y, COLOR_GREEN);
 //    drawDouble(18, 1, grav.Z, COLOR_RED);
-    drawBobber(grav);
+    drawBobber(gravVector);
 }
 #endif

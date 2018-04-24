@@ -3,6 +3,29 @@
 extern ModeType mode;
 
 /**
+ * выводим батарейки.
+ */
+void printVolts() {
+  // 1 сборка
+  double vBattery = analogRead(A7) * 0.00664;
+  double vCharger = analogRead(A6) * 0.00664;
+  // 2 сборка
+//  double vBattery = analogRead(A7) * 0.00661;
+//  double vCharger = analogRead(A6) * 0.00654;
+  // 3 сборка
+//  double vBattery = analogRead(A7) * 0.00631;
+//  double vCharger = analogRead(A6) * 0.00630;
+#ifdef HAS_SERIAL
+  Serial.print("vBattery = ");
+  Serial.println(vBattery);
+  Serial.print("vCharger = ");
+  Serial.println(vCharger);
+#endif
+  drawDouble(4, 1, vBattery, COLOR_BLUE);
+  drawDouble(15, 1, vCharger, COLOR_BLUEVIOLET);
+}
+
+/**
  * устанавливаем значение поля
  */
 void FieldTft::setValue(int nPosit, char key) {
@@ -45,10 +68,9 @@ void FieldTft::setValue(int nPosit, char key) {
  * рисуем очередной филд
  */
 void FieldTft::showField(int nPosit) {
-/*  char buf[5];
-  lcd.setCursor(col, row);
+  char buf[5];
   if (getValue != NULL) {
-    lcd.print(getValue(val));
+    printText(col, row, getValue(val), COLOR_INDIGO);
   } else {
     int _val = val;
     buf[len] = 0;
@@ -56,10 +78,9 @@ void FieldTft::showField(int nPosit) {
       buf[i] = '0' + _val % 10;
       _val = _val / 10;
     }
-    lcd.print(buf);
+    printText(col, row, buf, COLOR_INDIGO);
   }
-  lcd.setCursor(col + nPosit, row);
-*/
+  setCursor(col + nPosit, row);
 }
 
 ScreenTft::ScreenTft() {
@@ -100,6 +121,12 @@ void ScreenTft::changeOrientation(OrientationType orientation) {
   }
 }
 
+void ScreenTft::showTime() {
+  printRealTime();
+  printRealDate();
+  printVolts();
+}
+
 void ScreenTft::showEveryTime() {
 }
 
@@ -133,16 +160,13 @@ void ScreenTft::edit(char key) {
     fields[nField].showField(nPosit);
     key = '>';
   }
-/*
   switch(key) {
   case 1: // начальная
-    lcd.clear();
+    tft.clear();
     showOnce();
-    lcd.cursor();
-    lcd.blink();
     nField = maxFields;
     nPosit = 0;
-    mode = LPModeType::edit;
+    mode = ModeType::edit;
     break;
   case '>':
     nPosit++;
@@ -152,7 +176,7 @@ void ScreenTft::edit(char key) {
         nPosit = 0;
       } else {
         nPosit--;
-        hasBeyond(key);
+//        hasBeyond(key);
       }
     }
     break;
@@ -163,7 +187,7 @@ void ScreenTft::edit(char key) {
         nField--;
       } else {
         nPosit++;
-        hasBeyond(key);
+//        hasBeyond(key);
       }
       nPosit = fields[nField].len - 1;
     }
@@ -172,13 +196,10 @@ void ScreenTft::edit(char key) {
   case '-':
     fields[nField].setValue(nPosit, key);
     break;
-  case 'p': // записываем и выходим
-  case 'b': // выходим без записи
-    lcd.noCursor();
-    lcd.noBlink();
-    mode = LPModeType::show;
+  case 'M': // записываем и выходим
+  case 'p': // выходим без записи
+    mode = ModeType::show;
     return;
   }
   fields[nField].showField(nPosit);
-*/
 }
