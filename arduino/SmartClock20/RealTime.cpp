@@ -54,7 +54,7 @@ void printRealTime() {
   uint8_t sec  = Clock.getSecond();
   uint8_t min  = Clock.getMinute();
   uint8_t hour = Clock.getHour(h12, PM);
-  if (isChangeOrientation || minLast != min || hourLast != hour) {
+  if (isRedraw || minLast != min || hourLast != hour) {
     toTwoChar(hour, buf, 0);
     toTwoChar(min, buf, 3);
     toTwoChar(sec, buf, 6);
@@ -94,7 +94,7 @@ void printRealDate() {
   uint8_t date   = Clock.getDate();
   uint8_t month  = Clock.getMonth(Century);
   uint8_t year   = Clock.getYear();
-  if (isChangeOrientation || dateLast != date || monthLast != month || yearLast != year) {
+  if (isRedraw || dateLast != date || monthLast != month || yearLast != year) {
     toTwoChar(date, buf, 0);
     toTwoChar(month, buf, 3);
     toTwoChar(year, buf, 8);

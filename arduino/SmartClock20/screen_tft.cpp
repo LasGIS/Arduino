@@ -162,10 +162,6 @@ void ScreenTft::edit(char key) {
   }
   switch(key) {
   case 1: // начальная
-    tft.clear();
-    showOnce();
-    nField = maxFields;
-    nPosit = 0;
     mode = ModeType::edit;
     break;
   case '>':

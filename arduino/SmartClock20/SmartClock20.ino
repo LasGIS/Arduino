@@ -7,7 +7,7 @@ TFT_LG_ILI9225 tft(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
 IrControl irControl(2);
 
 char comBuffer[20];
-uint8_t isChangeOrientation = true;
+uint8_t isRedraw = true;
 uint16_t X0, X1, Y0, Y1;
 uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
 uint16_t clockX;
@@ -35,8 +35,8 @@ ScreenTft * screen = screens[currentCommand];
  */
 void printText(uint16_t col, uint16_t row, const char * text, uint16_t color) {
   uint8_t fontSize = tft.getFontSize();
-  uint16_t x = col * fontSize * FONT_SPACE;
-  uint16_t y = row * fontSize * FONT_Y;
+  uint16_t x = col * fontSize * FONT_SPACE + 1,
+           y = row * fontSize * FONT_Y + 1;
   tft.drawText(x, y, text, color);
 }
 
@@ -106,7 +106,7 @@ void setOrientation(GravVector vec) {
   }
 
   if (orientation != oldOrientation) {
-    isChangeOrientation = true;
+    isRedraw = true;
     tft.clear();
     tft.setOrientation(orientation);
     screen->changeOrientation(orientation);
@@ -178,7 +178,7 @@ void loop() {
     switch (key) {
     // меняем режим
     case 'M':
-      mode = ModeType::edit;
+      screen->edit(1);
       break;
     // меняем экран
     case 'e':
@@ -192,19 +192,21 @@ void loop() {
       break;
     }
   }
+  if (mode == show) {
 #ifdef ADXL345_ENABLED
-  setOrientation(accelReadVector());
+    setOrientation(accelReadVector());
 #endif
-  static long lastTime = 0L;
-  long time = millis();
-  if (lastTime != time / 1000) {
-    //drawDouble(12, 0, time/1000.0, COLOR_BLUE);
-    screen->showTime();
-    lastTime = time / 1000;
-    isChangeOrientation = false;
-  }
+    static long lastTime = 0L;
+    long time = millis();
+    if (lastTime != time / 1000) {
+      //drawDouble(12, 0, time/1000.0, COLOR_BLUE);
+      screen->showTime();
+      lastTime = time / 1000;
+      isRedraw = false;
+    }
 
-  screen->showEveryTime();
+    screen->showEveryTime();
+  }
   delay(10);
 }
 

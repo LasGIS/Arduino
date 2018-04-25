@@ -66,7 +66,7 @@
 #define NUMBER_OF_SCREENS 2
 extern TFT_LG_ILI9225 tft;
 extern char comBuffer[20];
-extern uint8_t isChangeOrientation;
+extern uint8_t isRedraw;
 extern uint16_t X0, X1, Y0, Y1;
 extern uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
 extern uint16_t clockX;
