@@ -1,8 +1,6 @@
 #include "SmartClock20.h"
 #include "screen_date_time.h"
 
-extern ModeType mode;
-
 ScreenDateTime::ScreenDateTime(): ScreenTft() {
   name = (char*) "Main  ";
   maxFields = 6;
@@ -16,16 +14,19 @@ ScreenDateTime::ScreenDateTime(): ScreenTft() {
   fields[6] = {1, 13, 2, 0, 59, 0, NULL};         // секунда
 }
 
-void ScreenDateTime::showTime() {
-  ScreenTft::showTime();
+void ScreenDateTime::showTime(DateTime * dateTime) {
+  printBigTime(
+    dateTime->hour(),
+    dateTime->minute(),
+    dateTime->second()
+  );
+  ScreenTft::showTime(dateTime);
 }
 
 void ScreenDateTime::showEveryTime() {
-  if (mode == show) {
 #ifdef ADXL345_ENABLED
     accelUpdate();
 #endif
-  }
 }
 
 /**

@@ -1,7 +1,5 @@
 #include "SmartClock20.h"
 
-extern ModeType mode;
-
 /**
  * выводим батарейки.
  */
@@ -121,8 +119,12 @@ void ScreenTft::changeOrientation(OrientationType orientation) {
   }
 }
 
-void ScreenTft::showTime() {
-  printRealTime();
+void ScreenTft::showTime(DateTime * dateTime) {
+  printShortTime(
+    dateTime->hour(),
+    dateTime->minute(),
+    dateTime->second()
+  );
   printRealDate();
   printVolts();
 }
@@ -193,7 +195,7 @@ void ScreenTft::edit(char key) {
     fields[nField].setValue(nPosit, key);
     break;
   case 'M': // записываем и выходим
-  case 'p': // выходим без записи
+  case 'r': // выходим без записи
     mode = ModeType::show;
     return;
   }

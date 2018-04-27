@@ -3,9 +3,10 @@
 
 #include <Arduino.h>
 #include <avr/pgmspace.h>
-#include <SPI.h>
-#include <Wire.h>
 //#include <EEPROM.h>
+#include <SPI.h>
+#include <DS3231.h>
+#include <Wire.h>
 #include <TFT_LG_ILI9225.h>
 #include <IrControl.h>
 #include "screen_tft.h"
@@ -65,21 +66,28 @@
 /* количество экранов */
 #define NUMBER_OF_SCREENS 2
 extern TFT_LG_ILI9225 tft;
+extern DS3231 Clock;
 extern char comBuffer[20];
+extern ModeType mode;
 extern uint8_t isRedraw;
+extern uint8_t keySoundVolume;
+
 extern uint16_t X0, X1, Y0, Y1;
 extern uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
 extern uint16_t clockX;
 extern uint16_t clockY;
 extern uint16_t boxCenterX;
 extern uint16_t boxCenterY;
-extern uint8_t keySoundVolume;
+
+extern bool Century;
+extern bool h12, PM;
 
 extern void musicAlarm();
 extern void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume);
 extern void printText(uint16_t col, uint16_t row, const char * text, uint16_t color);
 extern void setCursor(uint16_t col, uint16_t row);
-extern void printRealTime();
+extern void printShortTime(uint8_t hour, uint8_t min, uint8_t sec);
+extern void printBigTime  (uint8_t hour, uint8_t min, uint8_t sec);
 extern void printRealDate();
 extern void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color);
 

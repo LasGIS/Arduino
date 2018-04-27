@@ -41,8 +41,8 @@ IrControlKey irControlKeyMap[] {
   {'>', 0xFFA857, 330}, // tape forward
   {'p', 0xFF906F, 349}, // pause
 
- {'\\', 0xFF6897, 370}, // уменьшение
-  {'/', 0xFF9867, 392}, // увеличение
+  {'-', 0xFF6897, 370}, // уменьшение
+  {'+', 0xFF9867, 392}, // увеличение
   {'0', 0xFFB04F, 415},
   {'1', 0xFF30CF, 440},
   {'2', 0xFF18E7, 466},
@@ -52,7 +52,7 @@ IrControlKey irControlKeyMap[] {
   {'6', 0xFF5AA5, 587},
   {'7', 0xFF42BD, 622},
   {'8', 0xFF4AB5, 659},
-  {'9', 0xFF52AD, 698}
+  {'9', 0xFF52AD, 698},
 };
 #endif
 

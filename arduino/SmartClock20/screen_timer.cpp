@@ -1,11 +1,4 @@
 #include "SmartClock20.h"
-#include <DS3231.h>
-#include "screen_timer.h"
-
-extern ModeType mode;
-extern DS3231 Clock;
-extern bool Century;
-extern bool h12, PM;
 
 ScreenTimer::ScreenTimer(): ScreenTft() {
   name = (char*) "Timer ";
@@ -16,21 +9,16 @@ ScreenTimer::ScreenTimer(): ScreenTft() {
   fields[2] = {0, 18, 2, 0, 59, 0, NULL};         // секунда
 }
 
-void ScreenTimer::showTime() {
-  ScreenTft::showTime();
+void ScreenTimer::showTime(DateTime * dateTime) {
+  ScreenTft::showTime(dateTime);
 }
 
-/*void ScreenTimer::showEveryTime() {
-  if (mode == show) {
-  }
-}*/
+void ScreenTimer::showEveryTime() {
+}
 
-/**
- *
- */
-/*void ScreenTimer::showOnce() {
+void ScreenTimer::showOnce() {
   ScreenTft::showOnce();
-}*/
+}
 
 /**
  * Редактирование

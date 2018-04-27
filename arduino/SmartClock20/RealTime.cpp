@@ -1,10 +1,9 @@
 #include "SmartClock20.h"
-#include <DS3231.h>
-//#include <Wire.h>
 
 DS3231 Clock;
 bool Century = false;
 bool h12, PM;
+char * bufTime = (char*) "xx:xx:xx";
 
 /*
 void ReadDS3231() {
@@ -45,42 +44,44 @@ void toTwoChar(uint8_t val, char * str, uint8_t start) {
 }
 
 /**
- * выводим реальное время.
+ * выводим короткое время (в заголовок).
  */
-void printRealTime() {
-  static char * buf = (char*) "xx:xx:xx";
+void printShortTime(uint8_t hour, uint8_t min, uint8_t sec) {
   static uint8_t minLast  = 0xff;
   static uint8_t hourLast = 0xff;
-  uint8_t sec  = Clock.getSecond();
-  uint8_t min  = Clock.getMinute();
-  uint8_t hour = Clock.getHour(h12, PM);
   if (isRedraw || minLast != min || hourLast != hour) {
-    toTwoChar(hour, buf, 0);
-    toTwoChar(min, buf, 3);
-    toTwoChar(sec, buf, 6);
-
-#ifdef HAS_SERIAL
-    Serial.println(buf);
-#endif
-    tft.setFontSize(3);
-//    tft.setBackgroundColor(COLOR_GRAY);
-    printText(clockX, clockY, buf, COLOR_TOMATO);
-//    tft.drawText(clockX, clockY, buf, COLOR_TOMATO);
-    tft.setFontSize(1);
-//    tft.setBackgroundColor(COLOR_BLACK);
-    printText(12, 0, buf, COLOR_WHITE);
+    toTwoChar(hour, bufTime, 0);
+    toTwoChar(min, bufTime, 3);
+    toTwoChar(sec, bufTime, 6);
+    printText(12, 0, bufTime, COLOR_WHITE);
     minLast = min;
     hourLast = hour;
   } else {
-    toTwoChar(sec, buf, 6);
-    tft.setFontSize(3);
-//    tft.setBackgroundColor(COLOR_GRAY);
-    printText(clockX + 6, clockY, buf + 6, COLOR_TOMATO);
-//    tft.drawText(clockX + 108, clockY, buf + 6, COLOR_TOMATO);
-    tft.setFontSize(1);
-//    tft.setBackgroundColor(COLOR_BLACK);
-    printText(18, 0, buf + 6, COLOR_WHITE);
+    toTwoChar(sec, bufTime, 6);
+    printText(18, 0, bufTime + 6, COLOR_WHITE);
   }
+}
+
+/**
+ * выводим большое время (посередине).
+ */
+void printBigTime(uint8_t hour, uint8_t min, uint8_t sec) {
+  static uint8_t minLast  = 0xff;
+  static uint8_t hourLast = 0xff;
+  tft.setFontSize(3);
+//  tft.setBackgroundColor(COLOR_GRAY);
+  if (isRedraw || minLast != min || hourLast != hour) {
+    toTwoChar(hour, bufTime, 0);
+    toTwoChar(min, bufTime, 3);
+    toTwoChar(sec, bufTime, 6);
+    printText(clockX, clockY, bufTime, COLOR_TOMATO);
+    minLast = min;
+    hourLast = hour;
+  } else {
+    toTwoChar(sec, bufTime, 6);
+    printText(clockX + 6, clockY, bufTime + 6, COLOR_TOMATO);
+  }
+  tft.setFontSize(1);
 }
 
 /**

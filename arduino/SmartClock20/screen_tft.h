@@ -47,7 +47,7 @@ public:
   /** показываем один раз при загрузке */
   virtual void showOnce();
   /** показываем раз в секунду */
-  virtual void showTime();
+  virtual void showTime(DateTime * dateTime);
   /** показываем часто ~10 мс */
   virtual void showEveryTime();
   /** работа с экраном в режиме редактирования */

@@ -200,7 +200,8 @@ void loop() {
     long time = millis();
     if (lastTime != time / 1000) {
       //drawDouble(12, 0, time/1000.0, COLOR_BLUE);
-      screen->showTime();
+      DateTime dateTime = RTClib().now();
+      screen->showTime(&dateTime);
       lastTime = time / 1000;
       isRedraw = false;
     }
