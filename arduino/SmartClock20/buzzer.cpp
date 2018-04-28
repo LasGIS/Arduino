@@ -22,10 +22,12 @@ Note music[] = {
 void musicAlarm() {
   for (uint16_t i = 0; i < sizeof(music) / sizeof(Note); i++) {
     Note note = music[i];
-//    Serial.print("note.tone() = ");
-//    Serial.print(note.tone());
-//    Serial.print("; note.delay() = ");
-//    Serial.println(note.delay());
+#ifdef HAS_SERIAL
+    Serial.print("note.tone() = ");
+    Serial.print(note.tone());
+    Serial.print("; note.delay() = ");
+    Serial.println(note.delay());
+#endif
     buzzerOut(note.tone(), note.delay(), musicSoundVolume);
     delay(30);
   }
@@ -42,7 +44,7 @@ void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume) {
   uint32_t delayHigh = 0x1 << (soundVolume - 1);
   uint32_t delayLow = (delayVal) - delayHigh;
   int noteCount = (del * 500) / delayVal;
-//#ifdef HAS_SERIAL
+#ifdef HAS_SERIAL
   Serial.print(delayVal);
   Serial.print(", (");
   Serial.print(delayHigh);
@@ -51,7 +53,7 @@ void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume) {
   Serial.print("), ");
   Serial.print(noteCount);
   Serial.println(";");
-//#endif
+#endif
   for (int i = 0; i < noteCount; i++) {
     digitalWrite(BUZZER_PIN, HIGH);
     delayMicroseconds(delayHigh);

@@ -26,7 +26,7 @@ void printVolts() {
 /**
  * устанавливаем значение поля
  */
-void FieldTft::setValue(int nPosit, char key) {
+void FieldTft::setValue(int8_t nPosit, char key) {
   byte buf[5];
   uint16_t _val = val;
   for (int i = len - 1; i >= 0; i--) {
@@ -37,10 +37,10 @@ void FieldTft::setValue(int nPosit, char key) {
   if (key >= '0' && key <= '9') {
     buf[nPosit] = key - '0';
   } else switch (key) {
-    case '+':
+  case '+':
     buf[nPosit]++;
     break;
-    case '-':
+  case '-':
     if (buf[nPosit] > 0) buf[nPosit]--;
     break;
   }
@@ -63,10 +63,10 @@ void FieldTft::setValue(int nPosit, char key) {
 /**
  * рисуем очередной филд
  */
-void FieldTft::showField(int nPosit) {
+void FieldTft::showField(int8_t nPosit) {
   char buf[5];
   if (getValue != NULL) {
-    printText(col, row, getValue(val), COLOR_INDIGO);
+    printText(col, row, getValue(val), COLOR_WHITE);
   } else {
     int _val = val;
     buf[len] = 0;
@@ -74,9 +74,11 @@ void FieldTft::showField(int nPosit) {
       buf[i] = '0' + _val % 10;
       _val = _val / 10;
     }
-    printText(col, row, buf, COLOR_INDIGO);
+    printText(col, row, buf, COLOR_WHITE);
   }
-  setCursor(col + nPosit, row);
+  if (nPosit >= 0) {
+    setCursor(col + nPosit, row);
+  }
 }
 
 ScreenTft::ScreenTft() {
@@ -127,14 +129,15 @@ void ScreenTft::showEveryTime() {
 }
 
 void ScreenTft::showOnce() {
+  tft.fillRectangle(X0, Y0, X1, Y1, COLOR_BLACK);
   tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
-//    tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
-//    tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
-//  #ifdef ADXL345_ENABLED
-//    printText(0,  2, "X=", COLOR_GRAY);
-//    printText(8,  2, "Y=", COLOR_GRAY);
-//    printText(16, 2, "Z=", COLOR_GRAY);
-//  #endif
+//  tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
+//  tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
+//#ifdef ADXL345_ENABLED
+//  printText(0,  2, "X=", COLOR_GRAY);
+//  printText(8,  2, "Y=", COLOR_GRAY);
+//  printText(16, 2, "Z=", COLOR_GRAY);
+//#endif
   printText(0,  1, "V", COLOR_GRAY);
   printText(7,  1, "/", COLOR_GRAY);
   printText(14, 1, name, COLOR_RED);
@@ -168,7 +171,6 @@ void ScreenTft::edit(char key) {
         nPosit = 0;
       } else {
         nPosit--;
-//        hasBeyond(key);
       }
     }
     break;
@@ -179,7 +181,6 @@ void ScreenTft::edit(char key) {
         nField--;
       } else {
         nPosit++;
-//        hasBeyond(key);
       }
       nPosit = fields[nField].len - 1;
     }
@@ -194,4 +195,11 @@ void ScreenTft::edit(char key) {
     return;
   }
   fields[nField].showField(nPosit);
+}
+
+/** показать все поля */
+void ScreenTft::showAllFields() {
+  for (uint8_t i = 0; i <= maxFields; i++) {
+    fields[i].showField();
+  }
 }

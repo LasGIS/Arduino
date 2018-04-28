@@ -143,7 +143,7 @@ void serIRkey(long code, char key) {
     comBuffer[len++] = 0;
   }
   printText(20, 1, comBuffer, COLOR_CYAN);
-#ifdef HAS_SERIAL_DEBUG
+#ifdef HAS_SERIAL
   Serial.print("IR key = ");
   Serial.print(key);
   Serial.print("; code = ");

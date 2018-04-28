@@ -20,14 +20,15 @@ void ScreenTimer::showTime(DateTime * dateTime) {
   ScreenTft::showTime(dateTime);
   uint32_t longTime = RTClib().now().unixtime();
   long deltaTime = time - longTime;
-  if (deltaTime > 0L)  {
-#ifdef HAS_SERIAL_DEBUG
+  if (deltaTime >= 0L)  {
+#ifdef HAS_SERIAL
     Serial.print("deltaTime = ");
     Serial.println(deltaTime);
 #endif
     DateTime dateTimer(SECONDS_FROM_1970_TO_2000 + deltaTime);
     printBigTime(&dateTimer);
-  } else if (deltaTime > -10L) {
+  }
+  if (deltaTime > -10L && deltaTime <= 0L) {
     tft.setFontSize(2);
     printText(1, 5, "Время закончилось", COLOR_GREEN);
     tft.setFontSize(1);
@@ -53,6 +54,7 @@ void ScreenTimer::edit(char key) {
     nPosit = 0;
     load();
     tft.setFontSize(3);
+    showAllFields();
     break;
   case 'M': // записываем
     save();

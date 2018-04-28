@@ -28,8 +28,8 @@ public:
   uint16_t val;
   const char* (*getValue) (const uint16_t val);
 // --- методы ---
-  void setValue(int nPosit, char key);
-  void showField(int nPosit);
+  void setValue(int8_t nPosit, char key);
+  void showField(int8_t nPosit = -1);
 };
 
 class ScreenTft {
@@ -54,6 +54,9 @@ public:
   virtual void edit(char key);
   /** работа в обычном режиме */
   virtual void control(char key);
+
+  /** показать все поля */
+  void showAllFields();
 };
 
 #endif // SCREEN_TFT_H
