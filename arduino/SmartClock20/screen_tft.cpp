@@ -19,15 +19,14 @@ void printVolts() {
   Serial.print("vCharger = ");
   Serial.println(vCharger);
 #endif
-  drawDouble(4, 1, vBattery, COLOR_BLUE);
-  drawDouble(15, 1, vCharger, COLOR_BLUEVIOLET);
+  drawDouble(1, 1, vBattery, COLOR_BLUE);
+  drawDouble(8, 1, vCharger, COLOR_BLUEVIOLET);
 }
 
 /**
  * устанавливаем значение поля
  */
 void FieldTft::setValue(int nPosit, char key) {
-/*
   byte buf[5];
   uint16_t _val = val;
   for (int i = len - 1; i >= 0; i--) {
@@ -59,7 +58,6 @@ void FieldTft::setValue(int nPosit, char key) {
     _val = minVal;
   }
   val = _val;
-*/
 }
 
 /**
@@ -120,12 +118,8 @@ void ScreenTft::changeOrientation(OrientationType orientation) {
 }
 
 void ScreenTft::showTime(DateTime * dateTime) {
-  printShortTime(
-    dateTime->hour(),
-    dateTime->minute(),
-    dateTime->second()
-  );
-  printRealDate();
+  printShortTime(dateTime);
+  printRealDate(dateTime);
   printVolts();
 }
 
@@ -141,9 +135,9 @@ void ScreenTft::showOnce() {
 //    printText(8,  2, "Y=", COLOR_GRAY);
 //    printText(16, 2, "Z=", COLOR_GRAY);
 //  #endif
-  printText(0,  1, "Бат.", COLOR_GRAY);
-  printText(11, 1, "Зар.", COLOR_GRAY);
-  printText(22, 1, name, COLOR_RED);
+  printText(0,  1, "V", COLOR_GRAY);
+  printText(7,  1, "/", COLOR_GRAY);
+  printText(14, 1, name, COLOR_RED);
 }
 
 void ScreenTft::control(char key) {

@@ -86,9 +86,9 @@ extern void musicAlarm();
 extern void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume);
 extern void printText(uint16_t col, uint16_t row, const char * text, uint16_t color);
 extern void setCursor(uint16_t col, uint16_t row);
-extern void printShortTime(uint8_t hour, uint8_t min, uint8_t sec);
-extern void printBigTime  (uint8_t hour, uint8_t min, uint8_t sec);
-extern void printRealDate();
+extern void printShortTime(DateTime * dateTime);
+extern void printBigTime  (DateTime * dateTime);
+extern void printRealDate (DateTime * dateTime);
 extern void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color);
 
 class GravVector {

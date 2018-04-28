@@ -66,9 +66,7 @@ void setCursor(uint16_t col, uint16_t row) {
 void drawDouble(uint16_t col, uint16_t row, double val, uint16_t color) {
   //comBuffer[0] = val > 0 ? ' ' : '-';
   dtostrf(val, 5, 2, comBuffer);
-  int len = strlen(comBuffer);
-  comBuffer[len] = ' ';
-  comBuffer[len + 1] = 0;
+  comBuffer[strlen(comBuffer)] = 0;
   printText(col, row, comBuffer, color);
 }
 
@@ -135,7 +133,7 @@ void setup() {
 
 /**
  * Показываем полученное значение ИК пульта в Serial
- */
+ * /
 void serIRkey(long code, char key) {
   ltoa(code, comBuffer, 16);
   if (key > 0) {
@@ -144,14 +142,14 @@ void serIRkey(long code, char key) {
     comBuffer[len++] = key;
     comBuffer[len++] = 0;
   }
-  printText(22, 0, comBuffer, COLOR_CYAN);
+  printText(20, 1, comBuffer, COLOR_CYAN);
 #ifdef HAS_SERIAL_DEBUG
   Serial.print("IR key = ");
   Serial.print(key);
   Serial.print("; code = ");
   Serial.println(code, HEX);
 #endif
-}
+}*/
 
 /**
  * @brief loop
@@ -166,7 +164,7 @@ void loop() {
       key = controlKey->key;
       buzzerOut(controlKey->tone, 200, keySoundVolume);
     }
-    serIRkey(code, key);
+//    serIRkey(code, key);
 
     // редактирование
     if (mode == edit) {

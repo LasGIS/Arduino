@@ -46,9 +46,12 @@ void toTwoChar(uint8_t val, char * str, uint8_t start) {
 /**
  * выводим короткое время (в заголовок).
  */
-void printShortTime(uint8_t hour, uint8_t min, uint8_t sec) {
+void printShortTime(DateTime * dateTime) {
   static uint8_t minLast  = 0xff;
   static uint8_t hourLast = 0xff;
+  uint8_t hour = dateTime->hour();
+  uint8_t min = dateTime->minute();
+  uint8_t sec = dateTime->second();
   if (isRedraw || minLast != min || hourLast != hour) {
     toTwoChar(hour, bufTime, 0);
     toTwoChar(min, bufTime, 3);
@@ -65,9 +68,12 @@ void printShortTime(uint8_t hour, uint8_t min, uint8_t sec) {
 /**
  * выводим большое время (посередине).
  */
-void printBigTime(uint8_t hour, uint8_t min, uint8_t sec) {
+void printBigTime(DateTime * dateTime) {
   static uint8_t minLast  = 0xff;
   static uint8_t hourLast = 0xff;
+  uint8_t hour = dateTime->hour();
+  uint8_t min = dateTime->minute();
+  uint8_t sec = dateTime->second();
   tft.setFontSize(3);
 //  tft.setBackgroundColor(COLOR_GRAY);
   if (isRedraw || minLast != min || hourLast != hour) {
@@ -87,23 +93,23 @@ void printBigTime(uint8_t hour, uint8_t min, uint8_t sec) {
 /**
  * выводим реальную дату.
  */
-void printRealDate() {
+void printRealDate(DateTime * dateTime) {
   static char * buf = (char*) "xx.xx.20xx";
-  static uint8_t dateLast   = 0xff;
-  static uint8_t monthLast  = 0xff;
-  static uint8_t yearLast   = 0xff;
-  uint8_t date   = Clock.getDate();
-  uint8_t month  = Clock.getMonth(Century);
-  uint8_t year   = Clock.getYear();
-  if (isRedraw || dateLast != date || monthLast != month || yearLast != year) {
-    toTwoChar(date, buf, 0);
+  static uint8_t dayLast   = 0xff;
+  static uint8_t monthLast = 0xff;
+  static uint8_t yearLast  = 0xff;
+  uint8_t day    = dateTime->day();
+  uint8_t month  = dateTime->month();
+  uint8_t year   = dateTime->year() - 2000;
+  if (isRedraw || dayLast != day || monthLast != month || yearLast != year) {
+    toTwoChar(day, buf, 0);
     toTwoChar(month, buf, 3);
     toTwoChar(year, buf, 8);
 #ifdef HAS_SERIAL
     Serial.println(buf);
 #endif
     printText(0, 0, buf, COLOR_WHITE);
-    dateLast  = date;
+    dayLast   = day;
     monthLast = month;
     yearLast  = year;
   }

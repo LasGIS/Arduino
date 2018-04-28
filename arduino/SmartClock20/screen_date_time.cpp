@@ -2,7 +2,7 @@
 #include "screen_date_time.h"
 
 ScreenDateTime::ScreenDateTime(): ScreenTft() {
-  name = (char*) "Main  ";
+  name = (char*) "Время ";
   maxFields = 6;
   fields = new FieldTft[maxFields + 1];
   fields[0] = {0, 0,  1, 1, 7, 1, NULL};   // день недели
@@ -15,11 +15,7 @@ ScreenDateTime::ScreenDateTime(): ScreenTft() {
 }
 
 void ScreenDateTime::showTime(DateTime * dateTime) {
-  printBigTime(
-    dateTime->hour(),
-    dateTime->minute(),
-    dateTime->second()
-  );
+  printBigTime(dateTime);
   ScreenTft::showTime(dateTime);
 }
 

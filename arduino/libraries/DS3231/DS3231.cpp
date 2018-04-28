@@ -182,9 +182,9 @@ byte DS3231::getHour(bool& h12, bool& PM) {
 
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
 	temp_buffer = Wire.read();
-	h12 = temp_buffer & 0b01000000;
+    h12 = temp_buffer               & 0b01000000;
 	if (h12) {
-		PM = temp_buffer & 0b00100000;
+        PM = temp_buffer            & 0b00100000;
 		hour = bcdToDec(temp_buffer & 0b00011111);
 	} else {
 		hour = bcdToDec(temp_buffer & 0b00111111);
@@ -219,7 +219,7 @@ byte DS3231::getMonth(bool& Century) {
 
 	Wire.requestFrom(CLOCK_ADDRESS, 1);
 	temp_buffer = Wire.read();
-	Century = temp_buffer & 0b10000000;
+    Century        = temp_buffer & 0b10000000;
 	return (bcdToDec(temp_buffer & 0b01111111)) ;
 }
 
@@ -238,7 +238,7 @@ void DS3231::setSecond(byte Second) {
 	// whenever power is interrupted.
 	Wire.beginTransmission(CLOCK_ADDRESS);
 	Wire.write(0x00);
-	Wire.write(decToBcd(Second));	
+    Wire.write(decToBcd(Second));
 	Wire.endTransmission();
 	// Clear OSF flag
 	byte temp_buffer = readControlByte(1);
@@ -249,7 +249,7 @@ void DS3231::setMinute(byte Minute) {
 	// Sets the minutes 
 	Wire.beginTransmission(CLOCK_ADDRESS);
 	Wire.write(0x01);
-	Wire.write(decToBcd(Minute));	
+    Wire.write(decToBcd(Minute));
 	Wire.endTransmission();
 }
 
