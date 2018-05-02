@@ -86,17 +86,15 @@ ScreenTft::ScreenTft() {
   nPosit = 0;
 }
 
-void ScreenTft::changeOrientation(OrientationType orientation) {
+void ScreenTft::changeOrientation() {
 #ifdef HAS_SERIAL
-  Serial.println(orientation);
+  Serial.println(tft.getOrientation());
 #endif
-  if (orientation & ORIENTATION_HORISONTAL) {
+  if (isHorisontalOrientation()) {
     X0 = BOXH_X0;
     X1 = BOXH_X1;
     Y0 = BOXH_Y0;
     Y1 = BOXH_Y1;
-    clockX = CLOCKH_X;
-    clockY = CLOCKH_Y;
     ClockX0 = BOXCLOCKH_X0;
     ClockX1 = BOXCLOCKH_X1;
     ClockY0 = BOXCLOCKH_Y0;
@@ -108,8 +106,6 @@ void ScreenTft::changeOrientation(OrientationType orientation) {
     X1 = BOXV_X1;
     Y0 = BOXV_Y0;
     Y1 = BOXV_Y1;
-    clockX = CLOCKV_X;
-    clockY = CLOCKV_Y;
     ClockX0 = BOXCLOCKV_X0;
     ClockX1 = BOXCLOCKV_X1;
     ClockY0 = BOXCLOCKV_Y0;

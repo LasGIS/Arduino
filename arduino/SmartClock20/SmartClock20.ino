@@ -10,8 +10,6 @@ char comBuffer[20];
 uint8_t isRedraw = true;
 uint16_t X0, X1, Y0, Y1;
 uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
-uint16_t clockX;
-uint16_t clockY;
 uint16_t boxCenterX;
 uint16_t boxCenterY;
 GravVector gravVector;
@@ -70,6 +68,10 @@ void drawDouble(uint16_t col, uint16_t row, double val, uint16_t color) {
   printText(col, row, comBuffer, color);
 }
 
+bool isHorisontalOrientation() {
+  return tft.getOrientation() & ORIENTATION_HORISONTAL;
+}
+
 /**
  * @brief setOrientation
  * ѕоправл€ем ориентацию в зависимости от показаний гравитационного датчика
@@ -107,7 +109,7 @@ void setOrientation(GravVector vec) {
     isRedraw = true;
     tft.clear();
     tft.setOrientation(orientation);
-    screen->changeOrientation(orientation);
+    screen->changeOrientation();
     screen->showOnce();
     oldOrientation = orientation;
   }

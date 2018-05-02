@@ -43,7 +43,7 @@ public:
 // --- методы ---
   ScreenTft();
   /** меняется ориентация */
-  virtual void changeOrientation(OrientationType orientation);
+  virtual void changeOrientation();
   /** показываем один раз при загрузке */
   virtual void showOnce();
   /** показываем раз в секунду */

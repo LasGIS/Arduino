@@ -42,21 +42,13 @@
 
 #define BOXCLOCKV_X0 13
 #define BOXCLOCKV_X1 163
-#define CLOCKV_X 1
-//#define CLOCKV_X 17
 #define BOXCLOCKV_Y0 19
 #define BOXCLOCKV_Y1 49
-#define CLOCKV_Y 1
-//#define CLOCKV_Y 30
 
 #define BOXCLOCKH_X0 31
 #define BOXCLOCKH_X1 181
-#define CLOCKH_X 2
-//#define CLOCKH_X 39
 #define BOXCLOCKH_Y0 19
 #define BOXCLOCKH_Y1 49
-#define CLOCKH_Y 1
-//#define CLOCKH_Y 30
 
 #define BOXV_CENTER_X 87
 #define BOXV_CENTER_Y 109
@@ -74,8 +66,6 @@ extern uint8_t keySoundVolume;
 
 extern uint16_t X0, X1, Y0, Y1;
 extern uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
-extern uint16_t clockX;
-extern uint16_t clockY;
 extern uint16_t boxCenterX;
 extern uint16_t boxCenterY;
 
@@ -90,6 +80,7 @@ extern void printShortTime(DateTime * dateTime);
 extern void printBigTime  (DateTime * dateTime);
 extern void printRealDate (DateTime * dateTime);
 extern void drawDouble(uint16_t x, uint16_t y, double val, uint16_t color);
+extern bool isHorisontalOrientation();
 
 class GravVector {
 public:

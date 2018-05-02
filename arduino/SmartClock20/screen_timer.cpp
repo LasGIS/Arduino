@@ -11,9 +11,9 @@ ScreenTimer::ScreenTimer(): ScreenTft() {
   fields[2] = {1, 8, 2, 0, 59, 0, NULL};         // секунда
 }
 
-void ScreenTimer::changeOrientation(OrientationType orientation) {
+void ScreenTimer::changeOrientation() {
   start();
-  ScreenTft::changeOrientation(orientation);
+  ScreenTft::changeOrientation();
 }
 
 void ScreenTimer::showTime(DateTime * dateTime) {
@@ -82,7 +82,14 @@ void ScreenTimer::load() {
 void ScreenTimer::save() {
   startTime = (fields[0].val * 60 + fields[1].val) * 60 + fields[2].val;
 }
+
 void ScreenTimer::start() {
+  // поправляем смещение от ориентации
+  int8_t addx = isHorisontalOrientation() ? 2 : 1;
+  for (int8_t i = 0; i <= maxFields; i++) {
+    fields[i].col = i * 3 + addx;
+  }
+  // вычисляем время Ч
   time = RTClib().now().unixtime() + startTime;
   isRedraw = true;
 }

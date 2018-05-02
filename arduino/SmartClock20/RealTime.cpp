@@ -71,6 +71,7 @@ void printShortTime(DateTime * dateTime) {
 void printBigTime(DateTime * dateTime) {
   static uint8_t minLast  = 0xff;
   static uint8_t hourLast = 0xff;
+  uint8_t clockX = isHorisontalOrientation() ? 2 : 1;
   uint8_t hour = dateTime->hour();
   uint8_t min = dateTime->minute();
   uint8_t sec = dateTime->second();
@@ -80,12 +81,12 @@ void printBigTime(DateTime * dateTime) {
     toTwoChar(hour, bufTime, 0);
     toTwoChar(min, bufTime, 3);
     toTwoChar(sec, bufTime, 6);
-    printText(clockX, clockY, bufTime, COLOR_TOMATO);
+    printText(clockX, 1, bufTime, COLOR_TOMATO);
     minLast = min;
     hourLast = hour;
   } else {
     toTwoChar(sec, bufTime, 6);
-    printText(clockX + 6, clockY, bufTime + 6, COLOR_TOMATO);
+    printText(clockX + 6, 1, bufTime + 6, COLOR_TOMATO);
   }
   tft.setFontSize(1);
 }
