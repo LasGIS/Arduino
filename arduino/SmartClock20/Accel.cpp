@@ -177,9 +177,9 @@ void accelUpdate() {
     Serial.print(gravVector.Z);
     Serial.println(";");
 #endif
-//    drawDouble(2,  1, grav.X, COLOR_BLUE);
-//    drawDouble(10, 1, grav.Y, COLOR_GREEN);
-//    drawDouble(18, 1, grav.Z, COLOR_RED);
+//    drawDouble(2,  1, 1, grav.X, COLOR_BLUE);
+//    drawDouble(10, 1, 1, grav.Y, COLOR_GREEN);
+//    drawDouble(18, 1, 1, grav.Z, COLOR_RED);
     drawBobber(gravVector);
 }
 #endif

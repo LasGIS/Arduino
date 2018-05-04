@@ -22,6 +22,7 @@ public:
 // --- данные ---
   uint8_t row;
   uint8_t col;
+  uint8_t fontSize;
   uint8_t len;
   uint16_t minVal;
   uint16_t maxVal;

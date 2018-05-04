@@ -28,14 +28,17 @@ ScreenTft * screen = screens[currentCommand];
  * @brief printText вывод текста на экран
  * @param col колонка (x * 6)
  * @param row строка (y * 8)
+ * @param fontSize размер щрифта
  * @param text выводимый текст
  * @param color
  */
-void printText(uint16_t col, uint16_t row, const char * text, uint16_t color) {
-  uint8_t fontSize = tft.getFontSize();
+void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char * text, uint16_t color) {
+  uint8_t oldFontSize = tft.getFontSize();
   uint16_t x = col * fontSize * FONT_SPACE + 1,
            y = row * fontSize * FONT_Y + 1;
+  tft.setFontSize(fontSize);
   tft.drawText(x, y, text, color);
+  tft.setFontSize(oldFontSize);
 }
 
 /**
@@ -43,9 +46,9 @@ void printText(uint16_t col, uint16_t row, const char * text, uint16_t color) {
  * @param col колонка (x * 6)
  * @param row строка (y * 8)
  */
-void setCursor(uint16_t col, uint16_t row) {
+void setCursor(uint8_t col, uint8_t row, uint8_t fontSize) {
   static uint16_t x0 = -1, x1 = -1, y0 = -1, y1 = -1;
-  uint8_t fontSize = tft.getFontSize();
+  //uint8_t fontSize = tft.getFontSize();
   tft.drawRectangle(x0, y0, x1, y1, tft.getBackgroundColor());
   x0 = col * fontSize * FONT_SPACE;
   x1 = x0 + fontSize * FONT_SPACE;
@@ -61,11 +64,11 @@ void setCursor(uint16_t col, uint16_t row) {
  * @param val
  * @param color
  */
-void drawDouble(uint16_t col, uint16_t row, double val, uint16_t color) {
+void drawDouble(uint8_t col, uint8_t row, uint8_t fontSize, double val, uint16_t color) {
   //comBuffer[0] = val > 0 ? ' ' : '-';
   dtostrf(val, 5, 2, comBuffer);
   comBuffer[strlen(comBuffer)] = 0;
-  printText(col, row, comBuffer, color);
+  printText(col, row, fontSize, comBuffer, color);
 }
 
 bool isHorisontalOrientation() {
@@ -106,7 +109,6 @@ void setOrientation(GravVector vec) {
   }
 
   if (orientation != oldOrientation) {
-    isRedraw = true;
     tft.clear();
     tft.setOrientation(orientation);
     screen->changeOrientation();
@@ -135,7 +137,7 @@ void setup() {
 
 /**
  * Показываем полученное значение ИК пульта в Serial
- * /
+ */
 void serIRkey(long code, char key) {
   ltoa(code, comBuffer, 16);
   if (key > 0) {
@@ -144,14 +146,14 @@ void serIRkey(long code, char key) {
     comBuffer[len++] = key;
     comBuffer[len++] = 0;
   }
-  printText(20, 1, comBuffer, COLOR_CYAN);
+  printText(20, 1, 1, comBuffer, COLOR_CYAN);
 #ifdef HAS_SERIAL
   Serial.print("IR key = ");
   Serial.print(key);
   Serial.print("; code = ");
   Serial.println(code, HEX);
 #endif
-}*/
+}
 
 /**
  * @brief loop
@@ -166,10 +168,10 @@ void loop() {
       key = controlKey->key;
       buzzerOut(controlKey->tone, 200, keySoundVolume);
     }
-//    serIRkey(code, key);
+    serIRkey(code, key);
 
     // редактирование
-    if (mode == edit) {
+    if (mode == ModeType::edit) {
       screen->edit(key);
       return;
     }
@@ -179,6 +181,7 @@ void loop() {
     // меняем режим
     case 'M':
       screen->edit(1);
+//      screen->showOnce();
       break;
     // меняем экран
     case 'e':
@@ -186,26 +189,25 @@ void loop() {
       break;
     default:
       screen->control(key);
-      /*if (mode == show) {
+      /*if (mode == ModeType::show) {
         screen->showOnce();
       }*/
       break;
     }
   }
-  if (mode == show) {
+  if (mode == ModeType::show) {
 #ifdef ADXL345_ENABLED
     setOrientation(accelReadVector());
 #endif
     static long lastTime = 0L;
     long time = millis();
     if (lastTime != time / 1000) {
-      //drawDouble(12, 0, time/1000.0, COLOR_BLUE);
+      //drawDouble(12, 0, 1, time/1000.0, COLOR_BLUE);
       DateTime dateTime = RTClib().now();
       screen->showTime(&dateTime);
       lastTime = time / 1000;
       isRedraw = false;
     }
-
     screen->showEveryTime();
   }
   delay(10);

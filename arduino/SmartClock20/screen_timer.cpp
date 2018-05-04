@@ -6,9 +6,9 @@ ScreenTimer::ScreenTimer(): ScreenTft() {
   name = (char*) "Timer ";
   maxFields = 2;
   fields = new FieldTft[maxFields + 1];
-  fields[0] = {1, 2, 2, 0, 23, 0, NULL};         // час
-  fields[1] = {1, 5, 2, 0, 59, 0, NULL};         // минута
-  fields[2] = {1, 8, 2, 0, 59, 0, NULL};         // секунда
+  fields[0] = {1, 2, 3, 2, 0, 23, 0, NULL};         // час
+  fields[1] = {1, 5, 3, 2, 0, 59, 0, NULL};         // минута
+  fields[2] = {1, 8, 3, 2, 0, 59, 0, NULL};         // секунда
 }
 
 void ScreenTimer::changeOrientation() {
@@ -29,9 +29,7 @@ void ScreenTimer::showTime(DateTime * dateTime) {
     printBigTime(&dateTimer);
   }
   if (deltaTime > -10L && deltaTime <= 0L) {
-    tft.setFontSize(2);
-    printText(1, 5, "¬рем€ закончилось", COLOR_GREEN);
-    tft.setFontSize(1);
+    printText(1, 5, 2, "¬рем€ закончилось", COLOR_GREEN);
     musicAlarm();
   }
 }
@@ -53,13 +51,11 @@ void ScreenTimer::edit(char key) {
     nField = 0;
     nPosit = 0;
     load();
-    tft.setFontSize(3);
     showAllFields();
     break;
   case 'M': // записываем
     save();
   case 'r': // без записи
-    tft.setFontSize(1);
     start();
     break;
   }

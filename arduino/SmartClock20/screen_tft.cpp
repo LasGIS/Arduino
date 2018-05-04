@@ -19,8 +19,8 @@ void printVolts() {
   Serial.print("vCharger = ");
   Serial.println(vCharger);
 #endif
-  drawDouble(1, 1, vBattery, COLOR_BLUE);
-  drawDouble(8, 1, vCharger, COLOR_BLUEVIOLET);
+  drawDouble(1, 1, 1, vBattery, COLOR_BLUE);
+  drawDouble(8, 1, 1, vCharger, COLOR_BLUEVIOLET);
 }
 
 /**
@@ -66,7 +66,7 @@ void FieldTft::setValue(int8_t nPosit, char key) {
 void FieldTft::showField(int8_t nPosit) {
   char buf[5];
   if (getValue != NULL) {
-    printText(col, row, getValue(val), COLOR_WHITE);
+    printText(col, row, fontSize, getValue(val), COLOR_WHITE);
   } else {
     int _val = val;
     buf[len] = 0;
@@ -74,10 +74,10 @@ void FieldTft::showField(int8_t nPosit) {
       buf[i] = '0' + _val % 10;
       _val = _val / 10;
     }
-    printText(col, row, buf, COLOR_WHITE);
+    printText(col, row, fontSize, buf, COLOR_WHITE);
   }
   if (nPosit >= 0) {
-    setCursor(col + nPosit, row);
+    setCursor(col + nPosit, row, fontSize);
   }
 }
 
@@ -130,13 +130,14 @@ void ScreenTft::showOnce() {
 //  tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
 //  tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
 //#ifdef ADXL345_ENABLED
-//  printText(0,  2, "X=", COLOR_GRAY);
-//  printText(8,  2, "Y=", COLOR_GRAY);
-//  printText(16, 2, "Z=", COLOR_GRAY);
+//  printText(0,  2, 1, "X=", COLOR_GRAY);
+//  printText(8,  2, 1, "Y=", COLOR_GRAY);
+//  printText(16, 2, 1, "Z=", COLOR_GRAY);
 //#endif
-  printText(0,  1, "V", COLOR_GRAY);
-  printText(7,  1, "/", COLOR_GRAY);
-  printText(14, 1, name, COLOR_RED);
+  printText(0,  1, 1, "V", COLOR_GRAY);
+  printText(7,  1, 1, "/", COLOR_GRAY);
+  printText(14, 1, 1, name, COLOR_RED);
+  isRedraw = true;
 }
 
 void ScreenTft::control(char key) {

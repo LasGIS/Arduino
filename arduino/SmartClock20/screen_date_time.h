@@ -7,11 +7,13 @@ class ScreenDateTime : public ScreenTft {
 public:
 // --- методы ---
   ScreenDateTime();
-  void showTime(DateTime * dateTime);
-  void showEveryTime();
-//  void showOnce();
-  void edit(char key);
-  void control(char key);
+  virtual void showTime(DateTime * dateTime);
+  virtual void showEveryTime();
+  virtual void showOnce();
+  virtual void edit(char key);
+//  virtual void control(char key);
+  void load();
+  void save();
 };
 
 #endif // DATE_TIME_SCREEN_H
