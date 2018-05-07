@@ -64,8 +64,8 @@ void TFT::WRITE_Package(INT16U *data, INT8U howmany) {
 
 INT8U TFT::Read_Register(INT8U Addr, INT8U xParameter) {
     INT8U data=0;
-    sendCMD(0xd9);                                                      /* ext command */
-    WRITE_DATA(0x10+xParameter);                                        /* 0x11 is the first Parameter */
+    sendCMD(0xd9);                 /* ext command */
+    WRITE_DATA(0x10 + xParameter); /* 0x11 is the first Parameter */
     TFT_DC_LOW;
     TFT_CS_LOW;
     SPI.transfer(Addr);
@@ -133,7 +133,7 @@ void TFT::TFTinit(void) {
     WRITE_DATA(0x86);     //--
 
     sendCMD(0x36);        // Memory Access Control
-    WRITE_DATA(0x48);     //C8       //48 68з»”ж §зќ†//28 E8 е¦ЇоЃ„зќ†
+    WRITE_DATA(0x48);     //C8       //48 68???//28 E8 ???
 
     sendCMD(0x3A);
     WRITE_DATA(0x55);
@@ -242,7 +242,7 @@ void TFT::setPage(INT16U StartPage,INT16U EndPage) {
  * @param StartLine
  * @param EndPos
  * @param EndLine
- * @return РєРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРѕР±С…РѕРґРёРјС‹С… Р±Р°Р№С‚ РґР»СЏ РїРµСЂРµРґР°С‡Рё С†РІРµС‚Р°
+ * @return количество необходимых байт для передачи цвета
  */
 INT32U TFT::setInterval(
   int StartPos, int StartLine, int EndPos, int EndLine

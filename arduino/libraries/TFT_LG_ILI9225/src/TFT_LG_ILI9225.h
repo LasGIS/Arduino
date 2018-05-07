@@ -13,6 +13,33 @@
 #define ILI9225_LCD_WIDTH  176
 #define ILI9225_LCD_HEIGHT 220
 
+#define __LINKIT_ONE__
+
+/* ILI9225 Pins operation DEFINITION */
+#if defined(__LINKIT_ONE__)
+
+#define TFT_DC_LOW      digitalWrite(9, LOW)
+#define TFT_DC_HIGH     digitalWrite(9, HIGH)
+#define TFT_CS_LOW      digitalWrite(10, LOW)
+#define TFT_CS_HIGH     digitalWrite(10, HIGH)
+//#define TFT_BL_OFF      digitalWrite(7, LOW)
+//#define TFT_BL_ON       digitalWrite(7, HIGH)
+#define TFT_RST_OFF     digitalWrite(8, LOW)
+#define TFT_RST_ON      digitalWrite(8, HIGH)
+
+#else
+
+#define TFT_CS_LOW  {DDRB |= 0x04;PORTB &=~ 0x04;}
+#define TFT_CS_HIGH {DDRB |= 0x04;PORTB |=  0x04;}
+#define TFT_DC_LOW  {DDRB |= 0x02;PORTB &=~ 0x02;}
+#define TFT_DC_HIGH {DDRB |= 0x02;PORTB |=  0x02;}
+//#define TFT_BL_OFF  {DDRD |= 0x80;PORTD &=~ 0x80;}
+//#define TFT_BL_ON   {DDRD |= 0x80;PORTD |=  0x80;}
+#define TFT_RST_OFF {DDRB |= 0x01;PORTB |=  0x01;}
+#define TFT_RST_ON  {DDRB |= 0x01;PORTB &=~ 0x01;}
+
+#endif
+
 /* ILI9225 LCD Registers */
 #define ILI9225_DRIVER_OUTPUT_CTRL      (0x01u)  // Driver Output Control
 #define ILI9225_LCD_AC_DRIVING_CTRL     (0x02u)  // LCD AC Driving Control

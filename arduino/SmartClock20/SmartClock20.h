@@ -13,7 +13,6 @@
 #include "screen_date_time.h"
 #include "screen_timer.h"
 
-
 //#define HAS_SERIAL
 //#define HAS_SERIAL_DEBUG
 
@@ -27,7 +26,7 @@
 #define TFT_CS  10  // SS
 #define TFT_SDI 11  // MOSI
 #define TFT_CLK 13  // SCK
-#define TFT_LED 3   // 0 if wired to +5V directly
+#define TFT_LED 0   // 0 if wired to +5V directly
 
 //0.577 or 0.707
 #define GRAVI_FACTOR 0.8

@@ -24,7 +24,6 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
   ../libraries/DHT-sensor-library-master \
   ../libraries/ili9341-arduino-master \
   ../libraries/IrControl \
-  ../libraries/LiquidCrystal_I2C \
   ../libraries/MsTimer2 \
   ../libraries/DS3231 \
   C:/local/Arduino/hardware/arduino/avr/cores/arduino \
@@ -41,42 +40,33 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
 
 
 SOURCES += \
-    ../libraries/arduino-ds1302-master/DS1302.cpp \
     ../libraries/DHT-sensor-library-master/DHT.cpp \
     ../libraries/IrControl/IrControl.cpp \
     ../libraries/MsTimer2/MsTimer2.cpp \
     ../libraries/ili9341-arduino-master/font.c \
     ../libraries/ili9341-arduino-master/TFTv2.cpp \
-    Lcd22.ino \
     ../libraries/ili9341-arduino-master/RussFontANSI.c \
     ../libraries/ili9341-arduino-master/RussFontOEM.c \
     ../libraries/ADXL345/src/ADXL345.cpp \
     ../libraries/AT24C32/EEPROM.cpp \
     ../libraries/DS3231/DS3231.cpp \
-    ../libraries/iarduino_RTC/src/iarduino_RTC.cpp \
     ../libraries/SD/src/utility/Sd2Card.cpp \
     ../libraries/SD/src/utility/SdFile.cpp \
     ../libraries/SD/src/utility/SdVolume.cpp \
     ../libraries/SD/src/File.cpp \
     ../libraries/SD/src/SD.cpp \
-    RealTime.cpp \
-    ../libraries/Adafruit_ADXL345-master/Adafruit_ADXL345_U.cpp
+    ../libraries/Adafruit_ADXL345-master/Adafruit_ADXL345_U.cpp \
+    Lcd22.ino \
+    RealTime.cpp
 
 HEADERS += \
-    ../libraries/arduino-ds1302-master/DS1302.h \
     ../libraries/DHT-sensor-library-master/DHT.h \
     ../libraries/IrControl/IrControl.h \
     ../libraries/MsTimer2/MsTimer2.h \
     ../libraries/ili9341-arduino-master/TFTv2.h \
-    Lcd22.h \
     ../libraries/ADXL345/src/ADXL345.h \
     ../libraries/AT24C32/EEPROM.h \
     ../libraries/DS3231/DS3231.h \
-    ../libraries/iarduino_RTC/src/iarduino_RTC.h \
-    ../libraries/iarduino_RTC/src/iarduino_RTC_DS1302.h \
-    ../libraries/iarduino_RTC/src/iarduino_RTC_DS1307.h \
-    ../libraries/iarduino_RTC/src/iarduino_RTC_DS3231.h \
-    ../libraries/iarduino_RTC/src/memorysaver.h \
     ../libraries/SD/examples/CardInfo/CardInfo.ino \
     ../libraries/SD/examples/Datalogger/Datalogger.ino \
     ../libraries/SD/examples/DumpFile/DumpFile.ino \
@@ -92,7 +82,8 @@ HEADERS += \
     ../libraries/SD/src/utility/SdInfo.h \
     ../libraries/SD/src/SD.h \
     ../libraries/Adafruit_ADXL345-master/Adafruit_ADXL345_U.h \
-    ../libraries/Adafruit_Sensor-master/Adafruit_Sensor.h
+    ../libraries/Adafruit_Sensor-master/Adafruit_Sensor.h \
+    Lcd22.h
 
 #FORMS    += mainwindow.ui
 DISTFILES += \
