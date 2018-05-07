@@ -313,10 +313,9 @@ class TFT_LG_ILI9225 {
 
     uint16_t _maxX, _maxY, _bgColor;
 
-    volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
-    uint8_t  _rst, _rs, _cs, _sdi, _clk, _led,
-             _orientation;
-    uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+//    volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
+    uint8_t  _rst, _rs, _cs, _sdi, _clk, _led, _orientation;
+//    uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
 
     boolean  hwSPI, checkSPI;
 

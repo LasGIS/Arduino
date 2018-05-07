@@ -52,32 +52,38 @@ void TFT_LG_ILI9225::_spiwrite(uint8_t c) {
     // Fast SPI bitbang swiped from LPD8806 library
     for(uint8_t bit = 0x80; bit; bit >>= 1) {
       if(c & bit) {
-        //digitalWrite(_sdi, HIGH);
-        *mosiport |=  mosipinmask;
+        digitalWrite(_sdi, HIGH);
+        //*mosiport |=  mosipinmask;
       } else {
-        //digitalWrite(_sdi, LOW);
-        *mosiport &= ~mosipinmask;
+        digitalWrite(_sdi, LOW);
+        //*mosiport &= ~mosipinmask;
       }
-      //digitalWrite(_clk, HIGH);
-      *clkport |=  clkpinmask;
-      //digitalWrite(_clk, LOW);
-      *clkport &= ~clkpinmask;
+      digitalWrite(_clk, HIGH);
+//      *clkport |=  clkpinmask;
+      digitalWrite(_clk, LOW);
+//      *clkport &= ~clkpinmask;
     }
   }
 }
 
 void TFT_LG_ILI9225::_writecommand(uint8_t c) {
-  *dcport &= ~dcpinmask;
-  *csport &= ~cspinmask;
+  digitalWrite(_rs, LOW);
+//  *dcport &= ~dcpinmask;
+  digitalWrite(_cs, LOW);
+//  *csport &= ~cspinmask;
   _spiwrite(c);
-  *csport |= cspinmask;
+  digitalWrite(_cs, HIGH);
+//  *csport |= cspinmask;
 }
 
 void TFT_LG_ILI9225::_writedata(uint8_t c) {
-  *dcport |=  dcpinmask;
-  *csport &= ~cspinmask;
+  digitalWrite(_rs, HIGH);
+//  *dcport |=  dcpinmask;
+  digitalWrite(_cs, LOW);
+//  *csport &= ~cspinmask;
   _spiwrite(c);
-  *csport |= cspinmask;
+  digitalWrite(_cs, HIGH);
+//  *csport |= cspinmask;
 }
 
 void TFT_LG_ILI9225::_orientCoordinates(uint16_t &x1, uint16_t &y1) {
@@ -139,10 +145,10 @@ void TFT_LG_ILI9225::begin() {
   pinMode(_rs, OUTPUT);
   pinMode(_cs, OUTPUT);
 
-  csport    = portOutputRegister(digitalPinToPort(_cs));
-  cspinmask = digitalPinToBitMask(_cs);
-  dcport    = portOutputRegister(digitalPinToPort(_rs));
-  dcpinmask = digitalPinToBitMask(_rs);
+//  csport    = portOutputRegister(digitalPinToPort(_cs));
+//  cspinmask = digitalPinToBitMask(_cs);
+//  dcport    = portOutputRegister(digitalPinToPort(_rs));
+//  dcpinmask = digitalPinToBitMask(_rs);
 
   if(hwSPI) { // Using hardware SPI
     SPI.begin();
@@ -150,12 +156,14 @@ void TFT_LG_ILI9225::begin() {
     pinMode(_clk, OUTPUT);
     pinMode(_sdi, OUTPUT);
 
-    clkport     = portOutputRegister(digitalPinToPort(_clk));
-    clkpinmask  = digitalPinToBitMask(_clk);
-    mosiport    = portOutputRegister(digitalPinToPort(_sdi));
-    mosipinmask = digitalPinToBitMask(_sdi);
-    *clkport   &= ~clkpinmask;
-    *mosiport  &= ~mosipinmask;
+//    clkport     = portOutputRegister(digitalPinToPort(_clk));
+//    clkpinmask  = digitalPinToBitMask(_clk);
+//    mosiport    = portOutputRegister(digitalPinToPort(_sdi));
+//    mosipinmask = digitalPinToBitMask(_sdi);
+    digitalWrite(_clk, LOW);
+//    *clkport   &= ~clkpinmask;
+    digitalWrite(_sdi, LOW);
+//    *mosiport  &= ~mosipinmask;
   }
 
   // Turn on backlight
