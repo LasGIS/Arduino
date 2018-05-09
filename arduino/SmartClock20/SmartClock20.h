@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <avr/pgmspace.h>
-//#include <EEPROM.h>
+#include <I2C_EEPROM.h>
 #include <SPI.h>
 #include <DS3231.h>
 #include <Wire.h>

@@ -21,6 +21,8 @@ SOURCES += \
     ../libraries/DHT-sensor-library-master/DHT.cpp \
     ../libraries/IrControl/IrControl.cpp \
     ../libraries/MsTimer2/MsTimer2.cpp \
+    ../libraries/AT24C32/I2C_EEPROM.cpp \
+    ../libraries/AT24C32/Examples/AT24C32_TEST/AT24C32_TEST.ino
     SmartClock20.ino \
     Accel.cpp \
     RealTime.cpp \
@@ -38,6 +40,7 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
     ../libraries/DHT-sensor-library-master \
     ../libraries/IrControl \
     ../libraries/MsTimer2 \
+    ../libraries/AT24C32 \
     C:/local/Arduino/hardware/arduino/avr/cores/arduino \
     C:/local/Arduino/hardware/tools/avr/avr/include \
     C:/local/Arduino/hardware/arduino/avr/variants/standard \
@@ -57,6 +60,7 @@ HEADERS += \
     ../libraries/ADXL345/src/ADXL345.h \
     ../libraries/DS3231/DS3231.h \
     ../libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.h \
+    ../libraries/AT24C32/I2C_EEPROM.h \
     SmartClock20.h \
     pitches.h \
     note.h \
@@ -77,4 +81,5 @@ DISTFILES += \
     ../libraries/ADXL345/README.md \
     ../libraries/TFT_LG_ILI9225/README.md \
     ../libraries/DS3231/keywords.txt \
-    ../libraries/DS3231/Readme.txt
+    ../libraries/DS3231/Readme.txt \
+    ../libraries/AT24C32/keywords.txt
