@@ -22,7 +22,7 @@ SOURCES += \
     ../libraries/IrControl/IrControl.cpp \
     ../libraries/MsTimer2/MsTimer2.cpp \
     ../libraries/AT24C32/I2C_EEPROM.cpp \
-    ../libraries/AT24C32/Examples/AT24C32_TEST/AT24C32_TEST.ino
+    ../libraries/AT24C32/Examples/AT24C32_TEST/AT24C32_TEST.ino \
     SmartClock20.ino \
     Accel.cpp \
     RealTime.cpp \

@@ -13,19 +13,26 @@
 #define ILI9225_LCD_WIDTH  176
 #define ILI9225_LCD_HEIGHT 220
 
-#define __LINKIT_ONE__
+//#define __LINKIT_ONE__
 
-/* ILI9225 Pins operation DEFINITION */
+/* Pins operation DEFINITION */
+#define TFT_RST 8
+#define TFT_RS  9
+#define TFT_CS  10  // SS
+#define TFT_SDI 11  // MOSI
+#define TFT_CLK 13  // SCK
+#define TFT_LED 0   // 0 if wired to +5V directly
+
 #if defined(__LINKIT_ONE__)
 
-#define TFT_DC_LOW      digitalWrite(9, LOW)
-#define TFT_DC_HIGH     digitalWrite(9, HIGH)
-#define TFT_CS_LOW      digitalWrite(10, LOW)
-#define TFT_CS_HIGH     digitalWrite(10, HIGH)
-//#define TFT_BL_OFF      digitalWrite(7, LOW)
-//#define TFT_BL_ON       digitalWrite(7, HIGH)
-#define TFT_RST_OFF     digitalWrite(8, LOW)
-#define TFT_RST_ON      digitalWrite(8, HIGH)
+#define TFT_DC_LOW      digitalWrite(TFT_RS, LOW)
+#define TFT_DC_HIGH     digitalWrite(TFT_RS, HIGH)
+#define TFT_CS_LOW      digitalWrite(TFT_CS, LOW)
+#define TFT_CS_HIGH     digitalWrite(TFT_CS, HIGH)
+//#define TFT_BL_OFF      digitalWrite(TFT_LED, LOW)
+//#define TFT_BL_ON       digitalWrite(TFT_LED, HIGH)
+#define TFT_RST_OFF     digitalWrite(TFT_RST, HIGH)
+#define TFT_RST_ON      digitalWrite(TFT_RST, LOW)
 
 #else
 
@@ -128,9 +135,6 @@ class TFT_LG_ILI9225 {
 
   public:
 
-    TFT_LG_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t SDI, uint8_t CLK, uint8_t LED);
-    TFT_LG_ILI9225(uint8_t RST, uint8_t RS, uint8_t CS, uint8_t LED);
-
     /// Initialization
     void begin(void);
 
@@ -156,14 +160,6 @@ class TFT_LG_ILI9225 {
     /// Get orientation
     /// @return  orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape
     uint8_t getOrientation(void);
-
-    /// Font size, x-axis
-    /// @return  horizontal size of current font, in pixels
-    // uint8_t fontX(void);
-
-    /// Font size, y-axis
-    /// @return  vertical size of current font, in pixels
-    // uint8_t fontY(void);
 
     /// Screen size, x-axis
     /// @return  horizontal size of the screen, in pixels
@@ -300,7 +296,6 @@ class TFT_LG_ILI9225 {
 
   private:
 
-    void _spiwrite(uint8_t);
     void _writecommand(uint8_t c);
     void _writedata(uint8_t d);
 
@@ -312,13 +307,7 @@ class TFT_LG_ILI9225 {
     void _writeCommand(uint8_t HI, uint8_t LO);
 
     uint16_t _maxX, _maxY, _bgColor;
-
-//    volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
-    uint8_t  _rst, _rs, _cs, _sdi, _clk, _led, _orientation;
-//    uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
-
-    boolean  hwSPI, checkSPI;
-
+    uint8_t _orientation;
     uint8_t _fontSize = 1;
 
 };

@@ -21,13 +21,6 @@
 // пин для жужалки
 #define BUZZER_PIN 7
 
-#define TFT_RST 8
-#define TFT_RS  9
-#define TFT_CS  10  // SS
-#define TFT_SDI 11  // MOSI
-#define TFT_CLK 13  // SCK
-#define TFT_LED 0   // 0 if wired to +5V directly
-
 //0.577 or 0.707
 #define GRAVI_FACTOR 0.8
 #define BOXV_X0 0
