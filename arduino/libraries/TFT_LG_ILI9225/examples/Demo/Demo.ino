@@ -1,6 +1,6 @@
 // Include application, user and local libraries
 #include "SPI.h"
-#include "TFT_22_ILI9225.h"
+#include "TFT_LG_ILI9225.h"
 
 #define TFT_RST 8
 #define TFT_RS  9
@@ -9,10 +9,7 @@
 #define TFT_CLK 13  // SCK
 #define TFT_LED 3   // 0 if wired to +5V directly
 
-// Use hardware SPI (faster - on Uno: 13-SCK, 12-MISO, 11-MOSI)
-TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_LED);
-// Use software SPI (slower)
-//TFT_22_ILI9225 tft = TFT_22_ILI9225(TFT_RST, TFT_RS, TFT_CS, TFT_SDI, TFT_CLK, TFT_LED);
+TFT_LG_ILI9225 tft;
 
 // Variables and constants
 uint16_t x, y;
@@ -256,7 +253,7 @@ void setup() {
 void loop() {
     
   tft.drawRectangle(0, 0, tft.maxX() - 1, tft.maxY() - 1, COLOR_WHITE);
-  tft.setFont(Terminal6x8);
+  tft.setFontSize(1);
   tft.drawText(10, 10, "hello!");
   delay(1000);
   
@@ -266,10 +263,10 @@ void loop() {
 
   tft.drawText(10, 30, "text small");
   tft.setBackgroundColor(COLOR_YELLOW);
-  tft.setFont(Terminal12x16);
+  tft.setFontSize(2);
   tft.drawText(90, 30, "BIG", COLOR_RED);
   tft.setBackgroundColor(COLOR_BLACK);
-  tft.setFont(Terminal6x8);
+  tft.setFontSize(1);
   delay(1000);
 
   tft.drawText(10, 40, "setBacklight off");
@@ -309,7 +306,9 @@ void loop() {
     tft.clear();
     tft.setOrientation(i);
     tft.drawRectangle(0, 0, tft.maxX() - 1, tft.maxY() - 1, COLOR_WHITE);
-    tft.drawText(10, 10, "setOrientation (" + String("0123").substring(i, i + 1) + ")");
+    char* text = "setOrientation(0)";
+    text[15] = '0' + i;
+    tft.drawText(10, 10, text);
     tft.drawRectangle(10, 20, 50, 60, COLOR_GREEN);
     tft.drawCircle(70, 80, 10, COLOR_BLUE);
     tft.drawLine(30, 40, 70, 80, COLOR_YELLOW);
@@ -327,19 +326,21 @@ void loop() {
   
   tft.setOrientation(0);
   tft.clear();
-  tft.setFont(Terminal12x16);
+  tft.setFontSize(2);
   tft.setBackgroundColor(COLOR_YELLOW);
   tft.drawText(10, 40, "bye!", COLOR_RED);
   tft.setBackgroundColor(COLOR_BLACK);
-  tft.setFont(Terminal6x8);
+  tft.setFontSize(1);
   delay(1000);
   
   tft.drawText(10, 60, "off");
   delay(1000);
   
-  tft.setBacklight(false);
-  tft.setDisplay(false);
-  
-  while(true);
+//  tft.setBacklight(false);
+//  tft.setDisplay(false);
+//  delay(1000);
+//  tft.setDisplay(true);
+
+//  while(true);
 
 }

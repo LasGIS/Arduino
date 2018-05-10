@@ -151,7 +151,7 @@ class TFT_LG_ILI9225 {
 
     /// Switch display on or off
     /// @param  flag true=on, false=off
-    void setDisplay(boolean flag);
+//    void setDisplay(boolean flag);
 
     /// Set orientation
     /// @param  orientation orientation, 0=portrait, 1=right rotated landscape, 2=reverse portrait, 3=left rotated landscape

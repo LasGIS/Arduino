@@ -62,14 +62,13 @@ uint16_t TFT_LG_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint1
 void TFT_LG_ILI9225::begin() {
 
   // Set up pins
-  if (TFT_RST > 0) {
-    pinMode(TFT_RST, OUTPUT);
-//    TFT_RST_ON;
-  }
+#ifdef __LINKIT_ONE__
   if (TFT_LED > 0) pinMode(TFT_LED, OUTPUT);
 
+  pinMode(TFT_RST, OUTPUT);
   pinMode(TFT_RS, OUTPUT);
   pinMode(TFT_CS, OUTPUT);
+#endif
 
   SPI.begin();
 
@@ -77,14 +76,10 @@ void TFT_LG_ILI9225::begin() {
   if (TFT_LED > 0) digitalWrite(TFT_LED, HIGH);
 
   // Initialization Code
-  if (TFT_RST > 0) {
-//    TFT_RST_OFF;
-//    delay(1);
-    TFT_RST_ON;
-    delay(10);
-    TFT_RST_OFF;
-    delay(50);
-  }
+  TFT_RST_ON;
+  delay(10);
+  TFT_RST_OFF;
+  delay(50);
 
   /* Start Initial Sequence */
 
@@ -175,7 +170,7 @@ void TFT_LG_ILI9225::setBacklight(boolean flag) {
   if (TFT_LED) digitalWrite(TFT_LED, flag);
 }
 
-
+/*
 void TFT_LG_ILI9225::setDisplay(boolean flag) {
   if (flag) {
     _writeRegister(0x00ff, 0x0000);
@@ -191,7 +186,7 @@ void TFT_LG_ILI9225::setDisplay(boolean flag) {
     delay(200);
   }
 }
-
+*/
 
 void TFT_LG_ILI9225::setOrientation(uint8_t orientation) {
 
@@ -298,7 +293,7 @@ void TFT_LG_ILI9225::fillCircle(uint8_t x0, uint8_t y0, uint8_t radius, uint16_t
     drawLine(x0 + y, y0 - x, x0 + y, y0 + x, color); // right
     drawLine(x0 - y, y0 - x, x0 - y, y0 + x, color); // left
   }
-//  fillRectangle(x0-x, y0-y, x0+x, y0+y, color);
+  fillRectangle(x0-x, y0-y, x0+x, y0+y, color);
 }
 
 /**

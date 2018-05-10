@@ -18,6 +18,7 @@ SOURCES += \
     ../libraries/TFT_LG_ILI9225/src/RussFontANSI.c \
     ../libraries/TFT_LG_ILI9225/src/RussFontOEM.c \
     ../libraries/TFT_LG_ILI9225/src/DefaultFonts.c \
+    ../libraries/TFT_LG_ILI9225/examples/Demo/Demo.ino \
     ../libraries/DHT-sensor-library-master/DHT.cpp \
     ../libraries/IrControl/IrControl.cpp \
     ../libraries/MsTimer2/MsTimer2.cpp \
