@@ -17,7 +17,7 @@ void TFT_LG_ILI9225::_writedata(uint8_t c) {
   TFT_CS_HIGH;
 }
 
-void TFT_LG_ILI9225::_orientCoordinates(uint16_t &x1, uint16_t &y1) {
+void TFT_LG_ILI9225::_orientCoordinates(int16_t &x1, int16_t &y1) {
   switch (_orientation) {
   case 0:
     break;
@@ -34,26 +34,49 @@ void TFT_LG_ILI9225::_orientCoordinates(uint16_t &x1, uint16_t &y1) {
     _swap(x1, y1);
     break;
   }
+  x1 = constrain(x1, 0, _maxX);
+  y1 = constrain(y1, 0, _maxY);
 }
 
+uint16_t TFT_LG_ILI9225::_setWindow(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
 
-uint16_t TFT_LG_ILI9225::_setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
   _orientCoordinates(x0, y0);
   _orientCoordinates(x1, y1);
+/*
+  Serial.print("x0=");
+  Serial.print(x0);
+  Serial.print("; x1=");
+  Serial.print(x1);
+  Serial.print("; y0=");
+  Serial.print(y0);
+  Serial.print("; y1=");
+  Serial.print(y1);
+  Serial.println(";");
+*/
+  if (x1 < x0) _swap(x0, x1);
+  if (y1 < y0) _swap(y0, y1);
+/*
+  Serial.print("x0=");
+  Serial.print(x0);
+  Serial.print("; x1=");
+  Serial.print(x1);
+  Serial.print("; y0=");
+  Serial.print(y0);
+  Serial.print("; y1=");
+  Serial.print(y1);
+  Serial.println(";");
+*/
+  _writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR1, x1);
+  _writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR2, x0);
 
-  if (x1<x0) _swap(x0, x1);
-  if (y1<y0) _swap(y0, y1);
+  _writeRegister(ILI9225_VERTICAL_WINDOW_ADDR1, y1);
+  _writeRegister(ILI9225_VERTICAL_WINDOW_ADDR2, y0);
 
-  _writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR1,x1);
-  _writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR2,x0);
+  _writeRegister(ILI9225_RAM_ADDR_SET1, x0);
+  _writeRegister(ILI9225_RAM_ADDR_SET2, y0);
 
-  _writeRegister(ILI9225_VERTICAL_WINDOW_ADDR1,y1);
-  _writeRegister(ILI9225_VERTICAL_WINDOW_ADDR2,y0);
-
-  _writeRegister(ILI9225_RAM_ADDR_SET1,x0);
-  _writeRegister(ILI9225_RAM_ADDR_SET2,y0);
-
-  _writeCommand(0x00, 0x22);
+  _writecommand(0x00);
+  _writecommand(0x22);
 
   return (y1 - y0 + 1) * (x1 - x0 + 1);
 }
@@ -162,7 +185,8 @@ void TFT_LG_ILI9225::clear() {
 
 
 void TFT_LG_ILI9225::invert(boolean flag) {
-  _writeCommand(0x00, flag ? ILI9225C_INVON : ILI9225C_INVOFF);
+  _writecommand(0x00);
+  _writecommand(flag ? ILI9225C_INVON : ILI9225C_INVOFF);
 }
 
 
@@ -231,7 +255,7 @@ void TFT_LG_ILI9225::fillRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16
   uint16_t count = _setWindow(x1, y1, x2, y2);
 
   for(uint16_t t = count; t > 0; t--)
-    _writeData(color >> 8, color);
+    _writeData(color);
 }
 
 
@@ -336,7 +360,7 @@ void TFT_LG_ILI9225::drawPixel(uint16_t x1, uint16_t y1, uint16_t color) {
   if(x1 >= _maxX || y1 >= _maxY) return;
 
   _setWindow(x1, y1, x1, y1);
-  _writeData(color >> 8, color);
+  _writeData(color);
 }
 
 
@@ -349,43 +373,41 @@ uint16_t TFT_LG_ILI9225::maxY() {
   return _maxY;
 }
 
-
+/*
 uint16_t TFT_LG_ILI9225::setColor(uint8_t red8, uint8_t green8, uint8_t blue8) {
   // rgb16 = red5 green6 blue5
   return (red8 >> 3) << 11 | (green8 >> 2) << 5 | (blue8 >> 3);
 }
-
-
+*/
+/*
 void TFT_LG_ILI9225::splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue) {
   // rgb16 = red5 green6 blue5
   red   = (rgb & 0b1111100000000000) >> 11 << 3;
   green = (rgb & 0b0000011111100000) >>  5 << 2;
   blue  = (rgb & 0b0000000000011111)       << 3;
 }
+*/
 
-
-void TFT_LG_ILI9225::_swap(uint16_t &a, uint16_t &b) {
-  uint16_t w = a;
+void TFT_LG_ILI9225::_swap(int16_t &a, int16_t &b) {
+  int16_t w = a;
   a = b;
   b = w;
 }
 
 // Utilities
-void TFT_LG_ILI9225::_writeCommand(uint8_t HI, uint8_t LO) {
-  _writecommand(HI);
-  _writecommand(LO);
+void TFT_LG_ILI9225::_writeCommand(uint16_t command) {
+  _writecommand(command >> 8);
+  _writecommand(command & 0xFF);
 }
 
-
-void TFT_LG_ILI9225::_writeData(uint8_t HI, uint8_t LO) {
-  _writedata(HI);
-  _writedata(LO);
+void TFT_LG_ILI9225::_writeData(uint16_t data) {
+  _writedata(data >> 8);
+  _writedata(data & 0xFF);
 }
-
 
 void TFT_LG_ILI9225::_writeRegister(uint16_t reg, uint16_t data) {
-  _writeCommand(reg >> 8, reg & 0xFF);
-  _writeData(data >> 8, data & 0xFF);
+  _writeCommand(reg);
+  _writeData(data);
 }
 
 
@@ -396,9 +418,9 @@ void TFT_LG_ILI9225::drawTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_
 }
 
 
-void TFT_LG_ILI9225::fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color) {
+void TFT_LG_ILI9225::fillTriangle(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3, uint16_t color) {
 
-  uint16_t a, b, y, last;
+  int16_t a, b, y, last;
 
   // Sort coordinates by Y order (y3 >= y2 >= y1)
   if (y1 > y2) {
@@ -492,12 +514,13 @@ void TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, const char * string, uint1
   uint16_t currx = x;
   // Print every character in string
   while (*string) {
-    currx += drawChar(currx, y, *string, color);
-    *string++;
-  }
+    currx += drawChar(currx, y, *string++, color);
+  };
 }
 
-uint8_t TFT_LG_ILI9225::drawChar(uint16_t x, uint16_t y, uint8_t ascii, uint16_t color) {
+uint8_t TFT_LG_ILI9225::drawChar(
+    uint16_t x, uint16_t y, uint8_t ascii, uint16_t color
+) {
   for (uint8_t i = 0; i <= FONT_X; i++) {
     uint8_t temp = (i == FONT_X) ? 0 : pgm_read_byte(&russFontANSI[ascii][i]);
     uint16_t xCur = x + i * _fontSize;
@@ -515,17 +538,23 @@ uint8_t TFT_LG_ILI9225::drawChar(uint16_t x, uint16_t y, uint8_t ascii, uint16_t
 // Draw a 1-bit image (bitmap) at the specified (x,y) position from the
 // provided bitmap buffer (must be PROGMEM memory) using the specified
 // foreground color (unset bits are transparent).
-void TFT_LG_ILI9225::drawBitmap(int16_t x, int16_t y,
-const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
+void TFT_LG_ILI9225::drawBitmap(
+  const uint8_t *bitmap,
+  int16_t x, int16_t y, int16_t w, int16_t h,
+  uint16_t color
+) {
 
   int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t byte;
+  uint8_t bt;
 
   for (j = 0; j < h; j++) {
     for (i = 0; i < w; i++) {
-      if (i & 7) byte <<= 1;
-      else      byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
-      if (byte & 0x80) drawPixel(x + i, y + j, color);
+      if (i & 7) {
+        bt <<= 1;
+      } else {
+        bt = pgm_read_byte(bitmap + j * byteWidth + i / 8);
+      }
+      if (bt & 0x80) drawPixel(x + i, y + j, color);
     }
   }
 }
@@ -533,69 +562,28 @@ const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
 // Draw a 1-bit image (bitmap) at the specified (x,y) position from the
 // provided bitmap buffer (must be PROGMEM memory) using the specified
 // foreground (for set bits) and background (for clear bits) colors.
-void TFT_LG_ILI9225::drawBitmap(int16_t x, int16_t y,
-const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg) {
+void TFT_LG_ILI9225::drawBitmap(
+    const uint8_t *bitmap,
+    int16_t x, int16_t y, int16_t w, int16_t h, int16_t byteWidth,
+    uint16_t color, uint16_t bgColor
+) {
+  uint16_t count = _setWindow(x, y, x + w - 1, y + h - 1);
+  Serial.print("count=");
+  Serial.println(count);
 
-  int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t byte;
+  for (int16_t j = 0; j < h; j++) {
+    for (int16_t i = 0; i < w; i++ ) {
 
-  for (j = 0; j < h; j++) {
-    for (i = 0; i < w; i++ ) {
-      if (i & 7) byte <<= 1;
-      else      byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
-      if (byte & 0x80) drawPixel(x + i, y + j, color);
-      else            drawPixel(x + i, y + j, bg);
+      writeBitmapPixel(bitmap, i, j, byteWidth, color, bgColor);
     }
   }
 }
 
-// drawBitmap() variant for RAM-resident (not PROGMEM) bitmaps.
-void TFT_LG_ILI9225::drawBitmap(int16_t x, int16_t y,
-uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
-
-  int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t byte;
-
-  for(j = 0; j < h; j++) {
-    for(i = 0; i < w; i++) {
-      if (i & 7) byte <<= 1;
-      else      byte   = bitmap[j * byteWidth + i / 8];
-      if (byte & 0x80) drawPixel(x + i, y + j, color);
-    }
-  }
-}
-
-// drawBitmap() variant w/background for RAM-resident (not PROGMEM) bitmaps.
-void TFT_LG_ILI9225::drawBitmap(int16_t x, int16_t y,
-uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg) {
-
-  int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t byte;
-
-  for (j = 0; j < h; j++) {
-    for (i = 0; i < w; i++ ) {
-      if (i & 7) byte <<= 1;
-      else      byte   = bitmap[j * byteWidth + i / 8];
-      if (byte & 0x80) drawPixel(x + i, y + j, color);
-      else            drawPixel(x + i, y + j, bg);
-    }
-  }
-}
-
-//Draw XBitMap Files (*.xbm), exported from GIMP,
-//Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
-//C Array can be directly used with this function
-void TFT_LG_ILI9225::drawXBitmap(int16_t x, int16_t y,
-const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color) {
-
-  int16_t i, j, byteWidth = (w + 7) / 8;
-  uint8_t byte;
-
-  for (j = 0; j < h; j++) {
-    for (i = 0; i < w; i++ ) {
-      if (i & 7) byte >>= 1;
-      else      byte   = pgm_read_byte(bitmap + j * byteWidth + i / 8);
-      if (byte & 0x01) drawPixel(x + i, y + j, color);
-    }
-  }
+void TFT_LG_ILI9225::writeBitmapPixel(
+    const uint8_t *bitmap, int16_t x, int16_t y, int16_t byteWidth,
+    uint16_t color, uint16_t bgColor
+) {
+  uint8_t _byte = pgm_read_byte(bitmap + y * byteWidth + x / 8);
+  uint8_t mode = 0x80 >> (x % 8);
+  _writeData((_byte & mode) ? color : bgColor);
 }

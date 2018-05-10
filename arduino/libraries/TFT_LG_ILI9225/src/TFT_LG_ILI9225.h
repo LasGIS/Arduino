@@ -235,14 +235,14 @@ class TFT_LG_ILI9225 {
     /// @param  green green component, 0x00..0xff
     /// @param  blue blue component, 0x00..0xff
     /// @return  16-bit color
-    uint16_t setColor(uint8_t red, uint8_t green, uint8_t blue);
+//    uint16_t setColor(uint8_t red, uint8_t green, uint8_t blue);
 
     /// Calculate 8-bit Red-Green-Blue components from 16-bit color
     /// @param  rgb 16-bit color
     /// @param  red red component, 0x00..0xff
     /// @param  green green component, 0x00..0xff
     /// @param  blue blue component, 0x00..0xff
-    void splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue);
+//    void splitColor(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue);
 
     /// Draw triangle, triangle coordinates
     /// @param  x1 corner 1 coordinate, x-axis
@@ -262,7 +262,7 @@ class TFT_LG_ILI9225 {
     /// @param  x3 corner 3 coordinate, x-axis
     /// @param  y3 corner 3 coordinate, y-axis
     /// @param  color 16-bit color
-    void fillTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
+    void fillTriangle(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3, uint16_t color);
 
     /// Set current font
     /// @param fontSize Font Size
@@ -287,24 +287,21 @@ class TFT_LG_ILI9225 {
     /// @param  h height
     /// @param  color 16-bit color, default=white
     /// @param  bg 16-bit color, background
-    void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
-    void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
-    void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
-    void drawBitmap(int16_t x, int16_t y, uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, uint16_t bg);
-
-    void drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
+    void drawBitmap(const uint8_t *bitmap, int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+    void drawBitmap(const uint8_t *bitmap, int16_t x, int16_t y, int16_t w, int16_t h, int16_t byteWidth, uint16_t color, uint16_t bg);
+    void writeBitmapPixel(const uint8_t *bitmap, int16_t x, int16_t y, int16_t byteWidth, uint16_t color, uint16_t bg);
 
   private:
 
     void _writecommand(uint8_t c);
     void _writedata(uint8_t d);
 
-    void _swap(uint16_t &a, uint16_t &b);
-    uint16_t _setWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-    void _orientCoordinates(uint16_t &x1, uint16_t &y1);
+    void _swap(int16_t &a, int16_t &b);
+    uint16_t _setWindow(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
+    void _orientCoordinates(int16_t &x1, int16_t &y1);
     void _writeRegister(uint16_t reg, uint16_t data);
-    void _writeData(uint8_t HI, uint8_t LO);
-    void _writeCommand(uint8_t HI, uint8_t LO);
+    void _writeCommand(uint16_t command);
+    void _writeData(uint16_t data);
 
     uint16_t _maxX, _maxY, _bgColor;
     uint8_t _orientation;

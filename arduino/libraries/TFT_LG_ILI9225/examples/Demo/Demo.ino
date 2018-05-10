@@ -1,14 +1,14 @@
 // Include application, user and local libraries
 #include "SPI.h"
 #include "TFT_LG_ILI9225.h"
-
+/*
 #define TFT_RST 8
 #define TFT_RS  9
 #define TFT_CS  10  // SS
 #define TFT_SDI 11  // MOSI
 #define TFT_CLK 13  // SCK
 #define TFT_LED 3   // 0 if wired to +5V directly
-
+*/
 TFT_LG_ILI9225 tft;
 
 // Variables and constants
@@ -19,8 +19,7 @@ boolean flag = false;
  * Tux black/white image in 180x220 converted using Ardafruit bitmap converter
  * https://github.com/ehubin/Adafruit-GFX-Library/tree/master/Img2Code
  */
-static const uint8_t PROGMEM tux[] = 
-{
+static const uint8_t PROGMEM tux[] = {
 0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xf0,
 0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xf0,
 0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xf0,
@@ -243,6 +242,7 @@ static const uint8_t PROGMEM tux[] =
 0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xf0
 };
 
+
 // Setup
 void setup() {
   tft.begin();
@@ -251,7 +251,22 @@ void setup() {
 
 // Loop
 void loop() {
-    
+/*
+  for (int i = 0; i < 4; i++) {
+    Serial.print("Orientation = ");
+    Serial.println(i);
+    tft.setOrientation(i);
+    tft.clear();
+//    tft.drawText(10, 100, "drawing bitmap");
+//    delay(1000);
+//    tft.clear();
+    tft.drawBitmap(tux, 0, 0, 176, 220, 23, COLOR_WHITE, COLOR_DARKGREEN);
+    delay(5000);
+  }
+  while(true);
+*/
+  tft.setOrientation(2);
+
   tft.drawRectangle(0, 0, tft.maxX() - 1, tft.maxY() - 1, COLOR_WHITE);
   tft.setFontSize(1);
   tft.drawText(10, 10, "hello!");
@@ -306,7 +321,7 @@ void loop() {
     tft.clear();
     tft.setOrientation(i);
     tft.drawRectangle(0, 0, tft.maxX() - 1, tft.maxY() - 1, COLOR_WHITE);
-    char* text = "setOrientation(0)";
+    char* text = (char*) "setOrientation(0)";
     text[15] = '0' + i;
     tft.drawText(10, 10, text);
     tft.drawRectangle(10, 20, 50, 60, COLOR_GREEN);
@@ -315,16 +330,15 @@ void loop() {
     delay(1000);
   }
 
-  tft.setOrientation(0);
+  tft.setOrientation(2);
   tft.clear();
   tft.drawText(10, 100, "drawing bitmap");
   delay(1000);
   tft.clear();
-  tft.setBackgroundColor(COLOR_BLACK);
-  tft.drawBitmap(0, 0, tux, 180, 220, COLOR_WHITE);
+  //tft.setBackgroundColor(COLOR_BLACK);
+  tft.drawBitmap(tux, 0, 0, 180, 220, COLOR_WHITE);
   delay(5000);
   
-  tft.setOrientation(0);
   tft.clear();
   tft.setFontSize(2);
   tft.setBackgroundColor(COLOR_YELLOW);
@@ -334,7 +348,7 @@ void loop() {
   delay(1000);
   
   tft.drawText(10, 60, "off");
-  delay(1000);
+  delay(5000);
   
 //  tft.setBacklight(false);
 //  tft.setDisplay(false);
@@ -342,5 +356,4 @@ void loop() {
 //  tft.setDisplay(true);
 
 //  while(true);
-
 }
