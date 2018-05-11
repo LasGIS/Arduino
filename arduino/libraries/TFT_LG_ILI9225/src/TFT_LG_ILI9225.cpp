@@ -3,6 +3,14 @@
 #include <limits.h>
 #include <SPI.h>
 
+Size::Size(uint16_t _width, uint16_t _height) {
+  width = _width;
+  height = _height;
+}
+uint16_t Size::count() {
+  return width * height;
+}
+
 void TFT_LG_ILI9225::_writecommand(uint8_t c) {
   TFT_DC_LOW;
   TFT_CS_LOW;
@@ -34,38 +42,18 @@ void TFT_LG_ILI9225::_orientCoordinates(int16_t &x1, int16_t &y1) {
     _swap(x1, y1);
     break;
   }
-  x1 = constrain(x1, 0, _maxX);
-  y1 = constrain(y1, 0, _maxY);
+  x1 = constrain(x1, 0, ILI9225_LCD_WIDTH - 1);
+  y1 = constrain(y1, 0, ILI9225_LCD_HEIGHT - 1);
 }
 
-uint16_t TFT_LG_ILI9225::_setWindow(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
+Size TFT_LG_ILI9225::_setWindow(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
 
   _orientCoordinates(x0, y0);
   _orientCoordinates(x1, y1);
-/*
-  Serial.print("x0=");
-  Serial.print(x0);
-  Serial.print("; x1=");
-  Serial.print(x1);
-  Serial.print("; y0=");
-  Serial.print(y0);
-  Serial.print("; y1=");
-  Serial.print(y1);
-  Serial.println(";");
-*/
+
   if (x1 < x0) _swap(x0, x1);
   if (y1 < y0) _swap(y0, y1);
-/*
-  Serial.print("x0=");
-  Serial.print(x0);
-  Serial.print("; x1=");
-  Serial.print(x1);
-  Serial.print("; y0=");
-  Serial.print(y0);
-  Serial.print("; y1=");
-  Serial.print(y1);
-  Serial.println(";");
-*/
+
   _writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR1, x1);
   _writeRegister(ILI9225_HORIZONTAL_WINDOW_ADDR2, x0);
 
@@ -78,7 +66,7 @@ uint16_t TFT_LG_ILI9225::_setWindow(int16_t x0, int16_t y0, int16_t x1, int16_t 
   _writecommand(0x00);
   _writecommand(0x22);
 
-  return (y1 - y0 + 1) * (x1 - x0 + 1);
+  return Size(x1 - x0 + 1, y1 - y0 + 1);
 }
 
 
@@ -252,7 +240,7 @@ void TFT_LG_ILI9225::drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16
 
 void TFT_LG_ILI9225::fillRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) {
 
-  uint16_t count = _setWindow(x1, y1, x2, y2);
+  uint16_t count = _setWindow(x1, y1, x2, y2).count();
 
   for(uint16_t t = count; t > 0; t--)
     _writeData(color);
@@ -538,7 +526,7 @@ uint8_t TFT_LG_ILI9225::drawChar(
 // Draw a 1-bit image (bitmap) at the specified (x,y) position from the
 // provided bitmap buffer (must be PROGMEM memory) using the specified
 // foreground color (unset bits are transparent).
-void TFT_LG_ILI9225::drawBitmap(
+/*void TFT_LG_ILI9225::drawBitmap(
   const uint8_t *bitmap,
   int16_t x, int16_t y, int16_t w, int16_t h,
   uint16_t color
@@ -557,7 +545,7 @@ void TFT_LG_ILI9225::drawBitmap(
       if (bt & 0x80) drawPixel(x + i, y + j, color);
     }
   }
-}
+}*/
 
 // Draw a 1-bit image (bitmap) at the specified (x,y) position from the
 // provided bitmap buffer (must be PROGMEM memory) using the specified
@@ -565,25 +553,51 @@ void TFT_LG_ILI9225::drawBitmap(
 void TFT_LG_ILI9225::drawBitmap(
     const uint8_t *bitmap,
     int16_t x, int16_t y, int16_t w, int16_t h, int16_t byteWidth,
-    uint16_t color, uint16_t bgColor
+    uint16_t color
 ) {
-  uint16_t count = _setWindow(x, y, x + w - 1, y + h - 1);
-  Serial.print("count=");
-  Serial.println(count);
+  Size size = _setWindow(x, y, x + w - 1, y + h - 1);
+  uint16_t count = size.count();
+//  Serial.print("width=");
+//  Serial.print(size.width);
+//  Serial.print("; height=");
+//  Serial.print(size.height);
+//  Serial.print("; count=");
+//  Serial.print(count);
+//  Serial.println(";");
 
-  for (int16_t j = 0; j < h; j++) {
-    for (int16_t i = 0; i < w; i++ ) {
-
-      writeBitmapPixel(bitmap, i, j, byteWidth, color, bgColor);
+  for (uint16_t r = 0; r < size.height; r++) {
+    for (uint16_t c = 0; c < size.width; c++ ) {
+      uint16_t col = c, row = r;
+      switch (_orientation) {
+      case 0:
+        break;
+      case 1:
+        row = size.width - c - 1;
+        col = r;
+        break;
+      case 2:
+        col = size.width - c - 1;
+        row = size.height - r - 1;
+        break;
+      case 3:
+        col = size.width - r - 1;
+        row = c;
+        break;
+      }
+      col = col >= size.width ? size.width - 1 : col;
+      row = row >= size.height ? size.height - 1 : row;
+      writeBitmapPixel(bitmap, col, row, byteWidth, color);
+      if (--count == 0) break;
     }
+    if (count == 0) break;
   }
 }
 
 void TFT_LG_ILI9225::writeBitmapPixel(
     const uint8_t *bitmap, int16_t x, int16_t y, int16_t byteWidth,
-    uint16_t color, uint16_t bgColor
+    uint16_t color
 ) {
   uint8_t _byte = pgm_read_byte(bitmap + y * byteWidth + x / 8);
   uint8_t mode = 0x80 >> (x % 8);
-  _writeData((_byte & mode) ? color : bgColor);
+  _writeData((_byte & mode) ? color : _bgColor);
 }

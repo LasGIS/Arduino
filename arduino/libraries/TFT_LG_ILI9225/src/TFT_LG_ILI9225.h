@@ -130,6 +130,14 @@
 #define COLOR_SNOW           RGB888_RGB565(0xFFFAFAu)
 #define COLOR_YELLOW         RGB888_RGB565(0xFFFF00u)
 
+class Size {
+public:
+  uint16_t width;
+  uint16_t height;
+  Size(uint16_t, uint16_t);
+  uint16_t count();
+};
+
 /// Main and core class
 class TFT_LG_ILI9225 {
 
@@ -287,9 +295,9 @@ class TFT_LG_ILI9225 {
     /// @param  h height
     /// @param  color 16-bit color, default=white
     /// @param  bg 16-bit color, background
-    void drawBitmap(const uint8_t *bitmap, int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
-    void drawBitmap(const uint8_t *bitmap, int16_t x, int16_t y, int16_t w, int16_t h, int16_t byteWidth, uint16_t color, uint16_t bg);
-    void writeBitmapPixel(const uint8_t *bitmap, int16_t x, int16_t y, int16_t byteWidth, uint16_t color, uint16_t bg);
+//    void drawBitmap(const uint8_t *bitmap, int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+    void drawBitmap(const uint8_t *bitmap, int16_t x, int16_t y, int16_t w, int16_t h, int16_t byteWidth, uint16_t color);
+    void writeBitmapPixel(const uint8_t *bitmap, int16_t x, int16_t y, int16_t byteWidth, uint16_t color);
 
   private:
 
@@ -297,7 +305,7 @@ class TFT_LG_ILI9225 {
     void _writedata(uint8_t d);
 
     void _swap(int16_t &a, int16_t &b);
-    uint16_t _setWindow(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
+    Size _setWindow(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
     void _orientCoordinates(int16_t &x1, int16_t &y1);
     void _writeRegister(uint16_t reg, uint16_t data);
     void _writeCommand(uint16_t command);

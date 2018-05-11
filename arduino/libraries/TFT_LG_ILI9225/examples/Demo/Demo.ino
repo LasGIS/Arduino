@@ -251,21 +251,10 @@ void setup() {
 
 // Loop
 void loop() {
-/*
-  for (int i = 0; i < 4; i++) {
-    Serial.print("Orientation = ");
-    Serial.println(i);
-    tft.setOrientation(i);
-    tft.clear();
-//    tft.drawText(10, 100, "drawing bitmap");
-//    delay(1000);
-//    tft.clear();
-    tft.drawBitmap(tux, 0, 0, 176, 220, 23, COLOR_WHITE, COLOR_DARKGREEN);
-    delay(5000);
-  }
-  while(true);
-*/
-  tft.setOrientation(2);
+
+  tft.clear();
+  tft.setOrientation(0);
+  tft.setBackgroundColor(COLOR_BLACK);
 
   tft.drawRectangle(0, 0, tft.maxX() - 1, tft.maxY() - 1, COLOR_WHITE);
   tft.setFontSize(1);
@@ -317,6 +306,7 @@ void loop() {
   tft.drawText(10, 110, "point");
   delay(1000);
 
+  /* показываем ориентацию */
   for (uint8_t i = 0; i < 4; i++) {
     tft.clear();
     tft.setOrientation(i);
@@ -330,15 +320,29 @@ void loop() {
     delay(1000);
   }
 
-  tft.setOrientation(2);
+  /* Рисуем bitmap по старому */
+/*  tft.setOrientation(0);
   tft.clear();
   tft.drawText(10, 100, "drawing bitmap");
   delay(1000);
   tft.clear();
   //tft.setBackgroundColor(COLOR_BLACK);
   tft.drawBitmap(tux, 0, 0, 180, 220, COLOR_WHITE);
-  delay(5000);
+  delay(5000); */
   
+  /* Рисуем bitmap по новому */
+  for (int i = 0; i < 4; i++) {
+    tft.setOrientation(i);
+    tft.clear();
+    tft.setBackgroundColor(COLOR_DARKGREEN);
+    tft.drawBitmap(tux, 0, 0, 176, 220, 23, COLOR_WHITE);
+    char* text = (char*) "bitmap Orientation(0)";
+    text[19] = '0' + i;
+    tft.setBackgroundColor(COLOR_WHITE);
+    tft.drawText(10, 0, text, COLOR_BLACK);
+    delay(2000);
+  }
+
   tft.clear();
   tft.setFontSize(2);
   tft.setBackgroundColor(COLOR_YELLOW);
@@ -346,7 +350,7 @@ void loop() {
   tft.setBackgroundColor(COLOR_BLACK);
   tft.setFontSize(1);
   delay(1000);
-  
+
   tft.drawText(10, 60, "off");
   delay(5000);
   
