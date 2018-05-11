@@ -31,7 +31,8 @@ SOURCES += \
     note.cpp \
     screen_date_time.cpp \
     screen_timer.cpp \
-    screen_tft.cpp
+    screen_tft.cpp \
+    screen_dump.cpp
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += ../libraries/arduino-ds1302-master \
@@ -67,7 +68,8 @@ HEADERS += \
     note.h \
     screen_tft.h \
     screen_date_time.h \
-    screen_timer.h
+    screen_timer.h \
+    screen_dump.h
 
 DISTFILES += \
     ../libraries/ADXL345/library.json \

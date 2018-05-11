@@ -27,28 +27,27 @@ void printVolts() {
  * устанавливаем значение поля
  */
 void FieldTft::setValue(int8_t nPosit, char key) {
-  byte buf[5];
   uint16_t _val = val;
   for (int i = len - 1; i >= 0; i--) {
-    buf[i] = _val % 10;
+    comBuffer[i] = _val % 10;
     _val = _val / 10;
   }
 
   if (key >= '0' && key <= '9') {
-    buf[nPosit] = key - '0';
+    comBuffer[nPosit] = key - '0';
   } else switch (key) {
   case '+':
-    buf[nPosit]++;
+    comBuffer[nPosit]++;
     break;
   case '-':
-    if (buf[nPosit] > 0) buf[nPosit]--;
+    if (comBuffer[nPosit] > 0) comBuffer[nPosit]--;
     break;
   }
 
   _val = 0;
   for (int i = 0; i < len; i++) {
     _val *= 10;
-    _val += buf[i];
+    _val += comBuffer[i];
   }
 
   if (_val > maxVal) {
@@ -64,17 +63,16 @@ void FieldTft::setValue(int8_t nPosit, char key) {
  * рисуем очередной филд
  */
 void FieldTft::showField(int8_t nPosit) {
-  char buf[5];
   if (getValue != NULL) {
     printText(col, row, fontSize, getValue(val), COLOR_WHITE);
   } else {
     int _val = val;
-    buf[len] = 0;
+    comBuffer[len] = 0;
     for (int i = len - 1; i >= 0; i--) {
-      buf[i] = '0' + _val % 10;
+      comBuffer[i] = '0' + _val % 10;
       _val = _val / 10;
     }
-    printText(col, row, fontSize, buf, COLOR_WHITE);
+    printText(col, row, fontSize, comBuffer, COLOR_WHITE);
   }
   if (nPosit >= 0) {
     setCursor(col + nPosit, row, fontSize);

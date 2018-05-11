@@ -20,7 +20,8 @@ ModeType mode = show;
 
 ScreenTft* screens[NUMBER_OF_SCREENS] = {
   new ScreenDateTime(),
-  new ScreenTimer()
+  new ScreenTimer(),
+  new ScreenDump()
 };
 ScreenTft * screen = screens[currentCommand];
 
@@ -65,9 +66,18 @@ void setCursor(uint8_t col, uint8_t row, uint8_t fontSize) {
  * @param color
  */
 void drawDouble(uint8_t col, uint8_t row, uint8_t fontSize, double val, uint16_t color) {
-  //comBuffer[0] = val > 0 ? ' ' : '-';
   dtostrf(val, 5, 2, comBuffer);
-  comBuffer[strlen(comBuffer)] = 0;
+//  comBuffer[strlen(comBuffer)] = 0;
+  printText(col, row, fontSize, comBuffer, color);
+}
+
+void drawHex(uint8_t col, uint8_t row, uint8_t fontSize, uint16_t val, uint8_t size, uint16_t color) {
+  for (int8_t i = size - 1; i >= 0; i--) {
+    uint8_t b = val & 0xf;
+    comBuffer[i] = b < 10 ? '0' + b : 'A' + b - 10;
+    val >>= 4;
+  }
+  comBuffer[size] = 0;
   printText(col, row, fontSize, comBuffer, color);
 }
 

@@ -4,14 +4,13 @@
 #include <inttypes.h>
 
 class I2C_EEPROM {
-  public:
-    void init(uint8_t _deviceaddress);
-    uint8_t read(uint16_t address);
-    void write(uint16_t address, uint8_t data);
-    void write_buffer(uint16_t address, uint8_t* data, uint8_t length);
-    void read_buffer(uint16_t address, uint8_t* data, uint8_t length);
+public:
+  uint8_t read(uint8_t device, uint16_t address);
+  void write(uint8_t device, uint16_t address, uint8_t data);
+  void write_buffer(uint8_t device, uint16_t address, uint8_t* data, uint8_t length);
+  void read_buffer(uint8_t device, uint16_t address, uint8_t* data, uint8_t length);
 private:
-    uint8_t deviceaddress;
+  void beginTransmission(uint8_t device, uint16_t address);
 };
 
 static I2C_EEPROM I2CEEPROM;

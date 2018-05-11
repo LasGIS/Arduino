@@ -12,6 +12,7 @@
 #include "screen_tft.h"
 #include "screen_date_time.h"
 #include "screen_timer.h"
+#include "screen_dump.h"
 
 //#define HAS_SERIAL
 //#define HAS_SERIAL_DEBUG
@@ -48,7 +49,7 @@
 #define BOXH_CENTER_Y 87
 
 /* количество экранов */
-#define NUMBER_OF_SCREENS 2
+#define NUMBER_OF_SCREENS 3
 extern TFT_LG_ILI9225 tft;
 extern DS3231 Clock;
 extern char comBuffer[20];
@@ -62,10 +63,11 @@ extern uint16_t boxCenterX;
 extern uint16_t boxCenterY;
 
 extern void musicAlarm();
-extern void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume);
+extern void buzzerOut (uint16_t hertz, uint32_t del, uint8_t soundVolume);
 extern void printText (uint8_t col, uint8_t row, uint8_t fontSize, const char * text, uint16_t color);
 extern void setCursor (uint8_t col, uint8_t row, uint8_t fontSize);
 extern void drawDouble(uint8_t col, uint8_t row, uint8_t fontSize, double val, uint16_t color);
+extern void drawHex   (uint8_t col, uint8_t row, uint8_t fontSize, uint16_t val, uint8_t size, uint16_t color);
 extern void printShortTime(DateTime * dateTime);
 extern void printBigTime  (DateTime * dateTime);
 extern void printRealDate (DateTime * dateTime);
