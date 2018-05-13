@@ -11,10 +11,8 @@ public:
   ScreenTimer();
   virtual void changeOrientation();
   virtual void showTime(DateTime * dateTime);
-  virtual void showEveryTime();
   virtual void showOnce();
   virtual void edit(char key);
-//  virtual void control(char key);
   void load();
   void save();
   void start();

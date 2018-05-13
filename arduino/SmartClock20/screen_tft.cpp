@@ -189,6 +189,11 @@ void ScreenTft::edit(char key) {
     mode = ModeType::show;
     return;
   }
+  //showCurrentField;
+}
+
+/** показать текущее поле */
+void ScreenTft::showCurrentField() {
   fields[nField].showField(nPosit);
 }
 

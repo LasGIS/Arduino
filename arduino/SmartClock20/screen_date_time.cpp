@@ -55,16 +55,6 @@ void ScreenDateTime::edit(char key) {
     break;
   }
   ScreenTft::edit(key);
-  switch(key) {
-  case 1: // начальная
-    showOnce();
-    showAllFields();
-    break;
-  case 'M': // записываем
-  case 'r': // без записи
-    showOnce();
-    break;
-  }
 }
 
 /*void ScreenDateTime::control(char key) {

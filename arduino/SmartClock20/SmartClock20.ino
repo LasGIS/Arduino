@@ -132,11 +132,11 @@ void setOrientation(GravVector vec) {
  */
 void setup() {
   analogReference(INTERNAL);
+  Wire.begin();
   tft.begin();
-  //delay(300);
+
   Serial.begin(9600);
 //  Serial.begin(115200);
-  Wire.begin();
 #ifdef ADXL345_ENABLED
   accelBegin();
   setOrientation(accelReadVector());
@@ -183,6 +183,11 @@ void loop() {
     // редактирование
     if (mode == ModeType::edit) {
       screen->edit(key);
+      if (mode == ModeType::show) {
+        screen->showOnce();
+      } else {
+        screen->showCurrentField();
+      }
       return;
     }
 
@@ -191,7 +196,9 @@ void loop() {
     // меняем режим
     case 'M':
       screen->edit(1);
-//      screen->showOnce();
+      screen->showOnce();
+      screen->showAllFields();
+      screen->showCurrentField();
       break;
     // меняем экран
     case 'e':
@@ -199,9 +206,6 @@ void loop() {
       break;
     default:
       screen->control(key);
-      /*if (mode == ModeType::show) {
-        screen->showOnce();
-      }*/
       break;
     }
   }

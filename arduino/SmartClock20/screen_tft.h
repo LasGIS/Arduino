@@ -56,6 +56,8 @@ public:
   /** работа в обычном режиме */
   virtual void control(char key);
 
+  /** показать текущее поле */
+  void showCurrentField();
   /** показать все поля */
   void showAllFields();
 };

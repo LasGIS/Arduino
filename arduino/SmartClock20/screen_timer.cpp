@@ -34,8 +34,7 @@ void ScreenTimer::showTime(DateTime * dateTime) {
   }
 }
 
-void ScreenTimer::showEveryTime() {
-}
+/*void ScreenTimer::showEveryTime() {}*/
 
 void ScreenTimer::showOnce() {
   start();
@@ -48,23 +47,16 @@ void ScreenTimer::showOnce() {
 void ScreenTimer::edit(char key) {
   switch(key) {
   case 1: // начальная
-    nField = 0;
+    nField = 1;
     nPosit = 0;
     load();
-    showAllFields();
     break;
   case 'M': // записываем
     save();
-  case 'r': // без записи
-    start();
     break;
   }
   ScreenTft::edit(key);
 }
-
-/*void ScreenTimer::control(char key) {
-  ScreenTft::control(key);
-}*/
 
 void ScreenTimer::load() {
   uint32_t _startTime = startTime;

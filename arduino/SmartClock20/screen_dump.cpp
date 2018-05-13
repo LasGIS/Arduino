@@ -4,23 +4,33 @@ ScreenDump::ScreenDump(): ScreenTft() {
   name = (char*) "Dump  ";
   maxFields = 1;
   fields = new FieldTft[maxFields + 1];
-  fields[0] = {2, 1, 2, 3, 0, 256, 0, NULL}; // device
-  fields[1] = {2, 5, 2, 5, 0, 0x1fff, 0, NULL}; // address
+  fields[0] = {2, 1, 2, 3, 0, 255, 0, NULL}; // device
+  fields[1] = {2, 5, 2, 4, 0, 0x1fff, 0, NULL}; // address
 }
 
 void ScreenDump::showOnce() {
   ScreenTft::showOnce();
-  draw();
+  if (mode == ModeType::show) {
+    draw();
+  }
 }
 /**
  * –исуем страницу
  */
 void ScreenDump::draw() {
-  for (uint16_t j = 0; j < 16; j++) {
+  char ch[2] = "|";
+  bool isHor = isHorisontalOrientation();
+  uint8_t deltaText = isHor ? 1  : 3,
+          startText = isHor ? 28 : 7;
+
+  for (uint16_t j = 0; j < (isHor ? 18 : 24); j++) {
     drawHex(0, 3 + j, 1, address + j * 8, 4, COLOR_BLUE);
+    printText(4, 3 + j, 1, "|", COLOR_ORANGE);
     for (uint16_t i = 0; i < 8; i++) {
       uint8_t b = I2CEEPROM.read(device, address + j * 8 + i);
       drawHex(5 + i * 3, 3 + j, 1, b, 2, COLOR_OLIVE);
+      ch[0] = b == 0 ? ' ' : b;
+      printText(startText + i * deltaText, 3 + j, 1, ch, COLOR_RED);
     }
   }
 }
@@ -31,21 +41,20 @@ void ScreenDump::draw() {
 void ScreenDump::edit(char key) {
   switch(key) {
   case 1: // начальна€
-    nField = 0;
+    nField = 1;
     nPosit = 0;
     fields[0].val = device;
     fields[1].val = address;
-    showAllFields();
     break;
   case 'M': // записываем
     device = fields[0].val;
     address = fields[1].val;
-  case 'r': // без записи
-//    draw();
     break;
   }
+#ifdef HAS_SERIAL
   Serial.print("Dump key = ");
   Serial.println(key,HEX);
+#endif
   ScreenTft::edit(key);
 }
 
