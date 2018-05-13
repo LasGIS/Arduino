@@ -75,6 +75,8 @@ void ScreenDump::control(char key) {
   case '+': // строка вниз
     if (address < 0x1f78) address += 0x8; else address = 0x1f80;
     break;
+  default:
+    return;
   }
   draw();
 }
