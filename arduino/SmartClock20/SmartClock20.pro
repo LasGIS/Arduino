@@ -85,4 +85,5 @@ DISTFILES += \
     ../libraries/TFT_LG_ILI9225/README.md \
     ../libraries/DS3231/keywords.txt \
     ../libraries/DS3231/Readme.txt \
-    ../libraries/AT24C32/keywords.txt
+    ../libraries/AT24C32/keywords.txt \
+    I2CMemory.data
