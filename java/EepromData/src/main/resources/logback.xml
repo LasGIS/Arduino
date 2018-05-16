@@ -9,26 +9,22 @@
 
 <configuration scan="true" scanPeriod="2 minute">
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>C:\temp\log4j-RobotControl.log</file>
+    <file>C:\temp\logback-EepromUpload.log</file>
     <encoder>
       <pattern>%d [%t] %-5p %C{1} - %m%n</pattern>
     </encoder>
   </appender>
-<!--
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%d [%t] %-5p %C{1} - %m%n</pattern>
     </encoder>
   </appender>
--->
 
   <!-- TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
-  <logger name="com.lasgis.arduino.robot" level="DEBUG">
+  <logger name="com.lasgis.arduino.eeprom" level="DEBUG">
     <appender-ref ref="FILE"/>
   </logger>
-<!--
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
   </root>
--->
 </configuration>

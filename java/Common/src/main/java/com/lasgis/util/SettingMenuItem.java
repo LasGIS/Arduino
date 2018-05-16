@@ -93,11 +93,3 @@ public class SettingMenuItem {
     }
 
 }
-/*
- $Log: SettingMenuItem.java,v $
- Revision 1.2  2005/01/17 06:44:24  VLaskin
- Create tools for simple create toolbar
-
- Revision 1.1  2005/01/14 11:15:32  VLaskin
- Create tools for simple create menus
-*/
