@@ -6,7 +6,7 @@
  * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.robot.control.panels;
+package com.lasgis.arduino.robot.panels;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 import com.lasgis.util.Util;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +32,8 @@ import org.slf4j.LoggerFactory;
  * @author VLaskin
  * @version 1.0
  */
+@Slf4j
 public class MainFrameAboutBox extends JDialog implements ActionListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(MainFrameAboutBox.class);
 
     private JButton button1 = new JButton();
 
@@ -91,7 +91,7 @@ public class MainFrameAboutBox extends JDialog implements ActionListener {
             panel1.add(panel2, BorderLayout.NORTH);
             setResizable(true);
         } catch (final Exception ex) {
-            LOG.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
     }
 

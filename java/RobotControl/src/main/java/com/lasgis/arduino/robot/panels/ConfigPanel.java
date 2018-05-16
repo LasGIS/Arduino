@@ -6,7 +6,7 @@
  * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.robot.control.panels;
+package com.lasgis.arduino.robot.panels;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,10 +24,11 @@ import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.lasgis.robot.control.serial.PortReader;
-import com.lasgis.robot.control.serial.PortReaderListener;
+import com.lasgis.arduino.robot.serial.PortReader;
+import com.lasgis.arduino.robot.serial.PortReaderListener;
 import jssc.SerialPort;
 import jssc.SerialPortList;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +41,8 @@ import static java.awt.GridBagConstraints.CENTER;
  * @author VLaskin
  * @version 1.0 Date: 13.01.2005 16:38:05
  */
+@Slf4j
 public class ConfigPanel extends JPanel implements PortReaderListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ConfigPanel.class);
 
     private static final Integer[] BAUD_RATES = {
         SerialPort.BAUDRATE_110,
@@ -86,7 +86,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         final String portName = (String) portNamesComboBox.getSelectedItem();
         final Integer baudRate = (Integer) baudRatesComboBox.getSelectedItem();
         PortReader portReader = PortReader.getPortReader();
-        LOG.debug("Port Reader Action {}", event.getActionCommand());
+        log.debug("Port Reader Action {}", event.getActionCommand());
         if (portReader == null) {
             portReader = PortReader.createPortReader(portName, baudRate);
             portReader.addListener(this);
@@ -111,7 +111,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
     /** Обработка события при смене текстовой команды (нажали ENTER в input). */
     private final ActionListener enterOnInputAction = event -> {
-        LOG.debug(event.getActionCommand());
+        log.debug(event.getActionCommand());
         PortReader.writeString(event.getActionCommand());
         commandInput.setText("");
     };
@@ -139,7 +139,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             String outText = oldCom + command + "30" + ";";
             //commandInput.setText(outText);
             PortReader.writeString(outText);
-            LOG.debug(outText);
+            log.debug(outText);
         }
     };
 

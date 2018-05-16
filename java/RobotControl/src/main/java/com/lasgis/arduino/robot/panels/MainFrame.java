@@ -6,7 +6,7 @@
  * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.robot.control.panels;
+package com.lasgis.arduino.robot.panels;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -28,6 +28,7 @@ import com.lasgis.component.StatusBar;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.SettingToolBarItem;
 import com.lasgis.util.Util;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +38,9 @@ import org.slf4j.LoggerFactory;
  * @author VLaskin
  * @version 1.0
  */
+@Slf4j
 public class MainFrame extends JFrame implements ComponentListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MainFrame.class);
     private static final Color WATCH_FOR_SELECTED_ON = new Color(200, 150, 150);
     private static final Color WATCH_FOR_SELECTED_OFF = new Color(240, 240, 240);
 
@@ -135,9 +136,9 @@ public class MainFrame extends JFrame implements ComponentListener {
             //splitPane.setDividerLocation(size.width - 300);
             splitPane.setResizeWeight(1);
         } catch (final Exception ex) {
-            LOG.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
-    } // constructor::MainFrame()
+    }
 
     /**
      * File | Exit action performed.

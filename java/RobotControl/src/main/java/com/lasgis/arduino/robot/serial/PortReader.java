@@ -6,7 +6,7 @@
  * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.robot.control.serial;
+package com.lasgis.arduino.robot.serial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,15 +24,14 @@ import org.slf4j.LoggerFactory;
  * @author Vladimir Laskin
  * @version 1.0
  */
+@Slf4j
 public class PortReader implements SerialPortEventListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(PortReader.class);
 
     private static PortReader portReader = null;
     private SerialPort serialPort = null;
 
-    final StringBuilder sb = new StringBuilder();
-    final List<PortReaderListener> listeners = new ArrayList<>();
+    private final StringBuilder sb = new StringBuilder();
+    private final List<PortReaderListener> listeners = new ArrayList<>();
 
     /**
      * Конструктор.
@@ -59,7 +59,7 @@ public class PortReader implements SerialPortEventListener {
             portReader = this;
 
         } catch (final SerialPortException ex) {
-            LOG.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
     }
 
@@ -90,7 +90,7 @@ public class PortReader implements SerialPortEventListener {
                 }
             }
         } catch (final SerialPortException ex) {
-            LOG.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
     }
 
@@ -99,7 +99,7 @@ public class PortReader implements SerialPortEventListener {
             try {
                 serialPort.closePort();
             } catch (final SerialPortException ex) {
-                LOG.error(ex.getMessage(), ex);
+                log.error(ex.getMessage(), ex);
             }
             serialPort = null;
         }
@@ -118,7 +118,7 @@ public class PortReader implements SerialPortEventListener {
                     for (final PortReaderListener listener : listeners) {
                         listener.portReaderCarriageReturn(string);
                     }
-                    //LOG.info(string);
+                    //log.info(string);
                     sb.delete(0, crInd + 2);
                 }
                 for (final PortReaderListener listener : listeners) {
@@ -126,7 +126,7 @@ public class PortReader implements SerialPortEventListener {
                 }
                 System.out.print(data);
             } catch (final SerialPortException ex) {
-                LOG.error(ex.getMessage(), ex);
+                log.error(ex.getMessage(), ex);
             }
         }
     }

@@ -6,7 +6,7 @@
  * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.robot;
+package com.lasgis.arduino.robot;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -14,18 +14,16 @@ import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-import com.lasgis.robot.control.panels.MainFrame;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.lasgis.arduino.robot.panels.MainFrame;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The Class RobotControl.
  * @author Vladimir Laskin
  * @version 1.0
  */
+@Slf4j
 public final class RobotControl {
-
-    private static final Logger LOG = LoggerFactory.getLogger(RobotControl.class);
 
     /**
      * Construct the application.
@@ -66,7 +64,7 @@ public final class RobotControl {
             JFrame.setDefaultLookAndFeelDecorated(true);
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (final Exception ex) {
-            LOG.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
 
         new RobotControl();

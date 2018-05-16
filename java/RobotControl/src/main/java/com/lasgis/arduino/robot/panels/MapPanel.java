@@ -6,7 +6,7 @@
  * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.robot.control.panels;
+package com.lasgis.arduino.robot.panels;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -30,9 +30,10 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.lasgis.robot.control.serial.PortReaderListener;
+import com.lasgis.arduino.robot.serial.PortReaderListener;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.Util;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,10 +43,9 @@ import org.slf4j.LoggerFactory;
  * @author VLaskin
  * @version 1.0
  */
+@Slf4j
 public class MapPanel extends JPanel
     implements MouseMotionListener, KeyListener, FocusListener, MouseListener, MouseWheelListener, PortReaderListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(MapPanel.class);
 
     /** серый цвет фона. */
     public static final Color PANEL_GRAY_COLOR = new Color(220, 220, 220);
@@ -99,7 +99,7 @@ public class MapPanel extends JPanel
             setFocusable(true);
             createPopupMenu();
         } catch (final Exception ex) {
-            LOG.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
     }
 

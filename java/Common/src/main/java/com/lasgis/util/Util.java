@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +33,9 @@ import org.slf4j.LoggerFactory;
  * Date: Sep 3, 2004
  * Time: 6:20:54 PM
  */
+@Slf4j
 public final class Util {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Util.class);
     private static final int BUFF_SIZE = 1024;
 
     /**
@@ -92,10 +93,10 @@ public final class Util {
                 }
                 return sb;
             } catch (final IOException ex) {
-                LOG.error(ex.getMessage(), ex);
+                log.error(ex.getMessage(), ex);
             }
         } else {
-            LOG.error("Файл \"" + name + "\" не найден!");
+            log.error("Файл \"" + name + "\" не найден!");
         }
         return null;
     }
@@ -119,9 +120,9 @@ public final class Util {
             }
             return sb;
         } catch (final FileNotFoundException ex) {
-            LOG.error("Файл \"" + fileName + "\" не найден!");
+            log.error("Файл \"" + fileName + "\" не найден!");
         } catch (final IOException ex) {
-            LOG.error(ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
         return null;
     }

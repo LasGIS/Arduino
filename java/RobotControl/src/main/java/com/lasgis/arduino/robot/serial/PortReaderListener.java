@@ -4,7 +4,7 @@
  * Reserved.
  */
 
-package com.lasgis.robot.control.serial;
+package com.lasgis.arduino.robot.serial;
 
 /**
  * Обработчик данных из device.

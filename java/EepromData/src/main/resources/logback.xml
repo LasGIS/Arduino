@@ -23,7 +23,7 @@
 -->
 
   <!-- TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
-  <logger name="com.lasgis.arduino" level="DEBUG">
+  <logger name="com.lasgis.arduino.robot" level="DEBUG">
     <appender-ref ref="FILE"/>
   </logger>
 <!--

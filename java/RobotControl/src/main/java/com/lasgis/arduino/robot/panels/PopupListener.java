@@ -6,7 +6,7 @@
  * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.robot.control.panels;
+package com.lasgis.arduino.robot.panels;
 
 import javax.swing.JPopupMenu;
 import java.awt.Point;
@@ -19,11 +19,11 @@ import java.awt.event.MouseEvent;
  */
 public class PopupListener extends MouseAdapter {
 
-    JPopupMenu popup;
+    private JPopupMenu popup;
     /**
      * Запоминаем позицию мышки.
      */
-    public static Point mousePoint;
+    private static Point mousePoint;
 
     PopupListener(final JPopupMenu popupMenu) {
         popup = popupMenu;
