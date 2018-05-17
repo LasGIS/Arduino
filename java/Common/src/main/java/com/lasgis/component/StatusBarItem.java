@@ -1,17 +1,17 @@
 /*
- * @(#)StatusBarItem.java 1.0
+ *  @(#)StatusBarItem.java  last: 17.05.2018
  *
- * Title: LG Evolution powered by Java
- * Description: Program for imitation of evolutions process.
- * Copyright (c) 2012-2013 LasGIS Company. All Rights Reserved.
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.component;
 
-import javax.swing.JLabel;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
-import java.awt.Dimension;
+import java.awt.*;
 
 /**
  * Элемент status bara.

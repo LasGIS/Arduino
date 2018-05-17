@@ -1,30 +1,25 @@
-/**
- * @(#)Util.java 1.0
+/*
+ *  @(#)Util.java  last: 17.05.2018
  *
- * Title: LG Evolution powered by Java
- * Description: Program for imitation of evolutions process.
- * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.util;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import java.awt.Dimension;
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by IntelliJ IDEA.

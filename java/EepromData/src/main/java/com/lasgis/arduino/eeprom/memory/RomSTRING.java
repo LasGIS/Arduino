@@ -1,6 +1,13 @@
+/*
+ *  @(#)RomSTRING.java  last: 17.05.2018
+ *
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ */
+
 package com.lasgis.arduino.eeprom.memory;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,10 +19,22 @@ import java.io.UnsupportedEncodingException;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor(staticName = "of")
-public class RomSTRING extends RomData {
+class RomSTRING extends RomData {
 
     private String val;
+
+    private RomSTRING(final String name, final String val) {
+        super(name);
+        this.val = val;
+    }
+
+    static RomSTRING of(final String val) {
+        return new RomSTRING(null, val);
+    }
+
+    static RomSTRING of(final String name, final String val) {
+        return new RomSTRING(name, val);
+    }
 
     @Override
     byte[] toByte() throws UnsupportedEncodingException {

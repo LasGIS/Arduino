@@ -1,12 +1,14 @@
-/**
- * @(#)ResourceLoader.java 1.0
+/*
+ *  @(#)ResourceLoader.java  last: 17.05.2018
  *
- * Title: LG Evolution powered by Java
- * Description: Program for imitation of evolutions process.
- * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.util;
+
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,8 +19,6 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
-
-import org.slf4j.LoggerFactory;
 
 /**
  * The class for loading text resources from file.

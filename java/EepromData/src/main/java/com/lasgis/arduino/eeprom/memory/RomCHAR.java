@@ -1,6 +1,13 @@
+/*
+ *  @(#)RomCHAR.java  last: 17.05.2018
+ *
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ */
+
 package com.lasgis.arduino.eeprom.memory;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,10 +19,22 @@ import java.io.UnsupportedEncodingException;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor(staticName = "of")
-public class RomCHAR extends RomData {
+class RomCHAR extends RomData {
 
     private char val;
+
+    private RomCHAR(final String name, final char val) {
+        super(name);
+        this.val = val;
+    }
+
+    static RomCHAR of(final char val) {
+        return new RomCHAR(null, val);
+    }
+
+    static RomCHAR of(final String name, final char val) {
+        return new RomCHAR(name, val);
+    }
 
     @Override
     byte[] toByte() throws UnsupportedEncodingException {

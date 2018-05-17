@@ -1,9 +1,9 @@
 /*
- * @(#)SettingToolBarItem.java 1.0
+ *  @(#)SettingToolBarItem.java  last: 17.05.2018
  *
- * Title: LG Evolution powered by Java
- * Description: Program for imitation of evolutions process.
- * Copyright (c) 2012-2013 LasGIS Company. All Rights Reserved.
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.util;

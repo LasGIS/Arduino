@@ -1,6 +1,13 @@
+/*
+ *  @(#)RomINT16.java  last: 17.05.2018
+ *
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ */
+
 package com.lasgis.arduino.eeprom.memory;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,10 +19,22 @@ import java.io.UnsupportedEncodingException;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor(staticName = "of")
-public class RomINT16 extends RomData {
+class RomINT16 extends RomData {
 
     private short val;
+
+    private RomINT16(final String name, final short val) {
+        super(name);
+        this.val = val;
+    }
+
+    static RomINT16 of(final short val) {
+        return new RomINT16(null, val);
+    }
+
+    static RomINT16 of(final String name, final short val) {
+        return new RomINT16(name, val);
+    }
 
     @Override
     byte[] toByte() throws UnsupportedEncodingException {

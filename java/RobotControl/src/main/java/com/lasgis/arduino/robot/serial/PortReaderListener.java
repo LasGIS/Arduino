@@ -1,7 +1,9 @@
-/**
- * @(#)PortReaderListener.java Title: DA CME Web Application Description: Программная система DA "Ассистент Доктора".
- * Входит в состав  КМЭ - Комплекс медицинский экспертный. Copyright (c) 2016 CME CWISS AG Company. All Rights
- * Reserved.
+/*
+ *  @(#)PortReaderListener.java  last: 17.05.2018
+ *
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.robot.serial;

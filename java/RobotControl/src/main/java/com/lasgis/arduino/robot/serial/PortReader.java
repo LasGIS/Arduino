@@ -1,23 +1,21 @@
-/**
- * @(#)PortReader.java 1.0
+/*
+ *  @(#)PortReader.java  last: 17.05.2018
  *
- * Title: LG Evolution powered by Java
- * Description: Program for imitation of evolutions process.
- * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.robot.serial;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class PortReader.

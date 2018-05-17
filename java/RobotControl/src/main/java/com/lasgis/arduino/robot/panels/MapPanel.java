@@ -1,22 +1,20 @@
-/**
- * @(#)MapPanel.java 1.0
+/*
+ *  @(#)MapPanel.java  last: 17.05.2018
  *
- * Title: LG Evolution powered by Java
- * Description: Program for imitation of evolutions process.
- * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.robot.panels;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
+import com.lasgis.arduino.robot.serial.PortReaderListener;
+import com.lasgis.util.SettingMenuItem;
+import com.lasgis.util.Util;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -29,13 +27,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.lasgis.arduino.robot.serial.PortReaderListener;
-import com.lasgis.util.SettingMenuItem;
-import com.lasgis.util.Util;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**

@@ -1,0 +1,5 @@
+ @(#)$file.fileName  last: $file.lastModified.format("dd.MM.YYYY")
+
+Title: LG Java for Arduino
+Description: Program for support Arduino.
+Copyright (c) $today.year, LasGIS Company. All Rights Reserved.

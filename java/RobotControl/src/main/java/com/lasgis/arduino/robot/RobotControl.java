@@ -1,21 +1,18 @@
-/**
- * @(#)RobotControl.java 1.0
+/*
+ *  @(#)RobotControl.java  last: 17.05.2018
  *
- * Title: LG Evolution powered by Java
- * Description: Program for imitation of evolutions process.
- * Copyright (c) 2012-2015 LasGIS Company. All Rights Reserved.
+ * Title: LG Java for Arduino
+ * Description: Program for support Arduino.
+ * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.robot;
 
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
 import com.lasgis.arduino.robot.panels.MainFrame;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * The Class RobotControl.
