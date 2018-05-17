@@ -60,8 +60,8 @@ public class RomSTRINGTest {
         final RomSTRING rom = RomSTRING.of(inp);
         final byte[] bytes = rom.toByte();
         final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
-        System.out.println("inp = \"" + inp + "\"");
-        System.out.println("out = \"" + hexOutPrint + "\"");
+//        System.out.println("inp = \"" + inp + "\"");
+//        System.out.println("out = \"" + hexOutPrint + "\"");
         Assert.assertEquals(hexOutPrint, hexOut);
     }
 
