@@ -1,5 +1,5 @@
 /*
- *  @(#)ByteArrayBuilder.java  last: 18.05.2018
+ *  @(#)ByteArrayBuilder.java  last: 21.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,13 +8,19 @@
 
 package com.lasgis.util;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * @author Vladimir Laskin
  * @since 18.05.2018
  */
-public class ByteArrayBuilder extends ByteBuffer {
+public class ByteArrayBuilder {
 
     private ByteBuffer buffer;
 
@@ -27,422 +33,189 @@ public class ByteArrayBuilder extends ByteBuffer {
         this(1024);
     }
 
-    public ByteBuffer slice() {
+    public ByteArrayBuilder slice() {
         buffer = buffer.slice();
         return this;
     }
 
-    public ByteBuffer duplicate() {
-        return new java.nio.HeapByteBuffer(hb,
-            this.markValue(),
-            this.position(),
-            this.limit(),
-            this.capacity(),
-            offset);
+    public ByteArrayBuilder duplicate() {
+        buffer = buffer.duplicate();
+        return this;
     }
 
-    public ByteBuffer asReadOnlyBuffer() {
-
-        return new HeapByteBufferR(hb,
-            this.markValue(),
-            this.position(),
-            this.limit(),
-            this.capacity(),
-            offset);
-
-
-    }
-
-
-    protected int ix(int i) {
-        return i + offset;
+    public ByteArrayBuilder asReadOnlyBuffer() {
+        buffer = buffer.asReadOnlyBuffer();
+        return this;
     }
 
     public byte get() {
-        return hb[ix(nextGetIndex())];
+        return buffer.get();
     }
 
     public byte get(int i) {
-        return hb[ix(checkIndex(i))];
+        return buffer.get(i);
     }
 
-
-    public ByteBuffer get(byte[] dst, int offset, int length) {
-        checkBounds(offset, length, dst.length);
-        if (length > remaining())
-            throw new BufferUnderflowException();
-        System.arraycopy(hb, ix(position()), dst, offset, length);
-        position(position() + length);
+    public ByteArrayBuilder get(byte[] dst, int offset, int length) {
+        buffer.get(dst, offset, length);
         return this;
     }
 
-    public boolean isDirect() {
-        return false;
-    }
-
-
-    public boolean isReadOnly() {
-        return false;
-    }
-
-    public ByteBuffer put(byte x) {
-
-        hb[ix(nextPutIndex())] = x;
+    public ByteArrayBuilder put(byte x) {
+        buffer.put(x);
         return this;
-
-
     }
 
-    public ByteBuffer put(int i, byte x) {
-
-        hb[ix(checkIndex(i))] = x;
+    public ByteArrayBuilder put(int i, byte x) {
+        buffer.put(i,x);
         return this;
-
-
     }
 
-    public ByteBuffer put(byte[] src, int offset, int length) {
-
-        checkBounds(offset, length, src.length);
-        if (length > remaining())
-            throw new BufferOverflowException();
-        System.arraycopy(src, offset, hb, ix(position()), length);
-        position(position() + length);
+    public ByteArrayBuilder put(byte[] src, int offset, int length) {
+        buffer.put(src,offset,length);
         return this;
-
-
     }
 
-    public ByteBuffer put(ByteBuffer src) {
-
-        if (src instanceof java.nio.HeapByteBuffer) {
-            if (src == this)
-                throw new IllegalArgumentException();
-            java.nio.HeapByteBuffer sb = (java.nio.HeapByteBuffer) src;
-            int n = sb.remaining();
-            if (n > remaining())
-                throw new BufferOverflowException();
-            System.arraycopy(sb.hb, sb.ix(sb.position()),
-                hb, ix(position()), n);
-            sb.position(sb.position() + n);
-            position(position() + n);
-        } else if (src.isDirect()) {
-            int n = src.remaining();
-            if (n > remaining())
-                throw new BufferOverflowException();
-            src.get(hb, ix(position()), n);
-            position(position() + n);
-        } else {
-            super.put(src);
-        }
+    public ByteArrayBuilder put(ByteBuffer src) {
+        buffer.put(src);
         return this;
-
-
     }
 
-    public ByteBuffer compact() {
-
-        System.arraycopy(hb, ix(position()), hb, ix(0), remaining());
-        position(remaining());
-        limit(capacity());
-        discardMark();
+    public ByteArrayBuilder compact() {
+        buffer.compact();
         return this;
-
-
     }
-
-
-    public byte _get(int i) {                          // package-private
-        return hb[i];
-    }
-
-    public void _put(int i, byte b) {                  // package-private
-
-        hb[i] = b;
-
-
-    }
-
-    // char
-
 
     public char getChar() {
-        return Bits.getChar(this, ix(nextGetIndex(2)), bigEndian);
+        return buffer.getChar();
     }
 
     public char getChar(int i) {
-        return Bits.getChar(this, ix(checkIndex(i, 2)), bigEndian);
+        return buffer.getChar(i);
     }
 
-
-    public ByteBuffer putChar(char x) {
-
-        Bits.putChar(this, ix(nextPutIndex(2)), x, bigEndian);
+    public ByteArrayBuilder putChar(char x) {
+        buffer.putChar(x);
         return this;
-
-
     }
 
-    public ByteBuffer putChar(int i, char x) {
-
-        Bits.putChar(this, ix(checkIndex(i, 2)), x, bigEndian);
+    public ByteArrayBuilder putChar(int i, char x) {
+        buffer.putChar(i, x);
         return this;
-
-
     }
 
     public CharBuffer asCharBuffer() {
-        int size = this.remaining() >> 1;
-        int off = offset + position();
-        return (bigEndian
-            ? (CharBuffer) (new ByteBufferAsCharBufferB(this,
-            -1,
-            0,
-            size,
-            size,
-            off))
-            : (CharBuffer) (new ByteBufferAsCharBufferL(this,
-            -1,
-            0,
-            size,
-            size,
-            off)));
+        return buffer.asCharBuffer();
     }
 
-
-    // short
-
-
     public short getShort() {
-        return Bits.getShort(this, ix(nextGetIndex(2)), bigEndian);
+        return buffer.getShort();
     }
 
     public short getShort(int i) {
-        return Bits.getShort(this, ix(checkIndex(i, 2)), bigEndian);
+        return buffer.getShort(i);
     }
 
-
-    public ByteBuffer putShort(short x) {
-
-        Bits.putShort(this, ix(nextPutIndex(2)), x, bigEndian);
+    public ByteArrayBuilder putShort(short x) {
+        buffer.putShort(x);
         return this;
-
-
     }
 
-    public ByteBuffer putShort(int i, short x) {
-
-        Bits.putShort(this, ix(checkIndex(i, 2)), x, bigEndian);
+    public ByteArrayBuilder putShort(int i, short x) {
+        buffer.putShort(i, x);
         return this;
-
-
     }
 
     public ShortBuffer asShortBuffer() {
-        int size = this.remaining() >> 1;
-        int off = offset + position();
-        return (bigEndian
-            ? (ShortBuffer) (new ByteBufferAsShortBufferB(this,
-            -1,
-            0,
-            size,
-            size,
-            off))
-            : (ShortBuffer) (new ByteBufferAsShortBufferL(this,
-            -1,
-            0,
-            size,
-            size,
-            off)));
+        return buffer.asShortBuffer();
     }
 
-
-    // int
-
-
     public int getInt() {
-        return Bits.getInt(this, ix(nextGetIndex(4)), bigEndian);
+        return buffer.getInt();
     }
 
     public int getInt(int i) {
-        return Bits.getInt(this, ix(checkIndex(i, 4)), bigEndian);
+        return buffer.getInt(i);
     }
 
 
-    public ByteBuffer putInt(int x) {
-
-        Bits.putInt(this, ix(nextPutIndex(4)), x, bigEndian);
+    public ByteArrayBuilder putInt(int x) {
+        buffer.putInt(x);
         return this;
-
-
     }
 
-    public ByteBuffer putInt(int i, int x) {
-
-        Bits.putInt(this, ix(checkIndex(i, 4)), x, bigEndian);
+    public ByteArrayBuilder putInt(int i, int x) {
+        buffer.putInt(i, x);
         return this;
-
-
     }
 
     public IntBuffer asIntBuffer() {
-        int size = this.remaining() >> 2;
-        int off = offset + position();
-        return (bigEndian
-            ? (IntBuffer) (new ByteBufferAsIntBufferB(this,
-            -1,
-            0,
-            size,
-            size,
-            off))
-            : (IntBuffer) (new ByteBufferAsIntBufferL(this,
-            -1,
-            0,
-            size,
-            size,
-            off)));
+        return buffer.asIntBuffer();
     }
 
-
-    // long
-
-
     public long getLong() {
-        return Bits.getLong(this, ix(nextGetIndex(8)), bigEndian);
+        return buffer.getLong();
     }
 
     public long getLong(int i) {
-        return Bits.getLong(this, ix(checkIndex(i, 8)), bigEndian);
+        return buffer.getLong(i);
     }
 
-
-    public ByteBuffer putLong(long x) {
-
-        Bits.putLong(this, ix(nextPutIndex(8)), x, bigEndian);
+    public ByteArrayBuilder putLong(long x) {
+        buffer.putLong(x);
         return this;
-
-
     }
 
-    public ByteBuffer putLong(int i, long x) {
-
-        Bits.putLong(this, ix(checkIndex(i, 8)), x, bigEndian);
+    public ByteArrayBuilder putLong(int i, long x) {
+        buffer.putLong(i, x);
         return this;
-
-
     }
 
     public LongBuffer asLongBuffer() {
-        int size = this.remaining() >> 3;
-        int off = offset + position();
-        return (bigEndian
-            ? (LongBuffer) (new ByteBufferAsLongBufferB(this,
-            -1,
-            0,
-            size,
-            size,
-            off))
-            : (LongBuffer) (new ByteBufferAsLongBufferL(this,
-            -1,
-            0,
-            size,
-            size,
-            off)));
+        return buffer.asLongBuffer();
     }
 
-
-    // float
-
-
     public float getFloat() {
-        return Bits.getFloat(this, ix(nextGetIndex(4)), bigEndian);
+        return buffer.getFloat();
     }
 
     public float getFloat(int i) {
-        return Bits.getFloat(this, ix(checkIndex(i, 4)), bigEndian);
+        return buffer.getFloat(i);
     }
 
-
-    public ByteBuffer putFloat(float x) {
-
-        Bits.putFloat(this, ix(nextPutIndex(4)), x, bigEndian);
+    public ByteArrayBuilder putFloat(float x) {
+        buffer.putFloat(x);
         return this;
-
-
     }
 
-    public ByteBuffer putFloat(int i, float x) {
-
-        Bits.putFloat(this, ix(checkIndex(i, 4)), x, bigEndian);
+    public ByteArrayBuilder putFloat(int i, float x) {
+        buffer.putFloat(i, x);
         return this;
-
-
     }
 
     public FloatBuffer asFloatBuffer() {
-        int size = this.remaining() >> 2;
-        int off = offset + position();
-        return (bigEndian
-            ? (FloatBuffer) (new ByteBufferAsFloatBufferB(this,
-            -1,
-            0,
-            size,
-            size,
-            off))
-            : (FloatBuffer) (new ByteBufferAsFloatBufferL(this,
-            -1,
-            0,
-            size,
-            size,
-            off)));
+        return buffer.asFloatBuffer();
     }
 
-
-    // double
-
-
     public double getDouble() {
-        return Bits.getDouble(this, ix(nextGetIndex(8)), bigEndian);
+        return buffer.getDouble();
     }
 
     public double getDouble(int i) {
-        return Bits.getDouble(this, ix(checkIndex(i, 8)), bigEndian);
+        return buffer.getDouble(i);
     }
 
-
-    public ByteBuffer putDouble(double x) {
-
-        Bits.putDouble(this, ix(nextPutIndex(8)), x, bigEndian);
+    public ByteArrayBuilder putDouble(double x) {
+        buffer.putDouble(x);
         return this;
-
-
     }
 
-    public ByteBuffer putDouble(int i, double x) {
-
-        Bits.putDouble(this, ix(checkIndex(i, 8)), x, bigEndian);
+    public ByteArrayBuilder putDouble(int i, double x) {
+        buffer.putDouble(i, x);
         return this;
-
-
     }
 
     public DoubleBuffer asDoubleBuffer() {
-        int size = this.remaining() >> 3;
-        int off = offset + position();
-        return (bigEndian
-            ? (DoubleBuffer) (new ByteBufferAsDoubleBufferB(this,
-            -1,
-            0,
-            size,
-            size,
-            off))
-            : (DoubleBuffer) (new ByteBufferAsDoubleBufferL(this,
-            -1,
-            0,
-            size,
-            size,
-            off)));
+        return buffer.asDoubleBuffer();
     }
-
-
 }
