@@ -24,27 +24,27 @@ public class ByteArrayBuilder {
 
     private ByteBuffer buffer;
 
-    public ByteArrayBuilder(int capacity) {
+    private ByteArrayBuilder(int capacity) {
         super();
         buffer = ByteBuffer.allocate(capacity);
     }
 
-    public ByteArrayBuilder() {
-        this(1024);
+    ByteArrayBuilder() {
+        this(10);
     }
 
-    public ByteArrayBuilder slice() {
-        buffer = buffer.slice();
-        return this;
+    public final int position() {
+        return buffer.position();
     }
 
-    public ByteArrayBuilder duplicate() {
-        buffer = buffer.duplicate();
-        return this;
-    }
-
-    public ByteArrayBuilder asReadOnlyBuffer() {
-        buffer = buffer.asReadOnlyBuffer();
+    /**
+     * Sets this buffer's position.
+     * @param  newPosition The new position value; must be non-negative
+     *         and no larger than the current limit
+     * @return  This buffer
+     */
+    public final ByteArrayBuilder position(int newPosition) {
+        buffer.position(newPosition);
         return this;
     }
 
@@ -62,27 +62,26 @@ public class ByteArrayBuilder {
     }
 
     public ByteArrayBuilder put(byte x) {
+        checkLimit(1);
         buffer.put(x);
         return this;
     }
 
     public ByteArrayBuilder put(int i, byte x) {
+        checkLimit(i, 1);
         buffer.put(i,x);
         return this;
     }
 
     public ByteArrayBuilder put(byte[] src, int offset, int length) {
-        buffer.put(src,offset,length);
+        checkLimit(length);
+        buffer.put(src, offset, length);
         return this;
     }
 
     public ByteArrayBuilder put(ByteBuffer src) {
+        checkLimit(src.remaining());
         buffer.put(src);
-        return this;
-    }
-
-    public ByteArrayBuilder compact() {
-        buffer.compact();
         return this;
     }
 
@@ -95,11 +94,13 @@ public class ByteArrayBuilder {
     }
 
     public ByteArrayBuilder putChar(char x) {
+        checkLimit(2);
         buffer.putChar(x);
         return this;
     }
 
     public ByteArrayBuilder putChar(int i, char x) {
+        checkLimit(i, 2);
         buffer.putChar(i, x);
         return this;
     }
@@ -117,11 +118,13 @@ public class ByteArrayBuilder {
     }
 
     public ByteArrayBuilder putShort(short x) {
+        checkLimit(2);
         buffer.putShort(x);
         return this;
     }
 
     public ByteArrayBuilder putShort(int i, short x) {
+        checkLimit(i, 2);
         buffer.putShort(i, x);
         return this;
     }
@@ -140,11 +143,13 @@ public class ByteArrayBuilder {
 
 
     public ByteArrayBuilder putInt(int x) {
+        checkLimit(4);
         buffer.putInt(x);
         return this;
     }
 
     public ByteArrayBuilder putInt(int i, int x) {
+        checkLimit(i, 4);
         buffer.putInt(i, x);
         return this;
     }
@@ -162,11 +167,13 @@ public class ByteArrayBuilder {
     }
 
     public ByteArrayBuilder putLong(long x) {
+        checkLimit(8);
         buffer.putLong(x);
         return this;
     }
 
     public ByteArrayBuilder putLong(int i, long x) {
+        checkLimit(i, 8);
         buffer.putLong(i, x);
         return this;
     }
@@ -184,11 +191,13 @@ public class ByteArrayBuilder {
     }
 
     public ByteArrayBuilder putFloat(float x) {
+        checkLimit(4);
         buffer.putFloat(x);
         return this;
     }
 
     public ByteArrayBuilder putFloat(int i, float x) {
+        checkLimit(i, 4);
         buffer.putFloat(i, x);
         return this;
     }
@@ -206,16 +215,44 @@ public class ByteArrayBuilder {
     }
 
     public ByteArrayBuilder putDouble(double x) {
+        checkLimit(8);
         buffer.putDouble(x);
         return this;
     }
 
     public ByteArrayBuilder putDouble(int i, double x) {
+        checkLimit(i, 8);
         buffer.putDouble(i, x);
         return this;
     }
 
     public DoubleBuffer asDoubleBuffer() {
         return buffer.asDoubleBuffer();
+    }
+
+    public byte[] toByte() {
+        final int position = buffer.position();
+        final byte[] out = new byte[position];
+        buffer.position(0);
+        buffer.get(out);
+        return out;
+    }
+
+    private void checkLimit(final int addSize) {
+        increaseCapacity(buffer.position(), addSize);
+    }
+
+    private void checkLimit(final int index, final int addSize) {
+        increaseCapacity(index, addSize);
+    }
+
+    private void increaseCapacity(final int index, final int addSize) {
+        if (index + addSize >= buffer.capacity()) {
+            final int capacity = index + addSize + 10;
+            final ByteBuffer newBuffer = ByteBuffer.allocate(capacity);
+            newBuffer.put(buffer.array());
+            newBuffer.position(buffer.position());
+            buffer = newBuffer;
+        }
     }
 }

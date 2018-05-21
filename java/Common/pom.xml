@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 17.05.2018
+  ~  @(#)pom.xml  last: 21.05.2018
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -43,6 +43,10 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
         </dependency>
     </dependencies>
 </project>
