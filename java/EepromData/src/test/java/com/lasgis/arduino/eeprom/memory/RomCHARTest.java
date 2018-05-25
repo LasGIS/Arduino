@@ -1,5 +1,5 @@
 /*
- *  @(#)RomCHARTest.java  last: 17.05.2018
+ *  @(#)RomCHARTest.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -32,7 +32,7 @@ public class RomCHARTest {
         final char inp, final String expected
     ) throws Exception {
         final RomCHAR rom = RomCHAR.of(inp);
-        final byte[] bytes = rom.toByte();
+        final byte[] bytes = rom.toEeprom();
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
     }
 }

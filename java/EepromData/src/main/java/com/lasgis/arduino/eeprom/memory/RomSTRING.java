@@ -1,5 +1,5 @@
 /*
- *  @(#)RomSTRING.java  last: 17.05.2018
+ *  @(#)RomSTRING.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,6 +8,7 @@
 
 package com.lasgis.arduino.eeprom.memory;
 
+import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,14 +38,13 @@ class RomSTRING extends RomData {
     }
 
     @Override
-    byte[] toByte() throws UnsupportedEncodingException {
+    int size() {
+        return val.length();
+    }
+
+    @Override
+    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         final int count = val.length();
-        final byte[] str = val.getBytes(CHARSET);
-        final byte[] out = new byte[count + 1];
-        out[0] = (byte) (count & 0xff);
-        for (int i = 0, j = 1; i < count; i++, j++) {
-            out[j] = str[i];
-        }
-        return out;
+        return buff.put((byte) (count & 0xff)).put(val.getBytes(CHARSET));
     }
 }

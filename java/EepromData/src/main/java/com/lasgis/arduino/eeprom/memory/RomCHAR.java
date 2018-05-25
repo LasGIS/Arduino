@@ -1,5 +1,5 @@
 /*
- *  @(#)RomCHAR.java  last: 17.05.2018
+ *  @(#)RomCHAR.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,6 +8,7 @@
 
 package com.lasgis.arduino.eeprom.memory;
 
+import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,7 +38,12 @@ class RomCHAR extends RomData {
     }
 
     @Override
-    byte[] toByte() throws UnsupportedEncodingException {
-        return Character.toString(val).getBytes(CHARSET);
+    int size() {
+        return Character.BYTES;
+    }
+
+    @Override
+    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+        return buff.put(Character.toString(val).getBytes(CHARSET));
     }
 }

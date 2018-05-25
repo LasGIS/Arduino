@@ -1,5 +1,5 @@
 /*
- *  @(#)RomDOUBLE.java  last: 17.05.2018
+ *  @(#)RomDOUBLE.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,11 +8,11 @@
 
 package com.lasgis.arduino.eeprom.memory;
 
+import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 
 /**
  * @author Vladimir Laskin
@@ -42,9 +42,12 @@ public class RomDOUBLE extends RomData {
     }
 
     @Override
-    byte[] toByte() throws UnsupportedEncodingException {
-        byte[] bytes = new byte[8];
-        ByteBuffer.wrap(bytes).putDouble(val);
-        return bytes;
+    int size() {
+        return Double.BYTES;
+    }
+
+    @Override
+    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+        return buff.putDouble(val);
     }
 }

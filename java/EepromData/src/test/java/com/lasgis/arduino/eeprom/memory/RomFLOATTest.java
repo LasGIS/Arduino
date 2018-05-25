@@ -1,5 +1,5 @@
 /*
- *  @(#)RomFLOATTest.java  last: 17.05.2018
+ *  @(#)RomFLOATTest.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -45,7 +45,7 @@ public class RomFLOATTest {
         final float inp, final String expected
     ) throws Exception {
         final RomFLOAT rom = RomFLOAT.of(inp);
-        final byte[] bytes = rom.toByte();
+        final byte[] bytes = rom.toEeprom();
 //        System.out.print(ByteBuffer.wrap(bytes).getFloat());
 //        System.out.print(" = ");
 //        System.out.println(inp);

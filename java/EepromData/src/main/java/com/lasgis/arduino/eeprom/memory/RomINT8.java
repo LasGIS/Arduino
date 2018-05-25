@@ -1,5 +1,5 @@
 /*
- *  @(#)RomINT8.java  last: 17.05.2018
+ *  @(#)RomINT8.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,6 +8,7 @@
 
 package com.lasgis.arduino.eeprom.memory;
 
+import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,9 +38,12 @@ class RomINT8 extends RomData {
     }
 
     @Override
-    byte[] toByte() throws UnsupportedEncodingException {
-        final byte[] out = new byte[1];
-        out[0] = val;
-        return out;
+    int size() {
+        return Byte.BYTES;
+    }
+
+    @Override
+    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+        return buff.put(val);
     }
 }

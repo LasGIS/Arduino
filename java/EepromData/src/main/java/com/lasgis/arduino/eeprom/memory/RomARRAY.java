@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAY.java  last: 18.05.2018
+ *  @(#)RomARRAY.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,11 +8,12 @@
 
 package com.lasgis.arduino.eeprom.memory;
 
+import com.lasgis.arduino.eeprom.UpLoadInfoException;
+import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -46,20 +47,30 @@ public class RomARRAY extends RomData {
     }
 
     @Override
-    byte[] toByte() throws UnsupportedEncodingException {
-        final ByteBuffer buff = ByteBuffer.allocate(30);
+    int size() {
+        int size = 0;
+        for (final RomData item : array) {
+            size += item.size();
+        }
+        return size;
+    }
+
+    @Override
+    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         buff.put((byte) array.size());
         for (final RomData item : array) {
-            buff.put(item.toByte());
+            item.toEeprom(buff);
         }
-        final int position = buff.position();
-        final byte[] out = new byte[position];
-        buff.position(0);
-        buff.get(out);
-        return out;
+        return buff;
     }
 
     RomARRAY add(final RomData rom) {
+        if (!array.isEmpty()) {
+            final RomData first = array.get(0);
+            if (first.size() != rom.size()) {
+                throw new UpLoadInfoException("Элементы массива должны быть одинаковыми!");
+            }
+        }
         array.add(rom);
         return this;
     }

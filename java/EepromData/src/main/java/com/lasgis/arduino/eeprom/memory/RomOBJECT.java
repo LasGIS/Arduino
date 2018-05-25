@@ -1,5 +1,5 @@
 /*
- *  @(#)RomOBJECT.java  last: 17.05.2018
+ *  @(#)RomOBJECT.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,6 +8,7 @@
 
 package com.lasgis.arduino.eeprom.memory;
 
+import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,14 +35,39 @@ public class RomOBJECT extends RomData {
 
     /** массив, содержащий элементы объекта */
     private ArrayList<RomData> array = new ArrayList<>();
-//    private short size;
 
-    public RomOBJECT(final String name) {
+    private RomOBJECT(final String name) {
         super(name);
     }
 
+    public static RomOBJECT of() {
+        return new RomOBJECT(null);
+    }
+
+    public static RomOBJECT of(final String name) {
+        return new RomOBJECT(name);
+    }
+
     @Override
-    byte[] toByte() throws UnsupportedEncodingException {
-        return new byte[0];
+    int size() {
+        int size = 0;
+        for (final RomData item : array) {
+            size += item.size();
+        }
+        return size;
+    }
+
+    @Override
+    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+        buff.put((byte) array.size());
+        for (final RomData item : array) {
+            buff.put(item.toEeprom());
+        }
+        return buff;
+    }
+
+    RomOBJECT add(final RomData rom) {
+        array.add(rom);
+        return this;
     }
 }

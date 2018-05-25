@@ -1,5 +1,5 @@
 /*
- *  @(#)RomDOUBLETest.java  last: 17.05.2018
+ *  @(#)RomDOUBLETest.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -47,7 +47,7 @@ public class RomDOUBLETest {
         final double inp, final String expected
     ) throws Exception {
         final RomDOUBLE rom = RomDOUBLE.of(inp);
-        final byte[] bytes = rom.toByte();
+        final byte[] bytes = rom.toEeprom();
 //        System.out.print(ByteBuffer.wrap(bytes).getDouble());
 //        System.out.print(" = ");
 //        System.out.println(inp);

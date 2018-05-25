@@ -1,5 +1,5 @@
 /*
- *  @(#)ByteArrayBuilder.java  last: 21.05.2018
+ *  @(#)ByteArrayBuilder.java  last: 25.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -24,12 +24,12 @@ public class ByteArrayBuilder {
 
     private ByteBuffer buffer;
 
-    private ByteArrayBuilder(int capacity) {
+    public ByteArrayBuilder(int capacity) {
         super();
         buffer = ByteBuffer.allocate(capacity);
     }
 
-    ByteArrayBuilder() {
+    public ByteArrayBuilder() {
         this(10);
     }
 
@@ -77,6 +77,10 @@ public class ByteArrayBuilder {
         checkLimit(length);
         buffer.put(src, offset, length);
         return this;
+    }
+
+    public ByteArrayBuilder put(byte[] src) {
+        return put(src, 0, src.length);
     }
 
     public ByteArrayBuilder put(ByteBuffer src) {
