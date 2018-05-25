@@ -43,6 +43,11 @@ public class RomINT32 extends RomData {
     }
 
     @Override
+    String define() {
+        return "l";
+    }
+
+    @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         return buff.putInt(val);
     }

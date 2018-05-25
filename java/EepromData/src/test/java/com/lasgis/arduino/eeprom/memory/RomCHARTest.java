@@ -34,5 +34,6 @@ public class RomCHARTest {
         final RomCHAR rom = RomCHAR.of(inp);
         final byte[] bytes = rom.toEeprom();
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
+        Assert.assertEquals(rom.define(), "c");
     }
 }

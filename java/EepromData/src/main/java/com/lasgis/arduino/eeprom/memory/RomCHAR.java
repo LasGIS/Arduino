@@ -43,6 +43,11 @@ class RomCHAR extends RomData {
     }
 
     @Override
+    String define() {
+        return "c";
+    }
+
+    @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         return buff.put(Character.toString(val).getBytes(CHARSET));
     }

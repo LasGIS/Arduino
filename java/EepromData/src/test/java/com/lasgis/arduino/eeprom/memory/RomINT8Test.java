@@ -36,6 +36,7 @@ public class RomINT8Test {
         final RomINT8 rom = RomINT8.of(inp);
         final byte[] bytes = rom.toEeprom();
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
+        Assert.assertEquals(rom.define(), "b");
     }
 
 }

@@ -32,7 +32,7 @@ public class RomARRAYTest {
                     .add(RomINT8.of((byte) 3))
                     .add(RomINT8.of((byte) 0))
                     .add(RomINT8.of((byte) -1))
-                , "0501020300FF"
+                , "0501020300FF", "[b]"
             }, {
                 RomARRAY.of()
                     .add(RomINT16.of((short) 1))
@@ -40,7 +40,7 @@ public class RomARRAYTest {
                     .add(RomINT16.of((short) 3))
                     .add(RomINT16.of((short) 0))
                     .add(RomINT16.of((short) -1))
-                , "050001000200030000FFFF"
+                , "050001000200030000FFFF", "[i]"
             }};
         } catch (Exception ex) {
             log.error("", ex);
@@ -50,11 +50,12 @@ public class RomARRAYTest {
 
     @Test(dataProvider = "dataToByte")
     public void testToByte(
-        final RomARRAY rom, final String expected
+        final RomARRAY rom, final String expected, final String expectedDefine
     ) throws Exception {
         final byte[] bytes = rom.toEeprom();
         final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
         Assert.assertEquals(hexOutPrint, expected);
+        Assert.assertEquals(rom.define(), expectedDefine);
     }
 
 }

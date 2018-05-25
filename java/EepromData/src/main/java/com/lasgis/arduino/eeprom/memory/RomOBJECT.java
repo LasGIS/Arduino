@@ -58,10 +58,19 @@ public class RomOBJECT extends RomData {
     }
 
     @Override
+    String define() {
+        final StringBuilder sb = new StringBuilder("{");
+        for (final RomData item : array) {
+            sb.append(item.define());
+        }
+        return sb.append("}").toString();
+    }
+
+    @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         buff.put((byte) array.size());
         for (final RomData item : array) {
-            buff.put(item.toEeprom());
+            item.toEeprom(buff);
         }
         return buff;
     }

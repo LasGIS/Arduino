@@ -51,6 +51,21 @@ public abstract class RomData {
     abstract int size();
 
     /**
+     * Вернуть описание структуры. Структура определяется однобайтовым знаком:
+     *   CHAR   - 'c'
+     *   INT8   - 'b'
+     *   INT16  - 'i'
+     *   INT32  - 'l'
+     *   DOUBLE - 'd'
+     *   FLOAT  - 'f'
+     *   STRING - 's'
+     *   OBJECT - '{}'
+     *   ARRAY  - '[]'
+     * @return описание структуры
+     */
+    abstract String define();
+
+    /**
      * Добавляем образ объекта в накопительный массив байт.
      * @param buff накопительный объект ByteArrayBuilder
      * @return накопительный объект ByteArrayBuilder

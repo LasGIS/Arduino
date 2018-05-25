@@ -47,6 +47,11 @@ public class RomFLOAT extends RomData {
     }
 
     @Override
+    String define() {
+        return "f";
+    }
+
+    @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         return buff.putFloat(val);
     }

@@ -47,6 +47,11 @@ public class RomDOUBLE extends RomData {
     }
 
     @Override
+    String define() {
+        return "d";
+    }
+
+    @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         return buff.putDouble(val);
     }

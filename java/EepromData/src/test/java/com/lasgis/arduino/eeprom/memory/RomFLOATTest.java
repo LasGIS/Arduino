@@ -50,6 +50,7 @@ public class RomFLOATTest {
 //        System.out.print(" = ");
 //        System.out.println(inp);
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
+        Assert.assertEquals(rom.define(), "f");
     }
 
 }

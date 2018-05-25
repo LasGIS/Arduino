@@ -63,6 +63,7 @@ public class RomSTRINGTest {
 //        System.out.println("inp = \"" + inp + "\"");
 //        System.out.println("out = \"" + hexOutPrint + "\"");
         Assert.assertEquals(hexOutPrint, hexOut);
+        Assert.assertEquals(rom.define(), "s");
     }
 
 }

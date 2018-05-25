@@ -37,6 +37,7 @@ public class RomINT16Test {
         final RomINT16 rom = RomINT16.of(inp);
         final byte[] bytes = rom.toEeprom();
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
+        Assert.assertEquals(rom.define(), "i");
     }
 
 }

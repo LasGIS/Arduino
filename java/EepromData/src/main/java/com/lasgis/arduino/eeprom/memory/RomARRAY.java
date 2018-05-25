@@ -56,6 +56,15 @@ public class RomARRAY extends RomData {
     }
 
     @Override
+    String define() {
+        final StringBuilder sb = new StringBuilder("[");
+        if (!array.isEmpty()) {
+            sb.append(array.get(0).define());
+        }
+        return sb.append("]").toString();
+    }
+
+    @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         buff.put((byte) array.size());
         for (final RomData item : array) {

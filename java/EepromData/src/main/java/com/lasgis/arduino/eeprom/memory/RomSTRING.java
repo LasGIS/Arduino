@@ -43,6 +43,11 @@ class RomSTRING extends RomData {
     }
 
     @Override
+    String define() {
+        return "s";
+    }
+
+    @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         final int count = val.length();
         return buff.put((byte) (count & 0xff)).put(val.getBytes(CHARSET));
