@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAY.java  last: 25.05.2018
+ *  @(#)RomARRAY.java  last: 28.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -76,7 +76,7 @@ public class RomARRAY extends RomData {
     RomARRAY add(final RomData rom) {
         if (!array.isEmpty()) {
             final RomData first = array.get(0);
-            if (first.size() != rom.size()) {
+            if (!first.define().equals(rom.define())) {
                 throw new UpLoadInfoException("Элементы массива должны быть одинаковыми!");
             }
         }
