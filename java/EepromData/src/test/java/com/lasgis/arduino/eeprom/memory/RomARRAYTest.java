@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAYTest.java  last: 28.05.2018
+ *  @(#)RomARRAYTest.java  last: 29.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -32,7 +32,7 @@ public class RomARRAYTest {
                     .add(RomINT8.of((byte) 3))
                     .add(RomINT8.of((byte) 0))
                     .add(RomINT8.of((byte) -1))
-                , "0501020300FF", "[b]"
+                , "00080501020300FF", "[b]", 8
             }, {
                 RomARRAY.of()
                     .add(RomINT16.of((short) 1))
@@ -40,7 +40,7 @@ public class RomARRAYTest {
                     .add(RomINT16.of((short) 3))
                     .add(RomINT16.of((short) 0))
                     .add(RomINT16.of((short) -1))
-                , "050001000200030000FFFF", "[i]"
+                , "000D050001000200030000FFFF", "[i]", 13
             }, {
                 RomARRAY.of()
                     .add(RomOBJECT.of()
@@ -52,19 +52,19 @@ public class RomARRAYTest {
                     .add(RomOBJECT.of()
                         .add(RomINT8.of((byte) 2))
                         .add(RomINT16.of((short) 222))
-                        .add(RomSTRING.of("Второй объект"))
+                        .add(RomSTRING.of("Второй объект 2"))
                         .add(RomCHAR.of('S'))
                     )
                     .add(RomOBJECT.of()
                         .add(RomINT8.of((byte) 3))
                         .add(RomINT16.of((short) 333))
-                        .add(RomSTRING.of("Третий объект"))
+                        .add(RomSTRING.of("Третий объект 3 3"))
                         .add(RomCHAR.of('T'))
                 ),
-                "030401006F0DCFE5F0E2FBE920EEE1FAE5EAF246" +
-                  "040200DE0DC2F2EEF0EEE920EEE1FAE5EAF253" +
-                  "0403014D0DD2F0E5F2E8E920EEE1FAE5EAF254",
-                "[{bisc}]"
+                "004B0300160401006F000FCFE5F0E2FBE920EEE1FAE5EAF246" +
+                      "0018040200DE0011C2F2EEF0EEE920EEE1FAE5EAF2203253" +
+                      "001A0403014D0013D2F0E5F2E8E920EEE1FAE5EAF22033203354",
+                "[{bisc}]", 75
             }};
         } catch (Exception ex) {
             log.error("", ex);
@@ -75,13 +75,14 @@ public class RomARRAYTest {
 
     @Test(dataProvider = "dataToByte")
     public void testToByte(
-        final RomARRAY rom, final String expected, final String expectedDefine
+        final RomARRAY rom, final String expected, final String expectedDefine, final int size
     ) throws Exception {
         final byte[] bytes = rom.toEeprom();
         final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
         log.info("\"{}\"", new String(bytes, RomData.CHARSET));
         Assert.assertEquals(hexOutPrint, expected);
         Assert.assertEquals(rom.define(), expectedDefine);
+        Assert.assertEquals(rom.size(), size);
     }
 
 }

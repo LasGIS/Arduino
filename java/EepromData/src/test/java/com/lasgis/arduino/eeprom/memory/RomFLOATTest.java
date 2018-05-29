@@ -1,5 +1,5 @@
 /*
- *  @(#)RomFLOATTest.java  last: 25.05.2018
+ *  @(#)RomFLOATTest.java  last: 29.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -51,6 +51,7 @@ public class RomFLOATTest {
 //        System.out.println(inp);
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
         Assert.assertEquals(rom.define(), "f");
+        Assert.assertEquals(rom.size(), 4);
     }
 
 }

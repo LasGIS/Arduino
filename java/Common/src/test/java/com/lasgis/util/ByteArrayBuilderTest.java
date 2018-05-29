@@ -1,5 +1,5 @@
 /*
- *  @(#)ByteArrayBuilderTest.java  last: 24.05.2018
+ *  @(#)ByteArrayBuilderTest.java  last: 29.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -35,15 +35,15 @@ public class ByteArrayBuilderTest {
     @Test
     public void testPutGet() throws Exception {
         final ByteArrayBuilder bab = new ByteArrayBuilder();
-        bab.put((byte) 0x00).put((byte) 0x21).put((byte) 0x00).put((byte) 0x23)
-            .put(0, (byte) 0x20).put(2, (byte) 0x22);
+        bab.put(0x00).put(0x21).put(0x00).put(0x23)
+            .put(0, 0x20).put(2, 0x22);
         assertEquals(DatatypeConverter.printHexBinary(bab.toByte()), "20212223");
         assertEquals(bab.position(), 4);
         bab.position(0);
-        assertEquals(bab.get(), (byte) 0x20);
-        assertEquals(bab.get(), (byte) 0x21);
-        assertEquals(bab.get(), (byte) 0x22);
-        assertEquals(bab.get(), (byte) 0x23);
+        assertEquals(bab.get(), 0x20);
+        assertEquals(bab.get(), 0x21);
+        assertEquals(bab.get(), 0x22);
+        assertEquals(bab.get(), 0x23);
         assertEquals(bab.position(), 4);
     }
 

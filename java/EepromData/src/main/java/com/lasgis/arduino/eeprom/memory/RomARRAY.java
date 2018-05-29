@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAY.java  last: 28.05.2018
+ *  @(#)RomARRAY.java  last: 29.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -22,7 +22,10 @@ import java.util.ArrayList;
  * поэтому нет смысла структуру элемента описывать в каждом элементе.
  * Однако в начале массива мы должны указать количество элементов массива.
  *
- * В EEPROM храним количество элементов массива и описание структуры одного элемента.
+ * В EEPROM храним:
+ * 1 - размер всего массива, включая первые 3 байта;
+ * 2 - количество элементов массива;
+ * 3 - телои самого массива (т.е. все его элементы по порядку).
  *
  * @author Vladimir Laskin
  * @since 17.05.2018
@@ -48,7 +51,7 @@ public class RomARRAY extends RomData {
 
     @Override
     int size() {
-        int size = 0;
+        int size = 3;
         for (final RomData item : array) {
             size += item.size();
         }
@@ -66,7 +69,8 @@ public class RomARRAY extends RomData {
 
     @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
-        buff.put((byte) array.size());
+        buff.putShort(size());
+        buff.put(array.size());
         for (final RomData item : array) {
             item.toEeprom(buff);
         }

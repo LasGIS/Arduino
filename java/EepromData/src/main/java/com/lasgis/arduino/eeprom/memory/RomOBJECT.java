@@ -1,5 +1,5 @@
 /*
- *  @(#)RomOBJECT.java  last: 25.05.2018
+ *  @(#)RomOBJECT.java  last: 29.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -22,9 +22,11 @@ import java.util.ArrayList;
  * Если класс содержит строки или другие структуры, то при десериализации надо
  * создавать в памяти объект строки, а в класс ложить указатель.
  *
- * Поэтому в EEPROM надо хранить как размер объекта, так и описание его структуры.
- * Размер объекта вычисляется при создании EEPROM образа.
- * Описание структуры определяется по элементам объекта.
+ * В EEPROM храним:
+ * 1 - размер всего объекта, включая первые 3 байта;
+ * 2 - количество элементов объекта;
+ * 3 - тело самого объекта (т.е. все его элементы по порядку).
+ * Определение структуры определяется по элементам объекта.
  *
  * @author Vladimir Laskin
  * @since 17.05.2018
@@ -50,7 +52,7 @@ public class RomOBJECT extends RomData {
 
     @Override
     int size() {
-        int size = 0;
+        int size = 3;
         for (final RomData item : array) {
             size += item.size();
         }
@@ -68,7 +70,8 @@ public class RomOBJECT extends RomData {
 
     @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
-        buff.put((byte) array.size());
+        buff.putShort(size());
+        buff.put(array.size());
         for (final RomData item : array) {
             item.toEeprom(buff);
         }

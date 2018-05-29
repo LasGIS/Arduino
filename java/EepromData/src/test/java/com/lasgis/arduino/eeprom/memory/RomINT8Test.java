@@ -1,5 +1,5 @@
 /*
- *  @(#)RomINT8Test.java  last: 25.05.2018
+ *  @(#)RomINT8Test.java  last: 29.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -37,6 +37,7 @@ public class RomINT8Test {
         final byte[] bytes = rom.toEeprom();
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
         Assert.assertEquals(rom.define(), "b");
+        Assert.assertEquals(rom.size(), 1);
     }
 
 }

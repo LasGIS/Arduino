@@ -1,5 +1,5 @@
 /*
- *  @(#)RomDOUBLETest.java  last: 25.05.2018
+ *  @(#)RomDOUBLETest.java  last: 29.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -53,6 +53,7 @@ public class RomDOUBLETest {
 //        System.out.println(inp);
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
         Assert.assertEquals(rom.define(), "d");
+        Assert.assertEquals(rom.size(), 8);
     }
 
 }

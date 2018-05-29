@@ -1,5 +1,5 @@
 /*
- *  @(#)RomOBJECTTest.java  last: 25.05.2018
+ *  @(#)RomOBJECTTest.java  last: 29.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -31,26 +31,27 @@ public class RomOBJECTTest {
                 .add(RomINT32.of(3))
                 .add(RomINT8.of((byte) 0))
                 .add(RomINT8.of((byte)-1))
-            , "050100020000000300FF", "{bilbb}"
+            , "000C050100020000000300FF", "{bilbb}", 12
         }, {
             RomOBJECT.of()
                 .add(RomINT8.of((byte) 1))
                 .add(RomINT16.of((short) 2))
                 .add(RomSTRING.of("Text in English"))
                 .add(RomSTRING.of("Текст на Русском"))
-            , "040100020F5465787420696E20456E676C69736810D2E5EAF1F220EDE020D0F3F1F1EAEEEC"
-            , "{biss}"
+            , "00290401000200115465787420696E20456E676C6973680012D2E5EAF1F220EDE020D0F3F1F1EAEEEC"
+            , "{biss}", 41
         } };
     }
     @Test(dataProvider = "dataToByte")
     public void testToByte(
-        final RomOBJECT rom, final String expected, final String expectedDefine
+        final RomOBJECT rom, final String expected, final String expectedDefine, final int size
     ) throws Exception {
         final byte[] bytes = rom.toEeprom();
         final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
         log.info("\"{}\"", new String(bytes, RomData.CHARSET));
         Assert.assertEquals(hexOutPrint, expected);
         Assert.assertEquals(rom.define(), expectedDefine);
+        Assert.assertEquals(rom.size(), size);
     }
 
 }
