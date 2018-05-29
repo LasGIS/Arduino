@@ -13,14 +13,12 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.xml.bind.DatatypeConverter;
-
 /**
  * @author Vladimir Laskin
  * @since 18.05.2018
  */
 @Slf4j
-public class RomARRAYTest {
+public class RomARRAYTest extends RomCommonTest {
 
     @DataProvider
     public Object[][] dataToByte() {
@@ -77,12 +75,7 @@ public class RomARRAYTest {
     public void testToByte(
         final RomARRAY rom, final String expected, final String expectedDefine, final int size
     ) throws Exception {
-        final byte[] bytes = rom.toEeprom();
-        final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
-        log.info("\"{}\"", new String(bytes, RomData.CHARSET));
-        Assert.assertEquals(hexOutPrint, expected);
-        Assert.assertEquals(rom.define(), expectedDefine);
-        Assert.assertEquals(rom.size(), size);
+        testCompositeRom(rom, expected, expectedDefine, size);
     }
 
 }
