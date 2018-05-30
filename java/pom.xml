@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 17.05.2018
+  ~  @(#)pom.xml  last: 30.05.2018
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -81,7 +81,13 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.0.1</version>
+                <version>2.6</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.6</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

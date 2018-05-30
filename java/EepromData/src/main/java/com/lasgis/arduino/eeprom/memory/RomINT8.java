@@ -1,5 +1,5 @@
 /*
- *  @(#)RomINT8.java  last: 25.05.2018
+ *  @(#)RomINT8.java  last: 30.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -49,6 +49,7 @@ class RomINT8 extends RomData {
 
     @Override
     ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+        setOffset(buff.position());
         return buff.put(val);
     }
 }
