@@ -68,7 +68,7 @@ public class RomARRAY extends RomData {
     }
 
     @Override
-    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         setOffset(buff.position());
         buff.putShort(size());
         buff.put(array.size());
@@ -78,7 +78,7 @@ public class RomARRAY extends RomData {
         return buff;
     }
 
-    RomARRAY add(final RomData rom) {
+    public RomARRAY add(final RomData rom) {
         if (!array.isEmpty()) {
             final RomData first = array.get(0);
             if (!first.define().equals(rom.define())) {

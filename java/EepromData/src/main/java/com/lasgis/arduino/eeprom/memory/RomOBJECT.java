@@ -69,7 +69,7 @@ public class RomOBJECT extends RomData {
     }
 
     @Override
-    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         setOffset(buff.position());
         buff.putShort(size());
         buff.put(array.size());
@@ -79,7 +79,7 @@ public class RomOBJECT extends RomData {
         return buff;
     }
 
-    RomOBJECT add(final RomData rom) {
+    public RomOBJECT add(final RomData rom) {
         array.add(rom);
         return this;
     }

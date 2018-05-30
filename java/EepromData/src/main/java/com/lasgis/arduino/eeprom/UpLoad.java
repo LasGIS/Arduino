@@ -1,5 +1,5 @@
 /*
- *  @(#)UpLoad.java  last: 17.05.2018
+ *  @(#)UpLoad.java  last: 30.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,13 +8,20 @@
 
 package com.lasgis.arduino.eeprom;
 
+import com.lasgis.arduino.eeprom.memory.RomARRAY;
+import com.lasgis.arduino.eeprom.memory.RomData;
+import com.lasgis.arduino.eeprom.memory.RomOBJECT;
+import com.lasgis.util.ByteArrayBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -26,12 +33,14 @@ import java.util.Properties;
 @Slf4j
 public class UpLoad {
 
-    public static final Properties prop = new Properties();
+    private static final Properties prop = new Properties();
 
-    public final static String PROP_PORT_NAME = "port.name";
-    public final static String PROP_BAUD_RATE = "baud.rate";
-    public final static String PROP_PATCH     = "patch";
-    public final static String PROP_DATA_FILE = "data";
+    private final static String TAB = " ";
+
+    private final static String PROP_PORT_NAME = "port.name";
+    private final static String PROP_BAUD_RATE = "baud.rate";
+    private final static String PROP_PATCH     = "patch";
+    private final static String PROP_DATA_FILE = "data";
 
     private final static String[] MANDATORY_PROPERTY_KEYS = {
         PROP_PORT_NAME, PROP_BAUD_RATE, PROP_PATCH, PROP_DATA_FILE
@@ -53,6 +62,63 @@ public class UpLoad {
         loadProp(args);
         showProp();
         validateProp();
+        final List<RomData> array = loadDataFile();
+        final ByteArrayBuilder bab = new ByteArrayBuilder();
+        for (final RomData item : array) {
+            item.toEeprom(bab);
+        }
+        for (final RomData item : array) {
+            showNameOffset(item);
+        }
+    }
+
+    private List<RomData> loadDataFile() throws Exception {
+        final File dataFile = new File(
+            prop.getProperty(PROP_PATCH),
+            prop.getProperty(PROP_DATA_FILE)
+        );
+        final String extension = FilenameUtils.getExtension(dataFile.getPath());
+        switch (extension) {
+            case "xml": {
+                return DataXmlLoader.load(dataFile);
+            }
+            case "data": {
+                return DataCppLoader.load(dataFile);
+            }
+            default:
+                throw new UpLoadInfoException("Расширение {} не поддерживается", extension);
+        }
+    }
+
+    private void showNameOffset(final RomData rom) {
+        final StringBuilder sb = new  StringBuilder("\n");
+        showNameOffset(rom, sb, "");
+        log.info(sb.toString());
+    }
+
+    private void showNameOffset(final RomData rom, final StringBuilder sb, final String tab) {
+        final String name = rom.getName();
+        if (StringUtils.isNotBlank(name)) {
+            sb.append(tab).append("name: ").append(rom.getName()).append("; ");
+        } else {
+            sb.append(tab);
+        }
+        sb.append("offset: ").append(rom.getOffset()).append(";");
+        if (rom instanceof RomOBJECT) {
+            sb.append(" {\n");
+            for (final RomData inst: ((RomOBJECT) rom).getArray()) {
+                showNameOffset(inst, sb, tab + TAB);
+            }
+            sb.append(tab).append("}\n");
+        } else if (rom instanceof RomARRAY) {
+            sb.append(" [\n");
+            for (final RomData inst: ((RomARRAY) rom).getArray()) {
+                showNameOffset(inst, sb, tab + TAB);
+            }
+            sb.append(tab).append("]\n");
+        } else {
+            sb.append("\n");
+        }
     }
 
     /**

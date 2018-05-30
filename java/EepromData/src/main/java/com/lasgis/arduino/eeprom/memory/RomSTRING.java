@@ -20,7 +20,7 @@ import java.io.UnsupportedEncodingException;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-class RomSTRING extends RomData {
+public class RomSTRING extends RomData {
 
     private String val;
 
@@ -29,11 +29,11 @@ class RomSTRING extends RomData {
         this.val = val;
     }
 
-    static RomSTRING of(final String val) {
+    public static RomSTRING of(final String val) {
         return new RomSTRING(null, val);
     }
 
-    static RomSTRING of(final String name, final String val) {
+    public static RomSTRING of(final String name, final String val) {
         return new RomSTRING(name, val);
     }
 
@@ -48,7 +48,7 @@ class RomSTRING extends RomData {
     }
 
     @Override
-    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         setOffset(buff.position());
         return buff.putShort(size()).put(val.getBytes(CHARSET));
     }

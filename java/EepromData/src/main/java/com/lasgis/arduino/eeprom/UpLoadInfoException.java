@@ -1,5 +1,5 @@
 /*
- *  @(#)UpLoadInfoException.java  last: 17.05.2018
+ *  @(#)UpLoadInfoException.java  last: 30.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -7,6 +7,8 @@
  */
 
 package com.lasgis.arduino.eeprom;
+
+import java.text.MessageFormat;
 
 /**
  * Для вывода без StackTrace
@@ -16,5 +18,9 @@ package com.lasgis.arduino.eeprom;
 public class UpLoadInfoException extends RuntimeException {
     public UpLoadInfoException(final String message) {
         super(message);
+    }
+
+    public UpLoadInfoException(final String message, final Object... args) {
+        super(MessageFormat.format(message, args));
     }
 }

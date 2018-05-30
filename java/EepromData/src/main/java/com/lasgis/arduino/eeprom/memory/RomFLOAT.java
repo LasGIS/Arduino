@@ -33,11 +33,11 @@ public class RomFLOAT extends RomData {
         this.val = val;
     }
 
-    static RomFLOAT of(final float val) {
+    public static RomFLOAT of(final float val) {
         return new RomFLOAT(null, val);
     }
 
-    static RomFLOAT of(final String name, final float val) {
+    public static RomFLOAT of(final String name, final float val) {
         return new RomFLOAT(name, val);
     }
 
@@ -52,7 +52,7 @@ public class RomFLOAT extends RomData {
     }
 
     @Override
-    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         setOffset(buff.position());
         return buff.putFloat(val);
     }

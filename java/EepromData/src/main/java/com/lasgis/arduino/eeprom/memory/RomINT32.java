@@ -29,11 +29,11 @@ public class RomINT32 extends RomData {
         this.val = val;
     }
 
-    static RomINT32 of(final int val) {
+    public static RomINT32 of(final int val) {
         return new RomINT32(null, val);
     }
 
-    static RomINT32 of(final String name, final int val) {
+    public static RomINT32 of(final String name, final int val) {
         return new RomINT32(name, val);
     }
 
@@ -48,7 +48,7 @@ public class RomINT32 extends RomData {
     }
 
     @Override
-    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         setOffset(buff.position());
         return buff.putInt(val);
     }

@@ -98,7 +98,7 @@ public abstract class RomData {
      * @return накопительный объект ByteArrayBuilder
      * @throws UnsupportedEncodingException если ошибка
      */
-    abstract ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException;
+    public abstract ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException;
 
     /**
      * Получаем образ объекта в массив байт.
@@ -106,7 +106,7 @@ public abstract class RomData {
      * @return массив байт
      * @throws UnsupportedEncodingException если ошибка
      */
-    byte[] toEeprom() throws UnsupportedEncodingException {
+    public byte[] toEeprom() throws UnsupportedEncodingException {
         return toEeprom(new ByteArrayBuilder()).toByte();
     }
 }

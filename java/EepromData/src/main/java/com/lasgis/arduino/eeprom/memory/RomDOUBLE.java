@@ -33,11 +33,11 @@ public class RomDOUBLE extends RomData {
         this.val = val;
     }
 
-    static RomDOUBLE of(final double val) {
+    public static RomDOUBLE of(final double val) {
         return new RomDOUBLE(null, val);
     }
 
-    static RomDOUBLE of(final String name, final double val) {
+    public static RomDOUBLE of(final String name, final double val) {
         return new RomDOUBLE(name, val);
     }
 
@@ -52,7 +52,7 @@ public class RomDOUBLE extends RomData {
     }
 
     @Override
-    ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
+    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         setOffset(buff.position());
         return buff.putDouble(val);
     }
