@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class UpLoad {
 
     private static final Properties prop = new Properties();
 
-    private final static String TAB = " ";
+    private final static String TAB = "  ";
 
     private final static String PROP_PORT_NAME = "port.name";
     private final static String PROP_BAUD_RATE = "baud.rate";
@@ -67,6 +68,7 @@ public class UpLoad {
         for (final RomData item : array) {
             item.toEeprom(bab);
         }
+        log.info("\n byte[] = \"" + DatatypeConverter.printHexBinary(bab.toByte()) + "\"");
         for (final RomData item : array) {
             showNameOffset(item);
         }
