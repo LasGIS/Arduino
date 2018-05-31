@@ -6,7 +6,7 @@
  * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.arduino.eeprom;
+package com.lasgis.arduino.eeprom.load;
 
 import com.lasgis.arduino.eeprom.memory.RomData;
 

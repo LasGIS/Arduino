@@ -15,12 +15,12 @@ import java.text.MessageFormat;
  * @author Vladimir Laskin
  * @since 16.05.2018
  */
-public class UpLoadInfoException extends RuntimeException {
-    public UpLoadInfoException(final String message) {
+public class CommonInfoException extends RuntimeException {
+    public CommonInfoException(final String message) {
         super(message);
     }
 
-    public UpLoadInfoException(final String message, final Object... args) {
+    public CommonInfoException(final String message, final Object... args) {
         super(MessageFormat.format(message, args));
     }
 }

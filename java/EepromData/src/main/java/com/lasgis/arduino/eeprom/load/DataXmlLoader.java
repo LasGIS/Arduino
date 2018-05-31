@@ -1,13 +1,14 @@
 /*
- *  @(#)DataXmlLoader.java  last: 30.05.2018
+ *  @(#)DataXmlLoader.java  last: 31.05.2018
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
  * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.arduino.eeprom;
+package com.lasgis.arduino.eeprom.load;
 
+import com.lasgis.arduino.eeprom.CommonInfoException;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
 import com.lasgis.arduino.eeprom.memory.RomDOUBLE;
@@ -40,6 +41,7 @@ import java.util.List;
  */
 @Slf4j
 class DataXmlLoader {
+
     private final static String UNKNOWN_FORMAT = "Формат XML файла: ";
     private final static String ROM = "ROM";
     private final static String CHAR = "CHAR";
@@ -71,7 +73,7 @@ class DataXmlLoader {
         final Document doc = dBuilder.parse(file);
         final Element first = doc.getDocumentElement();
         if (!ROM.equals(first.getNodeName())) {
-            throw new UpLoadInfoException(
+            throw new CommonInfoException(
                 UNKNOWN_FORMAT + "первый элемент = \"{0}\", а должен быть \"ROM\"",
                 first.getNodeName()
             );
@@ -97,7 +99,7 @@ class DataXmlLoader {
             final Node nodeValue = attrs.getNamedItem("val");
 /*
             if (nodeValue == null) {
-                throw new UpLoadInfoException(
+                throw new CommonInfoException(
                     UNKNOWN_FORMAT + "Пропущен атрибут \"value\" для \"{0}\"!", node.getNodeName()
                 );
             }
@@ -126,10 +128,11 @@ class DataXmlLoader {
                 return addSubNode(RomOBJECT.of(name), node);
             case ARRAY:
                 return addSubNode(RomARRAY.of(name), node);
+            case "#comment":
             case "#text":
                 return null;
             default:
-                throw new UpLoadInfoException(
+                throw new CommonInfoException(
                     UNKNOWN_FORMAT + "Неизвестный элемент = \"{0}\"!", node.getNodeName()
                 );
         }

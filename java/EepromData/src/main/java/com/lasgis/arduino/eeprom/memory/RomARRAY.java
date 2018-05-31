@@ -8,7 +8,7 @@
 
 package com.lasgis.arduino.eeprom.memory;
 
-import com.lasgis.arduino.eeprom.UpLoadInfoException;
+import com.lasgis.arduino.eeprom.CommonInfoException;
 import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -82,7 +82,7 @@ public class RomARRAY extends RomData {
         if (!array.isEmpty()) {
             final RomData first = array.get(0);
             if (!first.define().equals(rom.define())) {
-                throw new UpLoadInfoException("Элементы массива должны быть одинаковыми!");
+                throw new CommonInfoException("Элементы массива должны быть одинаковыми!");
             }
         }
         array.add(rom);
