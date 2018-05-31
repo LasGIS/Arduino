@@ -9,15 +9,19 @@
 package com.lasgis.arduino.eeprom.create;
 
 import com.lasgis.arduino.eeprom.Runner;
+import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomData;
+import com.lasgis.arduino.eeprom.memory.RomOBJECT;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
@@ -52,14 +56,47 @@ public class CreateHelper {
         helper.createHexDumpFile(patch + ".hex", dump);
     }
 
-    private void createDefinitionFile(final String fileName, final List<RomData> dataList) {
+    private void createDefinitionFile(final String fileName, final List<RomData> dataList) throws IOException {
         log.info("Definition File = \"{}\"", fileName);
+        final OutputStreamWriter writer = new OutputStreamWriter(
+            new FileOutputStream(fileName), Charset.forName("windows-1251")
+        );
+        for (final RomData item : dataList) {
+            writeDefinition("", item, writer);
+        }
+        writer.close();
+    }
 
+    private void writeDefinition(final String parentName, final RomData rom, final Writer writer) throws IOException {
+        final String name = rom.getName();
+        final int offset = rom.getOffset();
+        if (StringUtils.isNotBlank(name)) {
+            writer.write("#define " + parentName + "_" + name + " " + offset + "\n");
+        }
+        if (rom instanceof RomOBJECT) {
+/*
+            sb.append(" {\n");
+            for (final RomData inst: ((RomOBJECT) rom).getArray()) {
+                showNameOffset(inst, sb, tab + TAB);
+            }
+            sb.append(tab).append("}\n");
+*/
+        } else if (rom instanceof RomARRAY) {
+/*
+            sb.append(" [\n");
+            for (final RomData inst: ((RomARRAY) rom).getArray()) {
+                showNameOffset(inst, sb, tab + TAB);
+            }
+            sb.append(tab).append("]\n");
+*/
+        } else {
+//            sb.append("\n");
+        }
     }
 
     private void createHexDumpFile(final String fileName, final byte[] dump) throws IOException {
         log.info("Hex Dump File = \"{}\"", fileName);
-        log.info(":\"{}\"", DatatypeConverter.printHexBinary(dump));
+        //log.info(":\"{}\"", DatatypeConverter.printHexBinary(dump));
         final OutputStreamWriter writer = new OutputStreamWriter(
             new FileOutputStream(fileName), Charset.forName("windows-1251")
         );
