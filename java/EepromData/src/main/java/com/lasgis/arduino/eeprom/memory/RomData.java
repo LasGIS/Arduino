@@ -64,7 +64,7 @@ import java.nio.charset.Charset;
 @Data
 public abstract class RomData {
 
-    protected static final Charset CHARSET = Charset.forName("windows-1251");
+    public static final Charset CHARSET = Charset.forName("windows-1251");
 
     private String name;
     private int offset = 0;

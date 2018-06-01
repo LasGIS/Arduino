@@ -92,6 +92,24 @@ public class PortReader implements SerialPortEventListener {
         }
     }
 
+    /**
+     * Отправляем message устройству
+     * @param dump message
+     */
+    public static void writeByte(final byte[] dump, final int len) throws InterruptedException {
+        try {
+            final PortReader portReader = PortReader.getPortReader();
+            if (portReader != null && portReader.serialPort != null) {
+                for (int i = 0; i < dump.length && i < len; i++) {
+                    portReader.serialPort.writeByte(dump[i]);
+                    Thread.sleep(1);
+                }
+            }
+        } catch (final SerialPortException ex) {
+            log.error(ex.getMessage(), ex);
+        }
+    }
+
     public void stop() {
         if (serialPort != null) {
             try {
@@ -122,7 +140,7 @@ public class PortReader implements SerialPortEventListener {
                 for (final PortReaderListener listener : listeners) {
                     listener.portReaderTrash(data);
                 }
-                System.out.print(data);
+//                System.out.print(data);
             } catch (final SerialPortException ex) {
                 log.error(ex.getMessage(), ex);
             }

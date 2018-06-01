@@ -69,7 +69,8 @@ HEADERS += \
     screen_tft.h \
     screen_date_time.h \
     screen_timer.h \
-    screen_dump.h
+    screen_dump.h \
+    I2CMemory.h
 
 DISTFILES += \
     ../libraries/ADXL345/library.json \
@@ -86,4 +87,6 @@ DISTFILES += \
     ../libraries/DS3231/keywords.txt \
     ../libraries/DS3231/Readme.txt \
     ../libraries/AT24C32/keywords.txt \
-    I2CMemory.data
+    I2CMemory.data \
+    I2CMemory.xml \
+    I2CMemory.hex

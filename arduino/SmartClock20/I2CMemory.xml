@@ -11,14 +11,14 @@
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">
 
-    <CHAR name="CHAR_DEF" val="c"/>
-    <INT8 name="BYTE_DEF" val="127"/>
-    <INT16 name="INT_DEF" val="32767"/>
-    <INT32 name="LONG_DEF" val="2147483647"/>
-    <FLOAT name="FLOAT_DEF" val="13.14"/>
-    <DOUBLE name="DOUBLE_DEF" val="13.1415926"/>
-    <STRING name="STRING_DEF" val="некоторый текст"/>
-    <OBJECT name="OBJECT_DEF">
+    <CHAR name="CHAR" val="c"/>
+    <INT8 name="BYTE" val="127"/>
+    <INT16 name="INT" val="32767"/>
+    <INT32 name="LONG" val="2147483647"/>
+    <FLOAT name="FLOAT" val="13.14"/>
+    <DOUBLE name="DOUBLE" val="13.1415926"/>
+    <STRING name="STRING" val="некоторый текст"/>
+    <OBJECT name="OBJECT">
         <CHAR val="h"/>
         <INT8 val="-128"/>
         <INT16 val="-32768"/>
@@ -27,12 +27,32 @@
         <DOUBLE val="-13.1415926"/>
         <STRING val="другой текст"/>
     </OBJECT>
-    <ARRAY name="ARRAY_OF_INT_DEFINITION">
+    <ARRAY name="ARRAY_OF_INT">
         <INT16 val="-2"/>
-        <INT16 val="-1"/>
+        <INT16 name="DEFINITION" val="-1"/>
         <INT16 val="0"/>
-        <INT16 val="1"/>
+        <INT16 name="DEFINITION" val="1"/>
         <INT16 val="2"/>
         <INT16 val="3"/>
+    </ARRAY>
+    <ARRAY name="ARRAY_OF_OBJECT">
+        <OBJECT name="OBJECT">
+            <INT8 name="INT8" val="1"/>
+            <INT16 name="INT16" val="111"/>
+            <STRING name="STRING" val="Первый объект"/>
+            <CHAR name="CHAR" val="F"/>
+        </OBJECT>>
+        <OBJECT name="OBJECT">
+            <INT8 val="2"/>
+            <INT16 val="222"/>
+            <STRING val="Второй объект 2"/>
+            <CHAR val="S"/>
+        </OBJECT>>
+        <OBJECT>
+            <INT8 val="3"/>
+            <INT16 val="333"/>
+            <STRING val="Третий объект 3 3"/>
+            <CHAR val="T"/>
+        </OBJECT>
     </ARRAY>
 </ROM>

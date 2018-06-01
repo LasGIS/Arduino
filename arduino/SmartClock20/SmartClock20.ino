@@ -7,6 +7,7 @@ TFT_LG_ILI9225 tft;
 IrControl irControl(2);
 
 char comBuffer[20];
+uint8_t isSerial = false;
 uint8_t isRedraw = true;
 uint16_t X0, X1, Y0, Y1;
 uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
@@ -209,7 +210,7 @@ void loop() {
       break;
     }
   }
-  if (mode == ModeType::show) {
+  if (mode == ModeType::show && !isSerial) {
 #ifdef ADXL345_ENABLED
     setOrientation(accelReadVector());
 #endif
@@ -225,6 +226,30 @@ void loop() {
     screen->showEveryTime();
   }
   delay(10);
+}
+#define MAX_LOAD_SIZE 100
+/**
+ * @brief serialEvent
+ */
+void serialEvent() {
+//  static uint8_t outRow = 7;
+  char buf[MAX_LOAD_SIZE];
+  isSerial = true;
+  int cnt = Serial.readBytesUntil('\n', buf, MAX_LOAD_SIZE);
+  if (cnt >= 0 && cnt < MAX_LOAD_SIZE) {
+    buf[cnt] = 0;
+  }
+//#ifdef HAS_SERIAL
+  Serial.print('[');
+  Serial.print(buf);
+  Serial.println(']');
+//#endif
+//  printText(1, outRow, 1, buf, COLOR_GOLD);
+//  outRow = outRow < 17 ? outRow + 1 : 7;
+  if (buf[0] == ':') {
+    // todo ggg
+  }
+  isSerial = false;
 }
 
 ScreenTft * changeCurrentCommand(bool isIncrement) {
