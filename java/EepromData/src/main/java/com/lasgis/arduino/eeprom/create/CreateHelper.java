@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -41,6 +42,8 @@ import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 public class CreateHelper {
 
     private final static CreateHelper helper = new CreateHelper();
+
+    private final static ArrayList<String> romNameList = new ArrayList<>();
 
     private final static int HEX_SIZE_STR_LEN = 21;
 
@@ -62,7 +65,7 @@ public class CreateHelper {
             new FileOutputStream(fileName), Charset.forName("windows-1251")
         );
         for (final RomData item : dataList) {
-            writeDefinition("", item, writer);
+            writeDefinition("EEPROM", item, writer);
         }
         writer.close();
     }
@@ -70,8 +73,15 @@ public class CreateHelper {
     private void writeDefinition(final String parentName, final RomData rom, final Writer writer) throws IOException {
         final String name = rom.getName();
         final String romName = (StringUtils.isNotBlank(parentName)) ? parentName + "_" + name : name;
+        final String offset = String.format("%#06x", rom.getOffset());
         if (StringUtils.isNotBlank(name)) {
-            writer.write("#define " + romName + "_ADDRESS " + String.format("%#06x", rom.getOffset()) + "\n");
+            // проверка на уникальность имени
+            if (romNameList.contains(romName)) {
+                log.warn("Неуникальность имени: \"{}\" (адрес: {})", romName, offset);
+            }
+            romNameList.add(romName);
+
+            writer.write("#define " + romName + "_ADDRESS " + offset + "\n");
             writer.write("#define " + romName + "_DEFINITION \"" + rom.define() + "\"\n");
         }
         if (rom instanceof RomOBJECT) {
@@ -89,7 +99,6 @@ public class CreateHelper {
 
     private void createHexDumpFile(final String fileName, final byte[] dump) throws IOException {
         log.info("Hex Dump File = \"{}\"", fileName);
-        //log.info(":\"{}\"", DatatypeConverter.printHexBinary(dump));
         final OutputStreamWriter writer = new OutputStreamWriter(
             new FileOutputStream(fileName), Charset.forName("windows-1251")
         );
