@@ -51,7 +51,7 @@ public class RomOBJECT extends RomData {
     }
 
     @Override
-    int size() {
+    public int size() {
         int size = 3;
         for (final RomData item : array) {
             size += item.size();
@@ -60,7 +60,7 @@ public class RomOBJECT extends RomData {
     }
 
     @Override
-    String define() {
+    public String define() {
         final StringBuilder sb = new StringBuilder("{");
         for (final RomData item : array) {
             sb.append(item.define());

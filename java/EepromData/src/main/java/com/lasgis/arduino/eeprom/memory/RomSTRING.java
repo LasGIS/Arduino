@@ -38,12 +38,12 @@ public class RomSTRING extends RomData {
     }
 
     @Override
-    int size() {
+    public int size() {
         return val.length() + 2;
     }
 
     @Override
-    String define() {
+    public String define() {
         return "s";
     }
 

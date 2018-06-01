@@ -42,12 +42,12 @@ public class RomFLOAT extends RomData {
     }
 
     @Override
-    int size() {
+    public int size() {
         return Float.BYTES;
     }
 
     @Override
-    String define() {
+    public String define() {
         return "f";
     }
 

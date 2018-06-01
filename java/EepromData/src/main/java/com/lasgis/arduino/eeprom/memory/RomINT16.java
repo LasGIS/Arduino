@@ -38,12 +38,12 @@ public class RomINT16 extends RomData {
     }
 
     @Override
-    int size() {
+    public int size() {
         return Short.BYTES;
     }
 
     @Override
-    String define() {
+    public String define() {
         return "i";
     }
 

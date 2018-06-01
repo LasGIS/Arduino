@@ -69,28 +69,21 @@ public class CreateHelper {
 
     private void writeDefinition(final String parentName, final RomData rom, final Writer writer) throws IOException {
         final String name = rom.getName();
-        final int offset = rom.getOffset();
+        final String romName = (StringUtils.isNotBlank(parentName)) ? parentName + "_" + name : name;
         if (StringUtils.isNotBlank(name)) {
-            writer.write("#define " + parentName + "_" + name + " " + offset + "\n");
+            writer.write("#define " + romName + "_ADDRESS " + String.format("%#06x", rom.getOffset()) + "\n");
+            writer.write("#define " + romName + "_DEFINITION \"" + rom.define() + "\"\n");
         }
         if (rom instanceof RomOBJECT) {
-/*
-            sb.append(" {\n");
             for (final RomData inst: ((RomOBJECT) rom).getArray()) {
-                showNameOffset(inst, sb, tab + TAB);
+                writeDefinition(romName, inst, writer);
             }
-            sb.append(tab).append("}\n");
-*/
         } else if (rom instanceof RomARRAY) {
-/*
-            sb.append(" [\n");
-            for (final RomData inst: ((RomARRAY) rom).getArray()) {
-                showNameOffset(inst, sb, tab + TAB);
+            final List<RomData> array = ((RomARRAY) rom).getArray();
+            for (int i = 0; i < array.size(); i++) {
+                final RomData inst = array.get(i);
+                writeDefinition(romName + "_" + i, inst, writer);
             }
-            sb.append(tab).append("]\n");
-*/
-        } else {
-//            sb.append("\n");
         }
     }
 

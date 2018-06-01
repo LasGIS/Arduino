@@ -38,12 +38,12 @@ public class RomCHAR extends RomData {
     }
 
     @Override
-    int size() {
+    public int size() {
         return 1;
     }
 
     @Override
-    String define() {
+    public String define() {
         return "c";
     }
 

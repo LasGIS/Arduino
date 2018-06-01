@@ -50,7 +50,7 @@ public class RomARRAY extends RomData {
     }
 
     @Override
-    int size() {
+    public int size() {
         int size = 3;
         for (final RomData item : array) {
             size += item.size();
@@ -59,7 +59,7 @@ public class RomARRAY extends RomData {
     }
 
     @Override
-    String define() {
+    public String define() {
         final StringBuilder sb = new StringBuilder("[");
         if (!array.isEmpty()) {
             sb.append(array.get(0).define());

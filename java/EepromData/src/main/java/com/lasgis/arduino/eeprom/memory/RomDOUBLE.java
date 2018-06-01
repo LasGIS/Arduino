@@ -42,12 +42,12 @@ public class RomDOUBLE extends RomData {
     }
 
     @Override
-    int size() {
+    public int size() {
         return Double.BYTES;
     }
 
     @Override
-    String define() {
+    public String define() {
         return "d";
     }
 

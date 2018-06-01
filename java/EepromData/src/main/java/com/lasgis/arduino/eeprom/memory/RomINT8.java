@@ -38,12 +38,12 @@ public class RomINT8 extends RomData {
     }
 
     @Override
-    int size() {
+    public int size() {
         return Byte.BYTES;
     }
 
     @Override
-    String define() {
+    public String define() {
         return "b";
     }
 

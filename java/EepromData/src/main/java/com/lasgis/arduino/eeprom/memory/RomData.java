@@ -75,7 +75,7 @@ public abstract class RomData {
     }
 
     /** размер образа объекта в EEPROM */
-    abstract int size();
+    public abstract int size();
 
     /**
      * Вернуть определение структуры. Структура определяется однобайтовым знаком:
@@ -90,7 +90,7 @@ public abstract class RomData {
      *   ARRAY  - '[]'
      * @return определение структуры
      */
-    abstract String define();
+    public abstract String define();
 
     /**
      * Добавляем образ объекта в накопительный массив байт.
