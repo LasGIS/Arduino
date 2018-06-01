@@ -6,7 +6,7 @@
  * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.arduino.robot.serial;
+package com.lasgis.arduino.serial;
 
 /**
  * Обработчик данных из device.

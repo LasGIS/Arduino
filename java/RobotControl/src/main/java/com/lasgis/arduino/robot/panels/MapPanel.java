@@ -8,7 +8,7 @@
 
 package com.lasgis.arduino.robot.panels;
 
-import com.lasgis.arduino.robot.serial.PortReaderListener;
+import com.lasgis.arduino.serial.PortReaderListener;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.Util;
 import lombok.extern.slf4j.Slf4j;

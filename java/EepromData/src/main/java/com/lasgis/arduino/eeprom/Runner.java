@@ -115,7 +115,7 @@ public class Runner {
                 }
             }
         }
-        final String fileName = properties.getProperty("prop");
+        final String fileName = properties.getProperty("properties");
         if (fileName != null) {
             final FileInputStream is = new FileInputStream(fileName);
             Runner.properties.load(is);

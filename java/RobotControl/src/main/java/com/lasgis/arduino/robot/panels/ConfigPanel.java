@@ -8,8 +8,8 @@
 
 package com.lasgis.arduino.robot.panels;
 
-import com.lasgis.arduino.robot.serial.PortReader;
-import com.lasgis.arduino.robot.serial.PortReaderListener;
+import com.lasgis.arduino.serial.PortReader;
+import com.lasgis.arduino.serial.PortReaderListener;
 import jssc.SerialPort;
 import jssc.SerialPortList;
 import lombok.extern.slf4j.Slf4j;
