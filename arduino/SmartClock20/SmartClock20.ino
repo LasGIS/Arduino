@@ -227,17 +227,19 @@ void loop() {
   }
   delay(10);
 }
-#define MAX_LOAD_SIZE 100
+
 /**
  * @brief serialEvent
- */
+#define MAX_LOAD_SIZE 100
 void serialEvent() {
 //  static uint8_t outRow = 7;
   char buf[MAX_LOAD_SIZE];
   isSerial = true;
-  int cnt = Serial.readBytesUntil('\n', buf, MAX_LOAD_SIZE);
-  if (cnt >= 0 && cnt < MAX_LOAD_SIZE) {
-    buf[cnt] = 0;
+  while (Serial.available() > 0) {
+    int cnt = Serial.readBytes(buf, MAX_LOAD_SIZE);
+    if (cnt >= 0 && cnt < MAX_LOAD_SIZE) {
+      buf[cnt] = 0;
+    }
   }
 //#ifdef HAS_SERIAL
   Serial.print('[');
@@ -246,10 +248,33 @@ void serialEvent() {
 //#endif
 //  printText(1, outRow, 1, buf, COLOR_GOLD);
 //  outRow = outRow < 17 ? outRow + 1 : 7;
-  if (buf[0] == ':') {
-    // todo ggg
-  }
   isSerial = false;
+}
+*/
+
+/**
+ * @brief serialEvent
+ */
+void serialEvent() {
+  if (Serial.available() && Serial.read() == 0x45) {
+    byte bt; if (Serial.readBytes(&bt, 1) == 1 && bt == 0x42) {
+      SerialBlock * block = I2CEEPROM.serialReadBlock();
+      if (block != NULL) {
+        Serial.print("block size = ");
+        Serial.println(block->size);
+      } else {
+        Serial.println("block === null");
+      }
+  //  } else if (mark != -1) {
+  //    Serial.print("mark = ");
+  //    Serial.println(mark, HEX);
+  //    delay(1000);
+    } else {
+      Serial.print("byte = ");
+      Serial.println(bt, HEX);
+    }
+  }
+
 }
 
 ScreenTft * changeCurrentCommand(bool isIncrement) {

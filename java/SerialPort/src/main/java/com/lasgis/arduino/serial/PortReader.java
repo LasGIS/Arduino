@@ -96,13 +96,13 @@ public class PortReader implements SerialPortEventListener {
      * Отправляем message устройству
      * @param dump message
      */
-    public static void writeByte(final byte[] dump, final int len) throws InterruptedException {
+    public void writeByte(final byte[] dump, final int len) throws InterruptedException {
         try {
             final PortReader portReader = PortReader.getPortReader();
             if (portReader != null && portReader.serialPort != null) {
                 for (int i = 0; i < dump.length && i < len; i++) {
                     portReader.serialPort.writeByte(dump[i]);
-                    Thread.sleep(1);
+                    //Thread.sleep(10);
                 }
             }
         } catch (final SerialPortException ex) {

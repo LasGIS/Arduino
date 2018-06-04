@@ -14,6 +14,7 @@ import com.lasgis.arduino.serial.PortReader;
 import com.lasgis.arduino.serial.PortReaderListener;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.Properties;
 
 import static com.lasgis.arduino.eeprom.Runner.PROP_BAUD_RATE;
@@ -28,21 +29,29 @@ import static com.lasgis.arduino.eeprom.Runner.PROP_PORT_NAME;
 @Slf4j
 public class UploadHelper implements PortReaderListener {
 
-    private final static UploadHelper helper = new UploadHelper();
-
     public static void upload() throws InterruptedException {
         final Properties prop = Runner.getProperties();
         final String portName = prop.getProperty(PROP_PORT_NAME);
         final int baudRate = Integer.valueOf(prop.getProperty(PROP_BAUD_RATE));
+        final UploadHelper helper = new UploadHelper();
         final PortReader portReader = PortReader.createPortReader(portName, baudRate);
+
         portReader.addListener(helper);
+        helper.upload(portReader);
+    }
+
+    private void upload(final PortReader portReader) throws InterruptedException {
         for (int i = 0; i < 150; i++) {
-            //PortReader.writeString("connection test [" + i + "]\n");
-            //Thread.sleep(200);
-            final byte[] dump = ("проверка связи [" + i + "] qwerty qwerty qwerty qwerty12345\n").getBytes(RomData.CHARSET);
-            PortReader.writeByte(dump, dump.length);
+            final SerialBlock sb = new SerialBlock();
+            sb.body = ("проверка связи [" + i + "]").getBytes(RomData.CHARSET);
+            sb.setSize((byte) sb.getBody().length);
+            //final byte[] dump = ("проверка связи [" + i + "] qwerty qwerty qwerty qwerty12345\n").getBytes(RomData.CHARSET);
+            final byte[] dump = sb.getBytes();
+            log.info("hex Out = \"{}\"", DatatypeConverter.printHexBinary(dump));
+            log.info("\"{}\"", new String(dump, RomData.CHARSET));
+            Thread.sleep(1000);
+            portReader.writeByte(dump, dump.length);
         }
-        Thread.sleep(2000);
         portReader.stop();
     }
 
