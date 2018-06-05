@@ -35,8 +35,8 @@ public class UploadHelper implements PortReaderListener {
         final int baudRate = Integer.valueOf(prop.getProperty(PROP_BAUD_RATE));
         final UploadHelper helper = new UploadHelper();
         final PortReader portReader = PortReader.createPortReader(portName, baudRate);
-
         portReader.addListener(helper);
+        Thread.sleep(1000);
         helper.upload(portReader);
     }
 
@@ -45,11 +45,11 @@ public class UploadHelper implements PortReaderListener {
             final SerialBlock sb = new SerialBlock();
             sb.body = ("проверка связи [" + i + "]").getBytes(RomData.CHARSET);
             sb.setSize((byte) sb.getBody().length);
-            //final byte[] dump = ("проверка связи [" + i + "] qwerty qwerty qwerty qwerty12345\n").getBytes(RomData.CHARSET);
+            sb.setAddress((short) (i * 10));
+            sb.setCs((short) i);
             final byte[] dump = sb.getBytes();
             log.info("hex Out = \"{}\"", DatatypeConverter.printHexBinary(dump));
             log.info("\"{}\"", new String(dump, RomData.CHARSET));
-            Thread.sleep(1000);
             portReader.writeByte(dump, dump.length);
         }
         portReader.stop();
