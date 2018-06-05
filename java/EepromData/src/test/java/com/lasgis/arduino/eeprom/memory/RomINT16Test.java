@@ -23,10 +23,10 @@ public class RomINT16Test {
     @DataProvider
     public Object[][] dataToByte() {
         return new Object[][]{
-            {(short)     0, "0000"}, {(short)      1, "0001"},
+            {(short)     0, "0000"}, {(short)      1, "0100"},
             {(short)    -1, "FFFF"}, {(short) 0xFFFF, "FFFF"},
-            {(short) 32767, "7FFF"}, {(short) 0x7FFF, "7FFF"},
-            {(short)-32768, "8000"}, {(short) 0x8000, "8000"},
+            {(short) 32767, "FF7F"}, {(short) 0x7FFF, "FF7F"},
+            {(short)-32768, "0080"}, {(short) 0x8000, "0080"},
         };
     }
 

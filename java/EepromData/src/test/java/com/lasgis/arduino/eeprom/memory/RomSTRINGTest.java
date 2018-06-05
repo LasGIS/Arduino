@@ -23,20 +23,20 @@ public class RomSTRINGTest {
     @DataProvider
     public Object[][] dataToByte() {
         return new Object[][]{
-            {"ABCD", "000641424344"},
-            {"abcd", "000661626364"},
-            {"АБВГД", "0007C0C1C2C3C4"},
-            {"абвгд", "0007E0E1E2E3E4"},
+            {"ABCD", "060041424344"},
+            {"abcd", "060061626364"},
+            {"АБВГД", "0700C0C1C2C3C4"},
+            {"абвгд", "0700E0E1E2E3E4"},
             { " !\"#$%&'()*+,-./0123456789:;<=>?"
             + "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
             + "`abcdefghijklmnopqrstuvwxyz{|}~",
-            "0061202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F"
+            "6100202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F"
             + "404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F"
             + "606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E"
             }, {
               "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯЁ"
             + "абвгдежзийклмнопрстуфхцчшщъыьэюяё",
-            "0044C0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFA8"
+            "4400C0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFA8"
             + "E0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFFB8"
             }, {
               " !\"#$%&'()*+,-./0123456789:;<=>?"
@@ -44,7 +44,7 @@ public class RomSTRINGTest {
             + "`abcdefghijklmnopqrstuvwxyz{|}~"
             + "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
             + "абвгдежзийклмнопрстуфхцчшщъыьэюя",
-            "00A1202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F"
+            "A100202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F"
             + "404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F"
             + "606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E"
             + "C0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF"

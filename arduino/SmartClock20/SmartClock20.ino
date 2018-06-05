@@ -265,9 +265,9 @@ void serialEvent() {
         Serial.print("; device = ");
         Serial.print(block->device, HEX);
         Serial.print("; address = ");
-        Serial.print(block->address, HEX);
+        Serial.print(block->address);
         Serial.print("; cs = ");
-        Serial.println(block->cs, HEX);
+        Serial.println(block->cs);
         Serial.print("; body = ");
         Serial.print((int) block->body, HEX);
         Serial.print("; \"");

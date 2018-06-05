@@ -61,9 +61,9 @@ public class ByteArrayBuilderTest {
     @DataProvider
     public Object[][] dataChar() {
         return new Object[][] {
-            { new char[]{' ', '3', '\'', '\"'}, "0020003300270022" },
-            { new char[]{'A', 'B', 'C', 'Z'}, "004100420043005A" },
-            { new char[]{'а', 'б', 'в', 'я'}, "043004310432044F" }
+            { new char[]{' ', '3', '\'', '\"'}, "2000330027002200" },
+            { new char[]{'A', 'B', 'C', 'Z'}, "4100420043005A00" },
+            { new char[]{'а', 'б', 'в', 'я'}, "3004310432044F04" }
         };
     }
     @Test(dataProvider = "dataChar")
@@ -92,7 +92,7 @@ public class ByteArrayBuilderTest {
     @DataProvider
     public Object[][] dataShort() {
         return new Object[][] {
-            { new short[]{0, 1, Short.MAX_VALUE, Short.MIN_VALUE, -1, -2}, "000000017FFF8000FFFFFFFE" }
+            { new short[]{0, 1, Short.MAX_VALUE, Short.MIN_VALUE, -1, -2}, "00000100FF7F0080FFFFFEFF" }
         };
     }
     @Test(dataProvider = "dataShort")
@@ -122,7 +122,7 @@ public class ByteArrayBuilderTest {
     public Object[][] dataInt() {
         return new Object[][] { {
             new int[]{0, 1, Integer.MAX_VALUE, Integer.MIN_VALUE, -1, -2},
-            "00000000000000017FFFFFFF80000000FFFFFFFFFFFFFFFE"
+            "0000000001000000FFFFFF7F00000080FFFFFFFFFEFFFFFF"
         } };
     }
     @Test(dataProvider = "dataInt")
@@ -152,8 +152,8 @@ public class ByteArrayBuilderTest {
     public Object[][] dataLong() {
         return new Object[][] { {
             new long[]{0, 1, Long.MAX_VALUE, Long.MIN_VALUE, -1, -2},
-            "000000000000000000000000000000017FFFFFFFFFFFFFFF"
-          + "8000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE"
+            "00000000000000000100000000000000FFFFFFFFFFFFFF7F"
+          + "0000000000000080FFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFF"
         } };
     }
     @Test(dataProvider = "dataLong")
@@ -183,10 +183,10 @@ public class ByteArrayBuilderTest {
     public Object[][] dataFloat() {
         return new Object[][] {{
             new float[]{0, 1, Float.MAX_VALUE, Float.MIN_VALUE, -1, -2},
-            "00000000" + "3F800000" + "7F7FFFFF" + "00000001" + "BF800000" + "C0000000"
+            "00000000" + "0000803F" + "FFFF7F7F" + "01000000" + "000080BF" + "000000C0"
         }, {
             new float[]{10, 0.1f, 0.01f, -10, -0.1f, -0.01f},
-            "41200000" + "3DCCCCCD" + "3C23D70A" + "C1200000" + "BDCCCCCD" + "BC23D70A"
+            "00002041" + "CDCCCC3D" + "0AD7233C" + "000020C1" + "CDCCCCBD" + "0AD723BC"
         } };
     }
     @Test(dataProvider = "dataFloat")
@@ -216,12 +216,12 @@ public class ByteArrayBuilderTest {
     public Object[][] dataDouble() {
         return new Object[][] { {
             new double[]{0, 1, Double.MAX_VALUE, Double.MIN_VALUE, -1, -2},
-            "0000000000000000" + "3FF0000000000000" + "7FEFFFFFFFFFFFFF"
-          + "0000000000000001" + "BFF0000000000000" + "C000000000000000"
+            "0000000000000000" + "000000000000F03F" + "FFFFFFFFFFFFEF7F" +
+            "0100000000000000" + "000000000000F0BF" + "00000000000000C0"
         }, {
             new double[]{10, 0.1, 0.01, -10, -0.1, -0.01},
-            "4024000000000000" + "3FB999999999999A" + "3F847AE147AE147B"
-          + "C024000000000000" + "BFB999999999999A" + "BF847AE147AE147B"
+            "0000000000002440" + "9A9999999999B93F" + "7B14AE47E17A843F"
+          + "00000000000024C0" + "9A9999999999B9BF" + "7B14AE47E17A84BF"
         } };
     }
     @Test(dataProvider = "dataDouble")

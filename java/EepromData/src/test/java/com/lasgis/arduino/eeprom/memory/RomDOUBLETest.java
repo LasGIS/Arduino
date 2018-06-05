@@ -26,19 +26,19 @@ public class RomDOUBLETest {
     public Object[][] dataToByte() {
         return new Object[][]{
             {        0.0, "0000000000000000"},
-            {       -0.0, "8000000000000000"},
-            {        1.0, "3FF0000000000000"},
-            {       -1.0, "BFF0000000000000"},
-            {        0.1, "3FB999999999999A"},
-            {       -0.1, "BFB999999999999A"},
-            {       0.01, "3F847AE147AE147B"},
-            {      -0.01, "BF847AE147AE147B"},
-            {      100.0, "4059000000000000"},
-            {     -100.0, "C059000000000000"},
-            { Double.MAX_VALUE, "7FEFFFFFFFFFFFFF"},
-            {-Double.MAX_VALUE, "FFEFFFFFFFFFFFFF"},
-            { Double.MIN_VALUE, "0000000000000001"},
-            {-Double.MIN_VALUE, "8000000000000001"}
+            {       -0.0, "0000000000000080"},
+            {        1.0, "000000000000F03F"},
+            {       -1.0, "000000000000F0BF"},
+            {        0.1, "9A9999999999B93F"},
+            {       -0.1, "9A9999999999B9BF"},
+            {       0.01, "7B14AE47E17A843F"},
+            {      -0.01, "7B14AE47E17A84BF"},
+            {      100.0, "0000000000005940"},
+            {     -100.0, "00000000000059C0"},
+            { Double.MAX_VALUE, "FFFFFFFFFFFFEF7F"},
+            {-Double.MAX_VALUE, "FFFFFFFFFFFFEFFF"},
+            { Double.MIN_VALUE, "0100000000000000"},
+            {-Double.MIN_VALUE, "0100000000000080"}
         };
     }
 

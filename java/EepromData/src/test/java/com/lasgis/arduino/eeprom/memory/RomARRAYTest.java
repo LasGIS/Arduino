@@ -30,7 +30,7 @@ public class RomARRAYTest extends RomCommonTest {
                     .add(RomINT8.of((byte) 3))
                     .add(RomINT8.of((byte) 0))
                     .add(RomINT8.of((byte) -1))
-                , "00080501020300FF", "[b]", 8
+                , "08000501020300FF", "[b]", 8
             }, {
                 RomARRAY.of()
                     .add(RomINT16.of((short) 1))
@@ -38,7 +38,7 @@ public class RomARRAYTest extends RomCommonTest {
                     .add(RomINT16.of((short) 3))
                     .add(RomINT16.of((short) 0))
                     .add(RomINT16.of((short) -1))
-                , "000D050001000200030000FFFF", "[i]", 13
+                , "0D00050100020003000000FFFF", "[i]", 13
             }, {
                 RomARRAY.of("ARRAY")
                     .add(RomOBJECT.of("OBJECT")
@@ -59,9 +59,9 @@ public class RomARRAYTest extends RomCommonTest {
                         .add(RomSTRING.of("Третий объект 3 3"))
                         .add(RomCHAR.of('T'))
                 ),
-                "004B0300160401006F000FCFE5F0E2FBE920EEE1FAE5EAF246" +
-                      "0018040200DE0011C2F2EEF0EEE920EEE1FAE5EAF2203253" +
-                      "001A0403014D0013D2F0E5F2E8E920EEE1FAE5EAF22033203354",
+                "4B0003160004016F000F00CFE5F0E2FBE920EEE1FAE5EAF246" +
+                    "18000402DE001100C2F2EEF0EEE920EEE1FAE5EAF2203253" +
+                    "1A0004034D011300D2F0E5F2E8E920EEE1FAE5EAF22033203354",
                 "[{bisc}]", 75
             }};
         } catch (Exception ex) {

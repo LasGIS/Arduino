@@ -9,6 +9,7 @@
 package com.lasgis.util;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
@@ -27,6 +28,7 @@ public class ByteArrayBuilder {
     public ByteArrayBuilder(int capacity) {
         super();
         buffer = ByteBuffer.allocate(capacity);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
     }
 
     public ByteArrayBuilder() {
@@ -270,6 +272,7 @@ public class ByteArrayBuilder {
         if (index + addSize >= buffer.capacity()) {
             final int capacity = index + addSize + 10;
             final ByteBuffer newBuffer = ByteBuffer.allocate(capacity);
+            newBuffer.order(ByteOrder.LITTLE_ENDIAN);
             newBuffer.put(buffer.array());
             newBuffer.position(buffer.position());
             buffer = newBuffer;

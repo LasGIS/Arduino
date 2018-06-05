@@ -28,14 +28,14 @@ public class RomOBJECTTest extends RomCommonTest {
                 .add(RomINT32.of(3))
                 .add(RomINT8.of((byte) 0))
                 .add(RomINT8.of((byte)-1))
-            , "000C050100020000000300FF", "{bilbb}", 12
+            , "0C00050102000300000000FF", "{bilbb}", 12
         }, {
             RomOBJECT.of()
                 .add(RomINT8.of((byte) 1))
                 .add(RomINT16.of((short) 2))
                 .add(RomSTRING.of("Text in English"))
                 .add(RomSTRING.of("Текст на Русском"))
-            , "00290401000200115465787420696E20456E676C6973680012D2E5EAF1F220EDE020D0F3F1F1EAEEEC"
+            , "29000401020011005465787420696E20456E676C6973681200D2E5EAF1F220EDE020D0F3F1F1EAEEEC"
             , "{biss}", 41
         } };
     }

@@ -102,7 +102,7 @@ public class PortReader implements SerialPortEventListener {
             if (portReader != null && portReader.serialPort != null) {
                 for (int i = 0; i < dump.length && i < len; i++) {
                     portReader.serialPort.writeByte(dump[i]);
-                    Thread.sleep(10);
+                    Thread.sleep(20);
                 }
             }
         } catch (final SerialPortException ex) {

@@ -52,6 +52,8 @@ public class UploadHelper implements PortReaderListener {
             log.info("\"{}\"", new String(dump, RomData.CHARSET));
             portReader.writeByte(dump, dump.length);
         }
+        final byte[] dump = new byte[20];
+        portReader.writeByte(dump, dump.length);
         portReader.stop();
     }
 

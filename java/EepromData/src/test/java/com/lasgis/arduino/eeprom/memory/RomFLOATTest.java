@@ -24,19 +24,19 @@ public class RomFLOATTest {
     public Object[][] dataToByte() {
         return new Object[][]{
             {(float)      0.0, "00000000"},
-            {(float)     -0.0, "80000000"},
-            {(float)      1.0, "3F800000"},
-            {(float)     -1.0, "BF800000"},
-            {(float)      0.1, "3DCCCCCD"},
-            {(float)     -0.1, "BDCCCCCD"},
-            {(float)     0.01, "3C23D70A"},
-            {(float)    -0.01, "BC23D70A"},
-            {(float)    100.0, "42C80000"},
-            {(float)   -100.0, "C2C80000"},
-            { Float.MAX_VALUE, "7F7FFFFF"},
-            {-Float.MAX_VALUE, "FF7FFFFF"},
-            { Float.MIN_VALUE, "00000001"},
-            {-Float.MIN_VALUE, "80000001"}
+            {(float)     -0.0, "00000080"},
+            {(float)      1.0, "0000803F"},
+            {(float)     -1.0, "000080BF"},
+            {(float)      0.1, "CDCCCC3D"},
+            {(float)     -0.1, "CDCCCCBD"},
+            {(float)     0.01, "0AD7233C"},
+            {(float)    -0.01, "0AD723BC"},
+            {(float)    100.0, "0000C842"},
+            {(float)   -100.0, "0000C8C2"},
+            { Float.MAX_VALUE, "FFFF7F7F"},
+            {-Float.MAX_VALUE, "FFFF7FFF"},
+            { Float.MIN_VALUE, "01000000"},
+            {-Float.MIN_VALUE, "01000080"}
         };
     }
 

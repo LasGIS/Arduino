@@ -23,10 +23,10 @@ public class RomINT32Test {
     @DataProvider
     public Object[][] dataToByte() {
         return new Object[][]{
-            {          0, "00000000"}, {         1, "00000001"},
+            {          0, "00000000"}, {         1, "01000000"},
             {         -1, "FFFFFFFF"}, {0xFFFFFFFF, "FFFFFFFF"},
-            { 2147483647, "7FFFFFFF"}, {0x7FFFFFFF, "7FFFFFFF"},
-            {-2147483648, "80000000"}, {0x80000000, "80000000"},
+            { 2147483647, "FFFFFF7F"}, {0x7FFFFFFF, "FFFFFF7F"},
+            {-2147483648, "00000080"}, {0x80000000, "00000080"},
         };
     }
 
