@@ -261,7 +261,21 @@ void serialEvent() {
       SerialBlock * block = I2CEEPROM.serialReadBlock();
       if (block != NULL) {
         Serial.print("block size = ");
-        Serial.println(block->size);
+        Serial.print(block->size);
+        Serial.print("; device = ");
+        Serial.print(block->device, HEX);
+        Serial.print("; address = ");
+        Serial.print(block->address, HEX);
+        Serial.print("; cs = ");
+        Serial.println(block->cs, HEX);
+        Serial.print("; body = ");
+        Serial.print((int) block->body, HEX);
+        Serial.print("; \"");
+        for (int i = 0; i < block->size; i++) {
+          Serial.print(block->body[i] & 0xff, HEX);
+        }
+        Serial.println("\"");
+        delete block;
       } else {
         Serial.println("block === null");
       }

@@ -5,13 +5,9 @@
 
 class SerialBlock {
 public:
-  SerialBlock(
-    int8_t _size,
-    int8_t _device,
-    int16_t _address,
-    int16_t _cs,
-    byte * _body
-  );
+  SerialBlock() {
+    body = NULL;
+  }
   ~SerialBlock();
   /* Размер блока */
   int8_t size;
@@ -36,7 +32,7 @@ public:
   /**
    * Читаем один блок данных для закачки в EEPROM из Serial
    */
-  SerialBlock * I2C_EEPROM::serialReadBlock();
+  SerialBlock * serialReadBlock();
 private:
   void beginTransmission(uint8_t device, uint16_t address);
 };

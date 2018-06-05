@@ -70,22 +70,21 @@ int16_t I2C_EEPROM::serialReadInteger() {
  * 9 - byte[size] - сам блок
  */
 SerialBlock * I2C_EEPROM::serialReadBlock() {
-  while (Serial.available() < 6) delayMicroseconds(10);
-  int8_t size = Serial.read();
-  int8_t device = Serial.read();
-  int16_t address = serialReadInteger();
-  int16_t cs = serialReadInteger();
-  if (size > 0 && size < 22) {
-    byte * body = new byte[size];
-    int len = Serial.readBytes(body, size);
-    if (len == size) {
-      SerialBlock * sb = new SerialBlock(size, device, address, cs, body);
-      return sb;
+  SerialBlock * sb = new SerialBlock();
+  int len = Serial.readBytes((byte *) sb, 6);
+  if (len == 6) {
+    if (sb->size > 0 && sb->size < 22) {
+      sb->body = new byte[sb->size];
+      len = Serial.readBytes(sb->body, sb->size);
+      if (len == sb->size) {
+        return sb;
+      }
     }
   }
+  delete sb;
   return NULL;
 }
-
+/*
 SerialBlock::SerialBlock(
     int8_t _size,
     int8_t _device,
@@ -99,7 +98,12 @@ SerialBlock::SerialBlock(
   cs = _cs;
   body = _body;
 }
-
+*/
 SerialBlock::~SerialBlock() {
-  if (NULL != body) delete[] body;
+  Serial.print("delete ");
+  Serial.println((int) this, HEX);
+  if (NULL != body) {
+    delete body;
+    body = NULL;
+  }
 }
