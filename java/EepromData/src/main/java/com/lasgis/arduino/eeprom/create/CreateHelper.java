@@ -61,13 +61,15 @@ public class CreateHelper {
 
     private void createDefinitionFile(final String fileName, final List<RomData> dataList) throws IOException {
         log.info("Definition File = \"{}\"", fileName);
-        final OutputStreamWriter writer = new OutputStreamWriter(
-            new FileOutputStream(fileName), Charset.forName("windows-1251")
-        );
-        for (final RomData item : dataList) {
-            writeDefinition("EEPROM", item, writer);
+        try (
+            final OutputStreamWriter writer = new OutputStreamWriter(
+                new FileOutputStream(fileName), Charset.forName("windows-1251")
+            )
+        ) {
+            for (final RomData item : dataList) {
+                writeDefinition("EEPROM", item, writer);
+            }
         }
-        writer.close();
     }
 
     private void writeDefinition(final String parentName, final RomData rom, final Writer writer) throws IOException {
@@ -99,16 +101,17 @@ public class CreateHelper {
 
     private void createHexDumpFile(final String fileName, final byte[] dump) throws IOException {
         log.info("Hex Dump File = \"{}\"", fileName);
-        final OutputStreamWriter writer = new OutputStreamWriter(
-            new FileOutputStream(fileName), Charset.forName("windows-1251")
-        );
-
-        for (int j = 0; j < dump.length; j += HEX_SIZE_STR_LEN) {
-            final int len = dump.length - j < HEX_SIZE_STR_LEN ? dump.length - j : HEX_SIZE_STR_LEN;
-            final byte[] buf = new byte[len];
-            System.arraycopy(dump, j, buf, 0, len);
-            writer.write(":" + DatatypeConverter.printHexBinary(buf) + "\n");
+        try (
+            final OutputStreamWriter writer = new OutputStreamWriter(
+                new FileOutputStream(fileName), Charset.forName("windows-1251")
+            )
+        ) {
+            for (int j = 0; j < dump.length; j += HEX_SIZE_STR_LEN) {
+                final int len = dump.length - j < HEX_SIZE_STR_LEN ? dump.length - j : HEX_SIZE_STR_LEN;
+                final byte[] buf = new byte[len];
+                System.arraycopy(dump, j, buf, 0, len);
+                writer.write(":" + DatatypeConverter.printHexBinary(buf) + "\n");
+            }
         }
-        writer.close();
     }
 }

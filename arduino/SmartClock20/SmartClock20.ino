@@ -260,6 +260,10 @@ void serialEvent() {
     byte bt; if (Serial.readBytes(&bt, 1) == 1 && bt == 0x42) {
       SerialBlock * block = I2CEEPROM.serialReadBlock();
       if (block != NULL) {
+        // обязательный ответ
+        Serial.print(":adr=");
+        Serial.println(block->address);
+
         Serial.print("block size = ");
         Serial.print(block->size);
         Serial.print("; device = ");
@@ -272,7 +276,7 @@ void serialEvent() {
         Serial.print((int) block->body, HEX);
         Serial.print("; \"");
         for (int i = 0; i < block->size; i++) {
-          Serial.print(block->body[i] & 0xff, HEX);
+          SerialPrintHex(block->body[i]);
         }
         Serial.println("\"");
         delete block;
@@ -301,6 +305,3 @@ ScreenTft * changeCurrentCommand(bool isIncrement) {
   screen->showOnce();
   return screen;
 }
-
-
-

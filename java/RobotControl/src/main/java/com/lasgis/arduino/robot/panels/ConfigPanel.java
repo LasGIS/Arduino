@@ -51,6 +51,8 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     };
     private static final Integer[] GEARS = {1, 2, 3, 4, 5};
     private String[] portNames = SerialPortList.getPortNames();
+    /** Port Reader. */
+    private PortReader portReader;
     /** ссылка на MainFrame. */
     private MainFrame mainFrame = null;
     /** дерево конфигурации. */
@@ -75,7 +77,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         final JButton button = (JButton) event.getSource();
         final String portName = (String) portNamesComboBox.getSelectedItem();
         final Integer baudRate = (Integer) baudRatesComboBox.getSelectedItem();
-        PortReader portReader = PortReader.getPortReader();
+        portReader = PortReader.getPortReader();
         log.debug("Port Reader Action {}", event.getActionCommand());
         if (portReader == null) {
             portReader = PortReader.createPortReader(portName, baudRate);
@@ -102,7 +104,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     /** Обработка события при смене текстовой команды (нажали ENTER в input). */
     private final ActionListener enterOnInputAction = event -> {
         log.debug(event.getActionCommand());
-        PortReader.writeString(event.getActionCommand());
+        portReader.writeString(event.getActionCommand());
         commandInput.setText("");
     };
 
@@ -128,7 +130,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             final String oldCom = commandInput.getText();
             String outText = oldCom + command + "30" + ";";
             //commandInput.setText(outText);
-            PortReader.writeString(outText);
+            portReader.writeString(outText);
             log.debug(outText);
         }
     };

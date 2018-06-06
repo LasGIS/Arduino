@@ -79,9 +79,8 @@ public class PortReader implements SerialPortEventListener {
      * Отправляем message устройству
      * @param data message
      */
-    public static void writeString(final String data) {
+    public void writeString(final String data) {
         try {
-            final PortReader portReader = PortReader.getPortReader();
             if (portReader != null) {
                 if (portReader.serialPort != null) {
                     portReader.serialPort.writeString(data);
@@ -98,7 +97,6 @@ public class PortReader implements SerialPortEventListener {
      */
     public void writeByte(final byte[] dump, final int len) throws InterruptedException {
         try {
-            final PortReader portReader = PortReader.getPortReader();
             if (portReader != null && portReader.serialPort != null) {
                 for (int i = 0; i < dump.length && i < len; i++) {
                     portReader.serialPort.writeByte(dump[i]);

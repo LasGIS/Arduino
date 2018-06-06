@@ -2,6 +2,14 @@
 #define I2C_EEPROM_h
 
 #include <inttypes.h>
+#include <stdio.h> // for size_t
+
+extern void SerialPrintHex(int8_t bt);
+/** read chars from stream into buffer
+extern size_t SerialReadHexBytes(
+    int8_t *buffer, size_t length
+);
+*/
 
 class SerialBlock {
 public:

@@ -24,6 +24,7 @@ SOURCES += \
     ../libraries/MsTimer2/MsTimer2.cpp \
     ../libraries/AT24C32/I2C_EEPROM.cpp \
     ../libraries/AT24C32/Examples/AT24C32_TEST/AT24C32_TEST.ino \
+    ../libraries/AT24C32/serial_read_helper.cpp \
     SmartClock20.ino \
     Accel.cpp \
     RealTime.cpp \

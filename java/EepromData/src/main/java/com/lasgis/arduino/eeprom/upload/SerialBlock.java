@@ -11,16 +11,18 @@ import lombok.Data;
  */
 @Data
 public class SerialBlock {
-    /* Размер блока */
+    /** Размер блока */
     byte size = 0;
-    /* номер микосхемы (0x57 для CMOS) */
+    /** номер микосхемы (0x57 для CMOS) */
     byte device = 0x57;
-    /* адрес блока в EEPROM памяти */
+    /** адрес блока в EEPROM памяти */
     short address;
-    /* Контрольная сумма блока */
+    /** Контрольная сумма блока */
     short cs;
-  /* тело блока */
+    /** тело блока */
     byte[] body;
+    /** true, если этот блок ещё не передали */
+    private boolean processed = true;
 
     public byte[] getBytes() {
         final ByteArrayBuilder bab = new ByteArrayBuilder(10 + size);
