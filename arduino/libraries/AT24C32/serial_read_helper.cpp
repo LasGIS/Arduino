@@ -2,11 +2,11 @@
 #include "I2C_EEPROM.h"
 
 
-inline int8_t charToHex(char ch) {
+int8_t charToHex(char ch) {
   return ((ch < 'A') ? (ch - '0') : (ch - 'A' + 0xA)) & 0x0F;
 }
 
-inline char byteToHexChar(int8_t bt) {
+char byteToHexChar(int8_t bt) {
   return ((bt < 0xA) ? (bt + '0') : (bt + 'A' - 0xA));
 }
 

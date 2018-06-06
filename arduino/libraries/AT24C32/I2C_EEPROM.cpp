@@ -31,6 +31,7 @@ void I2C_EEPROM::write_buffer(
   beginTransmission(device, address);
   for (uint8_t c = 0; c < length; c++) {
     Wire.write(data[c]);
+    delay(10);
   }
   Wire.endTransmission();
   delay(10);
@@ -100,8 +101,8 @@ SerialBlock::SerialBlock(
 }
 */
 SerialBlock::~SerialBlock() {
-  Serial.print("delete ");
-  Serial.println((int) this, HEX);
+//  Serial.print("delete ");
+//  Serial.println((int) this, HEX);
   if (NULL != body) {
     delete body;
     body = NULL;

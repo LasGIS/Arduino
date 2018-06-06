@@ -263,13 +263,14 @@ void serialEvent() {
         // обязательный ответ
         Serial.print(":adr=");
         Serial.println(block->address);
+        I2CEEPROM.write_buffer(block->device, block->address, block->body, block->size);
 
         Serial.print("block size = ");
         Serial.print(block->size);
         Serial.print("; device = ");
         Serial.print(block->device, HEX);
         Serial.print("; address = ");
-        Serial.print(block->address);
+        Serial.print(block->address, HEX);
         Serial.print("; cs = ");
         Serial.println(block->cs);
         Serial.print("; body = ");
@@ -279,6 +280,7 @@ void serialEvent() {
           SerialPrintHex(block->body[i]);
         }
         Serial.println("\"");
+
         delete block;
       } else {
         Serial.println("block === null");
