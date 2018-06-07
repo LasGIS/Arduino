@@ -17,23 +17,50 @@ void SerialPrintHex(int8_t bt) {
   out[2] = 0;
   Serial.print(out);
 }
-/*
-size_t SerialReadHexBytes(int8_t *buffer, size_t length) {
-  char * charBuf = new char[length * 2 + 1];
-  size_t len = Serial.readBytes(charBuf, length * 2);
-  Serial.print("in:");
-  charBuf[length * 2] = 0;
-  Serial.println(charBuf);
-  Serial.print("out:");
-  if (len == length * 2) {
-    for (size_t i = 0; i < length; i++) {
-      int8_t bt = charToHex(charBuf[i * 2]) << 4 | charToHex(charBuf[i * 2 + 1]);
-      SerialPrintHex(bt);
-      buffer[i] = bt;
-    }
-    Serial.println();
+
+/**
+ * Читаем один int (2 байта) из Serial
+ */
+int16_t serialReadInteger() {
+  byte bt[2]; if (Serial.readBytes(bt, 2) == 2) {
+    return makeWord(bt[0], bt[1]);
   }
-  delete charBuf;
-  return len;
+  return -1;
 }
-*/
+
+/**
+ * Читаем один блок данных для закачки в EEPROM из Serial
+ * Блок состоит из:
+ * 0 - int16_t = "EB" Признак, что это EEPROM Block
+ * 5 - int8_t  - (size) Размер блока
+ * 2 - int8_t  - (device) номер микосхемы (0x57 для CMOS)
+ * 3 - int16_t - (address) блока в EEPROM памяти
+ * 7 - int16_t - Контрольная сумма блока
+ * 9 - byte[size] - сам блок
+ */
+SerialBlock * serialReadBlock() {
+  SerialBlock * sb = new SerialBlock();
+  int len = Serial.readBytes((byte *) sb, 6);
+  if (len == 6) {
+    if (sb->size > 0 && sb->size < 22) {
+      sb->body = new byte[sb->size];
+      len = Serial.readBytes((char *) sb->body, sb->size);
+      if (len == sb->size) {
+        return sb;
+      }
+    }
+  }
+  delete sb;
+  return NULL;
+}
+
+SerialBlock::~SerialBlock() {
+#ifdef HAS_SERIAL
+  Serial.print("delete ");
+  Serial.println((int) this, HEX);
+#endif
+  if (NULL != body) {
+    delete body;
+    body = NULL;
+  }
+}

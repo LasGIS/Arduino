@@ -258,13 +258,13 @@ void serialEvent() {
 void serialEvent() {
   if (Serial.available() && Serial.read() == 0x45) {
     byte bt; if (Serial.readBytes(&bt, 1) == 1 && bt == 0x42) {
-      SerialBlock * block = I2CEEPROM.serialReadBlock();
+      SerialBlock * block = serialReadBlock();
       if (block != NULL) {
         // обязательный ответ
         Serial.print(":adr=");
         Serial.println(block->address);
         I2CEEPROM.write_buffer(block->device, block->address, block->body, block->size);
-
+#ifdef HAS_SERIAL
         Serial.print("block size = ");
         Serial.print(block->size);
         Serial.print("; device = ");
@@ -280,18 +280,18 @@ void serialEvent() {
           SerialPrintHex(block->body[i]);
         }
         Serial.println("\"");
-
+#endif
         delete block;
       } else {
+#ifdef HAS_SERIAL
         Serial.println("block === null");
+#endif
       }
-  //  } else if (mark != -1) {
-  //    Serial.print("mark = ");
-  //    Serial.println(mark, HEX);
-  //    delay(1000);
     } else {
+#ifdef HAS_SERIAL
       Serial.print("byte = ");
       Serial.println(bt, HEX);
+#endif
     }
   }
 

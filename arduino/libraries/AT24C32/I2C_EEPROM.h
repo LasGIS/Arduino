@@ -4,13 +4,6 @@
 #include <inttypes.h>
 #include <stdio.h> // for size_t
 
-extern void SerialPrintHex(int8_t bt);
-/** read chars from stream into buffer
-extern size_t SerialReadHexBytes(
-    int8_t *buffer, size_t length
-);
-*/
-
 class SerialBlock {
 public:
   SerialBlock() {
@@ -26,7 +19,7 @@ public:
   /* Контрольная сумма блока */
   int16_t cs;
   /* тело блока */
-  byte * body;
+  int8_t * body;
 };
 
 class I2C_EEPROM {
@@ -35,15 +28,17 @@ public:
   void write(uint8_t device, uint16_t address, uint8_t data);
   void write_buffer(uint8_t device, uint16_t address, uint8_t* data, uint8_t length);
   void read_buffer(uint8_t device, uint16_t address, uint8_t* data, uint8_t length);
-  /** Читаем один int (2 байта) из Serial */
-  int16_t serialReadInteger();
-  /**
-   * Читаем один блок данных для закачки в EEPROM из Serial
-   */
-  SerialBlock * serialReadBlock();
 private:
   void beginTransmission(uint8_t device, uint16_t address);
 };
+/** Печатаем ровно 2 символа для байта в HEX  */
+extern void SerialPrintHex(int8_t bt);
+/** Читаем один short (2 байта) из Serial */
+extern int16_t serialReadInteger();
+/**
+ * Читаем один блок данных для закачки в EEPROM из Serial
+ */
+extern SerialBlock * serialReadBlock();
 
 static I2C_EEPROM I2CEEPROM;
 

@@ -45,7 +45,7 @@ public class CreateHelper {
 
     private final static ArrayList<String> romNameList = new ArrayList<>();
 
-    private final static int HEX_SIZE_STR_LEN = 21;
+    private final static int HEX_SIZE_STR_LEN = 16;
 
     public static void create() throws IOException {
         final List<RomData> dataList = Runner.getDataList();
