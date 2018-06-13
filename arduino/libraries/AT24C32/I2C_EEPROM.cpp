@@ -2,6 +2,10 @@
 #include "Arduino.h"
 #include "I2C_EEPROM.h"
 
+#define MAX_BLOCK_LENGTH 0x20
+//#define BLOCK_BOUND_SIZE 0x20
+#define BLOCK_BOUND_MASK 0XFFE0
+
 void I2C_EEPROM::beginTransmission(uint8_t device, uint16_t address) {
   Wire.beginTransmission(device);
   Wire.write(highByte(address)); // MSB
@@ -29,17 +33,21 @@ void I2C_EEPROM::write_buffer(
     uint8_t* data, uint8_t length
 ) {
   for (uint16_t i = 0; i < length;) {
-    uint16_t len;
-    if (length - i > 0x10) {
-      len = 0x10;
+    uint16_t len, addrBound;
+    if (length - i > MAX_BLOCK_LENGTH) {
+      len = MAX_BLOCK_LENGTH;
     } else {
       len = length - i;
     }
-    beginTransmission(device, address + i);
+    addrBound = (address + len) & BLOCK_BOUND_MASK;
+    if (addrBound > address) {
+      len = addrBound - address;
+    }
+    beginTransmission(device, address);
     Wire.write(data + i, len);
     Wire.endTransmission();
 /*
-    Serial.print("["); Serial.print(address + i, HEX); Serial.print("]:");
+    Serial.print("["); Serial.print(address, HEX); Serial.print("]:");
     for (uint16_t j = 0; j < len; j++) {
       SerialPrintHex(data[i + j]);
     }
@@ -47,6 +55,7 @@ void I2C_EEPROM::write_buffer(
 */
     delay(10);
     i += len;
+    address += len;
   }
 }
 
