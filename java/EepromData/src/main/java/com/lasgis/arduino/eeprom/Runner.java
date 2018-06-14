@@ -93,6 +93,9 @@ public class Runner {
         if (commands.contains(CommandType.upload)) {
             UploadHelper.upload();
         }
+        if (commands.contains(CommandType.read)) {
+            UploadHelper.read();
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ import com.lasgis.arduino.eeprom.Runner;
 import com.lasgis.arduino.eeprom.memory.RomData;
 import com.lasgis.arduino.serial.PortReader;
 import com.lasgis.arduino.serial.PortReaderListener;
+import com.lasgis.util.ByteArrayBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
@@ -133,5 +134,26 @@ public class UploadHelper implements PortReaderListener {
     @Override
     public void portReaderTrash(final String string) {
 //        log.info("Reader Trash: \"{}\"", string);
+    }
+
+    public static void read() throws InterruptedException, IOException {
+        final Properties prop = Runner.getProperties();
+//        final String fileName = FilenameUtils.removeExtension((new File(
+//            prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
+//        )).getPath()) + ".hex";
+
+        final String portName = prop.getProperty(PROP_PORT_NAME);
+        final int baudRate = Integer.valueOf(prop.getProperty(PROP_BAUD_RATE));
+
+        final UploadHelper helper = new UploadHelper();
+        final PortReader portReader = PortReader.createPortReader(portName, baudRate);
+        portReader.addListener(helper);
+
+        final ByteArrayBuilder bab = new ByteArrayBuilder(10);
+        bab.put(':').put('B').put('R').put(0x57).putShort(0x0000).putShort(512).putChar('Л');
+        final byte[] dump = bab.toByte();
+        portReader.writeByte(dump, dump.length);
+        Thread.sleep(2000);
+        portReader.stop();
     }
 }

@@ -26,7 +26,7 @@ public class SerialBlock {
 
     public byte[] getBytes() {
         final ByteArrayBuilder bab = new ByteArrayBuilder(10 + size);
-        bab.put('E').put('B').put(size).put(device).putShort(address).putShort(cs).put(body);
+        bab.put(':').put('B').put('W').put(size).put(device).putShort(address).putShort(cs).put(body);
         return bab.toByte();
     }
 }
