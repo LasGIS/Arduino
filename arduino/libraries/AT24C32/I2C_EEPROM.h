@@ -33,12 +33,14 @@ private:
 };
 /** Печатаем ровно 2 символа для байта в HEX  */
 extern void SerialPrintHex(int8_t bt);
+/** Читаем один байт из Serial */
+extern int8_t serialReadByte();
 /** Читаем один short (2 байта) из Serial */
-extern int16_t serialReadInteger();
-/**
- * Читаем один блок данных для закачки в EEPROM из Serial
- */
-extern SerialBlock * serialReadBlock();
+extern int16_t serialReadShort();
+/** Читаем один блок данных и пишем его в EEPROM */
+extern void serialWriteBlock();
+/** Читаем один блок данных из EEPROM и посылаем его в Serial */
+extern void serialReadBlock();
 
 static I2C_EEPROM I2CEEPROM;
 

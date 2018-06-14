@@ -254,47 +254,20 @@ void serialEvent() {
 
 /**
  * @brief serialEvent
+ * Входные команды из компьютера:
+ * <:BR><device><address><size> - чтение блока памяти и пересылка в компьютер через Serial.print();
+ * <:BW><SerialBlock> - запись блока памяти, полученного из компьютера;
  */
 void serialEvent() {
-  if (Serial.available() && Serial.read() == 0x45) {
-    byte bt; if (Serial.readBytes(&bt, 1) == 1 && bt == 0x42) {
-      SerialBlock * block = serialReadBlock();
-      if (block != NULL) {
-        // обязательный ответ
-        Serial.print(":adr=");
-        Serial.println(block->address);
-        I2CEEPROM.write_buffer(block->device, block->address, block->body, block->size);
-#ifdef HAS_SERIAL
-        Serial.print("block size = ");
-        Serial.print(block->size);
-        Serial.print("; device = ");
-        Serial.print(block->device, HEX);
-        Serial.print("; address = ");
-        Serial.print(block->address, HEX);
-        Serial.print("; cs = ");
-        Serial.println(block->cs);
-        Serial.print("; body = ");
-        Serial.print((int) block->body, HEX);
-        Serial.print("; \"");
-        for (int i = 0; i < block->size; i++) {
-          SerialPrintHex(block->body[i]);
-        }
-        Serial.println("\"");
-#endif
-        delete block;
-      } else {
-#ifdef HAS_SERIAL
-        Serial.println("block === null");
-#endif
-      }
-    } else {
-#ifdef HAS_SERIAL
-      Serial.print("byte = ");
-      Serial.println(bt, HEX);
-#endif
+  if (Serial.available() && serialReadShort() == 0x423A) {
+    int8_t bt = serialReadByte();
+    if (bt == 'W') {
+      serialWriteBlock();
+    } else
+    if (bt == 'R') {
+      serialReadBlock();
     }
   }
-
 }
 
 ScreenTft * changeCurrentCommand(bool isIncrement) {

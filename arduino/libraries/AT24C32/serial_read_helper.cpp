@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "I2C_EEPROM.h"
 
+#define READ_BLOCK_LENGTH 31
 
 int8_t charToHex(char ch) {
   return ((ch < 'A') ? (ch - '0') : (ch - 'A' + 0xA)) & 0x0F;
@@ -18,27 +19,32 @@ void SerialPrintHex(int8_t bt) {
   Serial.print(out);
 }
 
+/** Читаем один байт из Serial */
+int8_t serialReadByte() {
+  uint8_t bt;
+  return (Serial.readBytes(&bt, 1) == 1) ? bt : -1;
+}
+
 /**
- * Читаем один int (2 байта) из Serial
+ * Читаем один short (2 байта) из Serial
  */
-int16_t serialReadInteger() {
-  byte bt[2]; if (Serial.readBytes(bt, 2) == 2) {
-    return makeWord(bt[0], bt[1]);
+int16_t serialReadShort() {
+  uint8_t bt[2]; if (Serial.readBytes(bt, 2) == 2) {
+    return makeWord(bt[1], bt[0]);
   }
   return -1;
 }
 
 /**
- * Читаем один блок данных для закачки в EEPROM из Serial
+ * Читаем один блок данных и закачиваем его в EEPROM
  * Блок состоит из:
- * 0 - int16_t = "EB" Признак, что это EEPROM Block
- * 5 - int8_t  - (size) Размер блока
- * 2 - int8_t  - (device) номер микосхемы (0x57 для CMOS)
- * 3 - int16_t - (address) блока в EEPROM памяти
- * 7 - int16_t - Контрольная сумма блока
- * 9 - byte[size] - сам блок
+ * 0 - int8_t  - (size) Размер блока
+ * 1 - int8_t  - (device) номер микосхемы (0x57 для CMOS)
+ * 2 - int16_t - (address) блока в EEPROM памяти
+ * 5 - int16_t - Контрольная сумма блока
+ * 7 - byte[size] - сам блок
  */
-SerialBlock * serialReadBlock() {
+void serialWriteBlock() {
   SerialBlock * sb = new SerialBlock();
   int len = Serial.readBytes((byte *) sb, 6);
   if (len == 6) {
@@ -46,12 +52,71 @@ SerialBlock * serialReadBlock() {
       sb->body = new byte[sb->size];
       len = Serial.readBytes((char *) sb->body, sb->size);
       if (len == sb->size) {
-        return sb;
+        // обязательный ответ
+        Serial.print(":adr=");
+        Serial.println(sb->address);
+        /*? todo: надо проверять КС ?*/
+        I2CEEPROM.write_buffer(sb->device, sb->address, sb->body, sb->size);
+#ifdef HAS_SERIAL
+        Serial.print("block size = ");
+        Serial.print(block->size);
+        Serial.print("; device = ");
+        Serial.print(block->device, HEX);
+        Serial.print("; address = ");
+        Serial.print(block->address, HEX);
+        Serial.print("; cs = ");
+        Serial.println(block->cs);
+        Serial.print("; body = ");
+        Serial.print((int) block->body, HEX);
+        Serial.print("; \"");
+        for (int i = 0; i < block->size; i++) {
+          SerialPrintHex(block->body[i]);
+        }
+        Serial.println("\"");
+#endif
       }
     }
   }
   delete sb;
-  return NULL;
+}
+
+/**
+ * Читаем один блок данных из EEPROM и посылаем его в Serial
+ * вход состоит из:
+ * 1 - int8_t  - (device) номер микосхемы (0x57 для CMOS)
+ * 2 - int16_t - (address) блока в EEPROM памяти
+ * 0 - int16_t - (size) Размер блока
+ */
+void serialReadBlock() {
+  uint8_t device = serialReadByte();
+  uint16_t address = serialReadShort();
+  uint16_t size = serialReadShort();
+#ifdef HAS_SERIAL
+  Serial.print("device = ");
+  Serial.print(device, HEX);
+  Serial.print("; address = ");
+  Serial.print(address, HEX);
+  Serial.print("; size = ");
+  Serial.println(size);
+#endif
+  int8_t buf[32];
+  int8_t len;
+  for (uint16_t l = 0; l < size; l += READ_BLOCK_LENGTH) {
+    if (size - l > READ_BLOCK_LENGTH) {
+      len = READ_BLOCK_LENGTH;
+    } else {
+      len = size - l;
+    }
+    I2CEEPROM.read_buffer(device, address + l, buf, len);
+//    for (uint16_t i = 0; i < len; i++) {
+//      buf[i] = I2CEEPROM.read(device, address + l + i);
+//    }
+    Serial.print(":");
+    for (uint16_t i = 0; i < READ_BLOCK_LENGTH && l + i < size; i++) {
+      SerialPrintHex(buf[i]);
+    }
+    Serial.println();
+  }
 }
 
 SerialBlock::~SerialBlock() {
