@@ -37,6 +37,14 @@ public class RomINT16 extends RomData {
         return new RomINT16(name, val);
     }
 
+    public static RomINT16 of(final int val) {
+        return new RomINT16(null, (short) val);
+    }
+
+    public static RomINT16 of(final String name, final int val) {
+        return new RomINT16(name, (short) val);
+    }
+
     @Override
     public int size() {
         return Short.BYTES;

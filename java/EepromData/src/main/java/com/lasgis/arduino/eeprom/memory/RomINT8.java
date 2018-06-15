@@ -37,6 +37,14 @@ public class RomINT8 extends RomData {
         return new RomINT8(name, val);
     }
 
+    public static RomINT8 of(final int val) {
+        return new RomINT8(null, (byte) val);
+    }
+
+    public static RomINT8 of(final String name, final int val) {
+        return new RomINT8(name, (byte) val);
+    }
+
     @Override
     public int size() {
         return Byte.BYTES;

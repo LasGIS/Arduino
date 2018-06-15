@@ -9,12 +9,12 @@
 package com.lasgis.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -97,13 +97,22 @@ public final class Util {
     }
 
     /**
-     * Загрузит ресурс из classpath.
-     * @param fileName имя иконки
-     * @return ImageIcon
+     * Загрузит ресурс из файла.
+     * @param fileName имя файла
+     * @return StringBuilder
      */
     public static StringBuilder loadStringFromFile(final String fileName)  {
+        return loadStringFromFile(new File(fileName));
+    }
+
+    /**
+     * Загрузит ресурс из файла.
+     * @param file файл
+     * @return StringBuilder
+     */
+    public static StringBuilder loadStringFromFile(final File file)  {
         try (
-            InputStream in = new FileInputStream(fileName);
+            InputStream in = new FileInputStream(file);
             InputStreamReader reader = new InputStreamReader(in, "UTF-8");
         ) {
             final StringBuilder sb = new StringBuilder();
@@ -115,7 +124,7 @@ public final class Util {
             }
             return sb;
         } catch (final FileNotFoundException ex) {
-            log.error("Файл \"" + fileName + "\" не найден!");
+            log.error("Файл \"" + file.getPath() + "\" не найден!");
         } catch (final IOException ex) {
             log.error(ex.getMessage(), ex);
         }
@@ -147,7 +156,7 @@ public final class Util {
             try {
                 button.setIcon(Util.loadImageIcon(iconName));
             } catch (final IOException e) {
-                LoggerFactory.getLogger(Util.class).error(e.getMessage());
+                log.error(e.getMessage());
             }
         }
 //        button.setMaximumSize(new Dimension(width, height));
@@ -172,7 +181,7 @@ public final class Util {
             try {
                 button.setIcon(Util.loadImageIcon(set.getImage()));
             } catch (final IOException e) {
-                LoggerFactory.getLogger(Util.class).error(e.getMessage());
+                log.error(e.getMessage());
             }
         }
         final Dimension dim = new Dimension(set.getWidth(), set.getHeight());
@@ -200,7 +209,7 @@ public final class Util {
                 try {
                     menu.setIcon(Util.loadImageIcon(set.getImage()));
                 } catch (final IOException e) {
-                    LoggerFactory.getLogger(Util.class).error(e.getMessage());
+                    log.error(e.getMessage());
                 }
             }
             menu.setToolTipText(set.getToolTip());
@@ -214,7 +223,7 @@ public final class Util {
                 try {
                     menu.setIcon(Util.loadImageIcon(set.getImage()));
                 } catch (final IOException e) {
-                    LoggerFactory.getLogger(Util.class).error(e.getMessage());
+                    log.error(e.getMessage());
                 }
             }
             menu.setToolTipText(set.getToolTip());
