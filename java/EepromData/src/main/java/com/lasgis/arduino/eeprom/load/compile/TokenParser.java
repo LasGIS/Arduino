@@ -63,7 +63,7 @@ public class TokenParser {
      */
     public enum TokenType {
         /** ошибка; ключевое слово; имя переменной или метода, ... */
-        error, keyword, name, delimit, string, number, real, block, /*operator, */comment, start, end
+        error, keyword, name, delimit, string, oneChar, number, real, block, /*operator, */comment, start, end
     }
 
     /**
@@ -308,6 +308,9 @@ public class TokenParser {
                         } else if (ch == '\"') {
                             token.end = end;
                             return getString(token);
+                        } else if (ch == '\'') {
+                            token.end = end;
+                            return getChar(token);
                         }
                         token.type = TokenType.delimit;
                         start = ch;
@@ -436,6 +439,31 @@ public class TokenParser {
             switch (cl) {
                 case delimitChars:
                     if (ch == '\"' && ch1 != '\\') {
+                        token.end = i;
+                        return token;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            ch1 = ch;
+            i++;
+        }
+        token.end = i - 1;
+        token.type = TokenType.error;
+        return token;
+    }
+
+    private Token getChar(final Token token) {
+        token.type = TokenType.oneChar;
+        int i = token.beg + 1;
+        char ch1 = ' ';
+        while (i <= token.end) {
+            final char ch = sb.charAt(i);
+            final CharType cl = charLevel(ch);
+            switch (cl) {
+                case delimitChars:
+                    if (ch == '\'' && ch1 != '\\') {
                         token.end = i;
                         return token;
                     }

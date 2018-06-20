@@ -1,9 +1,9 @@
 /*
- *  @(#)DataCppLoader.java  last: 30.05.2018
+ * @(#)DataCppLoader.java
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ * Copyright © 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load;
@@ -13,7 +13,7 @@ import com.lasgis.arduino.eeprom.load.compile.TokenParser;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
 import com.lasgis.arduino.eeprom.memory.RomData;
 import com.lasgis.util.Util;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.CompilerException;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -78,11 +78,7 @@ class DataCppLoader extends TokenParser {
             switch (type) {
                 case CHAR: {
                     token = token.next(end);
-                    token.assertion(TokenType.delimit, "'");
-                    token = token.next(end);
-                    char chr = token.getString().charAt(0);
-                    token = token.next(end);
-                    token.assertion(TokenType.delimit, "'");
+                    char chr = StringEscapeUtils.unescapeJava(token.getString()).charAt(0);
                     data = RomCHAR.of(name, chr);
                 } break;
             }
