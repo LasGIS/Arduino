@@ -1,9 +1,9 @@
 /*
- *  @(#)CreateHelper.java  last: 31.05.2018
+ * @(#)CreateHelper.java
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ * Copyright © 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.create;

@@ -1,9 +1,9 @@
 /*
- *  @(#)RomINT8Test.java  last: 29.05.2018
+ * @(#)RomINT8Test.java
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ * Copyright © 2018, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;

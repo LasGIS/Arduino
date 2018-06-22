@@ -1,5 +1,5 @@
 /*
- * @(#)RomARRAY.java
+ * @(#)RomEMPTY.java
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -32,60 +32,32 @@ import java.util.ArrayList;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RomARRAY extends RomData {
+public class RomEMPTY extends RomData {
 
-    /** массив, содержащий элементы объекта */
-    private ArrayList<RomData> array = new ArrayList<>();
-
-    private RomARRAY(final String name) {
+    private RomEMPTY(final String name) {
         super(name);
     }
 
-    public static RomARRAY of() {
-        return new RomARRAY(null);
+    public static RomEMPTY of() {
+        return new RomEMPTY(null);
     }
 
-    public static RomARRAY of(final String name) {
-        return new RomARRAY(name);
+    public static RomEMPTY of(final String name) {
+        return new RomEMPTY(name);
     }
 
     @Override
     public int size() {
-        int size = 3;
-        for (final RomData item : array) {
-            size += item.size();
-        }
-        return size;
+        return 0;
     }
 
     @Override
     public String define() {
-        final StringBuilder sb = new StringBuilder("[");
-        if (!array.isEmpty()) {
-            sb.append(array.get(0).define());
-        }
-        return sb.append("]").toString();
+        return "";
     }
 
     @Override
     public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
-        setOffset(buff.position());
-        buff.putShort(size());
-        buff.put(array.size());
-        for (final RomData item : array) {
-            item.toEeprom(buff);
-        }
         return buff;
-    }
-
-    public RomARRAY add(final RomData rom) {
-        if (!array.isEmpty()) {
-            final RomData first = array.get(0);
-            if (!first.define().equals(rom.define())) {
-                throw new CommonInfoException("Элементы массива должны быть одинаковыми!");
-            }
-        }
-        array.add(rom);
-        return this;
     }
 }
