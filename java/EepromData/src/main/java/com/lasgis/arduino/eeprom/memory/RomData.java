@@ -10,6 +10,8 @@ package com.lasgis.arduino.eeprom.memory;
 
 import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -62,19 +64,27 @@ import java.nio.charset.Charset;
  * @since 16.05.2018
  */
 @Data
+@ToString(exclude = {"offset"})
 public abstract class RomData {
 
+    /** Charset. */
     public static final Charset CHARSET = Charset.forName("windows-1251");
 
     private String name;
     private int offset = 0;
 
-    public RomData(String name) {
+    /**
+     * Конструктор.
+     * @param name имя объекта
+     */
+    public RomData(final String name) {
         this.name = name;
         this.offset = 0;
     }
 
-    /** размер образа объекта в EEPROM */
+    /**
+     * @return размер образа объекта в EEPROM
+     */
     public abstract int size();
 
     /**

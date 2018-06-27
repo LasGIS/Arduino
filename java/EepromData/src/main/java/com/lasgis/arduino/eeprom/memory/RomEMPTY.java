@@ -12,6 +12,7 @@ import com.lasgis.arduino.eeprom.CommonInfoException;
 import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class RomEMPTY extends RomData {
 
     private RomEMPTY(final String name) {

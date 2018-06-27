@@ -11,6 +11,7 @@ package com.lasgis.arduino.eeprom.load;
 import com.lasgis.arduino.eeprom.load.compile.ParseException;
 import com.lasgis.arduino.eeprom.load.compile.RomDataWrapper;
 import com.lasgis.arduino.eeprom.load.compile.TokenParser;
+import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
 import com.lasgis.arduino.eeprom.memory.RomDOUBLE;
 import com.lasgis.arduino.eeprom.memory.RomData;
@@ -19,6 +20,7 @@ import com.lasgis.arduino.eeprom.memory.RomFLOAT;
 import com.lasgis.arduino.eeprom.memory.RomINT16;
 import com.lasgis.arduino.eeprom.memory.RomINT32;
 import com.lasgis.arduino.eeprom.memory.RomINT8;
+import com.lasgis.arduino.eeprom.memory.RomOBJECT;
 import com.lasgis.arduino.eeprom.memory.RomSTRING;
 import com.lasgis.util.Util;
 import lombok.Getter;
@@ -128,8 +130,8 @@ class DataCppLoader extends TokenParser {
             }
             token = tokens[0];
         } else if (token.is(TokenType.block, "{")) {
-
-            throw new ParseException(token, "Получили объект.");
+            data = getRomDataObject(name, token);
+            //throw new ParseException(token, "Получили объект.");
         } else if (token.is(TokenType.block, "[")) {
             throw new ParseException(token, "Получили массив.");
         } else {
@@ -137,6 +139,42 @@ class DataCppLoader extends TokenParser {
         }
         token = token.next(end).SkipComment(end);
         return RomDataWrapper.of(data, token);
+    }
+
+    private RomOBJECT getRomDataObject(final String name, final Token arrToken) throws ParseException {
+        final int beg = arrToken.beg + 1;
+        final int end = arrToken.end - 1;
+        int i = beg;
+        Token token;
+        final RomOBJECT object = RomOBJECT.of(name);
+        do {
+            final RomDataWrapper wrap = getRomData(i, end);
+            final RomData data = wrap.getData();
+            token = wrap.getToken();
+            i = token.end + 1;
+            if ((token.is(TokenType.delimit, ",") || token.is(TokenType.end)) && !(data instanceof RomEMPTY)) {
+                object.add(data);
+            }
+        } while (!token.is(TokenType.end));
+        return object;
+    }
+
+    private RomARRAY getRomDataArray(final String name, final Token arrToken) throws ParseException {
+        final int beg = arrToken.beg + 1;
+        final int end = arrToken.end - 1;
+        int i = beg;
+        Token token;
+        final RomARRAY array = RomARRAY.of(name);
+        do {
+            final RomDataWrapper wrap = getRomData(i, end);
+            final RomData data = wrap.getData();
+            token = wrap.getToken();
+            i = token.end + 1;
+            if (token.is(TokenType.delimit, ",") && !(data instanceof RomEMPTY)) {
+                array.add(data);
+            }
+        } while (!token.is(TokenType.end));
+        return array;
     }
 
     private char extractChar(final Token[] tokens, final int end) {
