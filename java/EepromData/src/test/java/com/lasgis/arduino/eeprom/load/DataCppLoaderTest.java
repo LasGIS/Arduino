@@ -16,6 +16,7 @@ import com.lasgis.arduino.eeprom.memory.RomINT32;
 import com.lasgis.arduino.eeprom.memory.RomINT8;
 import com.lasgis.arduino.eeprom.memory.RomOBJECT;
 import com.lasgis.arduino.eeprom.memory.RomSTRING;
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -32,6 +33,26 @@ public class DataCppLoaderTest {
     @DataProvider
     public Object[][] dataLoad() {
         return new Object[][]{{
+            "  /* Комментарий */\n"
+            + "  CHAR CHAR_SINGN_WIN : 'B'; /* Комментарий */ \n"
+            + "  INT8 : 255; /* Комментарий */ \n"
+            + "  INT16 : 65535; /* Комментарий */ \n"
+            + "  INT16 : -32767; /* Комментарий */ \n"
+            + "  INT32 : 255; /* Комментарий */ \n"
+            + "  DOUBLE : 3.1415926; /* Комментарий */ \n"
+            + "  DOUBLE : -3.1415926; /* Комментарий */ \n"
+            + "  STRING WIN_NAME : \"Название машинки\"; /* Комментарий */ \n",
+            new ArrayList<RomData>() {{
+                this.add(RomCHAR.of("CHAR_SINGN_WIN", 'B'));
+                this.add(RomINT8.of(255));
+                this.add(RomINT16.of(65535));
+                this.add(RomINT16.of(-32767));
+                this.add(RomINT32.of(255));
+                this.add(RomDOUBLE.of(3.1415926));
+                this.add(RomDOUBLE.of(-3.1415926));
+                this.add(RomSTRING.of("WIN_NAME", "Название машинки"));
+            }}
+        }, {
             "  /* Комментарий */\n" +
                 "  CHAR CHAR_SINGN_WIN : 'B';\n" +
                 "  INT8 : 255;\n" +
@@ -69,6 +90,12 @@ public class DataCppLoaderTest {
     ) throws Exception {
         DataCppLoader loader = new DataCppLoader(new StringBuilder(data));
         loader.parse();
+        Assert.assertEquals(loader.getList().size(), expectedList.size(), "Размер списка разный");
+        for (int i = 0; i < expectedList.size(); i++) {
+            final RomData expectedData = expectedList.get(i);
+            final RomData loaderData = loader.getList().get(i);
+            Assert.assertEquals(loaderData, expectedData);
+        }
     }
 
 }

@@ -19,7 +19,9 @@ import com.lasgis.arduino.eeprom.memory.RomFLOAT;
 import com.lasgis.arduino.eeprom.memory.RomINT16;
 import com.lasgis.arduino.eeprom.memory.RomINT32;
 import com.lasgis.arduino.eeprom.memory.RomINT8;
+import com.lasgis.arduino.eeprom.memory.RomSTRING;
 import com.lasgis.util.Util;
+import lombok.Getter;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import java.io.File;
@@ -36,7 +38,7 @@ import java.util.List;
 class DataCppLoader extends TokenParser {
 
     private final static String UNKNOWN_FORMAT = "Формат XML файла: ";
-
+    @Getter
     private List<RomData> list = new ArrayList<>();
 
     public DataCppLoader(final StringBuilder prg) {
@@ -68,6 +70,9 @@ class DataCppLoader extends TokenParser {
 
     private RomDataWrapper getRomData(final int beg, final int end) throws ParseException {
         Token token = nextToken(beg, end).SkipComment(end);
+        if (token.is(TokenType.end)) {
+            return RomDataWrapper.of(RomEMPTY.of(), token);
+        }
         KeywordType type = null;
         KeywordType arrayType = null;
         String name = null;
@@ -85,44 +90,48 @@ class DataCppLoader extends TokenParser {
             token = token.next(end).SkipComment(end);
         }
         token.assertion(TokenType.delimit, ":");
+        token = token.next(end);
         RomData data = RomEMPTY.of();
         final Token[] tokens = {token};
         if (type != null) {
             switch (type) {
                 case CHAR: {
-                    token = token.next(end);
-                    final char chr = extractChar(token);
+                    final char chr = extractChar(tokens, end);
                     data = RomCHAR.of(name, chr);
                 } break;
                 case INT8: {
                     final int value = extractInteger(tokens, end);
-                    token = tokens[0];
                     data = RomINT8.of(name, value);
                 } break;
                 case INT16: {
                     final int value = extractInteger(tokens, end);
-                    token = tokens[0];
                     data = RomINT16.of(name, value);
                 } break;
                 case INT32: {
                     final int value = extractInteger(tokens, end);
-                    token = tokens[0];
                     data = RomINT32.of(name, value);
                 } break;
                 case FLOAT: {
-                    token = token.next(end);
-                    final double value = extractDouble(token);
+                    final double value = extractDouble(tokens, end);
                     data = RomFLOAT.of(name, value);
                 } break;
                 case DOUBLE: {
-                    token = token.next(end);
-                    final double value = extractDouble(token);
+                    final double value = extractDouble(tokens, end);
                     data = RomDOUBLE.of(name, value);
                 } break;
+                case STRING: {
+                    final String value = extractString(tokens, end);
+                    data = (value == null) ? RomEMPTY.of(name) : RomSTRING.of(name, value);
+                } break;
                 default:
-                    token = token.next(end);
                     break;
             }
+            token = tokens[0];
+        } else if (token.is(TokenType.block, "{")) {
+
+            throw new ParseException(token, "Получили объект.");
+        } else if (token.is(TokenType.block, "[")) {
+            throw new ParseException(token, "Получили массив.");
         } else {
             throw new ParseException(token, "Expected type of Rom Data.");
         }
@@ -130,7 +139,8 @@ class DataCppLoader extends TokenParser {
         return RomDataWrapper.of(data, token);
     }
 
-    private char extractChar(final Token token) {
+    private char extractChar(final Token[] tokens, final int end) {
+        final Token token = tokens[0];
         switch (token.type) {
             case string:
             case oneChar: {
@@ -145,9 +155,24 @@ class DataCppLoader extends TokenParser {
         return 0;
     }
 
+    private String extractString(final Token[] tokens, final int end) {
+        final Token token = tokens[0];
+        switch (token.type) {
+            case string:
+            case oneChar: {
+                final String str = token.getString();
+                return StringEscapeUtils.unescapeJava(str.substring(1, str.length() - 1));
+            }
+            case number:
+                break;
+            default:
+                break;
+        }
+        return null;
+    }
+
     private int extractInteger(final Token[] tokens, final int end) throws ParseException {
         Token token = tokens[0];
-        token = token.next(end);
 
         int sign = 1;
         if (token.is(TokenType.delimit)) {
@@ -169,7 +194,7 @@ class DataCppLoader extends TokenParser {
                 break;
             case real:
                 out = Double.valueOf(token.getString()).intValue() * sign;
-            break;
+                break;
             case string: {
                 final String str = token.getString();
                 out = Integer.valueOf(str.substring(1, str.length() - 1)) * sign;
@@ -185,22 +210,40 @@ class DataCppLoader extends TokenParser {
         return out;
     }
 
-    private double extractDouble(final Token token) {
+    private double extractDouble(final Token[] tokens, final int end) throws ParseException {
+        Token token = tokens[0];
+
+        double sign = 1.0;
+        if (token.is(TokenType.delimit)) {
+            switch (token.getString()) {
+                case "+":
+                    break;
+                case "-":
+                    sign = -1.0;
+                    break;
+                default:
+                    throw new ParseException(token, "Непонятный знак");
+            }
+            token = token.next(end);
+        }
+        double out = 0.0;
         switch (token.type) {
             case number:
             case real:
-                return Double.valueOf(token.getString()).intValue();
+                out = Double.valueOf(token.getString()) * sign;
+                break;
             case string: {
                 final String str = token.getString();
-                return Double.valueOf(str.substring(1, str.length() - 1));
-            }
+                out = Double.valueOf(str.substring(1, str.length() - 1)) * sign;
+            } break;
             case oneChar: {
                 final String str = token.getString();
-                return Double.valueOf(str.substring(1, str.length() - 1));
-            }
+                out = Double.valueOf(str.substring(1, str.length() - 1)) * sign;
+            } break;
             default:
-                break;
+                throw new ParseException(token, "Ошибка разбора");
         }
-        return 0;
+        tokens[0] = token;
+        return out;
     }
 }
