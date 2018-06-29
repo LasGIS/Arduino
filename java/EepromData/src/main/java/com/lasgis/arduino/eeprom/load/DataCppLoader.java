@@ -39,7 +39,6 @@ import java.util.List;
  */
 class DataCppLoader extends TokenParser {
 
-    private final static String UNKNOWN_FORMAT = "Формат XML файла: ";
     @Getter
     private List<RomData> list = new ArrayList<>();
 
@@ -60,7 +59,7 @@ class DataCppLoader extends TokenParser {
         int i = beg;
         Token token;
         do {
-            final RomDataWrapper wrap = getRomData(i, end);
+            final RomDataWrapper wrap = getRomData(i, end, null);
             final RomData data = wrap.getData();
             token = wrap.getToken();
             i = token.end + 1;
@@ -70,12 +69,15 @@ class DataCppLoader extends TokenParser {
         } while (!token.is(TokenType.end));
     }
 
-    private RomDataWrapper getRomData(final int beg, final int end) throws ParseException {
+    private RomDataWrapper getRomData(
+        final int beg, final int end,
+        final KeywordType expectedType
+    ) throws ParseException {
         Token token = nextToken(beg, end).SkipComment(end);
         if (token.is(TokenType.end)) {
             return RomDataWrapper.of(RomEMPTY.of(), token);
         }
-        KeywordType type = null;
+        KeywordType type = expectedType;
         KeywordType arrayType = null;
         String name = null;
 
@@ -91,8 +93,9 @@ class DataCppLoader extends TokenParser {
             arrayType = KeywordType.of(token.getString());
             token = token.next(end).SkipComment(end);
         }
-        token.assertion(TokenType.delimit, ":");
-        token = token.next(end);
+        if (token.is(TokenType.delimit, ":")) {
+            token = token.next(end);
+        }
         RomData data = RomEMPTY.of();
         final Token[] tokens = {token};
         if (type != null) {
@@ -131,9 +134,8 @@ class DataCppLoader extends TokenParser {
             token = tokens[0];
         } else if (token.is(TokenType.block, "{")) {
             data = getRomDataObject(name, token);
-            //throw new ParseException(token, "Получили объект.");
         } else if (token.is(TokenType.block, "[")) {
-            throw new ParseException(token, "Получили массив.");
+            data = getRomDataArray(name, token, arrayType);
         } else {
             throw new ParseException(token, "Expected type of Rom Data.");
         }
@@ -148,7 +150,7 @@ class DataCppLoader extends TokenParser {
         Token token;
         final RomOBJECT object = RomOBJECT.of(name);
         do {
-            final RomDataWrapper wrap = getRomData(i, end);
+            final RomDataWrapper wrap = getRomData(i, end, null);
             final RomData data = wrap.getData();
             token = wrap.getToken();
             i = token.end + 1;
@@ -159,18 +161,22 @@ class DataCppLoader extends TokenParser {
         return object;
     }
 
-    private RomARRAY getRomDataArray(final String name, final Token arrToken) throws ParseException {
+    private RomARRAY getRomDataArray(
+        final String name,
+        final Token arrToken,
+        final KeywordType arrayType
+    ) throws ParseException {
         final int beg = arrToken.beg + 1;
         final int end = arrToken.end - 1;
         int i = beg;
         Token token;
         final RomARRAY array = RomARRAY.of(name);
         do {
-            final RomDataWrapper wrap = getRomData(i, end);
+            final RomDataWrapper wrap = getRomData(i, end, arrayType);
             final RomData data = wrap.getData();
             token = wrap.getToken();
             i = token.end + 1;
-            if (token.is(TokenType.delimit, ",") && !(data instanceof RomEMPTY)) {
+            if ((token.is(TokenType.delimit, ",") || token.is(TokenType.end)) && !(data instanceof RomEMPTY)) {
                 array.add(data);
             }
         } while (!token.is(TokenType.end));

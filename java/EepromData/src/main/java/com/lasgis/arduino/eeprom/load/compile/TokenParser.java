@@ -37,9 +37,17 @@ public class TokenParser {
 
     protected final StringBuilder sb;
 
+    /**
+     * типы данных
+     */
     public enum KeywordType {
+        /** типы данных. */
         CHAR, INT8, INT16, INT32, FLOAT, DOUBLE, STRING;
 
+        /**
+         * @param value значение
+         * @return получаем тип по значению
+         */
         public static KeywordType of(final String value) {
             for (KeywordType type : KeywordType.values()) {
                 if (type.name().equalsIgnoreCase(value)) {
