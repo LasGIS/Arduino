@@ -27,9 +27,9 @@ import java.util.List;
 @Slf4j
 public class TestHelper {
 
-    private final static String TAB = "  ";
+    private static final String TAB = "  ";
 
-    private final static TestHelper helper = new TestHelper();
+    private static final TestHelper helper = new TestHelper();
 
     public static void show() {
         helper.showDataList(Runner.getDataList(), Runner.getDump());
@@ -43,7 +43,7 @@ public class TestHelper {
     }
 
     private void showNameOffset(final RomData rom) {
-        final StringBuilder sb = new  StringBuilder("\n");
+        final StringBuilder sb = new StringBuilder("\n");
         showNameOffset(rom, sb, "");
         log.info(sb.toString());
     }
@@ -58,13 +58,13 @@ public class TestHelper {
         sb.append("offset: ").append(rom.getOffset()).append(";");
         if (rom instanceof RomOBJECT) {
             sb.append(" {\n");
-            for (final RomData inst: ((RomOBJECT) rom).getArray()) {
+            for (final RomData inst : ((RomOBJECT) rom).getArray()) {
                 showNameOffset(inst, sb, tab + TAB);
             }
             sb.append(tab).append("}\n");
         } else if (rom instanceof RomARRAY) {
             sb.append(" [\n");
-            for (final RomData inst: ((RomARRAY) rom).getArray()) {
+            for (final RomData inst : ((RomARRAY) rom).getArray()) {
                 showNameOffset(inst, sb, tab + TAB);
             }
             sb.append(tab).append("]\n");

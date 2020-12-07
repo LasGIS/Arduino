@@ -4,10 +4,10 @@ DS3231 Clock;
 char * bufTime = (char*) "xx:xx:xx";
 
 /**
- * переводим целое в строку (две цифры)
- * @param val целое значение
- * @param str строка
- * @param start начало вывода в строке
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ)
+ * @param val пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+ * @param str пїЅпїЅпїЅпїЅпїЅпїЅ
+ * @param start пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
  */
 void toTwoChar(uint8_t val, char * str, uint8_t start) {
   uint8_t fst = (val % 100)/ 10;
@@ -17,7 +17,7 @@ void toTwoChar(uint8_t val, char * str, uint8_t start) {
 }
 
 /**
- * выводим короткое время (в заголовок).
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ).
  */
 void printShortTime(DateTime * dateTime) {
   static uint8_t minLast  = 0xff;
@@ -39,7 +39,7 @@ void printShortTime(DateTime * dateTime) {
 }
 
 /**
- * выводим большое время (посередине).
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ).
  */
 void printBigTime(DateTime * dateTime) {
   static uint8_t minLast  = 0xff;
@@ -58,12 +58,15 @@ void printBigTime(DateTime * dateTime) {
     hourLast = hour;
   } else {
     toTwoChar(sec, bufTime, 6);
+//#ifdef HAS_SERIAL
+    Serial.println(bufTime);
+//#endif
     printText(clockX + 6, 1, 3, bufTime + 6, COLOR_TOMATO);
   }
 }
 
 /**
- * выводим реальную дату.
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.
  */
 void printRealDate(DateTime * dateTime) {
   static char * buf = (char*) "xx.xx.20xx";

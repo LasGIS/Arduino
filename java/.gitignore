@@ -1,0 +1,12 @@
+.idea
+logs
+log
+*.iml
+*.ipr
+*.iws
+*.ids
+target
+site
+_*
+*.log
+
