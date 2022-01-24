@@ -23,7 +23,7 @@ uint8_t I2C_EEPROM::read(uint8_t device, uint16_t address) {
   beginTransmission(device, address);
   Wire.endTransmission();
   Wire.requestFrom(device, 1);
-  return Wire.available() ? Wire.read() : 0xFF;;
+  return Wire.available() ? Wire.read() : 0xFF;
 }
 
 // WARNING: address is a page address, 6-bit end will wrap around
