@@ -1,11 +1,7 @@
 #ifndef TFT_LG_ILI9225_h
 #define TFT_LG_ILI9225_h
 
-#if ARDUINO >= 100
-    #include "Arduino.h"
-#else
-    #include "WProgram.h"
-#endif
+#include <Arduino.h>
 #include <avr/pgmspace.h>
 #include <RussFontANSI.c>
 

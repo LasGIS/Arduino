@@ -22,12 +22,8 @@
 #ifndef TFTv2_h
 #define TFTv2_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
 #define SEEEDUINO
 #include <Arduino.h>
-#else
-#include <WProgram.h>
-#endif
 #include <avr/pgmspace.h>
 #include <RussFontANSI.c>
 #include <SPI.h>

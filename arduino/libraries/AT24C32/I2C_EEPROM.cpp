@@ -22,7 +22,7 @@ void I2C_EEPROM::write(uint8_t device, uint16_t address, uint8_t data) {
 uint8_t I2C_EEPROM::read(uint8_t device, uint16_t address) {
   beginTransmission(device, address);
   Wire.endTransmission();
-  Wire.requestFrom(device, 1);
+  Wire.requestFrom(device, (uint8_t) 1);
   return Wire.available() ? Wire.read() : 0xFF;
 }
 

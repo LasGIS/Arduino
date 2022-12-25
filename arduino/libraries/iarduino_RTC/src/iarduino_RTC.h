@@ -15,11 +15,7 @@
 
 #define	RTC_UNDEFINED 0																						//	Модуль часов реального времени не определён
 
-#if defined(ARDUINO) && (ARDUINO >= 100)
 #include <Arduino.h>
-#else
-#include <WProgram.h>
-#endif
 
 #include <memorysaver.h>																					//	Подключаем файл «хранитель памяти»									(внутри файла есть комментарий поясняющий как сэкономить мапять)
 

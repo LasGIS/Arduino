@@ -20,15 +20,12 @@ Released into the public domain.
 #elif defined(ESP8266)
 #include <pgmspace.h>
 #endif
-// Changed the following to work on 1.0
-//#include "WProgram.h"
-#include <Arduino.h>
 
+#include <Arduino.h>
 
 #define CLOCK_ADDRESS 0x68
 
 #define SECONDS_FROM_1970_TO_2000 946684800
-
 
 // Constructor
 DS3231::DS3231() {

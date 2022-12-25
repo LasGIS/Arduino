@@ -25,14 +25,14 @@ void setup() {
 void loop() {
   static int i = 0;
   digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(200);              // wait for a second
+  delay(300);              // wait for a second
   digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
-  delay(200);              // wait for a second
+  delay(300);              // wait for a second
   digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(200);              // wait for a second
+  delay(600);              // wait for a second
   digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
-  delay(1600);              // wait for a second
-  Serial.println(sin((i * PI) / 18));
+  delay(100);              // wait for a second
+  Serial.println(sin((i * PI) / 18)*7);
   i++;
 }
 
@@ -44,8 +44,7 @@ void serialEvent() {
     for (int i = 0; i < cnt; i++, j++) {
       Serial.write(buf[i]);
     }
-    Serial.println("Sam takoy:");
+    Serial.println("Сам такой:");
   }
   delay(20);
 }
-

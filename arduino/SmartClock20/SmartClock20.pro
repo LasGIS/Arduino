@@ -44,15 +44,15 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
     ../libraries/IrControl \
     ../libraries/MsTimer2 \
     ../libraries/AT24C32 \
-    D:/local/Arduino/hardware/arduino/avr/cores/arduino \
-    D:/local/Arduino/hardware/tools/avr/avr/include \
-    D:/local/Arduino/hardware/arduino/avr/variants/standard \
-    D:/local/Arduino/hardware/arduino/avr/libraries/EEPROM/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/HID/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/SPI/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src \
-    D:/local/Arduino/hardware/arduino/avr/libraries/Wire/src/utility \
+    C:/Arduino15/packages/arduino/hardware/avr/1.8.6/cores/arduino \
+    C:/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include \
+    C:/Arduino15/packages/arduino/hardware/avr/1.8.6/variants/standard \
+    C:/Arduino15/packages/arduino/hardware/avr/1.8.6/libraries/EEPROM/src \
+    C:/Arduino15/packages/arduino/hardware/avr/1.8.6/libraries/HID/src \
+    C:/Arduino15/packages/arduino/hardware/avr/1.8.6/libraries/SoftwareSerial/src \
+    C:/Arduino15/packages/arduino/hardware/avr/1.8.6/libraries/SPI/src \
+    C:/Arduino15/packages/arduino/hardware/avr/1.8.6/libraries/Wire/src \
+    C:/Arduino15/packages/arduino/hardware/avr/1.8.6/libraries/Wire/src/utility \
     D:/local/Arduino/libraries/SD/src \
     D:/local/Arduino/libraries/Servo/src
 
