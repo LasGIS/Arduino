@@ -3,32 +3,21 @@
  *************************************************/
 
 #define NOTE_P0 3
-// си
-#define NOTE_B0  31
-// до
-#define NOTE_C1  33
-// до dies
-#define NOTE_CS1 35
-// ре
-#define NOTE_D1  37
-// ре dies
-#define NOTE_DS1 39
-// ми
-#define NOTE_E1  41
-// фа
-#define NOTE_F1  44
-// фа dies
-#define NOTE_FS1 46
-// соль
-#define NOTE_G1  49
-// соль dies
-#define NOTE_GS1 52
-// ля
-#define NOTE_A1  55
-// ля dies
-#define NOTE_AS1 58
-// си
-#define NOTE_B1  62
+#define NOTE_B0  31     // си
+
+#define NOTE_C1  33     // до
+#define NOTE_CS1 35     // до dies
+#define NOTE_D1  37     // ре
+#define NOTE_DS1 39     // ре dies
+#define NOTE_E1  41     // ми
+#define NOTE_F1  44     // фа
+#define NOTE_FS1 46     // фа dies
+#define NOTE_G1  49     // соль
+#define NOTE_GS1 52     // соль dies
+#define NOTE_A1  55     // ля
+#define NOTE_AS1 58     // ля dies
+#define NOTE_B1  62     // си
+
 #define NOTE_C2  65
 #define NOTE_CS2 69
 #define NOTE_D2  73

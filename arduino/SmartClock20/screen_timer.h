@@ -5,7 +5,7 @@
 
 class ScreenTimer : public ScreenTft {
 public:
-  uint32_t startTime = 900;
+  uint32_t startTime = 5; //900;
   uint32_t time;
 // --- методы ---
   ScreenTimer();
