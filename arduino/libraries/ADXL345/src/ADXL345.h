@@ -1,7 +1,8 @@
 #ifndef ADXL345_h
 #define ADXL345_h
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <Wire.h>
 
 // I2C Address
 #define ADXL345_STD     0x1D    // Standard address if SDO/ALT ADDRESS is HIGH.

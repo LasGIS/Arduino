@@ -42,7 +42,7 @@ extern void serialWriteBlock();
 /** „итаем один блок данных из EEPROM и посылаем его в Serial */
 extern void serialReadBlock();
 
-static I2C_EEPROM I2CEEPROM;
+static I2C_EEPROM __attribute__ ((unused)) I2CEEPROM;
 
 #endif // I2C_EEPROM
 

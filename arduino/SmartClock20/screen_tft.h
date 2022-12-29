@@ -2,6 +2,7 @@
 #define SCREEN_TFT_H
 
 #include <stdint.h>
+#include <DS3231.h>
 
 #define ORIENTATION_HORISONTAL 0x01
 

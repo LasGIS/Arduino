@@ -1,8 +1,4 @@
-#include "Arduino.h"
-
-#include <Wire.h>
-
-#include "ADXL345.h"
+#include <ADXL345.h>
 
 // please refer to the sensor datasheet.
 //

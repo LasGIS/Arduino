@@ -25,6 +25,7 @@ ScreenTft* screens[NUMBER_OF_SCREENS] = {
   new ScreenDump()
 };
 ScreenTft * screen = screens[currentCommand];
+ScreenTft * changeCurrentCommand(bool);
 
 /**
  * @brief printText вывод текста на экран

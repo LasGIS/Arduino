@@ -5,14 +5,14 @@
  */
 void printVolts() {
   // 1 сборка
-  double vBattery = analogRead(A7) * 0.00664;
-  double vCharger = analogRead(A6) * 0.00664;
+//  double vBattery = analogRead(A7) * 0.00664;
+//  double vCharger = analogRead(A6) * 0.00664;
   // 2 сборка
 //  double vBattery = analogRead(A7) * 0.00661;
 //  double vCharger = analogRead(A6) * 0.00654;
   // 3 сборка
-//  double vBattery = analogRead(A7) * 0.00631;
-//  double vCharger = analogRead(A6) * 0.00630;
+  double vBattery = analogRead(A7) * 0.00631;
+  double vCharger = analogRead(A6) * 0.00630;
 #ifdef HAS_SERIAL
   Serial.print("vBattery = ");
   Serial.println(vBattery);
@@ -138,8 +138,7 @@ void ScreenTft::showOnce() {
   isRedraw = true;
 }
 
-void ScreenTft::control(char key) {
-}
+void ScreenTft::control(char key __attribute__ ((unused))) { }
 
 void ScreenTft::edit(char key) {
 #ifdef HAS_SERIAL

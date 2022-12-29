@@ -3,7 +3,7 @@
 #include "note.h"
 
 uint8_t keySoundVolume = 1;
-uint8_t musicSoundVolume = 1;
+uint8_t musicSoundVolume = 10;
 
 Note music[] = {
   Note(Fa, 4, 2), Note(Mi, 4, 2), Note(Re, 4, 2), Note(Do, 4, 2), Note(Sl, 4, 1),  Note(Sl, 4, 1),
