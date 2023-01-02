@@ -88,6 +88,9 @@ libraries/MsTimer2/library.properties
 libraries/MsTimer2/MsTimer2.cpp
 libraries/MsTimer2/MsTimer2.h
 libraries/MsTimer2/README.md
+libraries/TFT_LG_ILI9225/src/RussFontOEM.c
+libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.cpp
+libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.h
 libraries/TFT_lg/examples/TFTBitmapLogo/arduino.bmp
 libraries/TFT_lg/examples/TFTBitmapLogo/TFTBitmapLogo.ino
 libraries/TFT_lg/examples/TFTColorPicker/TFTColorPicker.ino
@@ -172,3 +175,5 @@ LcdPanel/show_char_screen.h
 LcdPanel/show_char_screen.cpp
 LcdPanel/alarm_clock.h
 LcdPanel/alarm_clock.cpp
+libraries/TFT_LG_ILI9225/src/DefaultFonts.c
+libraries/TFT_LG_ILI9225/src/RussFontANSI.c

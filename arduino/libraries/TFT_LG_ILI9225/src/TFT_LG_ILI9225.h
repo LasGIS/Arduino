@@ -17,7 +17,7 @@
 #define TFT_CS  10  // SS
 #define TFT_SDI 11  // MOSI
 #define TFT_CLK 13  // SCK
-#define TFT_LED 0   // 0 if wired to +5V directly
+//#define TFT_LED 0   // 0 if wired to +5V directly
 
 #if defined(__LINKIT_ONE__)
 
@@ -151,7 +151,7 @@ class TFT_LG_ILI9225 {
 
     /// Switch backlight on or off
     /// @param  flag true=on, false=off
-    void setBacklight(boolean flag);
+//    void setBacklight(boolean flag);
 
     /// Switch display on or off
     /// @param  flag true=on, false=off

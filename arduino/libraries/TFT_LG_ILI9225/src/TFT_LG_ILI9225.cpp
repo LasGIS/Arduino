@@ -74,7 +74,7 @@ void TFT_LG_ILI9225::begin() {
 
   // Set up pins
 #ifdef __LINKIT_ONE__
-  if (TFT_LED > 0) pinMode(TFT_LED, OUTPUT);
+//  if (TFT_LED > 0) pinMode(TFT_LED, OUTPUT);
 
   pinMode(TFT_RST, OUTPUT);
   pinMode(TFT_RS, OUTPUT);
@@ -84,7 +84,7 @@ void TFT_LG_ILI9225::begin() {
   SPI.begin();
 
   // Turn on backlight
-  if (TFT_LED > 0) digitalWrite(TFT_LED, HIGH);
+//  if (TFT_LED > 0) digitalWrite(TFT_LED, HIGH);
 
   // Initialization Code
   TFT_RST_ON;
@@ -152,7 +152,7 @@ void TFT_LG_ILI9225::begin() {
   delay(50);
   _writeRegister(ILI9225_DISP_CTRL1, 0x1017);
 
-  setBacklight(true);
+//  setBacklight(true);
   setOrientation(0);
 
   // Initialize variables
@@ -177,12 +177,11 @@ void TFT_LG_ILI9225::invert(boolean flag) {
   _writecommand(flag ? ILI9225C_INVON : ILI9225C_INVOFF);
 }
 
-
+/*
 void TFT_LG_ILI9225::setBacklight(boolean flag) {
   if (TFT_LED) digitalWrite(TFT_LED, flag);
 }
 
-/*
 void TFT_LG_ILI9225::setDisplay(boolean flag) {
   if (flag) {
     _writeRegister(0x00ff, 0x0000);
@@ -509,16 +508,62 @@ void TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, const char * string, uint1
 uint8_t TFT_LG_ILI9225::drawChar(
     uint16_t x, uint16_t y, uint8_t ascii, uint16_t color
 ) {
-  for (uint8_t i = 0; i <= FONT_X; i++) {
-    uint8_t temp = (i == FONT_X) ? 0 : pgm_read_byte(&russFontANSI[ascii][i]);
-    uint16_t xCur = x + i * _fontSize;
-    for (uint8_t f = 0; f < 8; f++) {
-      uint16_t yCur = y + f * _fontSize;
-      fillRectangle(
-        xCur, yCur, xCur + _fontSize - 1, yCur + _fontSize - 1,
-        ((temp >> f) & 0x01) ? color : _bgColor
-      );
-    }
+  uint8_t buf[8];
+  memcpy_P(&buf, &russFontANSI[ascii], FONT_X);
+  buf[FONT_X] = 0;
+  _setWindow(x, y, x + (FONT_X + 1) * _fontSize - 1, y + FONT_Y * _fontSize - 1);
+  uint16_t count = 0;
+  switch (_orientation) {
+    case 0:
+      for (int8_t f = 0; f < FONT_Y; f++) {
+        for (int8_t ffSize = 0; ffSize < _fontSize; ffSize++) {
+          for (int8_t i = 0; i <= FONT_X; i++) {
+            uint16_t outColor = ((buf[i] >> f) & 0x01) ? color : _bgColor;
+            for (int8_t ifSize = 0; ifSize < _fontSize; ifSize++) {
+              _writeData(outColor);
+            }
+          }
+        }
+      }
+      break;
+    case 1:
+      for (int8_t i = 0; i <= FONT_X; i++) {
+        for (int8_t ifSize = 0; ifSize < _fontSize; ifSize++) {
+          for (int8_t f = FONT_Y - 1; f >= 0; f--) {
+            uint16_t outColor = ((buf[i] >> f) & 0x01) ? color : _bgColor;
+            for (int8_t ffSize = 0; ffSize < _fontSize; ffSize++) {
+              _writeData(outColor);
+              count++;
+            }
+          }
+        }
+      }
+      break;
+    case 2:
+      for (int8_t f = FONT_Y - 1; f >= 0; f--) {
+        for (int8_t ifSize = 0; ifSize < _fontSize; ifSize++) {
+          for (int8_t i = FONT_X; i >= 0; i--) {
+            uint16_t outColor = ((buf[i] >> f) & 0x01) ? color : _bgColor;
+            for (int8_t ffSize = 0; ffSize < _fontSize; ffSize++) {
+              _writeData(outColor);
+            }
+          }
+        }
+      }
+    break;
+    case 3:
+      for (int8_t i = FONT_X; i >= 0; i--) {
+        for (int8_t ifSize = 0; ifSize < _fontSize; ifSize++) {
+          for (int8_t f = 0; f < FONT_Y; f++) {
+            uint16_t outColor = ((buf[i] >> f) & 0x01) ? color : _bgColor;
+            for (int8_t ffSize = 0; ffSize < _fontSize; ffSize++) {
+              _writeData(outColor);
+              count++;
+            }
+          }
+        }
+      }
+    break;
   }
   return (FONT_X + 1) * _fontSize;
 }
