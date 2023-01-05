@@ -9,7 +9,7 @@
 package com.lasgis.arduino.eeprom.memory;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 
 import javax.xml.bind.DatatypeConverter;

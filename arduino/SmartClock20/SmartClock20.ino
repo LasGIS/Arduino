@@ -105,19 +105,19 @@ void setOrientation(GravVector vec) {
   }
 
   switch (orientation) {
-  case top:
-  default:
-    gravVector.set(vec.X, vec.Y, vec.Z);
-    break;
-  case bottom:
-    gravVector.set(-vec.X, -vec.Y, vec.Z);
-    break;
-  case right:
-    gravVector.set(-vec.Y, vec.X, vec.Z);
-    break;
-  case left:
-    gravVector.set(vec.Y, -vec.X, vec.Z);
-    break;
+    case top:
+    default:
+      gravVector.set(vec.X, vec.Y, vec.Z);
+      break;
+    case bottom:
+      gravVector.set(-vec.X, -vec.Y, vec.Z);
+      break;
+    case right:
+      gravVector.set(-vec.Y, vec.X, vec.Z);
+      break;
+    case left:
+      gravVector.set(vec.Y, -vec.X, vec.Z);
+      break;
   }
 
   if (orientation != oldOrientation) {
@@ -195,20 +195,20 @@ void loop() {
 
     // управление экраном
     switch (key) {
-    // меняем режим
-    case 'M':
-      screen->edit(1);
-      screen->showOnce();
-      screen->showAllFields();
-      screen->showCurrentField();
-      break;
-    // меняем экран
-    case 'e':
-      screen = changeCurrentCommand(true);
-      break;
-    default:
-      screen->control(key);
-      break;
+      // меняем режим
+      case 'M':
+        screen->edit(1);
+        screen->showOnce();
+        screen->showAllFields();
+        screen->showCurrentField();
+        break;
+      // меняем экран
+      case 'e':
+        screen = changeCurrentCommand(true);
+        break;
+      default:
+        screen->control(key);
+        break;
     }
   }
   if (mode == ModeType::show && !isSerial) {

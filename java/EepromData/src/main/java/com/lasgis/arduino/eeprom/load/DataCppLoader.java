@@ -24,7 +24,7 @@ import com.lasgis.arduino.eeprom.memory.RomOBJECT;
 import com.lasgis.arduino.eeprom.memory.RomSTRING;
 import com.lasgis.util.Util;
 import lombok.Getter;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.File;
 import java.util.ArrayList;

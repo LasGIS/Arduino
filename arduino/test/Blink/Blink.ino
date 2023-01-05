@@ -44,7 +44,7 @@ void serialEvent() {
     for (int i = 0; i < cnt; i++, j++) {
       Serial.write(buf[i]);
     }
-    Serial.println("Ð¡Ð°Ð¼ Ñ‚Ð°ÐºÐ¾Ð¹:");
+    Serial.println(" - Ñàì òàêîé:");
   }
   delay(20);
 }
