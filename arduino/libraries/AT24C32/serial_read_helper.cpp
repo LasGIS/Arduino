@@ -59,18 +59,18 @@ void serialWriteBlock() {
         I2CEEPROM.write_buffer(sb->device, sb->address, sb->body, sb->size);
 #ifdef HAS_SERIAL
         Serial.print("block size = ");
-        Serial.print(block->size);
+        Serial.print(sb->size);
         Serial.print("; device = ");
-        Serial.print(block->device, HEX);
+        Serial.print(sb->device, HEX);
         Serial.print("; address = ");
-        Serial.print(block->address, HEX);
+        Serial.print(sb->address, HEX);
         Serial.print("; cs = ");
-        Serial.println(block->cs);
+        Serial.println(sb->cs);
         Serial.print("; body = ");
-        Serial.print((int) block->body, HEX);
+        Serial.print((int) sb->body, HEX);
         Serial.print("; \"");
-        for (int i = 0; i < block->size; i++) {
-          SerialPrintHex(block->body[i]);
+        for (int i = 0; i < sb->size; i++) {
+          SerialPrintHex(sb->body[i]);
         }
         Serial.println("\"");
 #endif
@@ -99,8 +99,8 @@ void serialReadBlock() {
   Serial.print("; size = ");
   Serial.println(size);
 #endif
-  int8_t buf[32];
-  int8_t len;
+  uint8_t buf[32];
+  uint16_t len;
   for (uint16_t l = 0; l < size; l += READ_BLOCK_LENGTH) {
     if (size - l > READ_BLOCK_LENGTH) {
       len = READ_BLOCK_LENGTH;

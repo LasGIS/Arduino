@@ -15,14 +15,14 @@
     <parent>
         <groupId>com.lasgis.arduino</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>eeprom-upload</artifactId>
     <name>Eeprom Upload</name>
     <description>LG Eeprom Upload Data to Arduino</description>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -30,18 +30,30 @@
             <groupId>com.lasgis.arduino</groupId>
             <artifactId>common</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>com.lasgis.arduino</groupId>
             <artifactId>serial-port</artifactId>
+        </dependency>
+-->
+        <dependency>
+            <groupId>com.lasgis.arduino</groupId>
+            <artifactId>fazecast-port</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>org.scream3r</groupId>
             <artifactId>jssc</artifactId>
             <version>2.8.0</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>com.fazecast</groupId>
+            <artifactId>jSerialComm</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -94,7 +106,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -103,12 +114,11 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
-                            <mainClass>com.lasgis.arduino.robot.RobotControl</mainClass>
+                            <mainClass>com.lasgis.arduino.eeprom.Runner</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
--->
         </plugins>
     </build>
 </project>

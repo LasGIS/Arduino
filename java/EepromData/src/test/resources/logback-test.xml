@@ -1,26 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)logback.xml  last: 17.05.2018
+  ~  @(#)logback-test.xml  last: 08.01.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
 
 <configuration scan="true" scanPeriod="2 minute">
   <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
 
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/var/log/arduino/java/fazecast-port.log</file>
-
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>/var/log/arduino/java/fazecast-port-%d{yyyy-MM-dd}.log.%i.gz</fileNamePattern>
-      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <maxFileSize>100MB</maxFileSize>
-      </timeBasedFileNamingAndTriggeringPolicy>
-      <maxHistory>7</maxHistory>
-    </rollingPolicy>
-
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>/var/log/arduino/java/logback-EepromUpload-test.log</file>
     <encoder>
       <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c{1} - %m%n</pattern>
     </encoder>
@@ -31,6 +22,11 @@
       <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c{1} - %m%n</pattern>
     </encoder>
   </appender>
+
+  <!-- TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
+  <logger name="com.lasgis.arduino.eeprom" level="DEBUG">
+    <appender-ref ref="FILE"/>
+  </logger>
 
   <root level="INFO">
     <appender-ref ref="STDOUT"/>

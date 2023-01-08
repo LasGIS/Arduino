@@ -21,7 +21,7 @@ import lombok.Data;
 public class SerialBlock {
     /** Размер блока */
     byte size = 0;
-    /** номер микосхемы (0x57 для CMOS) */
+    /** номер микросхемы (0x57 для CMOS) */
     byte device = 0x57;
     /** адрес блока в EEPROM памяти */
     short address;

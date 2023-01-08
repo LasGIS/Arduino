@@ -6,10 +6,12 @@
  * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.fazecast;
+package com.lasgis.serial;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * The Class PortReaderTestRun definition.
@@ -22,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PortReaderTestRun implements PortReaderListener {
     public final PortReader reader;
     public PortReaderTestRun() {
-        reader = PortReader.createPortReader("COM4", 9600);
+        reader = PortReader.createPortReader("COM6", 9600);
         reader.addListener(this);
     }
 
@@ -32,7 +34,7 @@ public class PortReaderTestRun implements PortReaderListener {
     }
 
     @Override
-    public void portReaderTrash(final String string) {
-        log.info(string);
+    public void portReaderTrash(final byte[] data) {
+        log.info(DatatypeConverter.printHexBinary(data));
     }
 }

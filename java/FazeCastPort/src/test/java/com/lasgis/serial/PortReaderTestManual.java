@@ -6,7 +6,7 @@
  * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.fazecast;
+package com.lasgis.serial;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

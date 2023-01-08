@@ -6,9 +6,7 @@
  * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.fazecast;
-
-import com.fazecast.jSerialComm.SerialPortDataListener;
+package com.lasgis.serial;
 
 /**
  * Обработчик данных из device.
@@ -26,7 +24,7 @@ public interface PortReaderListener {
 
     /**
      * Получаем весь хлам по частям
-     * @param string часть фарша
+     * @param data часть фарша
      */
-    void portReaderTrash(String string);
+    void portReaderTrash(byte[] data);
 }

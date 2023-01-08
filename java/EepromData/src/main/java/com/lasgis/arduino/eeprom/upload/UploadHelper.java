@@ -10,8 +10,8 @@ package com.lasgis.arduino.eeprom.upload;
 
 import com.lasgis.arduino.eeprom.Runner;
 import com.lasgis.arduino.eeprom.memory.RomData;
-import com.lasgis.arduino.serial.PortReader;
-import com.lasgis.arduino.serial.PortReaderListener;
+import com.lasgis.serial.PortReader;
+import com.lasgis.serial.PortReaderListener;
 import com.lasgis.util.ByteArrayBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -132,7 +132,7 @@ public class UploadHelper implements PortReaderListener {
     }
 
     @Override
-    public void portReaderTrash(final String string) {
+    public void portReaderTrash(final byte[] data) {
 //        log.info("Reader Trash: \"{}\"", string);
     }
 

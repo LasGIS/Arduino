@@ -8,12 +8,13 @@
 
 package com.lasgis.arduino.robot.panels;
 
-import com.lasgis.arduino.serial.PortReaderListener;
+import com.lasgis.serial.PortReaderListener;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.Util;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
+import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
@@ -394,7 +395,7 @@ public class MapPanel extends JPanel
     }
 
     @Override
-    public void portReaderTrash(final String string) {
+    public void portReaderTrash(final byte[] data) {
 
     }
 }

@@ -6,7 +6,7 @@
  * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.fazecast;
+package com.lasgis.serial;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
@@ -39,10 +39,13 @@ public class PortReader implements SerialPortDataListener {
     /**
      * Конструктор.
      */
-    private PortReader(final String portName, final int baudRate) {
-        //Передаём в конструктор имя порта
-        serialPort = SerialPort.getCommPort(portName);
+    private PortReader(final SerialPort newSerialPort, final int baudRate) {
+        connect(newSerialPort, baudRate);
+    }
 
+    public void connect(final SerialPort newSerialPort, final int baudRate) {
+        //Передаём в конструктор имя порта
+        serialPort = newSerialPort;
         //Открываем порт
         serialPort.openPort();
         //Выставляем параметры
@@ -56,7 +59,15 @@ public class PortReader implements SerialPortDataListener {
         if (portReader != null) {
             portReader.stop();
         }
-        portReader = new PortReader(portName, baudRate);
+        portReader = new PortReader(SerialPort.getCommPort(portName), baudRate);
+        return portReader;
+    }
+
+    public static PortReader createPortReader(final SerialPort newSerialPort, final int baudRate) {
+        if (portReader != null) {
+            portReader.stop();
+        }
+        portReader = new PortReader(newSerialPort, baudRate);
         return portReader;
     }
 
@@ -101,7 +112,18 @@ public class PortReader implements SerialPortDataListener {
         //Получаем ответ от устройства, обрабатываем данные и т.д.
         if ((event.getEventType() & SerialPort.LISTENING_EVENT_DATA_RECEIVED) != 0x0) {
             final byte[] data = event.getReceivedData();
-            log.info("ReceivedData: {}", new String(data, cp1251));
+            sb.append(new String(data, cp1251));
+            int crInd;
+            while ((crInd = sb.indexOf("\r\n")) >= 0) {
+                final String string = sb.substring(0, crInd);
+                for (final PortReaderListener listener : listeners) {
+                    listener.portReaderCarriageReturn(string);
+                }
+                sb.delete(0, crInd + 2);
+            }
+            for (final PortReaderListener listener : listeners) {
+                listener.portReaderTrash(data);
+            }
         }
     }
 

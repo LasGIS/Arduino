@@ -8,10 +8,10 @@
 
 package com.lasgis.arduino.robot.panels;
 
-import com.lasgis.arduino.serial.PortReader;
-import com.lasgis.arduino.serial.PortReaderListener;
-import jssc.SerialPort;
-import jssc.SerialPortList;
+import com.fazecast.jSerialComm.SerialPort;
+import com.lasgis.serial.PortReader;
+import com.lasgis.serial.PortReaderListener;
+import com.lasgis.serial.SerialPortWrap;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -19,6 +19,8 @@ import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,6 +30,7 @@ import static java.awt.GridBagConstraints.CENTER;
 
 /**
  * Панель конфигурации.
+ *
  * @author VLaskin
  * @version 1.0 Date: 13.01.2005 16:38:05
  */
@@ -35,22 +38,10 @@ import static java.awt.GridBagConstraints.CENTER;
 public class ConfigPanel extends JPanel implements PortReaderListener {
 
     private static final Integer[] BAUD_RATES = {
-        SerialPort.BAUDRATE_110,
-        SerialPort.BAUDRATE_300,
-        SerialPort.BAUDRATE_600,
-        SerialPort.BAUDRATE_1200,
-        SerialPort.BAUDRATE_4800,
-        SerialPort.BAUDRATE_9600,
-        SerialPort.BAUDRATE_14400,
-        SerialPort.BAUDRATE_19200,
-        SerialPort.BAUDRATE_38400,
-        SerialPort.BAUDRATE_57600,
-        SerialPort.BAUDRATE_115200,
-        SerialPort.BAUDRATE_128000,
-        SerialPort.BAUDRATE_256000
+        110, 300, 600, 1200, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000
     };
     private static final Integer[] GEARS = {1, 2, 3, 4, 5};
-    private String[] portNames = SerialPortList.getPortNames();
+    private SerialPortWrap[] commPorts = Arrays.stream(SerialPort.getCommPorts()).map(SerialPortWrap::new).toArray(SerialPortWrap[]::new);
     /** Port Reader. */
     private PortReader portReader;
     /** ссылка на MainFrame. */
@@ -68,26 +59,26 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     /** поле для ввода передачи. */
     private final JComboBox<Integer> gearComboBox = new JComboBox<>(GEARS);
     /** ComboBox for serial ports. */
-    private final JComboBox<String> portNamesComboBox = new JComboBox<>(portNames);
+    private final JComboBox<SerialPortWrap> portsComboBox = new JComboBox<>(commPorts);
     /** ComboBox for baud rates. */
     private final JComboBox<Integer> baudRatesComboBox = new JComboBox<>(BAUD_RATES);
 
     /** Восстановление или установление связи с девайсом. */
     private final ActionListener resetLinkAction = event -> {
         final JButton button = (JButton) event.getSource();
-        final String portName = (String) portNamesComboBox.getSelectedItem();
+        final SerialPort serialPort = ((SerialPortWrap) Objects.requireNonNull(portsComboBox.getSelectedItem())).getSerialPort();
         final Integer baudRate = (Integer) baudRatesComboBox.getSelectedItem();
         portReader = PortReader.getPortReader();
         log.debug("Port Reader Action {}", event.getActionCommand());
         if (portReader == null) {
-            portReader = PortReader.createPortReader(portName, baudRate);
+            portReader = PortReader.createPortReader(serialPort, baudRate);
             portReader.addListener(this);
             portReader.addListener(mainFrame.getMapPanel());
             button.setBackground(new Color(255, 225, 0, 255));
             button.setForeground(new Color(188, 148, 0));
             button.setText("Stop");
         } else if (portReader.getSerialPort() == null) {
-            portReader.connect(portName, baudRate);
+            portReader.connect(serialPort, baudRate);
             //portReader.addListener(this);
             //portReader.addListener(mainFrame.getMapPanel());
             button.setBackground(new Color(255, 0, 0, 255));
@@ -112,7 +103,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         this.mainFrame = mainFrame;
     }
 
-    enum CommandActionType {AsIs, Move, Turn};
+    enum CommandActionType {AsIs, Move, Turn}
 
     /** Обработка события нажатия кнопочки. */
     class CommandActionListener implements ActionListener {
@@ -133,7 +124,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             portReader.writeString(outText);
             log.debug(outText);
         }
-    };
+    }
 
     /**
      * Конструктор.
@@ -146,7 +137,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         fillNavigationPanel();
         fillParametersPanel();
 
-        /** панель для получении информации от робота. */
+        /* панель для получения информации от робота. */
         arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
         final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
         plantInfoScroll.setViewportView(arealInfo);
@@ -169,12 +160,12 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             new TimerTask() {
                 @Override
                 public void run() {
-                    final String[] newPortNames = SerialPortList.getPortNames();
-                    if (portNames.length != newPortNames.length) {
-                        portNames = newPortNames;
-                        portNamesComboBox.removeAllItems();
-                        for (String portName : portNames) {
-                            portNamesComboBox.addItem(portName);
+                    final SerialPort[] newCommPorts = SerialPort.getCommPorts();
+                    if (commPorts.length != newCommPorts.length) {
+                        commPorts = Arrays.stream(newCommPorts).map(SerialPortWrap::new).toArray(SerialPortWrap[]::new);
+                        portsComboBox.removeAllItems();
+                        for (SerialPortWrap portName : commPorts) {
+                            portsComboBox.addItem(portName);
                         }
                     }
                 }
@@ -186,16 +177,16 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private void fillLinkPanel() {
         final JPanel linkPanel = new JPanel();
         linkPanel.setLayout(new BoxLayout(linkPanel, BoxLayout.LINE_AXIS));
-        portNamesComboBox.setSize(16, 20);
+        portsComboBox.setSize(16, 20);
         baudRatesComboBox.setSize(16, 20);
-        baudRatesComboBox.setSelectedItem(SerialPort.BAUDRATE_9600);
+        baudRatesComboBox.setSelectedItem(9600);
         final JButton link = createImageButton("Link", null, 80, 20, "Восстановить связь", resetLinkAction);
         link.setBackground(new Color(0, 255, 255, 89));
         link.setForeground(new Color(0, 128, 128));
         link.setBorderPainted(false);
         link.setFocusPainted(false);
         link.setContentAreaFilled(true);
-        linkPanel.add(portNamesComboBox);
+        linkPanel.add(portsComboBox);
         linkPanel.add(baudRatesComboBox);
         linkPanel.add(link);
         controlPanel.add(linkPanel, BorderLayout.NORTH);
@@ -217,11 +208,11 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         navigationPanel.add(
             new JLabel("TL", JLabel.CENTER));
         navigationPanel.add(
-            createNavigationButton("arrow_left.gif", "разворот влево наместе", "l", CommandActionType.Turn)
+            createNavigationButton("arrow_left.gif", "разворот влево на месте", "l", CommandActionType.Turn)
         );
         navigationPanel.add(new JLabel("SC", JLabel.CENTER));
         navigationPanel.add(
-            createNavigationButton("arrow_right.gif", "разворот вправо наместе", "r", CommandActionType.Turn)
+            createNavigationButton("arrow_right.gif", "разворот вправо на месте", "r", CommandActionType.Turn)
         );
         navigationPanel.add(new JLabel("TR", JLabel.CENTER));
         navigationPanel.add(
@@ -293,11 +284,13 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
     @Override
     public void portReaderCarriageReturn(final String string) {
-
+        arealInfo.append(string);
+        arealInfo.append("\n");
     }
 
     @Override
-    public void portReaderTrash(final String string) {
-        arealInfo.append(string);
+    public void portReaderTrash(final byte[] data) {
+//        arealInfo.append(DatatypeConverter.printHexBinary(data));
+//        arealInfo.append("\n");
     }
 }

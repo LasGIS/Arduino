@@ -2,7 +2,7 @@
 #include "Arduino.h"
 #include "I2C_EEPROM.h"
 
-#define MAX_BLOCK_LENGTH 0x20
+#define MAX_BLOCK_LENGTH 30
 //#define BLOCK_BOUND_SIZE 0x20
 #define BLOCK_BOUND_MASK 0XFFE0
 
@@ -30,7 +30,7 @@ uint8_t I2C_EEPROM::read(uint8_t device, uint16_t address) {
 // also, data can be maximum of about 30 bytes, because the Wire library has a buffer of 32 bytes
 void I2C_EEPROM::write_buffer(
     uint8_t device, uint16_t address,
-    uint8_t* data, uint8_t length
+    uint8_t* data, uint16_t length
 ) {
   for (uint16_t i = 0; i < length;) {
     uint16_t len, addrBound;
@@ -60,14 +60,11 @@ void I2C_EEPROM::write_buffer(
 }
 
 // maybe let's not read more than 30 or 32 bytes at a time!
-void I2C_EEPROM::read_buffer(
-    uint8_t device, uint16_t address,
-    uint8_t* data, uint8_t length
-) {
+void I2C_EEPROM::read_buffer(uint8_t device, uint16_t address, uint8_t* data, uint16_t length) {
   beginTransmission(device, address);
   Wire.endTransmission();
   Wire.requestFrom(device, length);
-  for (uint8_t c = 0; c < length; c++ ) {
+  for (uint16_t c = 0; c < length; c++ ) {
     if (Wire.available()) data[c] = Wire.read();
   }
 }
