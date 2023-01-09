@@ -8,6 +8,9 @@
 
 package com.lasgis.util;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.awt.event.ActionListener;
 
 /**
@@ -18,91 +21,19 @@ import java.awt.event.ActionListener;
  * Date: 17.01.2005
  * Time: 11:55:05
  */
+@Getter
+@AllArgsConstructor
 public class SettingToolBarItem {
-
     /** текст на кнопке. */
-    private String text;
+    private final String text;
     /** Ссылка на файл изображения на кнопке. */
-    private String image;
+    private final String image;
     /** всплывающая подсказка. */
-    private String toolTip;
+    private final String toolTip;
     /** ширина кнопки. */
-    private int width;
+    private final int width;
     /** высота кнопки. */
-    private int height;
+    private final int height;
     /** Событие, которое проявляется при нажатии на кнопку. */
-    private ActionListener action;
-
-    /**
-     * Создаём новую кнопку.
-     * @param aText текст на кнопке
-     * @param aImage изображение на кнопке
-     * @param aToolTip всплывающая подсказка
-     * @param aWidth ширина кнопки
-     * @param aHeight высота кнопки
-     * @param aAction some aAction events
-     */
-    public SettingToolBarItem(
-        String aText,
-        String aImage,
-        String aToolTip,
-        int aWidth,
-        int aHeight,
-        ActionListener aAction
-    ) {
-        this.text = aText;
-        this.image = aImage;
-        this.toolTip = aToolTip;
-        this.width = aWidth;
-        this.height = aHeight;
-        this.action = aAction;
-    } //SettingToolBarItem(String, String, String, int, int, ActionListener)
-
-    /**
-     * Вернуть текст на кнопке.
-     * @return текст на кнопке
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
-     * Вернуть Ссылку на файл изображения на кнопке.
-     * @return Ссылку
-     */
-    public String getImage() {
-        return image;
-    }
-
-    /**
-     * Вернуть всплывающую подсказку.
-     * @return всплывающую подсказку
-     */
-    public String getToolTip() {
-        return toolTip;
-    }
-
-    /**
-     * Вернуть ширину кнопки.
-     * @return ширину кнопки
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * Вернуть высоту кнопки.
-     * @return высоту кнопки
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * Вернуть Событие, которое проявляется при нажатии на кнопку.
-     * @return Событие
-     */
-    public ActionListener getAction() {
-        return action;
-    }
+    private final ActionListener action;
 }

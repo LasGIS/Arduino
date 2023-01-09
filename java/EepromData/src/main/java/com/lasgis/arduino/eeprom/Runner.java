@@ -11,6 +11,7 @@ package com.lasgis.arduino.eeprom;
 import com.lasgis.arduino.eeprom.create.CreateHelper;
 import com.lasgis.arduino.eeprom.load.LoadHelper;
 import com.lasgis.arduino.eeprom.memory.RomData;
+import com.lasgis.arduino.eeprom.panels.ControlHelper;
 import com.lasgis.arduino.eeprom.test.TestHelper;
 import com.lasgis.arduino.eeprom.upload.UploadHelper;
 import lombok.Getter;
@@ -34,25 +35,24 @@ import java.util.Properties;
 @Slf4j
 public class Runner {
 
+    public final static String PROP_PORT_NAME = "port.name";
+    public final static String PROP_BAUD_RATE = "baud.rate";
+    public final static String PROP_PATCH = "patch";
+    public final static String PROP_DATA_FILE = "data";
     @Getter
     private static final Properties properties = new Properties();
     @Getter
     private static final List<CommandType> commands = new ArrayList<>();
+    private final static String[] MANDATORY_PROPERTY_KEYS = {
+        PROP_PORT_NAME, PROP_BAUD_RATE, PROP_PATCH, PROP_DATA_FILE
+    };
     @Getter
     private static List<RomData> dataList;
     @Getter
     private static byte[] dump;
 
-    public final static String PROP_PORT_NAME = "port.name";
-    public final static String PROP_BAUD_RATE = "baud.rate";
-    public final static String PROP_PATCH     = "patch";
-    public final static String PROP_DATA_FILE = "data";
-
-    private final static String[] MANDATORY_PROPERTY_KEYS = {
-        PROP_PORT_NAME, PROP_BAUD_RATE, PROP_PATCH, PROP_DATA_FILE
-    };
-
     /**
+     * <pre>
      * Загружаем свойства и выполняем логику
      * на входе следующие параметры:
      *   -port.name COM3
@@ -70,15 +70,21 @@ public class Runner {
      *      I2CMemory.hex  - образ памяти
      *   upload   - загрузка образа памяти в arduino
      *              Эту команду можно запускать отдельно (без чтения исходных файлов и создание образа)
+     *   panel    - Открываем окно и все команды выполняем в интерактивном режиме
+     * </pre>
+     *
      * @param args аргументы командной строки
      */
     private Runner(final String[] args) throws Exception {
         loadProp(args);
         showProp();
-        validateProp();
+        if (!commands.contains(CommandType.panel)) {
+            validateProp();
+        }
 
         if (commands.contains(CommandType.test) ||
-            commands.contains(CommandType.create)) {
+            commands.contains(CommandType.create) ||
+            commands.contains(CommandType.panel)) {
             dataList = LoadHelper.load();
             dump = LoadHelper.createDump();
         }
@@ -96,10 +102,29 @@ public class Runner {
         if (commands.contains(CommandType.read)) {
             UploadHelper.read();
         }
+        if (commands.contains(CommandType.panel)) {
+            ControlHelper.panel();
+        }
+    }
+
+    /**
+     * Главный запуск программы.
+     *
+     * @param args аргументы командной строки
+     */
+    public static void main(final String[] args) {
+        try {
+            new Runner(args);
+        } catch (final CommonInfoException ex) {
+            log.error(ex.getMessage());
+        } catch (final Exception ex) {
+            log.error(ex.getMessage(), ex);
+        }
     }
 
     /**
      * Загружаем свойства
+     *
      * @param args аргументы командной строки
      * @throws IOException если ошибка
      */
@@ -142,6 +167,7 @@ public class Runner {
 
     /**
      * Проверяем все-ли свойства прочитаны
+     *
      * @throws Exception если ошибка
      */
     private void validateProp() throws Exception {
@@ -157,20 +183,6 @@ public class Runner {
             throw new CommonInfoException(
                 MessageFormat.format("Файла \"{0}\" не существует!", file.getPath())
             );
-        }
-    }
-
-    /**
-     * Главный запуск программы.
-     * @param args аргументы командной строки
-     */
-    public static void main(final String[] args) {
-        try {
-            new Runner(args);
-        } catch (final CommonInfoException ex) {
-            log.error(ex.getMessage());
-        } catch (final Exception ex) {
-            log.error(ex.getMessage(), ex);
         }
     }
 }

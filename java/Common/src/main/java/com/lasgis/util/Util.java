@@ -11,8 +11,12 @@ package com.lasgis.util;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,10 +27,11 @@ import java.io.InputStreamReader;
 
 /**
  * Created by IntelliJ IDEA.
+ *
  * @author VLaskin
  * @version 1.0
- * Date: Sep 3, 2004
- * Time: 6:20:54 PM
+ *     Date: Sep 3, 2004
+ *     Time: 6:20:54 PM
  */
 @Slf4j
 public final class Util {
@@ -41,6 +46,7 @@ public final class Util {
 
     /**
      * Загрузит иконку из каталога image.
+     *
      * @param name имя иконки
      * @return ImageIcon
      * @throws IOException Signals that an I/O exception of some sort has occurred.
@@ -51,6 +57,7 @@ public final class Util {
 
     /**
      * Загрузит иконку из каталога image.
+     *
      * @param name имя иконки
      * @return ImageIcon
      * @throws IOException Signals that an I/O exception of some sort has occurred.
@@ -71,6 +78,7 @@ public final class Util {
 
     /**
      * Загрузит ресурс из classpath.
+     *
      * @param name имя иконки
      * @return ImageIcon
      */
@@ -98,19 +106,21 @@ public final class Util {
 
     /**
      * Загрузит ресурс из файла.
+     *
      * @param fileName имя файла
      * @return StringBuilder
      */
-    public static StringBuilder loadStringFromFile(final String fileName)  {
+    public static StringBuilder loadStringFromFile(final String fileName) {
         return loadStringFromFile(new File(fileName));
     }
 
     /**
      * Загрузит ресурс из файла.
+     *
      * @param file файл
      * @return StringBuilder
      */
-    public static StringBuilder loadStringFromFile(final File file)  {
+    public static StringBuilder loadStringFromFile(final File file) {
         try (
             InputStream in = new FileInputStream(file);
             InputStreamReader reader = new InputStreamReader(in, "UTF-8");
@@ -133,11 +143,12 @@ public final class Util {
 
     /**
      * создать кнопку.
-     * @param name надпись на кнопке
-     * @param iconName иконка на кнопке
-     * @param width ширина кнопки
-     * @param height высота кнопки
-     * @param toolTip всплывающая подсказка
+     *
+     * @param name        надпись на кнопке
+     * @param iconName    иконка на кнопке
+     * @param width       ширина кнопки
+     * @param height      высота кнопки
+     * @param toolTip     всплывающая подсказка
      * @param actListener действие на кнопку
      * @return created JButton
      */
@@ -159,7 +170,7 @@ public final class Util {
                 log.error(e.getMessage());
             }
         }
-//        button.setMaximumSize(new Dimension(width, height));
+        button.setMaximumSize(new Dimension(width, height));
         button.setMinimumSize(new Dimension(width, height));
         button.setPreferredSize(new Dimension(width, height));
         button.setToolTipText(toolTip);
@@ -169,6 +180,7 @@ public final class Util {
 
     /**
      * создать кнопку.
+     *
      * @param set настройки для создания кнопки
      * @return created JButton
      */
@@ -195,12 +207,11 @@ public final class Util {
 
     /**
      * Создаём и возвращаем объект типа JMenu или JMenuItem.
+     *
      * @param set объект типа SettingMenuItem, содержащий информацию для создания меню
      * @return объект типа JMenu или JMenuItem
      */
-    public static JMenuItem createImageMenuItem(
-        final SettingMenuItem set
-    ) {
+    public static JMenuItem createImageMenuItem(final SettingMenuItem set) {
         if (set.getItems() == null) {
             // создаём одну строку меню
             final JMenuItem menu = new JMenuItem();
