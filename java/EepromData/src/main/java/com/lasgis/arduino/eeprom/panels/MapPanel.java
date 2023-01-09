@@ -8,7 +8,6 @@
 
 package com.lasgis.arduino.eeprom.panels;
 
-import com.lasgis.serial.PortReaderListener;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.Util;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Slf4j
 public class MapPanel extends JPanel
-    implements MouseMotionListener, KeyListener, FocusListener, MouseListener, MouseWheelListener, PortReaderListener {
+    implements MouseMotionListener, KeyListener, FocusListener, MouseListener, MouseWheelListener {
 
     /** серый цвет фона. */
     public static final Color PANEL_GRAY_COLOR = new Color(220, 220, 220);
@@ -393,15 +392,5 @@ public class MapPanel extends JPanel
      */
     public void setAutoDraw(final boolean autoDraw) {
         isAutoDraw.getAndSet(autoDraw);
-    }
-
-    @Override
-    public void portReaderCarriageReturn(final String string) {
-
-    }
-
-    @Override
-    public void portReaderTrash(final byte[] data) {
-
     }
 }

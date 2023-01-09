@@ -1,9 +1,9 @@
 /*
- * @(#)UploadHelper.java
+ *  @(#)UploadHelper.java  last: 09.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.upload;
@@ -23,8 +23,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
@@ -44,6 +42,12 @@ import static com.lasgis.arduino.eeprom.Runner.PROP_PORT_NAME;
 public class UploadHelper implements PortReaderListener {
 
     private final Map<Short, SerialBlock> blockMap = new Hashtable<>();
+    private final PortReader portReader;
+
+    public UploadHelper(final PortReader portReader) {
+        this.portReader = portReader;
+        this.portReader.addListener(this);
+    }
 
     public static void upload() throws InterruptedException, IOException {
         final Properties prop = Runner.getProperties();
@@ -52,31 +56,27 @@ public class UploadHelper implements PortReaderListener {
         )).getPath()) + ".hex";
 
         final String portName = prop.getProperty(PROP_PORT_NAME);
-        final int baudRate = Integer.valueOf(prop.getProperty(PROP_BAUD_RATE));
+        final int baudRate = Integer.parseInt(prop.getProperty(PROP_BAUD_RATE));
 
-        final UploadHelper helper = new UploadHelper();
-        final PortReader portReader = PortReader.createPortReader(portName, baudRate);
-        portReader.addListener(helper);
+        final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
+        helper.uploadAll(fileName, helper.portReader);
+        helper.portReader.stop();
+    }
+
+    public static void uploadFile(final PortReader portReader) throws InterruptedException, IOException {
+        final Properties prop = Runner.getProperties();
+        final String fileName = FilenameUtils.removeExtension((new File(
+            prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
+        )).getPath()) + ".hex";
+
+        final UploadHelper helper = new UploadHelper(portReader);
         helper.uploadAll(fileName, portReader);
     }
 
     private void uploadAll(final String fileName, final PortReader portReader) throws InterruptedException, IOException {
         createSerialBlocks(fileName);
-        int count = 3;
-        do {
-            Thread.sleep(1000);
-            upload(portReader);
-        } while (checkAllUpload() && --count > 0);
-        portReader.stop();
-    }
-
-    private boolean checkAllUpload() {
-        for (final SerialBlock block : blockMap.values()) {
-            if (block.isProcessed()) {
-                return true;
-            }
-        }
-        return false;
+        portWriterRun();
+        Thread.sleep(10000);
     }
 
     private void createSerialBlocks(final String fileName) throws IOException {
@@ -105,20 +105,6 @@ public class UploadHelper implements PortReaderListener {
         }
     }
 
-    private void upload(final PortReader portReader) throws InterruptedException {
-        for (final SerialBlock block : blockMap.values()) {
-            if (block.isProcessed()) {
-                final byte[] dump = block.getBytes();
-                log.info("hex[{}] = \"{}\"", block.address, DatatypeConverter.printHexBinary(dump));
-//                log.info("\"{}\"", new String(dump, RomData.CHARSET));
-                portReader.writeByte(dump, dump.length);
-                //block.setProcessed(false);
-            }
-        }
-        final byte[] dump = new byte[20];
-        portReader.writeByte(dump, dump.length);
-    }
-
     @Override
     public void portReaderCarriageReturn(final String str) {
         if (str.startsWith(":adr=")) {
@@ -136,24 +122,47 @@ public class UploadHelper implements PortReaderListener {
 //        log.info("Reader Trash: \"{}\"", string);
     }
 
-    public static void read() throws InterruptedException, IOException {
+    @Override
+    public void portWriterRun() {
+        try {
+            for (final SerialBlock block : blockMap.values()) {
+                if (block.isProcessed()) {
+                    final byte[] dump = block.getBytes();
+                    log.info("hex[{}] = \"{}\"", block.address, DatatypeConverter.printHexBinary(dump));
+                    log.info("\"{}\"", new String(dump, RomData.CHARSET));
+                    portReader.writeByte(dump, dump.length);
+                    block.setProcessed(false);
+                    return;
+                }
+            }
+        } catch (final InterruptedException ex) {
+            log.error("portWriterRun" + ex.getMessage(), ex);
+        }
+    }
+
+    public static void read() throws InterruptedException {
         final Properties prop = Runner.getProperties();
 //        final String fileName = FilenameUtils.removeExtension((new File(
 //            prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
 //        )).getPath()) + ".hex";
 
         final String portName = prop.getProperty(PROP_PORT_NAME);
-        final int baudRate = Integer.valueOf(prop.getProperty(PROP_BAUD_RATE));
+        final int baudRate = Integer.parseInt(prop.getProperty(PROP_BAUD_RATE));
 
-        final UploadHelper helper = new UploadHelper();
-        final PortReader portReader = PortReader.createPortReader(portName, baudRate);
-        portReader.addListener(helper);
+        final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
 
         final ByteArrayBuilder bab = new ByteArrayBuilder(10);
         bab.put(':').put('B').put('R').put(0x57).putShort(0x0000).putShort(512).putChar('Л');
         final byte[] dump = bab.toByte();
-        portReader.writeByte(dump, dump.length);
+        helper.portReader.writeByte(dump, dump.length);
         Thread.sleep(2000);
-        portReader.stop();
+        helper.portReader.stop();
+    }
+
+    public static void read(final PortReader portReader) throws InterruptedException {
+        final ByteArrayBuilder bab = new ByteArrayBuilder(10);
+        bab.put(':').put('B').put('R').put(0x57).putShort(0x0000).putShort(512).putChar('Л');
+        final byte[] dump = bab.toByte();
+        portReader.writeByte(dump, dump.length);
     }
 }

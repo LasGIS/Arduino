@@ -251,6 +251,11 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 //        arealInfo.append("\n");
     }
 
+    @Override
+    public void portWriterRun() {
+
+    }
+
     enum CommandActionType {AsIs, Move, Turn}
 
     /** Обработка события нажатия кнопочки. */
@@ -280,7 +285,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 }
                 case upload: {
                     try {
-                        UploadHelper.upload();
+                        UploadHelper.uploadFile(portReader);
                     } catch (InterruptedException | IOException ex) {
                         log.error(ex.getMessage(), ex);
                     }
@@ -288,8 +293,8 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 }
                 case read: {
                     try {
-                        UploadHelper.read();
-                    } catch (InterruptedException | IOException ex) {
+                        UploadHelper.read(portReader);
+                    } catch (InterruptedException ex) {
                         log.error(ex.getMessage(), ex);
                     }
                     break;

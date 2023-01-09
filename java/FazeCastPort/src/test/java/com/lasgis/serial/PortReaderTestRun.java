@@ -1,5 +1,5 @@
 /*
- *  @(#)PortReaderTestRun.java  last: 05.01.2023
+ *  @(#)PortReaderTestRun.java  last: 09.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -36,5 +36,10 @@ public class PortReaderTestRun implements PortReaderListener {
     @Override
     public void portReaderTrash(final byte[] data) {
         log.info(DatatypeConverter.printHexBinary(data));
+    }
+
+    @Override
+    public void portWriterRun() {
+        log.info("portWriterRun()");
     }
 }

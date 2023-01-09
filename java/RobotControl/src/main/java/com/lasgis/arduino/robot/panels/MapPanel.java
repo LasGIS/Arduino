@@ -1,21 +1,26 @@
 /*
- *  @(#)MapPanel.java  last: 17.05.2018
+ *  @(#)MapPanel.java  last: 09.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.robot.panels;
 
-import com.lasgis.serial.PortReaderListener;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.Util;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.*;
-import javax.xml.bind.DatatypeConverter;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -37,7 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Slf4j
 public class MapPanel extends JPanel
-    implements MouseMotionListener, KeyListener, FocusListener, MouseListener, MouseWheelListener, PortReaderListener {
+    implements MouseMotionListener, KeyListener, FocusListener, MouseListener, MouseWheelListener {
 
     /** серый цвет фона. */
     public static final Color PANEL_GRAY_COLOR = new Color(220, 220, 220);
@@ -305,7 +310,7 @@ public class MapPanel extends JPanel
      * @param e MouseEvent
      */
     public void mouseReleased(final MouseEvent e) {
-//        outStatus(e.paramString());
+        outStatus(e.paramString(), 1);
     }
 
     /**
@@ -314,7 +319,7 @@ public class MapPanel extends JPanel
      * @param e MouseEvent
      */
     public void mouseClicked(final MouseEvent e) {
-//        outStatus(e.paramString());
+        outStatus(e.paramString(), 1);
     }
 
     /**
@@ -322,7 +327,7 @@ public class MapPanel extends JPanel
      * @param e MouseEvent
      */
     public void mouseEntered(final MouseEvent e) {
-//        outStatus(e.paramString());
+        outStatus(e.paramString(), 1);
     }
 
     /**
@@ -330,20 +335,18 @@ public class MapPanel extends JPanel
      * @param e MouseEvent
      */
     public void mouseExited(final MouseEvent e) {
-//        outStatus(e.paramString());
+        outStatus(e.paramString(), 1);
     }
 
     /**
      * создаём и настраиваем выпадающее меню.
      */
     public void createPopupMenu() {
-
         // создаём и настраиваем выпадающее меню
         final JPopupMenu popup = new JPopupMenu();
         for (SettingMenuItem aSetMenu : setPopUpMenu) {
             popup.add(Util.createImageMenuItem(aSetMenu));
         }
-
         //Add listener to the text area so the popup menu can come up.
         final MouseListener popupListener = new PopupListener(popup);
         this.addMouseListener(popupListener);
@@ -387,15 +390,5 @@ public class MapPanel extends JPanel
      */
     public void setAutoDraw(final boolean autoDraw) {
         isAutoDraw.getAndSet(autoDraw);
-    }
-
-    @Override
-    public void portReaderCarriageReturn(final String string) {
-
-    }
-
-    @Override
-    public void portReaderTrash(final byte[] data) {
-
     }
 }

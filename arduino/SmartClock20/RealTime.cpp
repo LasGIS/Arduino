@@ -58,9 +58,9 @@ void printBigTime(DateTime * dateTime) {
     hourLast = hour;
   } else {
     toTwoChar(sec, bufTime, 6);
-#ifdef HAS_SERIAL
+//#ifdef HAS_SERIAL
     Serial.println(bufTime);
-#endif
+//#endif
     printText(clockX + 6, 1, 3, bufTime + 6, COLOR_TOMATO);
   }
 }

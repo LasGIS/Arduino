@@ -1,9 +1,9 @@
 /*
- *  @(#)ConfigPanel.java  last: 17.05.2018
+ *  @(#)ConfigPanel.java  last: 09.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.robot.panels;
@@ -14,9 +14,23 @@ import com.lasgis.serial.PortReaderListener;
 import com.lasgis.serial.SerialPortWrap;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -73,14 +87,12 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         if (portReader == null) {
             portReader = PortReader.createPortReader(serialPort, baudRate);
             portReader.addListener(this);
-            portReader.addListener(mainFrame.getMapPanel());
             button.setBackground(new Color(255, 225, 0, 255));
             button.setForeground(new Color(188, 148, 0));
             button.setText("Stop");
         } else if (portReader.getSerialPort() == null) {
             portReader.connect(serialPort, baudRate);
             //portReader.addListener(this);
-            //portReader.addListener(mainFrame.getMapPanel());
             button.setBackground(new Color(255, 0, 0, 255));
             button.setForeground(new Color(128, 0, 0));
             button.setText("Stop");
@@ -292,5 +304,10 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     public void portReaderTrash(final byte[] data) {
 //        arealInfo.append(DatatypeConverter.printHexBinary(data));
 //        arealInfo.append("\n");
+    }
+
+    @Override
+    public void portWriterRun() {
+
     }
 }

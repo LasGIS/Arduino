@@ -1,5 +1,5 @@
 /*
- *  @(#)PortReaderListener.java  last: 05.01.2023
+ *  @(#)PortReaderListener.java  last: 09.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -27,4 +27,9 @@ public interface PortReaderListener {
      * @param data часть фарша
      */
     void portReaderTrash(byte[] data);
+
+    /**
+     * запускается, когда пора писать в порт
+     */
+    void portWriterRun();
 }

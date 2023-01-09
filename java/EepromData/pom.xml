@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 30.05.2018
+  ~  @(#)pom.xml  last: 09.01.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -30,12 +30,6 @@
             <groupId>com.lasgis.arduino</groupId>
             <artifactId>common</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>com.lasgis.arduino</groupId>
-            <artifactId>serial-port</artifactId>
-        </dependency>
--->
         <dependency>
             <groupId>com.lasgis.arduino</groupId>
             <artifactId>fazecast-port</artifactId>
@@ -44,13 +38,6 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.scream3r</groupId>
-            <artifactId>jssc</artifactId>
-            <version>2.8.0</version>
-        </dependency>
--->
         <dependency>
             <groupId>com.fazecast</groupId>
             <artifactId>jSerialComm</artifactId>
