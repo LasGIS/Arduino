@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)I2CMemory.xml  last: 30.05.2018
+  ~  @(#)I2CMemory.xml  last: 09.01.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
 
 <ROM xmlns="http://www.lasgis.com/arduino/schema/rom"
