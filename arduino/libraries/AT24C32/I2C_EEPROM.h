@@ -10,12 +10,12 @@ public:
     body = NULL;
   }
   ~SerialBlock();
-  /* Размер блока */
-  int8_t size;
   /* номер микосхемы (0x57 для CMOS) */
   int8_t device;
   /* адрес блока в EEPROM памяти */
   int16_t address;
+  /* Размер блока */
+  int16_t size;
   /* Контрольная сумма блока */
   int16_t cs;
   /* тело блока */

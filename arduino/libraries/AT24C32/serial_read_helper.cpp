@@ -29,7 +29,8 @@ int8_t serialReadByte() {
  * Читаем один short (2 байта) из Serial
  */
 int16_t serialReadShort() {
-  uint8_t bt[2]; if (Serial.readBytes(bt, 2) == 2) {
+  uint8_t bt[2];
+  if (Serial.readBytes(bt, 2) == 2) {
     return makeWord(bt[1], bt[0]);
   }
   return -1;
@@ -38,19 +39,19 @@ int16_t serialReadShort() {
 /**
  * Читаем один блок данных и закачиваем его в EEPROM
  * Блок состоит из:
- * 0 - int8_t  - (size) Размер блока
- * 1 - int8_t  - (device) номер микосхемы (0x57 для CMOS)
- * 2 - int16_t - (address) блока в EEPROM памяти
+ * 0 - int8_t  - (device) номер микросхемы (0x57 для CMOS)
+ * 1 - int16_t - (address) блока в EEPROM памяти
+ * 3 - int16_t - (size) Размер блока
  * 5 - int16_t - Контрольная сумма блока
  * 7 - byte[size] - сам блок
  */
 void serialWriteBlock() {
   SerialBlock * sb = new SerialBlock();
-  int len = Serial.readBytes((byte *) sb, 6);
-  if (len == 6) {
+  int len = Serial.readBytes((uint8_t *) sb, 7);
+  if (len == 7) {
     if (sb->size > 0 && sb->size < 22) {
       sb->body = new byte[sb->size];
-      len = Serial.readBytes((char *) sb->body, sb->size);
+      len = Serial.readBytes((uint8_t *) sb->body, sb->size);
       if (len == sb->size) {
         // обязательный ответ
         Serial.print(":adr=");
@@ -88,31 +89,32 @@ void serialWriteBlock() {
  * 0 - int16_t - (size) Размер блока
  */
 void serialReadBlock() {
-  uint8_t device = serialReadByte();
-  uint16_t address = serialReadShort();
-  uint16_t size = serialReadShort();
+  SerialBlock * sb = new SerialBlock();
+  int size = Serial.readBytes((uint8_t *) sb, 7);
 #ifdef HAS_SERIAL
   Serial.print("device = ");
-  Serial.print(device, HEX);
+  Serial.print(sb->device, HEX);
   Serial.print("; address = ");
-  Serial.print(address, HEX);
+  Serial.print(sb->address, HEX);
   Serial.print("; size = ");
-  Serial.println(size);
+  Serial.println(sb->size);
+  Serial.print("; cs = ");
+  Serial.println(sb->cs);
 #endif
   uint8_t buf[32];
   uint16_t len;
-  for (uint16_t l = 0; l < size; l += READ_BLOCK_LENGTH) {
-    if (size - l > READ_BLOCK_LENGTH) {
+  for (uint16_t l = 0; l < sb->size; l += READ_BLOCK_LENGTH) {
+    if (sb->size - l > READ_BLOCK_LENGTH) {
       len = READ_BLOCK_LENGTH;
     } else {
-      len = size - l;
+      len = sb->size - l;
     }
-    I2CEEPROM.read_buffer(device, address + l, buf, len);
+    I2CEEPROM.read_buffer(sb->device, sb->address + l, buf, len);
 //    for (uint16_t i = 0; i < len; i++) {
 //      buf[i] = I2CEEPROM.read(device, address + l + i);
 //    }
     Serial.print(":");
-    for (uint16_t i = 0; i < READ_BLOCK_LENGTH && l + i < size; i++) {
+    for (uint16_t i = 0; i < READ_BLOCK_LENGTH && l + i < sb->size; i++) {
       SerialPrintHex(buf[i]);
     }
     Serial.println();

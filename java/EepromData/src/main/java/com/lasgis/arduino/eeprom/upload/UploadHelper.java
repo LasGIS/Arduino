@@ -1,5 +1,5 @@
 /*
- *  @(#)UploadHelper.java  last: 09.01.2023
+ *  @(#)UploadHelper.java  last: 12.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -92,9 +92,9 @@ public class UploadHelper implements PortReaderListener {
             String line;
             short address = 0;
             while ((line = reader.readLine()) != null) if (line.startsWith(":")) {
-                final SerialBlock block = new SerialBlock();
                 final byte[] body = DatatypeConverter.parseHexBinary(line.substring(1));
                 final byte size = (byte) body.length;
+                final SerialBlock block = new SerialBlock();
                 block.setBody(body);
                 block.setSize(size);
                 block.setAddress(address);
@@ -127,7 +127,7 @@ public class UploadHelper implements PortReaderListener {
         try {
             for (final SerialBlock block : blockMap.values()) {
                 if (block.isProcessed()) {
-                    final byte[] dump = block.getBytes();
+                    final byte[] dump = block.getWriteBytes();
                     log.info("hex[{}] = \"{}\"", block.address, DatatypeConverter.printHexBinary(dump));
                     log.info("\"{}\"", new String(dump, RomData.CHARSET));
                     portReader.writeByte(dump, dump.length);
@@ -159,10 +159,8 @@ public class UploadHelper implements PortReaderListener {
         helper.portReader.stop();
     }
 
-    public static void read(final PortReader portReader) throws InterruptedException {
-        final ByteArrayBuilder bab = new ByteArrayBuilder(10);
-        bab.put(':').put('B').put('R').put(0x57).putShort(0x0000).putShort(512).putChar('Л');
-        final byte[] dump = bab.toByte();
+    public static void readBlock(final PortReader portReader, final SerialBlock block) throws InterruptedException {
+        final byte[] dump = block.getHead4ReadBytes();
         portReader.writeByte(dump, dump.length);
     }
 }

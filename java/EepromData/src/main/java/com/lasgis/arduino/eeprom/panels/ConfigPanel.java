@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 09.01.2023
+ *  @(#)ConfigPanel.java  last: 12.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -12,6 +12,7 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.lasgis.arduino.eeprom.CommandType;
 import com.lasgis.arduino.eeprom.create.CreateHelper;
 import com.lasgis.arduino.eeprom.test.TestHelper;
+import com.lasgis.arduino.eeprom.upload.SerialBlock;
 import com.lasgis.arduino.eeprom.upload.UploadHelper;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
@@ -28,6 +29,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;
+import javax.xml.bind.DatatypeConverter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -38,6 +40,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
@@ -47,7 +50,6 @@ import static com.lasgis.util.Util.createImageButton;
 import static java.awt.GridBagConstraints.BOTH;
 import static java.awt.GridBagConstraints.CENTER;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * Панель конфигурации.
@@ -65,12 +67,12 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private final JPanel controlPanel = new JPanel(new BorderLayout());
     /** панель для информации об ячейках. */
     private final JTextArea arealInfo = new JTextArea();
-    /** поле для ввода команды. */
-    private final JTextField commandInput = new JTextField();
-    /** поле для ввода расстояния. */
-    private final JTextField distanceInput = new JTextField();
-    /** поле для ввода угла поворота. */
-    private final JTextField angleInput = new JTextField();
+    /** поле для ввода номера микросхемы (0x57 для CMOS). */
+    private final JTextField deviceInput = new JTextField(2);
+    /** поле для ввода адреса блока в EEPROM памяти. */
+    private final JTextField addressInput = new JTextField(4);
+    /** поле для ввода размера блока. */
+    private final JTextField sizeInput = new JTextField(4);
     /** ComboBox for baud rates. */
     private final JComboBox<Integer> baudRatesComboBox = new JComboBox<>(BAUD_RATES);
     private SerialPortWrap[] commPorts = Arrays.stream(SerialPort.getCommPorts()).map(SerialPortWrap::new).toArray(SerialPortWrap[]::new);
@@ -78,14 +80,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private final JComboBox<SerialPortWrap> portsComboBox = new JComboBox<>(commPorts);
     /** Port Reader. */
     private PortReader portReader;
-    /** Обработка события при смене текстовой команды (нажали ENTER в input). */
-    private final ActionListener enterOnInputAction = event -> {
-        log.debug(event.getActionCommand());
-        if (nonNull(portReader)) {
-            portReader.writeString(event.getActionCommand());
-            commandInput.setText("");
-        }
-    };
     /** Восстановление или установление связи с девайсом. */
     private final ActionListener resetLinkAction = (event -> {
         final JButton button = (JButton) event.getSource();
@@ -137,8 +131,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         splitPane.setContinuousLayout(true);
         splitPane.add(controlPanel, JSplitPane.TOP);
         splitPane.add(plantInfoScroll, JSplitPane.BOTTOM);
-        //splitPane.setDividerLocation(100);
-        //splitPane.setLastDividerLocation(100);
         splitPane.setResizeWeight(0.0);
 
         setLayout(new BorderLayout());
@@ -189,38 +181,37 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private void fillNavigationPanel() {
         final JPanel navigationPanel = new JPanel(new GridLayout(3, 2, 5, 5));
         //keyPanel.setSize(150, 150);
-        navigationPanel.add(createNavigationButton("Create", null, "поворот вперёд и влево", CommandType.create));
-        navigationPanel.add(createNavigationButton("Upload", null, "разворот влево на месте", CommandType.upload));
-        navigationPanel.add(createNavigationButton("Read", null, "разворот вправо на месте", CommandType.read));
-
+        navigationPanel.add(createNavigationButton("Create", null, "Создаем по файлу", CommandType.create));
+        navigationPanel.add(createNavigationButton("Upload", null, "Запись блока", CommandType.upload));
+        navigationPanel.add(createNavigationButton("Read", null, "Чтение блока", CommandType.read));
         controlPanel.add(navigationPanel, BorderLayout.EAST);
 
-        commandInput.addActionListener(enterOnInputAction);
-        controlPanel.add(commandInput, BorderLayout.SOUTH);
+//        controlPanel.add(deviceInput, BorderLayout.SOUTH);
     }
 
     /** создание доп атрибутов. */
     private void fillParametersPanel() {
-        distanceInput.setText("30");
-        angleInput.setText("90");
+        deviceInput.setText("57");
+        addressInput.setText("00FE");
+        sizeInput.setText("0111");
         final JPanel parametersPanel = new JPanel(new GridBagLayout());
         final GridBagConstraints labelGbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
             CENTER, BOTH, new Insets(2, 5, 2, 4), 0, 0);
         final GridBagConstraints inputGbc = new GridBagConstraints(1, 0, 1, 1, 0, 0,
             CENTER, BOTH, new Insets(2, 0, 2, 0), 0, 0);
-        final GridBagConstraints dimensionGbc = new GridBagConstraints(2, 0, 1, 1, 0, 0,
-            CENTER, BOTH, new Insets(2, 4, 2, 5), 0, 0);
 
-        parametersPanel.add(new JLabel("Дистанция", JLabel.RIGHT), labelGbc);
-        parametersPanel.add(distanceInput, inputGbc);
-        parametersPanel.add(new JLabel("[см]", JLabel.LEFT), dimensionGbc);
+        parametersPanel.add(new JLabel("device", JLabel.RIGHT), labelGbc);
+        parametersPanel.add(deviceInput, inputGbc);
 
         labelGbc.gridy++;
         inputGbc.gridy++;
-        dimensionGbc.gridy++;
-        parametersPanel.add(new JLabel("Угол", JLabel.RIGHT), labelGbc);
-        parametersPanel.add(angleInput, inputGbc);
-        parametersPanel.add(new JLabel("[град]", JLabel.LEFT), dimensionGbc);
+        parametersPanel.add(new JLabel("address", JLabel.RIGHT), labelGbc);
+        parametersPanel.add(addressInput, inputGbc);
+
+        labelGbc.gridy++;
+        inputGbc.gridy++;
+        parametersPanel.add(new JLabel("size", JLabel.RIGHT), labelGbc);
+        parametersPanel.add(sizeInput, inputGbc);
 
         controlPanel.add(parametersPanel, BorderLayout.WEST);
     }
@@ -293,7 +284,15 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 }
                 case read: {
                     try {
-                        UploadHelper.read(portReader);
+                        final ByteBuffer buffer = ByteBuffer.allocate(10);
+                        byte device = DatatypeConverter.parseHexBinary(deviceInput.getText())[0];
+                        buffer.put(DatatypeConverter.parseHexBinary(addressInput.getText()));
+                        buffer.put(DatatypeConverter.parseHexBinary(sizeInput.getText()));
+                        short address = buffer.getShort(0);
+                        short size = buffer.getShort(2);
+                        UploadHelper.readBlock(portReader, SerialBlock.of(
+                            device, address, size, (short) 0
+                        ));
                     } catch (InterruptedException ex) {
                         log.error(ex.getMessage(), ex);
                     }
