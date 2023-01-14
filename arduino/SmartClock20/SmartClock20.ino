@@ -150,7 +150,7 @@ void setup() {
   for (int16_t i = 0; i < 0x100; i++) {
     buffer[i]=0;
   }
-  for (int16_t a = 0x00; a < 0x2000; a += 0x100) {
+  for (int16_t a = 0x00; a < 0x1000; a += 0x100) {
     I2CEEPROM.write_buffer(0x57, a, buffer, 0x100);
   }
 */

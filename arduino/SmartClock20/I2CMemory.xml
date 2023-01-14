@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)I2CMemory.xml  last: 17.05.2018
+  ~  @(#)I2CMemory.xml  last: 14.01.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
 
 <ROM xmlns="http://www.lasgis.com/arduino/schema/rom"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">
 
-    <CHAR name="CHAR" val="c"/>
-    <INT8 name="BYTE" val="127"/>
-    <INT16 name="INT" val="32767"/>
-    <INT32 name="LONG" val="2147483647"/>
-    <FLOAT name="FLOAT" val="13.14"/>
-    <DOUBLE name="DOUBLE" val="13.1415926"/>
-    <STRING name="STRING" val="некоторый текст"/>
-    <OBJECT name="OBJECT">
+    <CHAR name="Char" val="c"/>
+    <INT8 name="Byte" val="127"/>
+    <INT16 name="Int" val="32767"/>
+    <INT32 name="Long" val="2147483647"/>
+    <FLOAT name="Float" val="13.14"/>
+    <DOUBLE name="Double" val="13.1415926"/>
+    <STRING name="String" val="некоторый текст"/>
+    <OBJECT name="Object">
         <CHAR val="h"/>
         <INT8 val="-128"/>
         <INT16 val="-32768"/>
@@ -27,22 +27,22 @@
         <DOUBLE val="-13.1415926"/>
         <STRING val="другой текст"/>
     </OBJECT>
-    <ARRAY name="ARRAY_OF_INT">
+    <ARRAY name="ArrayOfInt">
         <INT16 val="-2"/>
-        <INT16 name="DEFINITION" val="-1"/>
+        <INT16 name="Definition" val="-1"/>
         <INT16 val="0"/>
-        <INT16 name="DEFINITION" val="1"/>
+        <INT16 name="Definition" val="1"/>
         <INT16 val="2"/>
         <INT16 val="3"/>
     </ARRAY>
-    <ARRAY name="ARRAY_OF_OBJECT">
-        <OBJECT name="OBJECT">
-            <INT8 name="INT8" val="1"/>
-            <INT16 name="INT16" val="111"/>
-            <STRING name="STRING" val="Первый объект"/>
-            <CHAR name="CHAR" val="F"/>
+    <ARRAY name="ArrayOfObject">
+        <OBJECT name="Object">
+            <INT8 name="Int8" val="1"/>
+            <INT16 name="Int16" val="111"/>
+            <STRING name="String" val="Первый объект"/>
+            <CHAR name="Char" val="F"/>
         </OBJECT>>
-        <OBJECT name="OBJECT">
+        <OBJECT name="Object">
             <INT8 val="2"/>
             <INT16 val="222"/>
             <STRING val="Второй объект 2"/>

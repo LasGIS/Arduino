@@ -47,7 +47,21 @@ int16_t serialReadShort() {
  */
 void serialWriteBlock() {
   SerialBlock * sb = new SerialBlock();
-  int len = Serial.readBytes((uint8_t *) sb, 7);
+  size_t len = Serial.readBytes((uint8_t *) sb, 7);
+#ifdef HAS_SERIAL
+  Serial.print("sizeof(SerialBlock) = ");
+  Serial.print(sizeof(SerialBlock));
+  Serial.print("; len = ");
+  Serial.print(len);
+  Serial.print("; device = ");
+  Serial.print(sb->device, HEX);
+  Serial.print("; address = ");
+  Serial.print(sb->address, HEX);
+  Serial.print("; block size = ");
+  Serial.print(sb->size);
+  Serial.print("; cs = ");
+  Serial.println(sb->cs);
+#endif
   if (len == 7) {
     if (sb->size > 0 && sb->size < 22) {
       sb->body = new byte[sb->size];
@@ -90,7 +104,7 @@ void serialWriteBlock() {
  */
 void serialReadBlock() {
   SerialBlock * sb = new SerialBlock();
-  int size = Serial.readBytes((uint8_t *) sb, 7);
+  size_t size = Serial.readBytes((uint8_t *) sb, 7);
 #ifdef HAS_SERIAL
   Serial.print("device = ");
   Serial.print(sb->device, HEX);

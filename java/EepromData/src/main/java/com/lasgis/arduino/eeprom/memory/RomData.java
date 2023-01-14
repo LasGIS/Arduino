@@ -1,16 +1,15 @@
 /*
- * @(#)RomData.java
+ *  @(#)RomData.java  last: 14.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
 
 import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.io.UnsupportedEncodingException;
@@ -66,7 +65,6 @@ import java.nio.charset.Charset;
 @Data
 @ToString(exclude = {"offset"})
 public abstract class RomData {
-
     /** Charset. */
     public static final Charset CHARSET = Charset.forName("windows-1251");
 

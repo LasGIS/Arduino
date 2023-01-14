@@ -1,5 +1,5 @@
 /*
- *  @(#)SerialBlock.java  last: 12.01.2023
+ *  @(#)SerialBlock.java  last: 14.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -39,13 +39,13 @@ public class SerialBlock {
     }
 
     public byte[] getWriteBytes() {
-        final ByteArrayBuilder bab = new ByteArrayBuilder(10 + size);
-        bab.put(':').put('B').put('W').put(size).put(device).putShort(address).putShort(cs).put(body);
+        final ByteArrayBuilder bab = new ByteArrayBuilder(11 + size);
+        bab.put(':').put('B').put('W').put(device).putShort(address).putShort(size).putShort(cs).put(body);
         return bab.toByte();
     }
 
     public byte[] getHead4ReadBytes() {
-        final ByteArrayBuilder bab = new ByteArrayBuilder(10 + size);
+        final ByteArrayBuilder bab = new ByteArrayBuilder(11 + size);
         bab.put(':').put('B').put('R').put(device).putShort(address).putShort(size).putShort(cs);
         return bab.toByte();
     }
