@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)RomMemory.xsd  last: 17.05.2018
+  ~  @(#)RomMemory.xsd  last: 21.01.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
 
 <xs:schema attributeFormDefault="qualified"
@@ -56,14 +56,6 @@
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
-    <xs:complexType name="DOUBLEType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="name" use="optional"/>
-                <xs:attribute type="xs:double" name="val" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
     <xs:complexType name="STRINGType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
@@ -78,7 +70,6 @@
             <xs:element type="INT8Type" name="INT8"/>
             <xs:element type="INT16Type" name="INT16"/>
             <xs:element type="INT32Type" name="INT32"/>
-            <xs:element type="DOUBLEType" name="DOUBLE"/>
             <xs:element type="FLOATType" name="FLOAT"/>
             <xs:element type="STRINGType" name="STRING"/>
         </xs:sequence>
@@ -90,7 +81,6 @@
             <xs:element type="INT8Type" name="INT8"/>
             <xs:element type="INT16Type" name="INT16"/>
             <xs:element type="INT32Type" name="INT32"/>
-            <xs:element type="DOUBLEType" name="DOUBLE"/>
             <xs:element type="FLOATType" name="FLOAT"/>
             <xs:element type="STRINGType" name="STRING"/>
             <xs:element type="OBJECTType" name="OBJECT"/>
@@ -103,7 +93,6 @@
             <xs:element type="INT8Type" name="INT8"/>
             <xs:element type="INT16Type" name="INT16"/>
             <xs:element type="INT32Type" name="INT32"/>
-            <xs:element type="DOUBLEType" name="DOUBLE"/>
             <xs:element type="FLOATType" name="FLOAT"/>
             <xs:element type="STRINGType" name="STRING"/>
             <xs:element type="OBJECTType" name="OBJECT"/>

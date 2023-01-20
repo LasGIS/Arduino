@@ -11,7 +11,7 @@
 
 #define FIRST_KEYBOARD 0
 #define PLAY_KEYBOARD  1
-/* РёСЃРїРѕР»СЊР·СѓРµРј РІС‚РѕСЂСѓСЋ РєР»Р°РІРёР°С‚СѓСЂСѓ */
+/* используем вторую клавиатуру */
 #define KEYBOARD_LAYOUT PLAY_KEYBOARD
 
 class IrControlKey {

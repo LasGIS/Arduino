@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "I2C_EEPROM.h"
+#include <SerialBlock.h>
 
 #define READ_BLOCK_LENGTH 31
 
@@ -124,9 +124,6 @@ void serialReadBlock() {
       len = sb->size - l;
     }
     I2CEEPROM.read_buffer(sb->device, sb->address + l, buf, len);
-//    for (uint16_t i = 0; i < len; i++) {
-//      buf[i] = I2CEEPROM.read(device, address + l + i);
-//    }
     Serial.print(":");
     for (uint16_t i = 0; i < READ_BLOCK_LENGTH && l + i < sb->size; i++) {
       SerialPrintHex(buf[i]);

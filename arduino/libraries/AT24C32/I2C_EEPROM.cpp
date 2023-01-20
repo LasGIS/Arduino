@@ -3,7 +3,6 @@
 #include "I2C_EEPROM.h"
 
 #define MAX_BLOCK_LENGTH 30
-//#define BLOCK_BOUND_SIZE 0x20
 #define BLOCK_BOUND_MASK 0XFFE0
 
 void I2C_EEPROM::beginTransmission(uint8_t device, uint16_t address) {
@@ -12,18 +11,18 @@ void I2C_EEPROM::beginTransmission(uint8_t device, uint16_t address) {
   Wire.write(lowByte(address)); // LSB
 }
 
-void I2C_EEPROM::write(uint8_t device, uint16_t address, uint8_t data) {
-  beginTransmission(device, address);
-  Wire.write(data);
-  Wire.endTransmission();
-  delay(10);
-}
-
 uint8_t I2C_EEPROM::read(uint8_t device, uint16_t address) {
   beginTransmission(device, address);
   Wire.endTransmission();
   Wire.requestFrom(device, (uint8_t) 1);
   return Wire.available() ? Wire.read() : 0xFF;
+}
+
+void I2C_EEPROM::write(uint8_t device, uint16_t address, uint8_t data) {
+  beginTransmission(device, address);
+  Wire.write(data);
+  Wire.endTransmission();
+  delay(10);
 }
 
 // WARNING: address is a page address, 6-bit end will wrap around

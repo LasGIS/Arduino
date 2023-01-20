@@ -21,7 +21,7 @@ ModeType mode = show;
 
 ScreenTft* screens[NUMBER_OF_SCREENS] = {
   new ScreenDateTime(),
-  new ScreenTimer(),
+//  new ScreenTimer(),
   new ScreenDump()
 };
 ScreenTft * screen = screens[currentCommand];
@@ -154,6 +154,7 @@ void setup() {
     I2CEEPROM.write_buffer(0x57, a, buffer, 0x100);
   }
 */
+  testDouble();
 }
 
 /**

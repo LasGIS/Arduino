@@ -1,5 +1,5 @@
 /*
- *  @(#)RomData.java  last: 14.01.2023
+ *  @(#)RomData.java  last: 21.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -10,6 +10,7 @@ package com.lasgis.arduino.eeprom.memory;
 
 import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.UnsupportedEncodingException;
@@ -63,6 +64,7 @@ import java.nio.charset.Charset;
  * @since 16.05.2018
  */
 @Data
+@NoArgsConstructor
 @ToString(exclude = {"offset"})
 public abstract class RomData {
     /** Charset. */

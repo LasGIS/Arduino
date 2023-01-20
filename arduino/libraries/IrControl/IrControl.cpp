@@ -1,5 +1,5 @@
 /**
- * IrControl - РјРѕРґСѓР»СЊ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РРљ РїСѓР»СЊС‚Р°
+ * IrControl - модуль для подключения ИК пульта
  */
 #include <IrControl.h>
 
@@ -41,8 +41,8 @@ IrControlKey irControlKeyMap[] {
   {'>', 0xFFA857, 330}, // tape forward
   {'p', 0xFF906F, 349}, // pause
 
-  {'-', 0xFF6897, 370}, // СѓРјРµРЅСЊС€РµРЅРёРµ
-  {'+', 0xFF9867, 392}, // СѓРІРµР»РёС‡РµРЅРёРµ
+  {'-', 0xFF6897, 370}, // уменьшение
+  {'+', 0xFF9867, 392}, // увеличение
   {'0', 0xFFB04F, 415},
   {'1', 0xFF30CF, 440},
   {'2', 0xFF18E7, 466},
@@ -87,7 +87,7 @@ void IrControl::handle_interrupt() {
 void IrControl::interrupt() {
   long time = micros() - startTime;
   startTime += time;
-  if (time < IR_CONTROL_MINIMAL_TIME || time > IR_CONTROL_MAXIMAL_TIME || _hasCode) {
+  if ((time < IR_CONTROL_MINIMAL_TIME) || (time > IR_CONTROL_MAXIMAL_TIME) || _hasCode) {
     return;
   }
   byte value = digitalRead(irPin);
@@ -116,7 +116,7 @@ bool IrControl::decode() {
       return false;
     } else if (count >= IR_CONTROL_MAXIMAL_COUNT) {
       if (i == 16) {
-        /* РІР°СЂРёР°РЅС‚ СЃ РїРѕР»РѕРІРёРЅРЅС‹РјРё РїСѓР»СЊС‚Р°РјРё */
+        /* вариант с половинными пультами */
         code = value;
         _hasCode = true;
         return true;
@@ -142,7 +142,7 @@ unsigned long IrControl::getCode() {
 }
 
 /**
- * РїСЂРѕРїСѓСЃРєР°РµРј РїРѕРєР° СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ val Рё СЃС‡РёС‚Р°РµРј РІСЂРµРјСЏ
+ * пропускаем пока соответствует val и считаем время
  */
 int IrControl::wait(byte val) {
   int count = 0;
@@ -154,7 +154,7 @@ int IrControl::wait(byte val) {
 }
 
 /**
- * РїРѕР»СѓС‡Р°РµРј РєР»СЋС‡СЊ РёР· РєРѕРґР°
+ * получаем ключь из кода
  */
 char IrControl::toKey(long code) {
   for (unsigned int i = 0; i < sizeof(irControlKeyMap) / sizeof(IrControlKey); i++) {
@@ -166,7 +166,7 @@ char IrControl::toKey(long code) {
 }
 
 /**
- * РїРѕР»СѓС‡Р°РµРј ControlKey РёР· РєРѕРґР°
+ * получаем ControlKey из кода
  */
 IrControlKey* IrControl::toControlKey(long code) {
   for (unsigned int i = 0; i < sizeof(irControlKeyMap) / sizeof(IrControlKey); i++) {

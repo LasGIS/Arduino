@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)I2CMemory.xml  last: 14.01.2023
+  ~  @(#)I2CMemory.xml  last: 21.01.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -15,8 +15,7 @@
     <INT8 name="Byte" val="127"/>
     <INT16 name="Int" val="32767"/>
     <INT32 name="Long" val="2147483647"/>
-    <FLOAT name="Float" val="13.14"/>
-    <DOUBLE name="Double" val="13.1415926"/>
+    <FLOAT name="Float" val="13.1415926"/>
     <STRING name="String" val="некоторый текст"/>
     <OBJECT name="Object">
         <CHAR val="h"/>
@@ -24,7 +23,6 @@
         <INT16 val="-32768"/>
         <INT32 val="-2147483648"/>
         <FLOAT val="-13.14"/>
-        <DOUBLE val="-13.1415926"/>
         <STRING val="другой текст"/>
     </OBJECT>
     <ARRAY name="ArrayOfInt">

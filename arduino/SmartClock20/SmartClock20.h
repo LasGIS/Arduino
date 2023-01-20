@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <avr/pgmspace.h>
-#include <I2C_EEPROM.h>
+#include <SerialBlock.h>
 #include <SPI.h>
 #include <DS3231.h>
 #include <Wire.h>
@@ -49,7 +49,7 @@
 #define BOXH_CENTER_Y 87
 
 /* количество экранов */
-#define NUMBER_OF_SCREENS 3
+#define NUMBER_OF_SCREENS 2
 extern TFT_LG_ILI9225 tft;
 extern DS3231 Clock;
 extern char comBuffer[20];
@@ -72,6 +72,8 @@ extern void printShortTime(DateTime * dateTime);
 extern void printBigTime  (DateTime * dateTime);
 extern void printRealDate (DateTime * dateTime);
 extern bool isHorisontalOrientation();
+extern void testAT24C32();
+extern void testDouble();
 
 class GravVector {
 public:

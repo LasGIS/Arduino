@@ -13,6 +13,7 @@ DEFINES += __AVR_ATmega328P__
 
 SOURCES += \
     ../libraries/ADXL345/src/ADXL345.cpp \
+    ../libraries/AT24C32/SerialBlock.cpp \
     ../libraries/DS3231/DS3231.cpp \
     ../libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.cpp \
     ../libraries/TFT_LG_ILI9225/src/RussFontANSI.c \
@@ -24,7 +25,6 @@ SOURCES += \
     ../libraries/MsTimer2/MsTimer2.cpp \
     ../libraries/AT24C32/I2C_EEPROM.cpp \
     ../libraries/AT24C32/Examples/AT24C32_TEST/AT24C32_TEST.ino \
-    ../libraries/AT24C32/serial_read_helper.cpp \
     SmartClock20.ino \
     Accel.cpp \
     RealTime.cpp \
@@ -33,7 +33,8 @@ SOURCES += \
     screen_date_time.cpp \
     screen_timer.cpp \
     screen_tft.cpp \
-    screen_dump.cpp
+    screen_dump.cpp \
+    testAT24C32.cpp
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += ../libraries/arduino-ds1302-master \
@@ -57,6 +58,7 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
     D:/local/Arduino/libraries/Servo/src
 
 HEADERS += \
+    ../libraries/AT24C32/SerialBlock.h \
     ../libraries/DHT-sensor-library-master/DHT.h \
     ../libraries/IrControl/IrControl.h \
     ../libraries/MsTimer2/MsTimer2.h \

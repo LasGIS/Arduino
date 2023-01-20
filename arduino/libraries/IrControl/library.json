@@ -7,8 +7,8 @@
     "url": "https://github.com/LasGIS/IrControl.git"
   },
   "authors": [{
-    "name": "Paul Stoffregen",
-    "url": "https://www.pjrc.com/about/",
+    "name": "Vladimir Laskin",
+    "url": "https://LasGIS/about/",
     "maintainer": true
   }],
   "frameworks": [
