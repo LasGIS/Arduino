@@ -13,6 +13,7 @@ DEFINES += __AVR_ATmega328P__
 
 SOURCES += \
     ../libraries/ADXL345/src/ADXL345.cpp \
+    ../libraries/AT24C32/LoadClass.cpp \
     ../libraries/AT24C32/SerialBlock.cpp \
     ../libraries/DS3231/DS3231.cpp \
     ../libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.cpp \
@@ -58,6 +59,7 @@ INCLUDEPATH += ../libraries/arduino-ds1302-master \
     D:/local/Arduino/libraries/Servo/src
 
 HEADERS += \
+    ../libraries/AT24C32/LoadClass.h \
     ../libraries/AT24C32/SerialBlock.h \
     ../libraries/DHT-sensor-library-master/DHT.h \
     ../libraries/IrControl/IrControl.h \

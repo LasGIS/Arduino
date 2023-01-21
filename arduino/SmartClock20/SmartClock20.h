@@ -73,7 +73,7 @@ extern void printBigTime  (DateTime * dateTime);
 extern void printRealDate (DateTime * dateTime);
 extern bool isHorisontalOrientation();
 extern void testAT24C32();
-extern void testDouble();
+extern void testString();
 
 class GravVector {
 public:
