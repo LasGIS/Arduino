@@ -3,12 +3,16 @@
 
 #include <I2C_EEPROM.h>
 
+#define HAS_SERIAL_DEBUG
+
 class LoadClass {
 private:
     /* номер микосхемы (0x57 для CMOS) */
     int8_t device;
     /* адрес блока в EEPROM памяти */
     int16_t address;
+private:
+    int getObjectLench(char * definition);
 public:
     LoadClass(int8_t device, int16_t address);
     ~LoadClass();
@@ -25,6 +29,10 @@ public:
     char * readString();
     char * readString(int16_t address);
     void deleteString(char * str);
-};
+
+    uint8_t * readObject(char * definition, int & pos);
+    uint8_t * readObject(char * definition, int16_t address, int &pos);
+    void deleteObject(char * definition, uint8_t * obj);
+ };
 
 #endif // LOAD_CLASS_H

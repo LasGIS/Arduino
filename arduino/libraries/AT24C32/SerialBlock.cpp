@@ -7,16 +7,24 @@ int8_t charToHex(char ch) {
   return ((ch < 'A') ? (ch - '0') : (ch - 'A' + 0xA)) & 0x0F;
 }
 
-char byteToHexChar(int8_t bt) {
+char byteToHexChar(uint8_t bt) {
   return ((bt < 0xA) ? (bt + '0') : (bt + 'A' - 0xA));
 }
 
-void SerialPrintHex(int8_t bt) {
+void SerialPrintHex(uint8_t bt) {
   char out[3];
   out[0] = byteToHexChar((bt >> 4) & 0xf);
   out[1] = byteToHexChar(bt & 0xf);
   out[2] = 0;
   Serial.print(out);
+}
+void SerialPrintHex(uint8_t * obj, int len) {
+  for (int i = 0; i < len; i++) {
+    if (i != 0) {
+      Serial.print(',');
+    }
+    SerialPrintHex(obj[i]);
+  }
 }
 
 /** Читаем один байт из Serial */

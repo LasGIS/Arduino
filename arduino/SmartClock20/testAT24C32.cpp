@@ -1,15 +1,43 @@
 #include <Arduino.h>
+#include <SerialBlock.h>
 #include <LoadClass.h>
 #include "I2CMemory.h"
 
 #define DEVICE 0x57
+struct TestObject {
+  char c;
+  int8_t b;
+  int16_t i;
+  int32_t l;
+  float f;
+  char * s;
+};
 
 void testString() {
-    LoadClass lc = LoadClass(DEVICE, 0);
-    char* s = lc.readString(EEPROM_ArrayOfObject_0_Object_String_ADDRESS);
-    Serial.print("String = ");
-    Serial.println(s);
-    lc.deleteString(s);
+  LoadClass lc = LoadClass(DEVICE, 0);
+  char* s = lc.readString(EEPROM_ArrayOfObject_0_Object_String_ADDRESS);
+  Serial.print("String = ");
+  Serial.println(s);
+  lc.deleteString(s);
+}
+
+void testObject() {
+  LoadClass lc = LoadClass(DEVICE, 0);
+  int len = 0;
+  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object_DEFINITION, EEPROM_Object_ADDRESS, len);
+  Serial.print("; Object(");
+  Serial.print(len);
+  Serial.print(") = ");
+  SerialPrintHex((uint8_t *) obj, len);
+  Serial.println();
+  Serial.println(obj->c);
+  Serial.println(obj->b);
+  Serial.println(obj->i);
+  Serial.println(obj->l);
+  Serial.println(obj->f, 6);
+  Serial.println(obj->s);
+
+  lc.deleteString((uint8_t *) obj);
 }
 
 void testAT24C32() {

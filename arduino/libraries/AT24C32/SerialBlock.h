@@ -23,7 +23,9 @@ public:
 };
 
 /** Печатаем ровно 2 символа для байта в HEX  */
-extern void SerialPrintHex(int8_t bt);
+extern void SerialPrintHex(uint8_t bt);
+/** Печатаем ровно все символы в объекте как байты в HEX  */
+extern void SerialPrintHex(uint8_t * obj, int len);
 /** Читаем один байт из Serial */
 extern int8_t serialReadByte();
 /** Читаем один short (2 байта) из Serial */

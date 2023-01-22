@@ -15,7 +15,7 @@
 #include "screen_dump.h"
 
 //#define HAS_SERIAL
-//#define HAS_SERIAL_DEBUG
+#define HAS_SERIAL_DEBUG
 
 #define ADXL345_ENABLED
 
@@ -74,6 +74,7 @@ extern void printRealDate (DateTime * dateTime);
 extern bool isHorisontalOrientation();
 extern void testAT24C32();
 extern void testString();
+extern void testObject();
 
 class GravVector {
 public:
