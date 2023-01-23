@@ -1,9 +1,9 @@
 /*
- * @(#)RomOBJECT.java
+ *  @(#)RomOBJECT.java  last: 24.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -17,17 +17,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 /**
- * Объект структуры или класса.
- * Структура имеет разные элементы.
- * Если класс состоит из простых элементов, то размер класса равен размеру в EEPROM
- * Если класс содержит строки или другие структуры, то при десериализации надо
- * создавать в памяти объект строки, а в класс ложить указатель.
- *
- * В EEPROM храним:
- * 1 - размер всего объекта, включая первые 3 байта;
- * 2 - количество элементов объекта;
- * 3 - тело самого объекта (т.е. все его элементы по порядку).
- * Определение структуры определяется по элементам объекта.
+ * Объект структуры или класса. Структура имеет разные элементы. Если класс состоит из простых элементов, то размер класса равен размеру в EEPROM Если
+ * класс содержит строки или другие структуры, то при десериализации надо создавать в памяти объект строки, а в класс ложить указатель.
+ * <p>
+ * В EEPROM храним: 1 - размер всего объекта, включая первые 3 байта; 2 - количество элементов объекта; 3 - тело самого объекта (т.е. все его элементы
+ * по порядку). Определение структуры определяется по элементам объекта.
  *
  * @author Vladimir Laskin
  * @since 17.05.2018
@@ -39,6 +33,7 @@ public class RomOBJECT extends RomData {
 
     /** массив, содержащий элементы объекта */
     private ArrayList<RomData> array = new ArrayList<>();
+    private String define;
 
     private RomOBJECT(final String name) {
         super(name);
@@ -54,7 +49,8 @@ public class RomOBJECT extends RomData {
 
     @Override
     public int size() {
-        int size = 3;
+        define = define();
+        int size = 2 + 2 + define.length();
         for (final RomData item : array) {
             size += item.size();
         }
@@ -74,7 +70,7 @@ public class RomOBJECT extends RomData {
     public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
         setOffset(buff.position());
         buff.putShort(size());
-        buff.put(array.size());
+        buff.putShort(2 + define.length()).put(define.getBytes(CHARSET));
         for (final RomData item : array) {
             item.toEeprom(buff);
         }

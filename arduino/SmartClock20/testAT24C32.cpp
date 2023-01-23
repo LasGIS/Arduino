@@ -24,7 +24,9 @@ void testString() {
 void testObject() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
-  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object_DEFINITION, EEPROM_Object_ADDRESS, len);
+  char * definition = "{cbilfs}";
+  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object_ADDRESS, len);
+/*
   Serial.print("; Object(");
   Serial.print(len);
   Serial.print(") = ");
@@ -36,8 +38,8 @@ void testObject() {
   Serial.println(obj->l);
   Serial.println(obj->f, 6);
   Serial.println(obj->s);
-
-  lc.deleteString((uint8_t *) obj);
+*/
+  lc.deleteObject(definition, (uint8_t *) obj);
 }
 
 void testAT24C32() {

@@ -1,9 +1,9 @@
 /*
- * @(#)RomARRAYTest.java
+ *  @(#)RomARRAYTest.java  last: 24.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -59,10 +59,11 @@ public class RomARRAYTest extends RomCommonTest {
                         .add(RomSTRING.of("Третий объект 3 3"))
                         .add(RomCHAR.of('T'))
                 ),
-                "4B0003160004016F000F00CFE5F0E2FBE920EEE1FAE5EAF246" +
-                    "18000402DE001100C2F2EEF0EEE920EEE1FAE5EAF2203253" +
-                    "1A0004034D011300D2F0E5F2E8E920EEE1FAE5EAF22033203354",
-                "[{bisc}]", 75
+                "600003" +
+                    "1D0008007B626973637D016F000F00CFE5F0E2FBE920EEE1FAE5EAF246" +
+                    "1F0008007B626973637D02DE001100C2F2EEF0EEE920EEE1FAE5EAF2203253" +
+                    "210008007B626973637D034D011300D2F0E5F2E8E920EEE1FAE5EAF22033203354",
+                "[{bisc}]", 96
             }};
         } catch (Exception ex) {
             log.error("", ex);

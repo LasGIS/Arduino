@@ -1,9 +1,9 @@
 /*
- * @(#)RomOBJECTTest.java
+ *  @(#)RomOBJECTTest.java  last: 24.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -28,15 +28,15 @@ public class RomOBJECTTest extends RomCommonTest {
                 .add(RomINT32.of(3))
                 .add(RomINT8.of((byte) 0))
                 .add(RomINT8.of((byte)-1))
-            , "0C00050102000300000000FF", "{bilbb}", 12
+            , "140009007B62696C62627D0102000300000000FF", "{bilbb}", 20
         }, {
             RomOBJECT.of()
                 .add(RomINT8.of((byte) 1))
                 .add(RomINT16.of((short) 2))
                 .add(RomSTRING.of("Text in English"))
                 .add(RomSTRING.of("Текст на Русском"))
-            , "29000401020011005465787420696E20456E676C6973681200D2E5EAF1F220EDE020D0F3F1F1EAEEEC"
-            , "{biss}", 41
+            , "300008007B626973737D01020011005465787420696E20456E676C6973681200D2E5EAF1F220EDE020D0F3F1F1EAEEEC"
+            , "{biss}", 48
         } };
     }
     @Test(dataProvider = "dataToByte")

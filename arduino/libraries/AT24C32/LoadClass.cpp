@@ -1,14 +1,14 @@
-#include <Arduino.h> // todo remove
+//#include <Arduino.h> // todo remove
+#include <string.h>
+
 #include <LoadClass.h>
 #include <SerialBlock.h>
+
+//#define HAS_SERIAL_DEBUG
 
 LoadClass::LoadClass(int8_t device, int16_t address) {
   this->device = device;
   this->address = address;
-}
-
-LoadClass::~LoadClass(){
-
 }
 
 /**
@@ -101,10 +101,10 @@ float LoadClass::readFloat(int16_t _address){
  * @return
  */
 char * LoadClass::readString(){
-  int len = readInt();
-  char * str = new char[len];
-  I2CEEPROM.read_buffer(device, address, (uint8_t*) str, (uint8_t) len - 2);
-  str[len - 2] = 0;
+  int len = readInt() - 2;
+  char * str = new char[len + 1];
+  I2CEEPROM.read_buffer(device, address, (uint8_t*) str, (uint8_t) len);
+  str[len] = 0;
   address += len;
   return str;
 }
@@ -122,39 +122,22 @@ void LoadClass::deleteString(char * str){
  * @brief LoadClass::readString
  * @return
  */
-int LoadClass::getObjectLench(char * definition){
+int LoadClass::getObjectLength(char * definition){
+#ifdef HAS_SERIAL_DEBUG
   Serial.print(definition);
   Serial.print(" - ");
   Serial.println(strlen(definition));
+#endif
   int len = 0;
   for (int i = 0; i < strlen(definition); i++) {
     switch (definition[i]) {
-    case '}':
-      return len;
-    case 'c':
-      Serial.print('c');
-      len++;
-      break;
-    case 'b':
-      Serial.print('b');
-      len++;
-      break;
-    case 'i':
-      Serial.print('i');
-      len += 2;
-      break;
-    case 'l':
-      Serial.print('l');
-      len += 4;
-      break;
-    case 'f':
-      Serial.print('f');
-      len += 4;
-      break;
-    case 's':
-      Serial.print('s');
-      len += 2;
-      break;
+    case '}': return len;
+    case 'c': len++; break;
+    case 'b': len++; break;
+    case 'i': len += 2; break;
+    case 'l': len += 4; break;
+    case 'f': len += 4; break;
+    case 's': len += 2; break;
     case '{':
     default:
       break;
@@ -162,19 +145,21 @@ int LoadClass::getObjectLench(char * definition){
   }
   return len;
 }
-uint8_t * LoadClass::readObject(char * definition, int & pos){
+uint8_t * LoadClass::readObject(int & pos){
   int len = readInt();
-  int count = readByte();
-  int objectLench = getObjectLench(definition);
+  char * definition = readString();
+  int objectLength = getObjectLength(definition);
 #ifdef HAS_SERIAL_DEBUG
   Serial.print("readObject len = ");
   Serial.print(len);
-  Serial.print("; count = ");
-  Serial.print(count);
-  Serial.print("; objectLench = ");
-  Serial.print(objectLench);
+  Serial.print("; definition = ");
+  Serial.print(definition);
+  Serial.print("; objectLength = ");
+  Serial.print(objectLength);
+  Serial.print("; address = ");
+  Serial.print(address, HEX);
 #endif
-  uint8_t * obj = new uint8_t[objectLench];
+  uint8_t * obj = new uint8_t[objectLength];
   pos = 0;
   for (int i = 0; i < strlen(definition); i++) {
     switch (definition[i]) {
@@ -211,12 +196,13 @@ uint8_t * LoadClass::readObject(char * definition, int & pos){
       break;
     }
   }
+  delete definition;
   return obj;
 }
-uint8_t * LoadClass::readObject(char * definition, int16_t _address, int & pos){
+uint8_t * LoadClass::readObject(int16_t _address, int & pos){
   address = _address;
-  return readObject(definition, pos);
+  return readObject(pos);
 }
-void LoadClass::deleteObject(char * definition, uint8_t * str){
-  delete str;
+void LoadClass::deleteObject(char * definition, uint8_t * obj){
+  delete obj;
 }

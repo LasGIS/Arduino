@@ -1,9 +1,9 @@
 /*
- *  @(#)ByteArrayBuilder.java  last: 29.05.2018
+ *  @(#)ByteArrayBuilder.java  last: 23.01.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.util;
@@ -41,44 +41,89 @@ public class ByteArrayBuilder {
 
     /**
      * Sets this buffer's position.
-     * @param  newPosition The new position value; must be non-negative
-     *         and no larger than the current limit
-     * @return  This buffer
+     *
+     * @param newPosition The new position value; must be non-negative and no larger than the current limit
+     * @return This buffer
      */
     public final ByteArrayBuilder position(int newPosition) {
         buffer.position(newPosition);
         return this;
     }
 
+    /**
+     * Получаем байт по текущему индексу
+     *
+     * @return байт по текущему индексу
+     */
     public byte get() {
         return buffer.get();
     }
 
+    /**
+     * Получаем байт по индексу 'i'
+     *
+     * @param i индекс
+     * @return байт по индексу 'i'
+     */
     public byte get(int i) {
         return buffer.get(i);
     }
 
+    /**
+     * Передаем байты из этого буфера в заданный массив назначения
+     *
+     * @param dst    dst массив назначения (должен быть создан заранее)
+     * @param offset смещение в своем массиве
+     * @param length длинна передаваемой посылке
+     * @return сам себя (ByteArrayBuilder)
+     */
     public ByteArrayBuilder get(byte[] dst, int offset, int length) {
         buffer.get(dst, offset, length);
         return this;
     }
 
+    /**
+     * Устанавливаем байт 'x' по текущему индексу
+     *
+     * @param x байт
+     * @return сам себя (ByteArrayBuilder)
+     */
     public ByteArrayBuilder put(byte x) {
         checkLimit(1);
         buffer.put(x);
         return this;
     }
 
+    /**
+     * Устанавливаем байт 'x' по текущему индексу
+     *
+     * @param x целое как байт
+     * @return сам себя (ByteArrayBuilder)
+     */
     public ByteArrayBuilder put(int x) {
         return put((byte) x);
     }
 
+    /**
+     * Устанавливаем байт 'x' по индексу 'i'
+     *
+     * @param i индекс
+     * @param x байт
+     * @return сам себя (ByteArrayBuilder)
+     */
     public ByteArrayBuilder put(int i, byte x) {
         checkLimit(i, 1);
-        buffer.put(i,x);
+        buffer.put(i, x);
         return this;
     }
 
+    /**
+     * Устанавливаем байт 'x' по индексу 'i'
+     *
+     * @param i индекс
+     * @param x целое как байт
+     * @return сам себя (ByteArrayBuilder)
+     */
     public ByteArrayBuilder put(int i, int x) {
         return put(i, (byte) x);
     }
@@ -137,6 +182,7 @@ public class ByteArrayBuilder {
         buffer.putShort(x);
         return this;
     }
+
     public ByteArrayBuilder putShort(int x) {
         return putShort((short) x);
     }
