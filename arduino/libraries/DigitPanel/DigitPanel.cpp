@@ -9,7 +9,7 @@
 #define MINUS_MASK 8
 
 const byte DP_SegmentMap[16] = {
-//   -0-        -1-        -2-        -3-        -4-        -5-        -6-        -7-    
+//   -0-        -1-        -2-        -3-        -4-        -5-        -6-        -7-
   B01110111, B01100000, B00111110, B01111100, B01101001, B01011101, B01011111, B01100100,
 //   -8-        -9-        -A-        -B-        -C-        -D-        -E-        -F-
   B01111111, B01111101, B01101111, B01011011, B00010111, B01111010, B00011111, B00001111
@@ -34,10 +34,10 @@ DigitPanel::DigitPanel(int _latchPin, int _clockPin, int _dataPin, int* _digits,
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
-  for (int i = 0; i < 4; i++) { 
+  for (int i = 0; i < 4; i++) {
     pinMode(digit[i], OUTPUT);
   }
-  
+
   DigitPanel::_activeDigitPanelObject = this;
   MsTimer2::set(3, DigitPanel::handle_interrupt);
   MsTimer2::start();
@@ -92,7 +92,7 @@ void DigitPanel::resetAllDigit() {
   }
 }
 
-/** Находим маску по номеру знака(цифры) и выводим маску в сегменты */ 
+/** Находим маску по номеру знака(цифры) и выводим маску в сегменты */
 byte DigitPanel::getChar(char chr, boolean isPnt) {
   int bits;
   if (chr == '-') {
