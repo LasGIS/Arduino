@@ -4,7 +4,7 @@
 #include <LoadClass.h>
 #include <SerialBlock.h>
 
-//#define HAS_SERIAL_DEBUG
+// #define HAS_SERIAL_DEBUG
 
 LoadClass::LoadClass(int8_t device, int16_t address) {
   this->device = device;
@@ -117,9 +117,9 @@ void LoadClass::deleteString(char * str){
 }
 
 /**
- * Читаем объект
- * OBJECT - '{s}'
- * @brief LoadClass::readString
+ * Получаем длинну объекта для выделения памяти под него
+ * @brief LoadClass::getObjectLength
+ * @param definition
  * @return
  */
 int LoadClass::getObjectLength(char * definition){
@@ -131,23 +131,26 @@ int LoadClass::getObjectLength(char * definition){
   int len = 0;
   for (int i = 0; i < strlen(definition); i++) {
     switch (definition[i]) {
-    case '}': return len;
     case 'c': len++; break;
     case 'b': len++; break;
     case 'i': len += 2; break;
     case 'l': len += 4; break;
     case 'f': len += 4; break;
     case 's': len += 2; break;
-    case '{':
-    default:
-      break;
+    default: break;
     }
   }
   return len;
 }
-uint8_t * LoadClass::readObject(int & pos){
+/**
+ * Читаем объект
+ * OBJECT - '{s}'
+ * @brief LoadClass::readString
+ * @return
+ */
+uint8_t * LoadClass::readObject(int &pos, char * &definition){
   int len = readInt();
-  char * definition = readString();
+  definition = readString();
   int objectLength = getObjectLength(definition);
 #ifdef HAS_SERIAL_DEBUG
   Serial.print("readObject len = ");
@@ -188,21 +191,34 @@ uint8_t * LoadClass::readObject(int & pos){
     } break;
     case 's': {
       char * stringVal = readString();
-      SerialPrintHex((uint8_t *) &stringVal, 2);
       memcpy(obj + pos, (const void*) &stringVal, 2);
       pos += 2;
     } break;
-    default:
-      break;
+    default: break;
+    }
+  }
+  return obj;
+}
+uint8_t * LoadClass::readObject(int16_t _address, int & pos, char * &definition){
+  address = _address;
+  return readObject(pos, definition);
+}
+void LoadClass::deleteObject(char * definition, uint8_t * obj){
+  int len = 0;
+  for (int i = 0; i < strlen(definition); i++) {
+    switch (definition[i]) {
+    case 'c': len++; break;
+    case 'b': len++; break;
+    case 'i': len += 2; break;
+    case 'l': len += 4; break;
+    case 'f': len += 4; break;
+    case 's': {
+      delete (char *)(*((uint16_t *)(obj + len)));
+      len += 2;
+    } break;
+    default: break;
     }
   }
   delete definition;
-  return obj;
-}
-uint8_t * LoadClass::readObject(int16_t _address, int & pos){
-  address = _address;
-  return readObject(pos);
-}
-void LoadClass::deleteObject(char * definition, uint8_t * obj){
   delete obj;
 }

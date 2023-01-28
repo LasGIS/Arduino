@@ -27,8 +27,8 @@ public:
     char * readString(int16_t address);
     void deleteString(char * str);
 
-    uint8_t * readObject(int & pos);
-    uint8_t * readObject(int16_t address, int &pos);
+    uint8_t * readObject(int & pos, char * &definition);
+    uint8_t * readObject(int16_t address, int &pos, char * &definition);
     void deleteObject(char * definition, uint8_t * obj);
  };
 

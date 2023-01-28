@@ -24,10 +24,15 @@ void testString() {
 void testObject() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
-  char * definition = "{cbilfs}";
-  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object_ADDRESS, len);
-/*
-  Serial.print("; Object(");
+  char * definition;
+  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object_ADDRESS, len, definition);
+// *
+  Serial.println(">");
+  Serial.print(definition);
+  Serial.print(" => ");
+  Serial.print("Object(");
+  Serial.print((int) &obj, HEX);
+  Serial.print("-");
   Serial.print(len);
   Serial.print(") = ");
   SerialPrintHex((uint8_t *) obj, len);
@@ -37,8 +42,10 @@ void testObject() {
   Serial.println(obj->i);
   Serial.println(obj->l);
   Serial.println(obj->f, 6);
+  Serial.print((int) obj->s, HEX);
+  Serial.print("-");
   Serial.println(obj->s);
-*/
+//*/
   lc.deleteObject(definition, (uint8_t *) obj);
 }
 
