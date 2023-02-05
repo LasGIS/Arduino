@@ -2,6 +2,7 @@
 #include <Wire.h>
 #include <LoadClass.h>
 #include <SerialBlock.h>
+#include "AT24C32_TEST.h"
 
 extern void testAT24C32();
 extern void testString();
@@ -10,7 +11,7 @@ extern void testObject();
 void setup() {
   Wire.begin(); // initialise the connection
   Serial.begin(9600);
-  //clearEEPROM();
+  // clearEEPROM();
 }
 
 void loop() {
@@ -57,11 +58,11 @@ void clearEEPROM() {
   for (int16_t i = 0; i < 0x100; i++) {
     buffer[i]=0;
   }
-  for (int16_t a = 0x00; a < 0x1000; a += 0x100) {
-    I2CEEPROM.write_buffer(0x57, a, buffer, 0x100);
+  for (int16_t a = 0x00; a < 0x100; a += 0x100) {
+    I2CEEPROM.write_buffer(DEVICE, a, buffer, 0x100);
   }
   //  for(uint16_t i = 0; i < 0x100; i++) {
-  //    I2CEEPROM.write(0x57, i, i & 0xff);
+  //    I2CEEPROM.write(DEVICE, i, i & 0xff);
   //  }
   Serial.print('\n');
 }

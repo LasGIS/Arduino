@@ -3,6 +3,9 @@
 
 #include <inttypes.h>
 
+//#define HAS_SERIAL
+//#define HAS_SERIAL_DEBUG
+
 class I2C_EEPROM {
 public:
   uint8_t read(uint8_t device, uint16_t address);

@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 09.01.2023
+ *  @(#)ConfigPanel.java  last: 04.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -149,7 +149,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         fillNavigationPanel();
         fillParametersPanel();
 
-        /* панель для получения информации от робота. */
+        /* панель для получения информации от arduino. */
         arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
         final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
         plantInfoScroll.setViewportView(arealInfo);

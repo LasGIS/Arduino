@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 09.01.2023
+ *  @(#)Runner.java  last: 06.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -39,6 +39,7 @@ public class Runner {
     public final static String PROP_BAUD_RATE = "baud.rate";
     public final static String PROP_PATCH = "patch";
     public final static String PROP_DATA_FILE = "data";
+    public final static String PROP_DEVICE = "device";
     @Getter
     private static final Properties properties = new Properties();
     @Getter

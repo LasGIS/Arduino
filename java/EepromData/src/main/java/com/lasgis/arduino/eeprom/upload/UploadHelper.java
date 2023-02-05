@@ -1,5 +1,5 @@
 /*
- *  @(#)UploadHelper.java  last: 12.01.2023
+ *  @(#)UploadHelper.java  last: 06.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import static com.lasgis.arduino.eeprom.Runner.PROP_BAUD_RATE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_DATA_FILE;
+import static com.lasgis.arduino.eeprom.Runner.PROP_DEVICE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PORT_NAME;
 
@@ -57,29 +58,30 @@ public class UploadHelper implements PortReaderListener {
 
         final String portName = prop.getProperty(PROP_PORT_NAME);
         final int baudRate = Integer.parseInt(prop.getProperty(PROP_BAUD_RATE));
+        final byte device = Byte.parseByte(prop.getProperty(PROP_DEVICE), 16);
 
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
-        helper.uploadAll(fileName, helper.portReader);
+        helper.uploadAll(device, fileName, helper.portReader);
         helper.portReader.stop();
     }
 
-    public static void uploadFile(final PortReader portReader) throws InterruptedException, IOException {
+    public static void uploadFile(final byte device, final PortReader portReader) throws InterruptedException, IOException {
         final Properties prop = Runner.getProperties();
         final String fileName = FilenameUtils.removeExtension((new File(
             prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
         )).getPath()) + ".hex";
 
         final UploadHelper helper = new UploadHelper(portReader);
-        helper.uploadAll(fileName, portReader);
+        helper.uploadAll(device, fileName, portReader);
     }
 
-    private void uploadAll(final String fileName, final PortReader portReader) throws InterruptedException, IOException {
-        createSerialBlocks(fileName);
+    private void uploadAll(final byte device, final String fileName, final PortReader portReader) throws InterruptedException, IOException {
+        createSerialBlocks(device, fileName);
         portWriterRun();
         Thread.sleep(10000);
     }
 
-    private void createSerialBlocks(final String fileName) throws IOException {
+    private void createSerialBlocks(final byte device, final String fileName) throws IOException {
         log.info("Hex Dump File = \"{}\"", fileName);
         blockMap.clear();
         try (
@@ -95,6 +97,7 @@ public class UploadHelper implements PortReaderListener {
                 final byte[] body = DatatypeConverter.parseHexBinary(line.substring(1));
                 final byte size = (byte) body.length;
                 final SerialBlock block = new SerialBlock();
+                block.setDevice(device);
                 block.setBody(body);
                 block.setSize(size);
                 block.setAddress(address);

@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 12.01.2023
+ *  @(#)ConfigPanel.java  last: 06.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -59,16 +59,28 @@ import static java.util.Objects.isNull;
  */
 @Slf4j
 public class ConfigPanel extends JPanel implements PortReaderListener {
-
     private static final Integer[] BAUD_RATES = {
         110, 300, 600, 1200, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000
+    };
+    private static final DeviceWrap[] DEVICE_WRAPS = {
+        DeviceWrap.of(0x00),
+        DeviceWrap.of(0x50),
+        DeviceWrap.of(0x51),
+        DeviceWrap.of(0x52),
+        DeviceWrap.of(0x53),
+        DeviceWrap.of(0x54),
+        DeviceWrap.of(0x55),
+        DeviceWrap.of(0x56),
+        DeviceWrap.of(0x57)
     };
     /** дерево конфигурации. */
     private final JPanel controlPanel = new JPanel(new BorderLayout());
     /** панель для информации об ячейках. */
     private final JTextArea arealInfo = new JTextArea();
+    /** поле для ввода команды. */
+    private final JTextField commandInput = new JTextField();
     /** поле для ввода номера микросхемы (0x57 для CMOS). */
-    private final JTextField deviceInput = new JTextField(2);
+    private final JComboBox<DeviceWrap> deviceInput = new JComboBox<>(DEVICE_WRAPS);
     /** поле для ввода адреса блока в EEPROM памяти. */
     private final JTextField addressInput = new JTextField(4);
     /** поле для ввода размера блока. */
@@ -154,6 +166,15 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         );
     }
 
+    /** Обработка события при смене текстовой команды (нажали ENTER в input). */
+    private final ActionListener enterOnInputAction = event -> {
+        final String command = event.getActionCommand();
+        log.debug(command);
+        portReader.writeString(command);
+        commandInput.setText("");
+        arealInfo.append(">> " + command + "\n");
+    };
+
     public void setMainFrame(final MainFrame mainFrame) {
         this.mainFrame = mainFrame;
     }
@@ -186,12 +207,13 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         navigationPanel.add(createNavigationButton("Read", null, "Чтение блока", CommandType.read));
         controlPanel.add(navigationPanel, BorderLayout.EAST);
 
-//        controlPanel.add(deviceInput, BorderLayout.SOUTH);
+        commandInput.addActionListener(enterOnInputAction);
+        controlPanel.add(commandInput, BorderLayout.SOUTH);
     }
 
     /** создание доп атрибутов. */
     private void fillParametersPanel() {
-        deviceInput.setText("57");
+        deviceInput.setSelectedIndex(8);
         addressInput.setText("00FE");
         sizeInput.setText("0111");
         final JPanel parametersPanel = new JPanel(new GridBagLayout());
@@ -276,7 +298,8 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 }
                 case upload: {
                     try {
-                        UploadHelper.uploadFile(portReader);
+                        byte device = ((DeviceWrap) deviceInput.getSelectedItem()).getDevice();
+                        UploadHelper.uploadFile(device, portReader);
                     } catch (InterruptedException | IOException ex) {
                         log.error(ex.getMessage(), ex);
                     }
@@ -285,7 +308,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 case read: {
                     try {
                         final ByteBuffer buffer = ByteBuffer.allocate(10);
-                        byte device = DatatypeConverter.parseHexBinary(deviceInput.getText())[0];
+                        byte device = ((DeviceWrap) deviceInput.getSelectedItem()).getDevice();
                         buffer.put(DatatypeConverter.parseHexBinary(addressInput.getText()));
                         buffer.put(DatatypeConverter.parseHexBinary(sizeInput.getText()));
                         short address = buffer.getShort(0);

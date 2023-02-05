@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <SerialBlock.h>
 #include <LoadClass.h>
-#include "I2CMemory.h"
+#include "AT24C32_TEST.h"
+#include "AT24CTestMemory.h"
 
-#define DEVICE 0x57
 struct TestObject {
   char c;
   int8_t b;
