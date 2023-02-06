@@ -1,5 +1,5 @@
 /*
- *  @(#)PortReader.java  last: 09.01.2023
+ *  @(#)PortReader.java  last: 06.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -136,5 +136,9 @@ public class PortReader implements SerialPortDataListener {
 
     public void addListener(final PortReaderListener listener) {
         listeners.add(listener);
+    }
+
+    public void removeListener(final PortReaderListener listener) {
+        listeners.remove(listener);
     }
 }

@@ -9,7 +9,6 @@
 package com.lasgis.arduino.eeprom.upload;
 
 import com.lasgis.arduino.eeprom.Runner;
-import com.lasgis.arduino.eeprom.memory.RomData;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.util.ByteArrayBuilder;
@@ -25,6 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.lasgis.arduino.eeprom.Runner.PROP_BAUD_RATE;
@@ -58,11 +58,21 @@ public class UploadHelper implements PortReaderListener {
 
         final String portName = prop.getProperty(PROP_PORT_NAME);
         final int baudRate = Integer.parseInt(prop.getProperty(PROP_BAUD_RATE));
-        final byte device = Byte.parseByte(prop.getProperty(PROP_DEVICE), 16);
+        final byte device = getPropByte(PROP_DEVICE);
 
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
-        helper.uploadAll(device, fileName, helper.portReader);
+        helper.uploadAll(device, fileName);
         helper.portReader.stop();
+    }
+
+    private static byte getPropByte(final String key) {
+        final Properties prop = Runner.getProperties();
+        final String value = Optional.ofNullable(prop.getProperty(key)).orElse("87").trim().toLowerCase();
+        if (value.startsWith("0x")) {
+            return Byte.parseByte(value.substring(2), 16);
+        } else {
+            return Byte.parseByte(value, 10);
+        }
     }
 
     public static void uploadFile(final byte device, final PortReader portReader) throws InterruptedException, IOException {
@@ -72,13 +82,16 @@ public class UploadHelper implements PortReaderListener {
         )).getPath()) + ".hex";
 
         final UploadHelper helper = new UploadHelper(portReader);
-        helper.uploadAll(device, fileName, portReader);
+        helper.uploadAll(device, fileName);
     }
 
-    private void uploadAll(final byte device, final String fileName, final PortReader portReader) throws InterruptedException, IOException {
+    private void uploadAll(final byte device, final String fileName) throws InterruptedException, IOException {
         createSerialBlocks(device, fileName);
         portWriterRun();
-        Thread.sleep(10000);
+        do {
+            Thread.sleep(1000);
+        } while (blockMap.values().stream().anyMatch(serialBlock -> !serialBlock.isUploaded()));
+        portReader.removeListener(this);
     }
 
     private void createSerialBlocks(final byte device, final String fileName) throws IOException {
@@ -114,7 +127,7 @@ public class UploadHelper implements PortReaderListener {
             final short address = Short.parseShort(str.substring(5));
             final SerialBlock block = blockMap.get(address);
             if (block != null) {
-                block.setProcessed(false);
+                block.setUploaded(true);
             }
         }
         log.info("From Arduino: {}", str);
@@ -132,7 +145,6 @@ public class UploadHelper implements PortReaderListener {
                 if (block.isProcessed()) {
                     final byte[] dump = block.getWriteBytes();
                     log.info("hex[{}] = \"{}\"", block.address, DatatypeConverter.printHexBinary(dump));
-                    log.info("\"{}\"", new String(dump, RomData.CHARSET));
                     portReader.writeByte(dump, dump.length);
                     block.setProcessed(false);
                     return;

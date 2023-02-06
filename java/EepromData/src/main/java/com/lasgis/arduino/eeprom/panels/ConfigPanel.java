@@ -213,9 +213,9 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
     /** создание доп атрибутов. */
     private void fillParametersPanel() {
-        deviceInput.setSelectedIndex(8);
-        addressInput.setText("00FE");
-        sizeInput.setText("0111");
+        deviceInput.setSelectedIndex(1);
+        addressInput.setText("0000");
+        sizeInput.setText("0200");
         final JPanel parametersPanel = new JPanel(new GridBagLayout());
         final GridBagConstraints labelGbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
             CENTER, BOTH, new Insets(2, 5, 2, 4), 0, 0);
@@ -298,7 +298,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 }
                 case upload: {
                     try {
-                        byte device = ((DeviceWrap) deviceInput.getSelectedItem()).getDevice();
+                        final byte device = ((DeviceWrap) deviceInput.getSelectedItem()).getDevice();
                         UploadHelper.uploadFile(device, portReader);
                     } catch (InterruptedException | IOException ex) {
                         log.error(ex.getMessage(), ex);
@@ -308,7 +308,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 case read: {
                     try {
                         final ByteBuffer buffer = ByteBuffer.allocate(10);
-                        byte device = ((DeviceWrap) deviceInput.getSelectedItem()).getDevice();
+                        final byte device = ((DeviceWrap) deviceInput.getSelectedItem()).getDevice();
                         buffer.put(DatatypeConverter.parseHexBinary(addressInput.getText()));
                         buffer.put(DatatypeConverter.parseHexBinary(sizeInput.getText()));
                         short address = buffer.getShort(0);
