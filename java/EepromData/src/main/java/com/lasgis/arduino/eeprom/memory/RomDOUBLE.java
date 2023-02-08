@@ -1,9 +1,9 @@
 /*
- * @(#)RomDOUBLE.java
+ *  @(#)RomDOUBLE.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -25,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 public class RomDOUBLE extends RomData {
 
     private double val;
-    
+
     public RomDOUBLE(final String name) {
         super(name);
     }
@@ -49,8 +49,8 @@ public class RomDOUBLE extends RomData {
     }
 
     @Override
-    public String define() {
-        return "d";
+    public Character defChar() {
+        return 'd';
     }
 
     @Override

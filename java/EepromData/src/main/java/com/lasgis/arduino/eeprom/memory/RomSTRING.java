@@ -1,9 +1,9 @@
 /*
- * @(#)RomSTRING.java
+ *  @(#)RomSTRING.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -45,8 +45,8 @@ public class RomSTRING extends RomData {
     }
 
     @Override
-    public String define() {
-        return "s";
+    public Character defChar() {
+        return 's';
     }
 
     @Override

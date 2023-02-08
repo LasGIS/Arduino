@@ -1,9 +1,9 @@
 /*
- * @(#)RomINT16Test.java
+ *  @(#)RomINT16Test.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -37,7 +37,7 @@ public class RomINT16Test {
         final RomINT16 rom = RomINT16.of(inp);
         final byte[] bytes = rom.toEeprom();
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
-        Assert.assertEquals(rom.define(), "i");
+        Assert.assertEquals(rom.defChar(), 'i');
         Assert.assertEquals(rom.size(), 2);
     }
 

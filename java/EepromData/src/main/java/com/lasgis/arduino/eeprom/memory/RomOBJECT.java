@@ -1,5 +1,5 @@
 /*
- *  @(#)RomOBJECT.java  last: 24.01.2023
+ *  @(#)RomOBJECT.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -58,12 +58,16 @@ public class RomOBJECT extends RomData {
     }
 
     @Override
+    public Character defChar() {
+        return 'o';
+    }
+
     public String define() {
-        final StringBuilder sb = new StringBuilder("{");
+        final StringBuilder sb = new StringBuilder();
         for (final RomData item : array) {
-            sb.append(item.define());
+            sb.append(item.defChar());
         }
-        return sb.append("}").toString();
+        return sb.toString();
     }
 
     @Override

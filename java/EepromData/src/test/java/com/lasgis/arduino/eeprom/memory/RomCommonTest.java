@@ -1,9 +1,9 @@
 /*
- * @(#)RomCommonTest.java
+ *  @(#)RomCommonTest.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -23,20 +23,22 @@ import javax.xml.bind.DatatypeConverter;
 @Slf4j
 class RomCommonTest {
     private final static String TAB = " ";
+
     void testCompositeRom(
-        final RomData rom, final String expected, final String expectedDefine, final int size
+        final RomData rom, final String expected, final Character expectedDefChar, final String expectedDefine, final int size
     ) throws Exception {
         final byte[] bytes = rom.toEeprom();
         final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
         log.info("\"{}\"", new String(bytes, RomData.CHARSET));
         Assert.assertEquals(hexOutPrint, expected);
+        Assert.assertEquals(rom.defChar(), expectedDefChar);
         Assert.assertEquals(rom.define(), expectedDefine);
         Assert.assertEquals(rom.size(), size);
         showNameOffset(rom);
     }
 
     private void showNameOffset(final RomData rom) {
-        final StringBuilder sb = new  StringBuilder("\n");
+        final StringBuilder sb = new StringBuilder("\n");
         showNameOffset(rom, sb, "");
         log.info(sb.toString());
     }
@@ -51,13 +53,13 @@ class RomCommonTest {
         sb.append("offset: ").append(rom.getOffset()).append(";");
         if (rom instanceof RomOBJECT) {
             sb.append(" {\n");
-            for (final RomData inst: ((RomOBJECT) rom).getArray()) {
+            for (final RomData inst : ((RomOBJECT) rom).getArray()) {
                 showNameOffset(inst, sb, tab + TAB);
             }
             sb.append(tab).append("}\n");
         } else if (rom instanceof RomARRAY) {
             sb.append(" [\n");
-            for (final RomData inst: ((RomARRAY) rom).getArray()) {
+            for (final RomData inst : ((RomARRAY) rom).getArray()) {
                 showNameOffset(inst, sb, tab + TAB);
             }
             sb.append(tab).append("]\n");

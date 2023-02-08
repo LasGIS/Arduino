@@ -1,9 +1,9 @@
 /*
- * @(#)RomSTRINGTest.java
+ *  @(#)RomSTRINGTest.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -60,10 +60,8 @@ public class RomSTRINGTest {
         final RomSTRING rom = RomSTRING.of(inp);
         final byte[] bytes = rom.toEeprom();
         final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
-//        System.out.println("inp = \"" + inp + "\"");
-//        System.out.println("out = \"" + hexOutPrint + "\"");
         Assert.assertEquals(hexOutPrint, hexOut);
-        Assert.assertEquals(rom.define(), "s");
+        Assert.assertEquals(rom.defChar(), 's');
     }
 
 }

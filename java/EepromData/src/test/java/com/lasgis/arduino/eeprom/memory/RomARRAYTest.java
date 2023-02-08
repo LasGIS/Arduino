@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAYTest.java  last: 24.01.2023
+ *  @(#)RomARRAYTest.java  last: 09.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -30,7 +30,7 @@ public class RomARRAYTest extends RomCommonTest {
                     .add(RomINT8.of(3))
                     .add(RomINT8.of(0))
                     .add(RomINT8.of(-1))
-                , "08000501020300FF", "[b]", 8
+                , "0A0062050001020300FF", "b", 10
             }, {
                 RomARRAY.of()
                     .add(RomINT16.of(1))
@@ -38,32 +38,30 @@ public class RomARRAYTest extends RomCommonTest {
                     .add(RomINT16.of(3))
                     .add(RomINT16.of(0))
                     .add(RomINT16.of(-3))
-                , "0D00050100020003000000FDFF", "[i]", 13
+                , "0F006905000100020003000000FDFF", "i", 15
             }, {
                 RomARRAY.of("ARRAY")
                     .add(RomOBJECT.of("OBJECT")
                         .add(RomINT8.of("INT8", 1))
                         .add(RomINT16.of("INT16", 111))
                         .add(RomSTRING.of("STRING", "Первый объект"))
-                        .add(RomCHAR.of("CHAR", 'F'))
-                    )
+                        .add(RomCHAR.of("CHAR", 'F')))
                     .add(RomOBJECT.of("OBJECT")
                         .add(RomINT8.of(2))
                         .add(RomINT16.of(222))
                         .add(RomSTRING.of("Второй объект 2"))
-                        .add(RomCHAR.of('S'))
-                    )
+                        .add(RomCHAR.of('S')))
                     .add(RomOBJECT.of()
                         .add(RomINT8.of(3))
                         .add(RomINT16.of(333))
                         .add(RomSTRING.of("Третий объект 3 3"))
                         .add(RomCHAR.of('T'))
                 ),
-                "600003" +
-                    "1D0008007B626973637D016F000F00CFE5F0E2FBE920EEE1FAE5EAF246" +
-                    "1F0008007B626973637D02DE001100C2F2EEF0EEE920EEE1FAE5EAF2203253" +
-                    "210008007B626973637D034D011300D2F0E5F2E8E920EEE1FAE5EAF22033203354",
-                "[{bisc}]", 96
+                "5C006F0300" +
+                    "1B00060062697363016F000F00CFE5F0E2FBE920EEE1FAE5EAF246" +
+                    "1D0006006269736302DE001100C2F2EEF0EEE920EEE1FAE5EAF2203253" +
+                    "1F00060062697363034D011300D2F0E5F2E8E920EEE1FAE5EAF22033203354",
+                "o", 92
             }};
         } catch (Exception ex) {
             log.error("", ex);
@@ -76,7 +74,7 @@ public class RomARRAYTest extends RomCommonTest {
     public void testToByte(
         final RomARRAY rom, final String expected, final String expectedDefine, final int size
     ) throws Exception {
-        testCompositeRom(rom, expected, expectedDefine, size);
+        testCompositeRom(rom, expected, 'a', expectedDefine, size);
     }
 
 }

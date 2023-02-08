@@ -1,9 +1,9 @@
 /*
- * @(#)RomCHARTest.java
+ *  @(#)RomCHARTest.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -34,7 +34,7 @@ public class RomCHARTest {
         final RomCHAR rom = RomCHAR.of(inp);
         final byte[] bytes = rom.toEeprom();
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
-        Assert.assertEquals(rom.define(), "c");
+        Assert.assertEquals(rom.defChar(), 'c');
         Assert.assertEquals(rom.size(), 1);
     }
 }

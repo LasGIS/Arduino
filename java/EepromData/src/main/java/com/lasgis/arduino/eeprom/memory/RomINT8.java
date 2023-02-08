@@ -1,9 +1,9 @@
 /*
- * @(#)RomINT8.java
+ *  @(#)RomINT8.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -53,8 +53,8 @@ public class RomINT8 extends RomData {
     }
 
     @Override
-    public String define() {
-        return "b";
+    public Character defChar() {
+        return 'b';
     }
 
     @Override

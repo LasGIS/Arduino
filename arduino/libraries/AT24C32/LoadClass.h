@@ -30,6 +30,10 @@ public:
     uint8_t * readObject(int & pos, char * &definition);
     uint8_t * readObject(int16_t address, int &pos, char * &definition);
     void deleteObject(char * definition, uint8_t * obj);
+
+    uint8_t * readArray(int & pos, char * &definition);
+    uint8_t * readArray(int16_t address, int &pos, char * &definition);
+    void deleteArray(char * definition, uint8_t * obj);
  };
 
 #endif // LOAD_CLASS_H

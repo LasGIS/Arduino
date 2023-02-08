@@ -1,5 +1,5 @@
 /*
- *  @(#)RomData.java  last: 21.01.2023
+ *  @(#)RomData.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -96,11 +96,15 @@ public abstract class RomData {
      *   DOUBLE - 'd'
      *   FLOAT  - 'f'
      *   STRING - 's'
-     *   OBJECT - '{}'
-     *   ARRAY  - '[]'
+     *   OBJECT - '{}' ('o')
+     *   ARRAY  - '[]' ('a')
      * @return определение структуры
      */
-    public abstract String define();
+    public abstract Character defChar();
+
+    public String define() {
+        return "";
+    }
 
     /**
      * Добавляем образ объекта в накопительный массив байт.

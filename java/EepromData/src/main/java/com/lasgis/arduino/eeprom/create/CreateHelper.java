@@ -1,9 +1,9 @@
 /*
- * @(#)CreateHelper.java
+ *  @(#)CreateHelper.java  last: 07.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.create;
@@ -55,6 +55,7 @@ public class CreateHelper {
             props.getProperty(PROP_PATCH), props.getProperty(PROP_DATA_FILE)
         )).getPath());
 
+        romNameList.clear();
         helper.createDefinitionFile(patch + ".h", dataList);
         helper.createHexDumpFile(patch + ".hex", dump);
     }
@@ -83,8 +84,7 @@ public class CreateHelper {
             }
             romNameList.add(romName);
 
-            writer.write("#define " + romName + "_ADDRESS " + offset + "\n");
-            writer.write("#define " + romName + "_DEFINITION \"" + rom.define() + "\"\n");
+            writer.write("#define " + romName + " " + offset + "\n");
         }
         if (rom instanceof RomOBJECT) {
             for (final RomData inst: ((RomOBJECT) rom).getArray()) {

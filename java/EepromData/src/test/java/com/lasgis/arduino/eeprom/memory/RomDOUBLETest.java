@@ -1,9 +1,9 @@
 /*
- * @(#)RomDOUBLETest.java
+ *  @(#)RomDOUBLETest.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -52,7 +52,7 @@ public class RomDOUBLETest {
 //        System.out.print(" = ");
 //        System.out.println(inp);
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
-        Assert.assertEquals(rom.define(), "d");
+        Assert.assertEquals(rom.defChar(), 'd');
         Assert.assertEquals(rom.size(), 8);
     }
 

@@ -1,9 +1,9 @@
 /*
- * @(#)RomFLOATTest.java
+ *  @(#)RomFLOATTest.java  last: 08.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
@@ -50,7 +50,7 @@ public class RomFLOATTest {
 //        System.out.print(" = ");
 //        System.out.println(inp);
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
-        Assert.assertEquals(rom.define(), "f");
+        Assert.assertEquals(rom.defChar(), 'f');
         Assert.assertEquals(rom.size(), 4);
     }
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)I2CMemory.xml  last: 30.05.2018
+  ~  @(#)I2CMemory.xml  last: 07.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
 
 <ROM xmlns="http://www.lasgis.com/arduino/schema/rom"
@@ -16,7 +16,6 @@
     <INT16 name="INT_DEF" val="32767"/>
     <INT32 name="LONG_DEF" val="2147483647"/>
     <FLOAT name="FLOAT_DEF" val="13.14"/>
-    <DOUBLE name="DOUBLE_DEF" val="13.1415926"/>
     <STRING name="STRING_DEF" val="некоторый текст"/>
     <OBJECT name="OBJECT_DEF">
         <CHAR val="h"/>
@@ -24,7 +23,6 @@
         <INT16 val="-32768"/>
         <INT32 val="-2147483648"/>
         <FLOAT val="-13.14"/>
-        <DOUBLE val="-13.1415926"/>
         <STRING val="другой текст"/>
     </OBJECT>
     <ARRAY name="ARRAY_OF_INT_DEFINITION">

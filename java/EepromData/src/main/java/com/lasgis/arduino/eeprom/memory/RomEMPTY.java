@@ -1,21 +1,19 @@
 /*
- * @(#)RomEMPTY.java
+ *  @(#)RomEMPTY.java  last: 09.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.memory;
 
-import com.lasgis.arduino.eeprom.CommonInfoException;
 import com.lasgis.util.ByteArrayBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 /**
  * Массив простых элементов или объектов.
@@ -54,8 +52,8 @@ public class RomEMPTY extends RomData {
     }
 
     @Override
-    public String define() {
-        return "";
+    public Character defChar() {
+        return '_';
     }
 
     @Override
