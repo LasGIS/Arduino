@@ -15,7 +15,7 @@ struct TestObject {
 
 void testString() {
   LoadClass lc = LoadClass(DEVICE, 0);
-  char* s = lc.readString(EEPROM_ArrayOfObject_0_Object_String_ADDRESS);
+  char* s = lc.readString(EEPROM_ArrayOfObject_0_Object_String);
   Serial.print("String = ");
   Serial.println(s);
   lc.deleteString(s);
@@ -25,7 +25,7 @@ void testObject() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
   char * definition;
-  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object_ADDRESS, len, definition);
+  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object, len, definition);
 // *
   Serial.println(">");
   Serial.print(definition);
@@ -49,9 +49,25 @@ void testObject() {
   lc.deleteObject(definition, (uint8_t *) obj);
 }
 
+void testArray() {
+  LoadClass lc = LoadClass(DEVICE, 0);
+  int len = 0;
+  int16_t * arr = lc.readArray(EEPROM_ArrayOfInt, len);
+  Serial.print("testArray len = ");
+  Serial.println(len);
+  for (int i = 0; i < len; i++) {
+    if (i>0) {
+      Serial.print(", ");
+    }
+    Serial.print(arr[i]);
+
+  }
+  Serial.println();
+  lc.deleteArray(arr);
+}
+
 void testAT24C32() {
-  Serial.println("testAT24C32.cpp");
-  LoadClass lc = LoadClass(DEVICE, EEPROM_Char_ADDRESS);
+  LoadClass lc = LoadClass(DEVICE, EEPROM_Char);
   char c = lc.readChar();
   Serial.print("Char = ");
   Serial.println(c);

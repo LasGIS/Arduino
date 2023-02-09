@@ -10,7 +10,9 @@ private:
     /* адрес блока в EEPROM памяти */
     int16_t address;
 private:
+    int getRomLength(char charDef);
     int getObjectLength(char * definition);
+
 public:
     LoadClass(int8_t device, int16_t address);
     char readChar();
@@ -27,13 +29,13 @@ public:
     char * readString(int16_t address);
     void deleteString(char * str);
 
-    uint8_t * readObject(int & pos, char * &definition);
-    uint8_t * readObject(int16_t address, int &pos, char * &definition);
-    void deleteObject(char * definition, uint8_t * obj);
+    void * readObject(int & pos, char * &definition);
+    void * readObject(int16_t address, int &pos, char * &definition);
+    void deleteObject(char * definition, void * obj);
 
-    uint8_t * readArray(int & pos, char * &definition);
-    uint8_t * readArray(int16_t address, int &pos, char * &definition);
-    void deleteArray(char * definition, uint8_t * obj);
- };
+    void * readArray(int & pos);
+    void * readArray(int16_t address, int & pos);
+    void deleteArray(void * arr);
+};
 
 #endif // LOAD_CLASS_H
