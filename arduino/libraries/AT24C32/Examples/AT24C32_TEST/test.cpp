@@ -13,85 +13,130 @@ struct TestObject {
   char * s;
 };
 
+struct TestObjectArray {
+  int8_t int8;
+  int16_t int16;
+  char * str;
+  char chr;
+};
+
+/**
+ * case '22':
+ * @brief testString
+ */
 void testString() {
   LoadClass lc = LoadClass(DEVICE, 0);
   char* s = lc.readString(EEPROM_ArrayOfObject_0_Object_String);
-  Serial.print("String = ");
-  Serial.println(s);
-  lc.deleteString(s);
+  Serial.print("=> String(");
+  Serial.print((int) s, HEX);
+  Serial.print(") = \"");
+  Serial.print(s);
+  Serial.println("\"");
 }
 
+/**
+ * case '33':
+ * @brief testObject
+ */
 void testObject() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
-  char * definition;
-  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object, len, definition);
-// *
-  Serial.println(">");
-  Serial.print(definition);
-  Serial.print(" => ");
-  Serial.print("Object(");
+  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object, len);
+  Serial.print("=> Object(");
   Serial.print((int) &obj, HEX);
   Serial.print("-");
   Serial.print(len);
   Serial.print(") = ");
   SerialPrintHex((uint8_t *) obj, len);
   Serial.println();
-  Serial.println(obj->c);
-  Serial.println(obj->b);
-  Serial.println(obj->i);
-  Serial.println(obj->l);
-  Serial.println(obj->f, 6);
+  Serial.print("  CHAR = ");
+  Serial.print(obj->c);
+  Serial.print(", INT8 = ");
+  Serial.print(obj->b);
+  Serial.print(", INT16 = ");
+  Serial.print(obj->i);
+  Serial.print(", INT32 = ");
+  Serial.print(obj->l);
+  Serial.print(", FLOAT = ");
+  Serial.print(obj->f, 6);
+  Serial.print(", STRING(");
   Serial.print((int) obj->s, HEX);
-  Serial.print("-");
+  Serial.print(") = ");
   Serial.println(obj->s);
-//*/
-  lc.deleteObject(definition, (uint8_t *) obj);
 }
 
+/**
+ * case '44':
+ * @brief testArray
+ */
 void testArray() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
-  int16_t * arr = lc.readArray(EEPROM_ArrayOfInt, len);
-  Serial.print("testArray len = ");
-  Serial.println(len);
+  int *arr = lc.readArray(EEPROM_ArrayOfInt, len);
+  Serial.print("=> testArray(");
+  Serial.print(len);
+  Serial.println(") = ");
+  Serial.print("  ");
   for (int i = 0; i < len; i++) {
-    if (i>0) {
-      Serial.print(", ");
-    }
     Serial.print(arr[i]);
-
+    Serial.print(", ");
   }
   Serial.println();
-  lc.deleteArray(arr);
 }
 
+/**
+ * case '55':
+ * @brief testArrayObject
+ */
+void testArrayObject() {
+  LoadClass lc = LoadClass(DEVICE, 0);
+  int len = 0;
+  TestObjectArray ** objs = lc.readArray(EEPROM_ArrayOfObject, len);
+  Serial.print("=> testArrayObject(");
+  Serial.print(len);
+  Serial.println(") = ");
+  for (int i = 0; i < len; i++) {
+    Serial.print(" Int8 = ");
+    Serial.print(objs[i]->int8);
+    Serial.print(", Int16 = ");
+    Serial.print(objs[i]->int16);
+    Serial.print(", String = \"");
+    Serial.print(objs[i]->str);
+    Serial.print("\", Char = ");
+    Serial.print(objs[i]->chr);
+    Serial.println(";");
+  }
+}
+
+/**
+ * case '11':
+ * @brief testAT24C32
+ */
 void testAT24C32() {
   LoadClass lc = LoadClass(DEVICE, EEPROM_Char);
+  Serial.print("=> testAT24C32:");
   char c = lc.readChar();
-  Serial.print("Char = ");
-  Serial.println(c);
+  Serial.print(" Char = ");
+  Serial.print(c);
 
   byte b = lc.readByte();
-  Serial.print("Byte = ");
-  Serial.println(b);
+  Serial.print(", Byte = ");
+  Serial.print(b);
 
   int i = lc.readInt();
-  Serial.print("Int = ");
-  Serial.println(i);
+  Serial.print(", Int = ");
+  Serial.print(i);
 
   long l = lc.readLong();
-  Serial.print("Long = ");
-  Serial.println(l);
+  Serial.print(", Long = ");
+  Serial.print(l);
 
   float f = lc.readFloat();
-  Serial.print("Float = ");
-  Serial.println(f, 8);
+  Serial.print(", Float = ");
+  Serial.print(f, 8);
 
   char* s = lc.readString();
-  Serial.print("String = ");
-  Serial.println(s);
-  lc.deleteString(s);
-
-  testString();
+  Serial.print(", String = \"");
+  Serial.print(s);
+  Serial.println("\"");
 }

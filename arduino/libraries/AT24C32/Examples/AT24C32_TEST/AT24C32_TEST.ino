@@ -8,6 +8,7 @@ extern void testAT24C32();
 extern void testString();
 extern void testObject();
 extern void testArray();
+extern void testArrayObject();
 
 void setup() {
   Wire.begin(); // initialise the connection
@@ -48,6 +49,9 @@ void serialEvent() {
         break;
       case '44':
         testArray();
+        break;
+      case '55':
+        testArrayObject();
         break;
       default:
         break;

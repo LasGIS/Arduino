@@ -24,12 +24,9 @@ void testString() {
 void testObject() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
-  char * definition;
-  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object_ADDRESS, len, definition);
+  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object_ADDRESS, len);
 // *
   Serial.println(">");
-  Serial.print(definition);
-  Serial.print(" => ");
   Serial.print("Object(");
   Serial.print((int) &obj, HEX);
   Serial.print("-");

@@ -4,11 +4,48 @@
 #include <LoadClass.h>
 #include <SerialBlock.h>
 
-#define HAS_SERIAL_DEBUG
+// #define HAS_SERIAL_DEBUG
 
 LoadClass::LoadClass(int8_t device, int16_t address) {
   this->device = device;
   this->address = address;
+  refs = calloc(10, sizeof(void*));
+  refMaxLength = 10;
+  refLength = 0;
+}
+LoadClass::~LoadClass() {
+#ifdef HAS_SERIAL_DEBUG
+  Serial.print("LoadClass::~LoadClass(");
+#endif
+  for (int i = 0; i < refLength; i++) {
+    void * ref = refs[i];
+#ifdef HAS_SERIAL_DEBUG
+    Serial.print((int) ref, HEX);
+    Serial.print(",");
+#endif
+    delete ref;
+  }
+#ifdef HAS_SERIAL_DEBUG
+  Serial.print((int) refs, HEX);
+  Serial.println(")");
+#endif
+  delete refs;
+}
+void * LoadClass::addRef(void * ref) {
+  if (refLength + 1 >= refMaxLength) {
+    refMaxLength += 10;
+    refs = realloc(refs, refMaxLength * sizeof(void*));
+  }
+  refs[refLength++] = ref;
+#ifdef HAS_SERIAL_DEBUG
+  Serial.print("addRef(");
+  for (int i = 0; i < refLength; i++) {
+    Serial.print((int) refs[i], HEX);
+    Serial.print(",");
+  }
+  Serial.println(")");
+#endif
+  return ref;
 }
 
 /**
@@ -102,7 +139,7 @@ float LoadClass::readFloat(int16_t _address){
  */
 char * LoadClass::readString(){
   int len = readInt() - 2;
-  char * str = new char[len + 1];
+  char * str = addRef(new char[len + 1]);
   I2CEEPROM.read_buffer(device, address, (uint8_t*) str, len);
   str[len] = 0;
   address += len;
@@ -111,9 +148,6 @@ char * LoadClass::readString(){
 char * LoadClass::readString(int16_t _address){
   address = _address;
   return readString();
-}
-void LoadClass::deleteString(char * str){
-  delete str;
 }
 
 /**
@@ -124,13 +158,68 @@ void LoadClass::deleteString(char * str){
  */
 int LoadClass::getRomLength(char charDef) {
   switch (charDef) {
-  case 'c': return 1;
+  case 'c':
   case 'b': return 1;
   case 'i': return 2;
-  case 'l': return 4;
+  case 'l':
   case 'f': return 4;
-  case 's': return 2;
+  case 's':
+  case 'a':
+  case 'o': return 2;
   default: return 0;
+  }
+}
+
+/**
+ * Читаем знвчение из EEPROM памяти по типу (charDef)
+ * @brief LoadClass::readRom
+ * @param obj
+ * @param pos
+ * @param charDef
+ */
+void LoadClass::readRom(uint8_t * obj, int &pos, char charDef) {
+  switch (charDef) {
+  case 'c':
+    obj[pos] = readChar();
+    pos++;
+    break;
+  case 'b':
+    obj[pos] = readByte();
+    pos++;
+    break;
+  case 'i': {
+    int intVal = readInt();
+    memcpy(obj + pos, (const void*) &intVal, 2);
+    pos += 2;
+  } break;
+  case 'l': {
+    long longVal = readLong();
+    memcpy(obj + pos, (const void*) &longVal, 4);
+    pos += 4;
+  } break;
+  case 'f': {
+    float floatVal = readFloat();
+    memcpy(obj + pos, (const void*) &floatVal, 4);
+    pos += 4;
+  } break;
+  case 's': {
+    char * stringVal = readString();
+    memcpy(obj + pos, (const void*) &stringVal, 2);
+    pos += 2;
+  } break;
+  case 'a': {
+    int count;
+    void * arrayVal = readArray(count);
+    memcpy(obj + pos, (const void*) &arrayVal, 2);
+    pos += 2;
+  } break;
+  case 'o': {
+    int count;
+    void * objectVal = readObject(count);
+    memcpy(obj + pos, (const void*) &objectVal, 2);
+    pos += 2;
+  } break;
+  default: break;
   }
 }
 
@@ -158,69 +247,20 @@ int LoadClass::getObjectLength(char * definition){
  * @brief LoadClass::readString
  * @return
  */
-void * LoadClass::readObject(int &pos, char * &definition){
+void * LoadClass::readObject(int &pos){
   int len = readInt();
-  definition = readString();
+  char * definition = readString();
   int objectLength = getObjectLength(definition);
-  uint8_t * obj = new uint8_t[objectLength];
+  uint8_t * obj = addRef(new uint8_t[objectLength]);
   pos = 0;
   for (int i = 0; i < strlen(definition); i++) {
-    switch (definition[i]) {
-    case 'c':
-      obj[pos] = readChar();
-      pos++;
-      break;
-    case 'b':
-      obj[pos] = readByte();
-      pos++;
-      break;
-    case 'i': {
-      int intVal = readInt();
-      memcpy(obj + pos, (const void*) &intVal, 2);
-      pos += 2;
-    } break;
-    case 'l': {
-      long longVal = readLong();
-      memcpy(obj + pos, (const uint8_t *) &longVal, 4);
-      pos += 4;
-    } break;
-    case 'f': {
-      float floatVal = readFloat();
-      memcpy(obj + pos, (const void*) &floatVal, 4);
-      pos += 4;
-    } break;
-    case 's': {
-      char * stringVal = readString();
-      memcpy(obj + pos, (const void*) &stringVal, 2);
-      pos += 2;
-    } break;
-    default: break;
-    }
+    readRom(obj, pos, definition[i]);
   }
   return obj;
 }
-void * LoadClass::readObject(int16_t _address, int & pos, char * &definition){
+void * LoadClass::readObject(int16_t _address, int & pos){
   address = _address;
-  return readObject(pos, definition);
-}
-void LoadClass::deleteObject(char * definition, void * obj){
-  int len = 0;
-  for (int i = 0; i < strlen(definition); i++) {
-    switch (definition[i]) {
-    case 'c': len++; break;
-    case 'b': len++; break;
-    case 'i': len += 2; break;
-    case 'l': len += 4; break;
-    case 'f': len += 4; break;
-    case 's': {
-      delete (char *)(*((uint16_t *)(obj + len)));
-      len += 2;
-    } break;
-    default: break;
-    }
-  }
-  delete definition;
-  delete obj;
+  return readObject(pos);
 }
 
 void * LoadClass::readArray(int & count) {
@@ -228,25 +268,39 @@ void * LoadClass::readArray(int & count) {
   char charDef = readChar();
   int romLength = getRomLength(charDef);
   count = readInt();
-  int objectLength = romLength * count;
+  int arrayLength = romLength * count;
 #ifdef HAS_SERIAL_DEBUG
   Serial.print("readArray len = ");
   Serial.print(len);
   Serial.print("; charDef = ");
   Serial.print(charDef);
-  Serial.print("; objectLength = ");
-  Serial.print(objectLength);
+  Serial.print("; arrayLength = ");
+  Serial.print(arrayLength);
   Serial.print("; address = ");
   Serial.println(address, HEX);
 #endif
-  void * arr = new uint8_t[objectLength];
-  I2CEEPROM.read_buffer(device, address, (uint8_t*) arr, objectLength);
+  void * arr = addRef(new uint8_t[arrayLength]);
+  switch (charDef) {
+  case 'c':
+  case 'b':
+  case 'i':
+  case 'l':
+  case 'f': {
+    I2CEEPROM.read_buffer(device, address, (uint8_t*) arr, arrayLength);
+  } break;
+  case 's':
+  case 'a':
+  case 'o': {
+    int pos = 0;
+    for (int i = 0; i < count; i++) {
+      readRom(arr, pos, charDef);
+    }
+  } break;
+  default: break;
+  }
   return arr;
 }
 void * LoadClass::readArray(int16_t _address, int & count) {
   address = _address;
   return readArray(count);
-}
-void LoadClass::deleteArray(void * arr) {
-  delete arr;
 }
