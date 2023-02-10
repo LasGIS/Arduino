@@ -4,15 +4,19 @@
  * выводим батарейки.
  */
 void printVolts() {
+  LoadClass lc = LoadClass(DEVICE, EEPROM_factorBattery);
+  float factorBattery = lc.readFloat();
+  float factorCharger = lc.readFloat();
+
   // 1 сборка
-//  double vBattery = analogRead(A7) * 0.00664;
-//  double vCharger = analogRead(A6) * 0.00664;
+//  float vBattery = analogRead(A7) * 0.00664;
+//  float vCharger = analogRead(A6) * 0.00664;
   // 2 сборка
-//  double vBattery = analogRead(A7) * 0.00661;
-//  double vCharger = analogRead(A6) * 0.00654;
+//  float vBattery = analogRead(A7) * 0.00661;
+//  float vCharger = analogRead(A6) * 0.00654;
   // 3 сборка
-  double vBattery = analogRead(A7) * 0.00631;
-  double vCharger = analogRead(A6) * 0.00630;
+  float vBattery = analogRead(A7) * factorBattery;
+  float vCharger = analogRead(A6) * factorCharger;
 #ifdef HAS_SERIAL
   Serial.print("vBattery = ");
   Serial.println(vBattery);

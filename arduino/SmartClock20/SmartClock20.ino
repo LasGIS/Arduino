@@ -1,9 +1,9 @@
 #include "SmartClock20.h"
 
-// драйвер экранчика
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 TFT_LG_ILI9225 tft;
 
-// указываем пин для ИК датчика
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 IrControl irControl(2);
 
 char comBuffer[20];
@@ -15,24 +15,25 @@ uint16_t boxCenterX;
 uint16_t boxCenterY;
 GravVector gravVector;
 
-// текущая команда
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 uint8_t currentCommand = 0;
 ModeType mode = show;
 
-ScreenTft* screens[NUMBER_OF_SCREENS] = {
+ScreenTft * screens[] = {
   new ScreenDateTime(),
-//  new ScreenTimer(),
+  new ScreenTimer(),
   new ScreenDump()
 };
+int numberOfScreens = sizeof(screens) / sizeof(ScreenTft*);
 ScreenTft * screen = screens[currentCommand];
 ScreenTft * changeCurrentCommand(bool);
 
 /**
- * @brief printText вывод текста на экран
- * @param col колонка (x * 6)
- * @param row строка (y * 8)
- * @param fontSize размер щрифта
- * @param text выводимый текст
+ * @brief printText пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+ * @param col пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (x * 6)
+ * @param row пїЅпїЅпїЅпїЅпїЅпїЅ (y * 8)
+ * @param fontSize пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+ * @param text пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
  * @param color
  */
 void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char * text, uint16_t color) {
@@ -46,8 +47,8 @@ void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char * text, ui
 
 /**
  * @brief setCursor
- * @param col колонка (x * 6)
- * @param row строка (y * 8)
+ * @param col пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (x * 6)
+ * @param row пїЅпїЅпїЅпїЅпїЅпїЅ (y * 8)
  */
 void setCursor(uint8_t col, uint8_t row, uint8_t fontSize) {
   static uint16_t x0 = -1, x1 = -1, y0 = -1, y1 = -1;
@@ -89,7 +90,7 @@ bool isHorisontalOrientation() {
 
 /**
  * @brief setOrientation
- * Поправляем ориентацию в зависимости от показаний гравитационного датчика
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
  */
 void setOrientation(GravVector vec) {
   static OrientationType oldOrientation = undefine;
@@ -139,6 +140,8 @@ void setup() {
 
   Serial.begin(9600);
 //  Serial.begin(115200);
+  Serial.print("numberOfScreens = ");
+  Serial.println(numberOfScreens);
 #ifdef ADXL345_ENABLED
   accelBegin();
   setOrientation(accelReadVector());
@@ -154,11 +157,10 @@ void setup() {
     I2CEEPROM.write_buffer(0x57, a, buffer, 0x100);
   }
 */
-  testString();
 }
 
 /**
- * Показываем полученное значение ИК пульта в Serial
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Serial
  */
 void serIRkey(long code, char key) {
   ltoa(code, comBuffer, 16);
@@ -192,7 +194,7 @@ void loop() {
     }
     serIRkey(code, key);
 
-    // редактирование
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     if (mode == ModeType::edit) {
       screen->edit(key);
       if (mode == ModeType::show) {
@@ -203,16 +205,16 @@ void loop() {
       return;
     }
 
-    // управление экраном
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     switch (key) {
-      // меняем режим
+      // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
       case 'M':
         screen->edit(1);
         screen->showOnce();
         screen->showAllFields();
         screen->showCurrentField();
         break;
-      // меняем экран
+      // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
       case 'e':
         screen = changeCurrentCommand(true);
         break;
@@ -241,33 +243,9 @@ void loop() {
 
 /**
  * @brief serialEvent
-#define MAX_LOAD_SIZE 100
-void serialEvent() {
-//  static uint8_t outRow = 7;
-  char buf[MAX_LOAD_SIZE];
-  isSerial = true;
-  while (Serial.available() > 0) {
-    int cnt = Serial.readBytes(buf, MAX_LOAD_SIZE);
-    if (cnt >= 0 && cnt < MAX_LOAD_SIZE) {
-      buf[cnt] = 0;
-    }
-  }
-//#ifdef HAS_SERIAL
-  Serial.print('[');
-  Serial.print(buf);
-  Serial.println(']');
-//#endif
-//  printText(1, outRow, 1, buf, COLOR_GOLD);
-//  outRow = outRow < 17 ? outRow + 1 : 7;
-  isSerial = false;
-}
-*/
-
-/**
- * @brief serialEvent
- * Входные команды из компьютера:
- * <:BR><device><address><size> - чтение блока памяти и пересылка в компьютер через Serial.print();
- * <:BW><SerialBlock> - запись блока памяти, полученного из компьютера;
+ * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
+ * <:BR><device><address><size> - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Serial.print();
+ * <:BW><SerialBlock> - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ;
  */
 void serialEvent() {
   if (Serial.available() && serialReadShort() == 0x423A) {
@@ -283,9 +261,9 @@ void serialEvent() {
 
 ScreenTft * changeCurrentCommand(bool isIncrement) {
   if (isIncrement) {
-    currentCommand = (currentCommand < NUMBER_OF_SCREENS - 1) ? currentCommand + 1 : 0;
+    currentCommand = (currentCommand < numberOfScreens - 1) ? currentCommand + 1 : 0;
   } else {
-    currentCommand = currentCommand > 0 ? currentCommand - 1 : NUMBER_OF_SCREENS - 1;
+    currentCommand = currentCommand > 0 ? currentCommand - 1 : numberOfScreens - 1;
   }
   ScreenTft * screen = screens[currentCommand];
   screen->showOnce();

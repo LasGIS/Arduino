@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 06.02.2023
+ *  @(#)Runner.java  last: 10.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -59,7 +59,7 @@ public class Runner {
      *   -port.name COM3
      *   -baud.rate 96000
      *   -patch D:\Arduino\arduino\SmartClock20
-     *   -data I2CMemory.data
+     *   -data I2CMemory.md
      * и / или
      *   -properties SmartClock20.properties
      * который содержит все эти параметры.

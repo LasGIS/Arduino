@@ -34,8 +34,7 @@ SOURCES += \
     screen_date_time.cpp \
     screen_timer.cpp \
     screen_tft.cpp \
-    screen_dump.cpp \
-    testAT24C32.cpp
+    screen_dump.cpp
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += ../libraries/arduino-ds1302-master \

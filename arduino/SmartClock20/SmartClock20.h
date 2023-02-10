@@ -4,11 +4,13 @@
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 #include <SerialBlock.h>
+#include <LoadClass.h>
 #include <SPI.h>
 #include <DS3231.h>
 #include <Wire.h>
 #include <TFT_LG_ILI9225.h>
 #include <IrControl.h>
+#include "I2CMemory.h"
 #include "screen_tft.h"
 #include "screen_date_time.h"
 #include "screen_timer.h"
@@ -16,6 +18,8 @@
 
 //#define HAS_SERIAL
 #define HAS_SERIAL_DEBUG
+
+#define DEVICE 0x57
 
 #define ADXL345_ENABLED
 
@@ -49,7 +53,6 @@
 #define BOXH_CENTER_Y 87
 
 /* количество экранов */
-#define NUMBER_OF_SCREENS 2
 extern TFT_LG_ILI9225 tft;
 extern DS3231 Clock;
 extern char comBuffer[20];
@@ -72,9 +75,6 @@ extern void printShortTime(DateTime * dateTime);
 extern void printBigTime  (DateTime * dateTime);
 extern void printRealDate (DateTime * dateTime);
 extern bool isHorisontalOrientation();
-extern void testAT24C32();
-extern void testString();
-extern void testObject();
 
 class GravVector {
 public:
