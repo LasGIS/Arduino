@@ -497,7 +497,6 @@ uint8_t TFT_LG_ILI9225::getFontSize() {
 }
 
 void TFT_LG_ILI9225::drawText(uint16_t x, uint16_t y, const char * string, uint16_t color) {
-
   uint16_t currx = x;
   // Print every character in string
   while (*string) {

@@ -16,8 +16,8 @@
 #include "screen_timer.h"
 #include "screen_dump.h"
 
+// включаем режим отладки
 //#define HAS_SERIAL
-#define HAS_SERIAL_DEBUG
 
 #define DEVICE 0x57
 

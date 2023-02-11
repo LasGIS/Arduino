@@ -1,9 +1,9 @@
 #include "SmartClock20.h"
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// драйвер экранчика
 TFT_LG_ILI9225 tft;
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// указываем пин для ИК датчика
 IrControl irControl(2);
 
 char comBuffer[20];
@@ -15,7 +15,7 @@ uint16_t boxCenterX;
 uint16_t boxCenterY;
 GravVector gravVector;
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+// текущая команда
 uint8_t currentCommand = 0;
 ModeType mode = show;
 
@@ -29,11 +29,11 @@ ScreenTft * screen = screens[currentCommand];
 ScreenTft * changeCurrentCommand(bool);
 
 /**
- * @brief printText пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
- * @param col пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (x * 6)
- * @param row пїЅпїЅпїЅпїЅпїЅпїЅ (y * 8)
- * @param fontSize пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
- * @param text пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+ * @brief printText вывод текста на экран
+ * @param col колонка (x * 6)
+ * @param row строка (y * 8)
+ * @param fontSize размер щрифта
+ * @param text выводимый текст
  * @param color
  */
 void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char * text, uint16_t color) {
@@ -47,8 +47,8 @@ void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char * text, ui
 
 /**
  * @brief setCursor
- * @param col пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (x * 6)
- * @param row пїЅпїЅпїЅпїЅпїЅпїЅ (y * 8)
+ * @param col колонка (x * 6)
+ * @param row строка (y * 8)
  */
 void setCursor(uint8_t col, uint8_t row, uint8_t fontSize) {
   static uint16_t x0 = -1, x1 = -1, y0 = -1, y1 = -1;
@@ -90,7 +90,7 @@ bool isHorisontalOrientation() {
 
 /**
  * @brief setOrientation
- * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+ * Поправляем ориентацию в зависимости от показаний гравитационного датчика
  */
 void setOrientation(GravVector vec) {
   static OrientationType oldOrientation = undefine;
@@ -160,7 +160,7 @@ void setup() {
 }
 
 /**
- * пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Serial
+ * Показываем полученное значение ИК пульта в Serial
  */
 void serIRkey(long code, char key) {
   ltoa(code, comBuffer, 16);
@@ -194,7 +194,7 @@ void loop() {
     }
     serIRkey(code, key);
 
-    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    // редактирование
     if (mode == ModeType::edit) {
       screen->edit(key);
       if (mode == ModeType::show) {
@@ -205,16 +205,16 @@ void loop() {
       return;
     }
 
-    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    // управление экраном
     switch (key) {
-      // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+      // меняем режим
       case 'M':
         screen->edit(1);
         screen->showOnce();
         screen->showAllFields();
         screen->showCurrentField();
         break;
-      // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+      // меняем экран
       case 'e':
         screen = changeCurrentCommand(true);
         break;
@@ -243,9 +243,9 @@ void loop() {
 
 /**
  * @brief serialEvent
- * пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
- * <:BR><device><address><size> - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Serial.print();
- * <:BW><SerialBlock> - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ;
+ * Входные команды из компьютера:
+ * <:BR><device><address><size> - чтение блока памяти и пересылка в компьютер через Serial.print();
+ * <:BW><SerialBlock> - запись блока памяти, полученного из компьютера;
  */
 void serialEvent() {
   if (Serial.available() && serialReadShort() == 0x423A) {
