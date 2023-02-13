@@ -15,3 +15,10 @@
 #define EEPROM_ArrayOfObject_0_Object_String 0x005a
 #define EEPROM_ArrayOfObject_0_Object_Char 0x0068
 #define EEPROM_ArrayOfObject_1_Object 0x0069
+#define EEPROM_music 0x00a4
+#define EEPROM_music_0_JingleBells 0x00a9
+#define EEPROM_music_0_JingleBells_name 0x00af
+#define EEPROM_music_0_JingleBells_music 0x00bd
+#define EEPROM_music_1_TwoFunnyGeese 0x019c
+#define EEPROM_music_1_TwoFunnyGeese_name 0x01a2
+#define EEPROM_music_1_TwoFunnyGeese_music 0x01b8

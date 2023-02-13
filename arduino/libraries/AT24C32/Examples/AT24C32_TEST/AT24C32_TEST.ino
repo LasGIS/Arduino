@@ -9,6 +9,7 @@ extern void testString();
 extern void testObject();
 extern void testArray();
 extern void testArrayObject();
+extern void testJingleBells();
 
 void setup() {
   Wire.begin(); // initialise the connection
@@ -52,6 +53,9 @@ void serialEvent() {
         break;
       case '55':
         testArrayObject();
+        break;
+      case '06':
+        testJingleBells();
         break;
       default:
         break;

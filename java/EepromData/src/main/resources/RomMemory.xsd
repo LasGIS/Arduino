@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)RomMemory.xsd  last: 21.01.2023
+  ~  @(#)RomMemory.xsd  last: 12.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -64,6 +64,14 @@
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
+    <xs:complexType name="DUMPType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="name" use="optional"/>
+                <xs:attribute type="xs:string" name="val" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
     <xs:complexType name="OBJECTType">
         <xs:sequence>
             <xs:element type="CHARType" name="CHAR"/>
@@ -72,6 +80,8 @@
             <xs:element type="INT32Type" name="INT32"/>
             <xs:element type="FLOATType" name="FLOAT"/>
             <xs:element type="STRINGType" name="STRING"/>
+            <xs:element type="ARRAYType" name="ARRAY"/>
+            <xs:element type="DUMPType" name="DUMP"/>
         </xs:sequence>
         <xs:attribute type="xs:string" name="name"/>
     </xs:complexType>
@@ -85,6 +95,7 @@
             <xs:element type="STRINGType" name="STRING"/>
             <xs:element type="OBJECTType" name="OBJECT"/>
             <xs:element type="ARRAYType" name="ARRAY"/>
+            <xs:element type="DUMPType" name="DUMP"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ARRAYType">

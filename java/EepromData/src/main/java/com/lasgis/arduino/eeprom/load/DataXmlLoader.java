@@ -1,9 +1,9 @@
 /*
- * @(#)DataXmlLoader.java
+ *  @(#)DataXmlLoader.java  last: 13.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load;
@@ -26,12 +26,14 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Загрузчик из XML файла.
@@ -53,6 +55,7 @@ class DataXmlLoader {
     private final static String STRING = "STRING";
     private final static String OBJECT = "OBJECT";
     private final static String ARRAY = "ARRAY";
+    private final static String DUMP = "DUMP";
 
     private DocumentBuilder dBuilder;
     private List<RomData> list = new ArrayList<>();
@@ -128,6 +131,8 @@ class DataXmlLoader {
                 return addSubNode(RomOBJECT.of(name), node);
             case ARRAY:
                 return addSubNode(RomARRAY.of(name), node);
+            case DUMP:
+                return dumpNode(name, value, node);
             case "#comment":
             case "#text":
                 return null;
@@ -136,6 +141,16 @@ class DataXmlLoader {
                     UNKNOWN_FORMAT + "Неизвестный элемент = \"{0}\"!", node.getNodeName()
                 );
         }
+    }
+
+    private RomData dumpNode(final String name, final String value, final Node node) {
+        final RomARRAY rom = RomARRAY.of(name);
+        String dumpStr = Objects.nonNull(value) ? value : node.getTextContent().trim().replaceAll("[ \n\t\r]", "");
+        byte[] dump = DatatypeConverter.parseHexBinary(dumpStr);
+        for (final byte bt : dump) {
+            rom.add(RomINT8.of(bt));
+        }
+        return rom;
     }
 
     private RomData addSubNode(final RomData rom, final Node node) {

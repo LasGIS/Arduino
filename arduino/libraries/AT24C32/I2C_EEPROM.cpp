@@ -60,10 +60,13 @@ void I2C_EEPROM::write_buffer(
 
 // maybe let's not read more than 30 or 32 bytes at a time!
 void I2C_EEPROM::read_buffer(uint8_t device, uint16_t address, uint8_t* data, uint16_t length) {
-  beginTransmission(device, address);
-  Wire.endTransmission();
-  Wire.requestFrom(device, length);
-  for (uint16_t c = 0; c < length; c++ ) {
-    if (Wire.available()) data[c] = Wire.read();
+  for (uint16_t offset = 0; offset < length; offset += BUFFER_LENGTH) {
+    uint16_t len = length - offset > BUFFER_LENGTH ? BUFFER_LENGTH : length - offset;
+    beginTransmission(device, address + offset);
+    Wire.endTransmission();
+    Wire.requestFrom(device, len);
+    for (uint16_t j = 0; j < len; j++ ) {
+      if (Wire.available()) data[offset + j] = Wire.read();
+    }
   }
 }

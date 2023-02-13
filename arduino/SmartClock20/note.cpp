@@ -29,7 +29,7 @@ Note::Note(uint8_t _note, uint8_t _octave, uint8_t _duration) {
 uint16_t Note::tone() {
   if (note < Pause) {
     float factor = (octave < 8) ? (1.0 * (1 << 8 - octave)) :
-      (octave > 8) ? (1.0 / (0x1 << octave - 8)) : 1.0;
+      (octave > 8) ? (1.0 / (1 << octave - 8)) : 1.0;
     return TONES_8_OCTAVE[note] / factor;
   }
   return NOTE_P0;

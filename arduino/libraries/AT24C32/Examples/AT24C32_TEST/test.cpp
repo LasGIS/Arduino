@@ -109,6 +109,22 @@ void testArrayObject() {
 }
 
 /**
+ * case '60':
+ * @brief testArrayObject
+ */
+void testJingleBells() {
+  Serial.println("testJingleBells");
+  LoadClass lc = LoadClass(DEVICE, EEPROM_music_0_JingleBells_music);
+  int len = 0;
+  uint8_t * objs = lc.readArray(len);
+  Serial.print("=> testJingleBells(");
+  Serial.print(len);
+  Serial.print(") = ");
+  SerialPrintHex(objs, len);
+  Serial.println();
+}
+
+/**
  * case '11':
  * @brief testAT24C32
  */

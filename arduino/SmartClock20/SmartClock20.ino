@@ -140,8 +140,6 @@ void setup() {
 
   Serial.begin(9600);
 //  Serial.begin(115200);
-  Serial.print("numberOfScreens = ");
-  Serial.println(numberOfScreens);
 #ifdef ADXL345_ENABLED
   accelBegin();
   setOrientation(accelReadVector());

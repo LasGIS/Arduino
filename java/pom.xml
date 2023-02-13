@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 30.05.2018
+  ~  @(#)pom.xml  last: 12.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -78,7 +78,7 @@
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
-                <version>5.9.0</version>
+                <version>5.9.2</version>
                 <scope>test</scope>
             </dependency>
             <!--loggin: slf-->

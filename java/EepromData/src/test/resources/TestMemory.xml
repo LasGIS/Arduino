@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)AT24CTestMemory.xml  last: 12.02.2023
+  ~  @(#)TestMemory.xml  last: 13.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
   ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
-
 <ROM xmlns="http://www.lasgis.com/arduino/schema/rom"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">

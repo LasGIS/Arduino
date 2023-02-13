@@ -17,6 +17,7 @@ void ScreenTimer::changeOrientation() {
 }
 
 void ScreenTimer::showTime(DateTime * dateTime) {
+  static boolean isMusicAlarm = true;
   ScreenTft::showTime(dateTime);
   uint32_t longTime = RTClib().now().unixtime();
   long deltaTime = time - longTime;
@@ -28,9 +29,11 @@ void ScreenTimer::showTime(DateTime * dateTime) {
     DateTime dateTimer(SECONDS_FROM_1970_TO_2000 + deltaTime);
     printBigTime(&dateTimer);
   }
-  if (deltaTime > -10L && deltaTime <= 0L) {
+  if (deltaTime > -10L && deltaTime <= 0L && isMusicAlarm) {
+    isMusicAlarm = false;
     printText(1, 5, 2, "Время закончилось", COLOR_GREEN);
     musicAlarm();
+    isMusicAlarm = true;
   }
 }
 

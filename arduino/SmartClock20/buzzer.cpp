@@ -9,6 +9,7 @@ uint8_t musicSoundVolume = 8;
  Jingle Bells (Джингл белс)
  https://musicnotes.info/jingle-bells-dzingl-bels-noty-dla-fortepiano
  */
+/*
 Note music[] = {
   Note(Mi, 4, 2), Note(Mi, 4, 2), Note(Mi, 4, 1),
   Note(Mi, 4, 2), Note(Mi, 4, 2), Note(Mi, 4, 1),
@@ -51,9 +52,9 @@ Note music[] = {
   Note(Sl, 4, 2), Note(Sl, 4, 2), Note(Fa, 4, 2), Note(Re, 4, 2),
   Note(Do, 4, 0),
 };
+ */
 
-/* Жили у бабуси 2 гуси */
-/*
+/* Жили у бабуси 2 гуси
 Note music[] = {
   Note(Fa, 4, 2), Note(Mi, 4, 2), Note(Re, 4, 2), Note(Do, 4, 2), Note(Sl, 4, 1),  Note(Sl, 4, 1),
   Note(Fa, 4, 2), Note(Mi, 4, 2), Note(Re, 4, 2), Note(Do, 4, 2), Note(Sl, 4, 1),  Note(Sl, 4, 1),
@@ -64,17 +65,23 @@ Note music[] = {
   Note(Mi, 4, 2), Note(Sl, 4, 2), Note(Sl, 4, 2), Note(Mi, 4, 2),
   Note(Re, 4, 2), Note(Mi, 4, 2), Note(Fa, 4, 2), Note(Re, 4, 2), Note(Do, 4, 1),  Note(Do, 4, 1)
 };
-*/
+ */
 
 /**
  *  musicAlarm
  */
 void musicAlarm() {
+  LoadClass lc = LoadClass(DEVICE, EEPROM_music_1_TwoFunnyGeese_music);
+  int len;
+  Note * music = lc.readArray(len);
 #ifdef HAS_SERIAL
-  Serial.print("musicSize = ");
-  Serial.print(sizeof(music) / sizeof(Note));
+  Serial.print(" musicSize(");
+  Serial.print(len);
+  Serial.print(") = ");
+  SerialPrintHex((uint8_t *) music, len);
+  Serial.println();
 #endif
-  for (uint16_t i = 0; i < (sizeof(music) / sizeof(Note)); i++) {
+  for (uint16_t i = 0; i < (len / sizeof(Note)); i++) {
     Note note = music[i];
 #ifdef HAS_SERIAL
     Serial.print("note.tone() = ");
