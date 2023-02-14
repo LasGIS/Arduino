@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 10.02.2023
+ *  @(#)Runner.java  last: 15.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -10,7 +10,7 @@ package com.lasgis.arduino.eeprom;
 
 import com.lasgis.arduino.eeprom.create.CreateHelper;
 import com.lasgis.arduino.eeprom.load.LoadHelper;
-import com.lasgis.arduino.eeprom.memory.RomData;
+import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.panels.ControlHelper;
 import com.lasgis.arduino.eeprom.test.TestHelper;
 import com.lasgis.arduino.eeprom.upload.UploadHelper;
@@ -48,7 +48,7 @@ public class Runner {
         PROP_PORT_NAME, PROP_BAUD_RATE, PROP_PATCH, PROP_DATA_FILE
     };
     @Getter
-    private static List<RomData> dataList;
+    private static List<BatchMemory> dataList;
     @Getter
     private static byte[] dump;
 

@@ -1,114 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)RomMemory.xsd  last: 12.02.2023
+  ~  @(#)RomMemory.xsd  last: 15.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
   ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
-
 <xs:schema attributeFormDefault="qualified"
            elementFormDefault="qualified"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://www.lasgis.com/arduino/schema/rom">
-    <xs:element name="ROM" type="ROMType">
-        <xs:annotation>
-            <xs:documentation>~</xs:documentation>
-        </xs:annotation>
-    </xs:element>
-    <xs:complexType name="CHARType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="name" use="optional"/>
-                <xs:attribute type="xs:string" name="val" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="INT8Type">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="name" use="optional"/>
-                <xs:attribute type="xs:byte" name="val" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="INT16Type">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="name" use="optional"/>
-                <xs:attribute type="xs:int" name="val" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="INT32Type">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="name" use="optional"/>
-                <xs:attribute type="xs:int" name="val" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="FLOATType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="name" use="optional"/>
-                <xs:attribute type="xs:float" name="val" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="STRINGType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="name" use="optional"/>
-                <xs:attribute type="xs:string" name="val" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="DUMPType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="name" use="optional"/>
-                <xs:attribute type="xs:string" name="val" use="optional"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="OBJECTType">
-        <xs:sequence>
-            <xs:element type="CHARType" name="CHAR"/>
-            <xs:element type="INT8Type" name="INT8"/>
-            <xs:element type="INT16Type" name="INT16"/>
-            <xs:element type="INT32Type" name="INT32"/>
-            <xs:element type="FLOATType" name="FLOAT"/>
-            <xs:element type="STRINGType" name="STRING"/>
-            <xs:element type="ARRAYType" name="ARRAY"/>
-            <xs:element type="DUMPType" name="DUMP"/>
-        </xs:sequence>
+  <xs:element name="Memory" type="MEMORYType">
+    <xs:annotation>
+      <xs:documentation>~</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="CHARType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
-    </xs:complexType>
-    <xs:complexType name="ROMType">
-        <xs:sequence>
-            <xs:element type="CHARType" name="CHAR"/>
-            <xs:element type="INT8Type" name="INT8"/>
-            <xs:element type="INT16Type" name="INT16"/>
-            <xs:element type="INT32Type" name="INT32"/>
-            <xs:element type="FLOATType" name="FLOAT"/>
-            <xs:element type="STRINGType" name="STRING"/>
-            <xs:element type="OBJECTType" name="OBJECT"/>
-            <xs:element type="ARRAYType" name="ARRAY"/>
-            <xs:element type="DUMPType" name="DUMP"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="ARRAYType">
-        <xs:sequence>
-            <xs:element type="CHARType" name="CHAR"/>
-            <xs:element type="INT8Type" name="INT8"/>
-            <xs:element type="INT16Type" name="INT16"/>
-            <xs:element type="INT32Type" name="INT32"/>
-            <xs:element type="FLOATType" name="FLOAT"/>
-            <xs:element type="STRINGType" name="STRING"/>
-            <xs:element type="OBJECTType" name="OBJECT"/>
-            <xs:element type="ARRAYType" name="ARRAY"/>
-        </xs:sequence>
+        <xs:attribute type="xs:string" name="val" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="INT8Type">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
-    </xs:complexType>
+        <xs:attribute type="xs:byte" name="val" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="INT16Type">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:int" name="val" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="INT32Type">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:int" name="val" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="FLOATType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:float" name="val" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="STRINGType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:string" name="val" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="DUMPType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute type="xs:string" name="val"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="OBJECTType">
+    <xs:sequence>
+      <xs:element type="CHARType" name="CHAR"/>
+      <xs:element type="INT8Type" name="INT8"/>
+      <xs:element type="INT16Type" name="INT16"/>
+      <xs:element type="INT32Type" name="INT32"/>
+      <xs:element type="FLOATType" name="FLOAT"/>
+      <xs:element type="STRINGType" name="STRING"/>
+      <xs:element type="ARRAYType" name="ARRAY"/>
+      <xs:element type="DUMPType" name="DUMP"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name"/>
+  </xs:complexType>
+  <xs:complexType name="MEMORYType">
+    <xs:sequence>
+      <xs:element type="BatchMemoryType" name="BatchMemory"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="headerFilename" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="BatchMemoryType">
+    <xs:sequence>
+      <xs:element type="CHARType" name="CHAR"/>
+      <xs:element type="INT8Type" name="INT8"/>
+      <xs:element type="INT16Type" name="INT16"/>
+      <xs:element type="INT32Type" name="INT32"/>
+      <xs:element type="FLOATType" name="FLOAT"/>
+      <xs:element type="STRINGType" name="STRING"/>
+      <xs:element type="OBJECTType" name="OBJECT"/>
+      <xs:element type="ARRAYType" name="ARRAY"/>
+      <xs:element type="DUMPType" name="DUMP"/>
+    </xs:sequence>
+    <xs:attribute type="deviceType" name="device" use="required"/>
+    <xs:attribute type="xs:hexBinary" name="offset"/>
+    <xs:attribute type="xs:string" name="prefix" use="required"/>
+  </xs:complexType>
+  <xs:simpleType name="deviceType">
+    <xs:restriction base="xs:hexBinary">
+      <xs:length value="2" fixed="true"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="offsetType">
+    <xs:restriction base="xs:hexBinary">
+      <xs:length value="4" fixed="true"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ARRAYType">
+    <xs:sequence>
+      <xs:element type="CHARType" name="CHAR"/>
+      <xs:element type="INT8Type" name="INT8"/>
+      <xs:element type="INT16Type" name="INT16"/>
+      <xs:element type="INT32Type" name="INT32"/>
+      <xs:element type="FLOATType" name="FLOAT"/>
+      <xs:element type="STRINGType" name="STRING"/>
+      <xs:element type="OBJECTType" name="OBJECT"/>
+      <xs:element type="ARRAYType" name="ARRAY"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name"/>
+  </xs:complexType>
 </xs:schema>

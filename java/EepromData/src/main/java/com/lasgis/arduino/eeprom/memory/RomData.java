@@ -1,5 +1,5 @@
 /*
- *  @(#)RomData.java  last: 08.02.2023
+ *  @(#)RomData.java  last: 15.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**
+ * ROM (Read-only memory) - ПЗУ
  * <pre>Правила сериализации:
  * 1 Объекты могут быть именованные и не именованные.
  *    если объект имеет имя, то мы должны указать его структуру и добавить

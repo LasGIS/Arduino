@@ -88,6 +88,14 @@ ScreenTft::ScreenTft() {
   nPosit = 0;
 }
 
+ScreenTft::ScreenTft(int16_t address) {
+  LoadClass lc = LoadClass(DEVICE, address);
+  int len;
+  uint8_t * obj = lc.readObject(len);
+  nField = 0;
+  nPosit = 0;
+}
+
 void ScreenTft::changeOrientation() {
 #ifdef HAS_SERIAL
   Serial.println(tft.getOrientation());

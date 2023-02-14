@@ -1,9 +1,9 @@
 /*
- * @(#)TestHelper.java
+ *  @(#)TestHelper.java  last: 15.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.test;
@@ -32,7 +32,8 @@ public class TestHelper {
     private static final TestHelper helper = new TestHelper();
 
     public static void show() {
-        helper.showDataList(Runner.getDataList(), Runner.getDump());
+        // todo заглушка - переделать
+        helper.showDataList(Runner.getDataList().get(0).getRomDataList(), Runner.getDump());
     }
 
     private void showDataList(final List<RomData> array, final byte[] dump) {

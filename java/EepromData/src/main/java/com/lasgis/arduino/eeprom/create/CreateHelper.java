@@ -1,5 +1,5 @@
 /*
- *  @(#)CreateHelper.java  last: 07.02.2023
+ *  @(#)CreateHelper.java  last: 15.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -48,7 +48,8 @@ public class CreateHelper {
     private final static int HEX_SIZE_STR_LEN = 16;
 
     public static void create() throws IOException {
-        final List<RomData> dataList = Runner.getDataList();
+        // todo заглушка - переделать
+        final List<RomData> dataList = Runner.getDataList().get(0).getRomDataList();
         final byte[] dump = Runner.getDump();
         final Properties props = Runner.getProperties();
         final String patch = FilenameUtils.removeExtension((new File(

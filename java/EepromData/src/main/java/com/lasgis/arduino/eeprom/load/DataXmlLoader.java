@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoader.java  last: 13.02.2023
+ *  @(#)DataXmlLoader.java  last: 15.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,6 +9,7 @@
 package com.lasgis.arduino.eeprom.load;
 
 import com.lasgis.arduino.eeprom.CommonInfoException;
+import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
 import com.lasgis.arduino.eeprom.memory.RomDOUBLE;
@@ -45,7 +46,8 @@ import java.util.Objects;
 class DataXmlLoader {
 
     private final static String UNKNOWN_FORMAT = "Формат XML файла: ";
-    private final static String ROM = "ROM";
+    private final static String MEMORY = "Memory";
+    private final static String BATCH_MEMORY = "BatchMemory";
     private final static String CHAR = "CHAR";
     private final static String INT8 = "INT8";
     private final static String INT16 = "INT16";
@@ -57,14 +59,14 @@ class DataXmlLoader {
     private final static String ARRAY = "ARRAY";
     private final static String DUMP = "DUMP";
 
-    private DocumentBuilder dBuilder;
-    private List<RomData> list = new ArrayList<>();
+    private final DocumentBuilder dBuilder;
+    private final List<BatchMemory> list = new ArrayList<>();
 
     private DataXmlLoader() throws ParserConfigurationException {
         dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
 
-    static List<RomData> load(final File file) throws Exception {
+    static List<BatchMemory> load(final File file) throws Exception {
         final DataXmlLoader loader = new DataXmlLoader();
         loader.loadFile(file);
         return loader.list;
@@ -72,22 +74,42 @@ class DataXmlLoader {
 
     private void loadFile(final File file) throws Exception {
         list.clear();
-
         final Document doc = dBuilder.parse(file);
         final Element first = doc.getDocumentElement();
-        if (!ROM.equals(first.getNodeName())) {
+        if (!MEMORY.equals(first.getNodeName())) {
             throw new CommonInfoException(
-                UNKNOWN_FORMAT + "первый элемент = \"{0}\", а должен быть \"ROM\"",
-                first.getNodeName()
+                UNKNOWN_FORMAT + "первый элемент = \"{0}\", а должен быть \"{1}\"",
+                first.getNodeName(), MEMORY
             );
         }
-        final NodeList nodeList = first.getChildNodes();
+        final NodeList memoryList = first.getChildNodes();
+        for (int j = 0; j < memoryList.getLength(); j++) {
+            final Node batchNode = memoryList.item(j);
+            if (BATCH_MEMORY.equals(batchNode.getNodeName())) {
+                final BatchMemory batchMemory = BatchMemory.of();
+                final NamedNodeMap attrs = batchNode.getAttributes();
 
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            final Node node = nodeList.item(i);
-            final RomData data = nodeToData(node);
-            if (data != null) {
-                list.add(data);
+                final Node nodeDevice = attrs.getNamedItem("device");
+                final byte device = (nodeDevice != null) ? Byte.valueOf(nodeDevice.getNodeValue(), 16) : 0x00;
+                batchMemory.setDevice(device);
+
+                final Node nodeOffset = attrs.getNamedItem("offset");
+                final int offset = (nodeOffset != null) ? Integer.valueOf(nodeOffset.getNodeValue(), 16) : 0;
+                batchMemory.setOffset(offset);
+
+                final Node nodePrefix = attrs.getNamedItem("prefix");
+                final String prefix = (nodePrefix != null) ? nodePrefix.getNodeValue() : "";
+                batchMemory.setPrefix(prefix);
+
+                final NodeList nodeList = batchNode.getChildNodes();
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    final Node node = nodeList.item(i);
+                    final RomData data = nodeToData(node);
+                    if (data != null) {
+                        batchMemory.getRomDataList().add(data);
+                    }
+                }
+                list.add(batchMemory);
             }
         }
     }
@@ -100,13 +122,6 @@ class DataXmlLoader {
             final Node nodeName = attrs.getNamedItem("name");
             name = (nodeName != null) ? nodeName.getNodeValue() : null;
             final Node nodeValue = attrs.getNamedItem("val");
-/*
-            if (nodeValue == null) {
-                throw new CommonInfoException(
-                    UNKNOWN_FORMAT + "Пропущен атрибут \"value\" для \"{0}\"!", node.getNodeName()
-                );
-            }
-*/
             value = (nodeValue != null) ? nodeValue.getNodeValue() : null;
         } else {
             name = null;

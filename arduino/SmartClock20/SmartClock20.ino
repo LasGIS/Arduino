@@ -155,6 +155,12 @@ void setup() {
     I2CEEPROM.write_buffer(DEVICE, a, buffer, 0x100);
   }
 */
+  uint8_t * ref = (uint8_t *) screen;
+  size_t refSize = sizeof(ref);
+  Serial.print("ScreenDateTime(");
+  Serial.print(refSize);
+  Serial.println(")");
+//  I2CEEPROM.write_buffer(DEVICE, 0x400, 0x00, 0x800);
 }
 
 /**

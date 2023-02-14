@@ -44,6 +44,7 @@ public:
   FieldTft * fields;
 // --- методы ---
   ScreenTft();
+  ScreenTft(int16_t address);
   /** меняется ориентация */
   virtual void changeOrientation();
   /** показываем один раз при загрузке */
