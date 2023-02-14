@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <EEPROM.h>
 #include "Arduino.h"
 #include "I2C_EEPROM.h"
 
@@ -12,6 +13,9 @@ void I2C_EEPROM::beginTransmission(uint8_t device, uint16_t address) {
 }
 
 uint8_t I2C_EEPROM::read(uint8_t device, uint16_t address) {
+  if (device == EEPROM_DEVICE) {
+    return EEPROM.read(address);
+  }
   beginTransmission(device, address);
   Wire.endTransmission();
   Wire.requestFrom(device, (uint8_t) 1);
@@ -19,6 +23,10 @@ uint8_t I2C_EEPROM::read(uint8_t device, uint16_t address) {
 }
 
 void I2C_EEPROM::write(uint8_t device, uint16_t address, uint8_t data) {
+  if (device == EEPROM_DEVICE) {
+    EEPROM.write(address, data);
+    return;
+  }
   beginTransmission(device, address);
   Wire.write(data);
   Wire.endTransmission();
@@ -27,10 +35,13 @@ void I2C_EEPROM::write(uint8_t device, uint16_t address, uint8_t data) {
 
 // WARNING: address is a page address, 6-bit end will wrap around
 // also, data can be maximum of about 30 bytes, because the Wire library has a buffer of 32 bytes
-void I2C_EEPROM::write_buffer(
-    uint8_t device, uint16_t address,
-    uint8_t* data, uint16_t length
-) {
+void I2C_EEPROM::write_buffer(uint8_t device, uint16_t address, uint8_t* data, uint16_t length) {
+  if (device == EEPROM_DEVICE) {
+    for(int i = 0; i < length; i++) {
+      EEPROM.write(address + i, data[i]);
+    }
+    return;
+  }
   for (uint16_t i = 0; i < length;) {
     uint16_t len, addrBound;
     if (length - i > MAX_BLOCK_LENGTH) {
@@ -45,13 +56,6 @@ void I2C_EEPROM::write_buffer(
     beginTransmission(device, address);
     Wire.write(data + i, len);
     Wire.endTransmission();
-/*
-    Serial.print("["); Serial.print(address, HEX); Serial.print("]:");
-    for (uint16_t j = 0; j < len; j++) {
-      SerialPrintHex(data[i + j]);
-    }
-    Serial.println(";");
-*/
     delay(10);
     i += len;
     address += len;
@@ -60,6 +64,12 @@ void I2C_EEPROM::write_buffer(
 
 // maybe let's not read more than 30 or 32 bytes at a time!
 void I2C_EEPROM::read_buffer(uint8_t device, uint16_t address, uint8_t* data, uint16_t length) {
+  if (device == EEPROM_DEVICE) {
+    for(int i = 0; i < length; i++) {
+      data[i] = EEPROM.read(address + i);
+    }
+    return;
+  }
   for (uint16_t offset = 0; offset < length; offset += BUFFER_LENGTH) {
     uint16_t len = length - offset > BUFFER_LENGTH ? BUFFER_LENGTH : length - offset;
     beginTransmission(device, address + offset);

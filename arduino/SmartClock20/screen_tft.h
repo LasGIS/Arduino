@@ -6,7 +6,7 @@
 
 #define ORIENTATION_HORISONTAL 0x01
 
-enum OrientationType : uint8_t {
+enum OrientationType: uint8_t {
   undefine = 0xfe,
   bottom = 0,
   right = 1,
@@ -14,7 +14,7 @@ enum OrientationType : uint8_t {
   left = 3
 };
 
-enum ModeType : uint8_t {
+enum ModeType: uint8_t {
   show, edit
 };
 

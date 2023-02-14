@@ -3,7 +3,7 @@
 
 #include "screen_tft.h"
 
-class ScreenDump : public ScreenTft {
+class ScreenDump: public ScreenTft {
 public:
   uint8_t device = 0x57;
   uint16_t address = 0;

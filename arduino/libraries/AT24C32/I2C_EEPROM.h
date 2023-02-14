@@ -3,6 +3,8 @@
 
 #include <inttypes.h>
 
+#define EEPROM_DEVICE 0
+
 //#define HAS_SERIAL
 //#define HAS_SERIAL_DEBUG
 

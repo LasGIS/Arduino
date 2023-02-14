@@ -3,7 +3,7 @@
 
 #include "screen_tft.h"
 
-class ScreenTimer : public ScreenTft {
+class ScreenTimer: public ScreenTft {
 public:
   uint32_t startTime = 5; //900;
   uint32_t time;

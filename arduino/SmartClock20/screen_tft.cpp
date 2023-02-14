@@ -4,7 +4,7 @@
  * выводим батарейки.
  */
 void printVolts() {
-  LoadClass lc = LoadClass(DEVICE, EEPROM_factorBattery);
+  LoadClass lc = LoadClass(EEPROM_DEVICE, EEPROM_factorBattery);
   float factorBattery = lc.readFloat();
   float factorCharger = lc.readFloat();
 

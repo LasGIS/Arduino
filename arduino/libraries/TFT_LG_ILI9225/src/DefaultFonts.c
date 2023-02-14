@@ -5,8 +5,8 @@
 //MikroElektronika 2011 
 //http://www.mikroe.com 
 
-//GLCD FontName : Terminal6x8
-//GLCD FontSize : 6 x 8
+//GLCD FontName: Terminal6x8
+//GLCD FontSize: 6 x 8
 
 fontdatatype Terminal6x8[] PROGMEM = {
         0x06, 0x08, 0x20, 0x60,
@@ -113,8 +113,8 @@ fontdatatype Terminal6x8[] PROGMEM = {
 //MikroElektronika 2011 
 //http://www.mikroe.com 
 
-//GLCD FontName : Terminal11x16
-//GLCD FontSize : 11 x 16
+//GLCD FontName: Terminal11x16
+//GLCD FontSize: 11 x 16
 
 fontdatatype Terminal11x16[] PROGMEM = {
         0x0B, 0x10, 0x20, 0x60,
@@ -221,8 +221,8 @@ fontdatatype Terminal11x16[] PROGMEM = {
 //MikroElektronika 2011 
 //http://www.mikroe.com 
 
-//GLCD FontName : Terminal12x16
-//GLCD FontSize : 12 x 16
+//GLCD FontName: Terminal12x16
+//GLCD FontSize: 12 x 16
 
 fontdatatype Terminal12x16[] PROGMEM = {
         0x0C, 0x10, 0x20, 0x60,
@@ -329,8 +329,8 @@ fontdatatype Terminal12x16[] PROGMEM = {
 //MikroElektronika 2011 
 //http://www.mikroe.com 
 
-//GLCD FontName : Trebuchet_MS16x21
-//GLCD FontSize : 16 x 21
+//GLCD FontName: Trebuchet_MS16x21
+//GLCD FontSize: 16 x 21
 
 fontdatatype Trebuchet_MS16x21[] PROGMEM = {
         0x10, 0x15, 0x2E, 0x0D,

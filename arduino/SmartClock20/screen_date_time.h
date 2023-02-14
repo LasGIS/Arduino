@@ -3,7 +3,7 @@
 
 #include "screen_tft.h"
 
-class ScreenDateTime : public ScreenTft {
+class ScreenDateTime: public ScreenTft {
 public:
 // --- методы ---
   ScreenDateTime();
