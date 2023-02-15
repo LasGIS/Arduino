@@ -1,5 +1,5 @@
 /*
- *  @(#)Util.java  last: 09.01.2023
+ *  @(#)Util.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -25,13 +25,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import static java.util.Objects.nonNull;
+
 /**
  * Created by IntelliJ IDEA.
  *
  * @author VLaskin
- * @version 1.0
- *     Date: Sep 3, 2004
- *     Time: 6:20:54 PM
+ * @version 1.0 Date: Sep 3, 2004 Time: 6:20:54 PM
  */
 @Slf4j
 public final class Util {
@@ -66,10 +66,8 @@ public final class Util {
         final ClassLoader ldr = Util.class.getClassLoader();
         final InputStream in = ldr.getResourceAsStream("image/" + name);
         if (in != null) {
-            try {
+            try (in) {
                 return ImageIO.read(in);
-            } finally {
-                in.close();
             }
         } else {
             throw new IOException("Файл \"" + "image/" + name + "\" не найден!");
@@ -153,11 +151,7 @@ public final class Util {
      * @return created JButton
      */
     public static JButton createImageButton(
-        final String name,
-        final String iconName,
-        final int width, final int height,
-        final String toolTip,
-        final ActionListener actListener
+        final String name, final String iconName, final int width, final int height, final String toolTip, final ActionListener actListener
     ) {
         final JButton button = new JButton();
         if (name != null) {
@@ -246,4 +240,33 @@ public final class Util {
         }
     }
 
+    static public char parseCharAt0(final String value) {
+        return nonNull(value) ? value.charAt(0) : '\0';
+    }
+
+    static public byte parseByte(final String value) {
+        return nonNull(value) ? value.startsWith("0x")
+            ? Byte.parseByte(value.substring(2), 16)
+            : Byte.parseByte(value, 10) : 0;
+    }
+
+    static public short parseShort(final String value) {
+        return nonNull(value) ? value.startsWith("0x")
+            ? Short.parseShort(value.substring(2), 16)
+            : Short.parseShort(value, 10) : 0;
+    }
+
+    static public int parseInt(final String value) {
+        return nonNull(value) ? value.startsWith("0x")
+            ? Integer.parseInt(value.substring(2), 16)
+            : Integer.parseInt(value, 10) : 0;
+    }
+
+    static public float parseFloat(final String value) {
+        return nonNull(value) ? Float.parseFloat(value) : 0.0F;
+    }
+
+    static public double parseDouble(final String value) {
+        return nonNull(value) ? Double.parseDouble(value) : 0.0;
+    }
 }

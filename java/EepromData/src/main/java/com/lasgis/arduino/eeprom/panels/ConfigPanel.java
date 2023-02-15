@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 06.02.2023
+ *  @(#)ConfigPanel.java  last: 15.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -10,7 +10,9 @@ package com.lasgis.arduino.eeprom.panels;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.lasgis.arduino.eeprom.CommandType;
+import com.lasgis.arduino.eeprom.Runner;
 import com.lasgis.arduino.eeprom.create.CreateHelper;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.test.TestHelper;
 import com.lasgis.arduino.eeprom.upload.SerialBlock;
 import com.lasgis.arduino.eeprom.upload.UploadHelper;
@@ -282,15 +284,15 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
         @Override
         public void actionPerformed(final ActionEvent event) {
+            final MemoryRoms memoryRoms = Runner.getMemoryRoms();
             switch (command) {
                 case test: {
-                    TestHelper.show();
+                    TestHelper.show(memoryRoms);
                     break;
                 }
-
                 case create: {
                     try {
-                        CreateHelper.create();
+                        CreateHelper.create(memoryRoms);
                     } catch (IOException ex) {
                         log.error(ex.getMessage(), ex);
                     }

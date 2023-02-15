@@ -1,5 +1,5 @@
 /*
- *  @(#)TestHelper.java  last: 15.02.2023
+ *  @(#)TestHelper.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,7 +8,8 @@
 
 package com.lasgis.arduino.eeprom.test;
 
-import com.lasgis.arduino.eeprom.Runner;
+import com.lasgis.arduino.eeprom.memory.BatchMemory;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomData;
 import com.lasgis.arduino.eeprom.memory.RomOBJECT;
@@ -31,12 +32,15 @@ public class TestHelper {
 
     private static final TestHelper helper = new TestHelper();
 
-    public static void show() {
-        // todo заглушка - переделать
-        helper.showDataList(Runner.getDataList().get(0).getRomDataList(), Runner.getDump());
+    public static void show(final MemoryRoms memoryRoms) {
+        for (final BatchMemory batchMemory : memoryRoms.getList()) {
+            helper.showDataList(batchMemory);
+        }
     }
 
-    private void showDataList(final List<RomData> array, final byte[] dump) {
+    private void showDataList(final BatchMemory batchMemory) {
+        final List<RomData> array = batchMemory.getRomDataList();
+        final byte[] dump = batchMemory.getDump();
         log.info("\n byte[] = \"" + DatatypeConverter.printHexBinary(dump) + "\"");
         for (final RomData item : array) {
             showNameOffset(item);

@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoaderTest.java  last: 15.02.2023
+ *  @(#)DataXmlLoaderTest.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -7,13 +7,12 @@
  */
 package com.lasgis.arduino.eeprom.load;
 
-import com.lasgis.arduino.eeprom.memory.BatchMemory;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URL;
-import java.util.List;
 
 /**
  * The Class DataXmlLoaderTest definition.
@@ -28,7 +27,7 @@ class DataXmlLoaderTest {
         final URL resource = classLoader.getResource("TestMemory.xml");
         assert resource != null;
         final File dataFile = new File(resource.toURI());
-        final List<BatchMemory> romData = DataXmlLoader.load(dataFile);
-        Assertions.assertNotNull(romData);
+        final MemoryRoms memoryRoms = DataXmlLoader.load(dataFile);
+        Assertions.assertNotNull(memoryRoms);
     }
 }

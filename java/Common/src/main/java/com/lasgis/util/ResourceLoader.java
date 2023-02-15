@@ -1,9 +1,9 @@
 /*
- *  @(#)ResourceLoader.java  last: 17.05.2018
+ *  @(#)ResourceLoader.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.util;
@@ -224,7 +224,7 @@ public final class ResourceLoader {
         } catch (final MissingResourceException ex) {
             return null;
         }
-    } // getResourceOrNull(String): String
+    }
 
     /**
      * Replaces <code>${xxx}</code> style constructions in the given value

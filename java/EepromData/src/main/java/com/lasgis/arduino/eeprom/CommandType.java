@@ -1,5 +1,5 @@
 /*
- *  @(#)CommandType.java  last: 09.01.2023
+ *  @(#)CommandType.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -20,7 +20,7 @@ public enum CommandType {
     /**
      * <pre>
      * создание файлов:
-     *   I2CMemory.h    - определители (#define ...)
+     *   Memory.h    - определители (#define ...)
      *   I2CMemory.hex  - образ памяти
      * </pre>
      */

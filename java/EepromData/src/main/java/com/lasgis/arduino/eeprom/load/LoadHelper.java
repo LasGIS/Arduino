@@ -1,5 +1,5 @@
 /*
- *  @(#)LoadHelper.java  last: 15.02.2023
+ *  @(#)LoadHelper.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -11,6 +11,7 @@ package com.lasgis.arduino.eeprom.load;
 import com.lasgis.arduino.eeprom.CommonInfoException;
 import com.lasgis.arduino.eeprom.Runner;
 import com.lasgis.arduino.eeprom.memory.BatchMemory;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomData;
 import com.lasgis.util.ByteArrayBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -36,10 +37,11 @@ public class LoadHelper {
 
     /**
      * компиляция исходных данных
+     *
      * @return список полученных RomData объектов
      * @throws Exception on ...
      */
-    public static List<BatchMemory> load() throws Exception {
+    public static MemoryRoms load() throws Exception {
         final Properties prop = Runner.getProperties();
         final File dataFile = new File(
             prop.getProperty(PROP_PATCH),
@@ -56,7 +58,7 @@ public class LoadHelper {
                 final BatchMemory batch = BatchMemory.of();
                 batch.setRomDataList(DataCppLoader.load(dataFile));
                 roms.add(batch);
-                return roms;
+                return MemoryRoms.of("rom_memory", roms);
             }
             default:
                 throw new CommonInfoException("Расширение {} не поддерживается", extension);
@@ -64,17 +66,26 @@ public class LoadHelper {
     }
 
     /**
-     * Создаём образ дампа
-     * @return образ дампа
+     * Создаём образ дампа и добавляем его в MemoryRoms
+     *
      * @throws UnsupportedEncodingException on ...
      */
-    public static byte[] createDump() throws UnsupportedEncodingException {
-        final ByteArrayBuilder bab = new ByteArrayBuilder();
-        // todo заглушка - переделать
-        final List<RomData> romDataList = Runner.getDataList().get(0).getRomDataList();
-        for (final RomData item : romDataList) {
-            item.toEeprom(bab);
+    public static void createDump(final MemoryRoms memoryRoms) throws UnsupportedEncodingException {
+        final List<UnsupportedEncodingException> exOut = new ArrayList<>();
+        memoryRoms.getList().forEach(batchMemory -> {
+            final ByteArrayBuilder bab = new ByteArrayBuilder();
+            final List<RomData> romDataList = batchMemory.getRomDataList();
+            for (final RomData item : romDataList) {
+                try {
+                    item.toEeprom(bab);
+                } catch (UnsupportedEncodingException ex) {
+                    exOut.add(ex);
+                }
+            }
+            batchMemory.setDump(bab.toByte());
+        });
+        if (!exOut.isEmpty()) {
+            throw exOut.get(0);
         }
-        return bab.toByte();
     }
 }

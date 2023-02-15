@@ -1,5 +1,5 @@
 /*
- *  @(#)CreateHelper.java  last: 15.02.2023
+ *  @(#)CreateHelper.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,6 +9,8 @@
 package com.lasgis.arduino.eeprom.create;
 
 import com.lasgis.arduino.eeprom.Runner;
+import com.lasgis.arduino.eeprom.memory.BatchMemory;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomData;
 import com.lasgis.arduino.eeprom.memory.RomOBJECT;
@@ -23,17 +25,19 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static com.lasgis.arduino.eeprom.Runner.PROP_DATA_FILE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 
 /**
+ * <pre>
  * создание файлов:
- *   I2CMemory.h    - определители (#define ...)
+ *   Memory.h       - определители (#define ...)
  *   I2CMemory.hex  - образ памяти
+ * </pre>
  *
  * @author Vladimir Laskin
  * @since 31.05.2018
@@ -47,29 +51,30 @@ public class CreateHelper {
 
     private final static int HEX_SIZE_STR_LEN = 16;
 
-    public static void create() throws IOException {
-        // todo заглушка - переделать
-        final List<RomData> dataList = Runner.getDataList().get(0).getRomDataList();
-        final byte[] dump = Runner.getDump();
+    public static void create(final MemoryRoms memoryRoms) throws IOException {
+        final String headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
         final Properties props = Runner.getProperties();
-        final String patch = FilenameUtils.removeExtension((new File(
-            props.getProperty(PROP_PATCH), props.getProperty(PROP_DATA_FILE)
-        )).getPath());
-
+        for (BatchMemory batchMemory : memoryRoms.getList()) {
+            final byte[] dump = batchMemory.getDump();
+            final String filename = Path.of(props.getProperty(PROP_PATCH), batchMemory.getPrefix() + headerFilename + ".hex").toString();
+            helper.createHexDumpFile(filename, dump);
+        }
         romNameList.clear();
-        helper.createDefinitionFile(patch + ".h", dataList);
-        helper.createHexDumpFile(patch + ".hex", dump);
+        helper.createDefinitionFile(memoryRoms);
     }
 
-    private void createDefinitionFile(final String fileName, final List<RomData> dataList) throws IOException {
+    private void createDefinitionFile(final MemoryRoms memoryRoms) throws IOException {
+        final String headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
+        final Properties props = Runner.getProperties();
+        final String fileName = FilenameUtils.removeExtension((new File(props.getProperty(PROP_PATCH), headerFilename)).getPath()) + ".h";
+
         log.info("Definition File = \"{}\"", fileName);
-        try (
-            final OutputStreamWriter writer = new OutputStreamWriter(
-                new FileOutputStream(fileName), Charset.forName("windows-1251")
-            )
-        ) {
-            for (final RomData item : dataList) {
-                writeDefinition("EEPROM", item, writer);
+        try (final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("windows-1251"))) {
+            for (BatchMemory batchMemory : memoryRoms.getList()) {
+                final List<RomData> dataList = batchMemory.getRomDataList();
+                for (final RomData item : dataList) {
+                    writeDefinition(batchMemory.getPrefix(), item, writer);
+                }
             }
         }
     }
@@ -88,7 +93,7 @@ public class CreateHelper {
             writer.write("#define " + romName + " " + offset + "\n");
         }
         if (rom instanceof RomOBJECT) {
-            for (final RomData inst: ((RomOBJECT) rom).getArray()) {
+            for (final RomData inst : ((RomOBJECT) rom).getArray()) {
                 writeDefinition(romName, inst, writer);
             }
         } else if (rom instanceof RomARRAY) {
@@ -102,11 +107,7 @@ public class CreateHelper {
 
     private void createHexDumpFile(final String fileName, final byte[] dump) throws IOException {
         log.info("Hex Dump File = \"{}\"", fileName);
-        try (
-            final OutputStreamWriter writer = new OutputStreamWriter(
-                new FileOutputStream(fileName), Charset.forName("windows-1251")
-            )
-        ) {
+        try (final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("windows-1251"))) {
             for (int j = 0; j < dump.length; j += HEX_SIZE_STR_LEN) {
                 final int len = dump.length - j < HEX_SIZE_STR_LEN ? dump.length - j : HEX_SIZE_STR_LEN;
                 final byte[] buf = new byte[len];

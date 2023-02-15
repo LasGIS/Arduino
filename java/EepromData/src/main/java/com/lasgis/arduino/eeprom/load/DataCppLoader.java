@@ -1,9 +1,9 @@
 /*
- * @(#)DataCppLoader.java
+ *  @(#)DataCppLoader.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load;
@@ -234,18 +234,15 @@ class DataCppLoader extends TokenParser {
         int out = 0;
         switch (token.type) {
             case number:
-                out = Integer.valueOf(token.getString()) * sign;
+                out = Integer.parseInt(token.getString()) * sign;
                 break;
             case real:
                 out = Double.valueOf(token.getString()).intValue() * sign;
                 break;
-            case string: {
-                final String str = token.getString();
-                out = Integer.valueOf(str.substring(1, str.length() - 1)) * sign;
-            } break;
+            case string:
             case oneChar: {
                 final String str = token.getString();
-                out = Integer.valueOf(str.substring(1, str.length() - 1)) * sign;
+                out = Integer.parseInt(str.substring(1, str.length() - 1)) * sign;
             } break;
             default:
                 throw new ParseException(token, "Ошибка разбора");

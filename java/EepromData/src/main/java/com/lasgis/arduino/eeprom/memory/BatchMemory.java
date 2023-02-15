@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class MemoryRoms definition.
+ * The Class BatchMemory содержит одну загрузку в ROM (ПЗУ).
  *
  * @author Vladimir Laskin
  * @since 15.02.2023 : 1:06
@@ -24,6 +24,7 @@ import java.util.List;
 @NoArgsConstructor(staticName = "of")
 public class BatchMemory {
     private List<RomData> romDataList = new ArrayList<>();
+    private byte[] dump ;
     private byte device;
     private int offset;
     private String prefix;

@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoader.java  last: 15.02.2023
+ *  @(#)DataXmlLoader.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -10,6 +10,7 @@ package com.lasgis.arduino.eeprom.load;
 
 import com.lasgis.arduino.eeprom.CommonInfoException;
 import com.lasgis.arduino.eeprom.memory.BatchMemory;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
 import com.lasgis.arduino.eeprom.memory.RomDOUBLE;
@@ -36,6 +37,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.lasgis.util.Util.parseByte;
+import static com.lasgis.util.Util.parseCharAt0;
+import static com.lasgis.util.Util.parseDouble;
+import static com.lasgis.util.Util.parseFloat;
+import static com.lasgis.util.Util.parseInt;
+import static com.lasgis.util.Util.parseShort;
+
 /**
  * Загрузчик из XML файла.
  *
@@ -60,20 +68,18 @@ class DataXmlLoader {
     private final static String DUMP = "DUMP";
 
     private final DocumentBuilder dBuilder;
-    private final List<BatchMemory> list = new ArrayList<>();
 
     private DataXmlLoader() throws ParserConfigurationException {
         dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
 
-    static List<BatchMemory> load(final File file) throws Exception {
+    static MemoryRoms load(final File file) throws Exception {
         final DataXmlLoader loader = new DataXmlLoader();
-        loader.loadFile(file);
-        return loader.list;
+        return loader.loadFile(file);
     }
 
-    private void loadFile(final File file) throws Exception {
-        list.clear();
+    private MemoryRoms loadFile(final File file) throws Exception {
+        final List<BatchMemory> list = new ArrayList<>();
         final Document doc = dBuilder.parse(file);
         final Element first = doc.getDocumentElement();
         if (!MEMORY.equals(first.getNodeName())) {
@@ -82,6 +88,10 @@ class DataXmlLoader {
                 first.getNodeName(), MEMORY
             );
         }
+        final NamedNodeMap firstAttributes = first.getAttributes();
+        final Node nodeFilename = firstAttributes.getNamedItem("headerFilename");
+        final String headerFilename = (nodeFilename != null) ? nodeFilename.getNodeValue() : "rom_memory";
+
         final NodeList memoryList = first.getChildNodes();
         for (int j = 0; j < memoryList.getLength(); j++) {
             final Node batchNode = memoryList.item(j);
@@ -90,11 +100,11 @@ class DataXmlLoader {
                 final NamedNodeMap attrs = batchNode.getAttributes();
 
                 final Node nodeDevice = attrs.getNamedItem("device");
-                final byte device = (nodeDevice != null) ? Byte.valueOf(nodeDevice.getNodeValue(), 16) : 0x00;
+                final byte device = (nodeDevice != null) ? parseByte(nodeDevice.getNodeValue()) : 0x00;
                 batchMemory.setDevice(device);
 
                 final Node nodeOffset = attrs.getNamedItem("offset");
-                final int offset = (nodeOffset != null) ? Integer.valueOf(nodeOffset.getNodeValue(), 16) : 0;
+                final int offset = (nodeOffset != null) ? parseInt(nodeOffset.getNodeValue()) : 0;
                 batchMemory.setOffset(offset);
 
                 final Node nodePrefix = attrs.getNamedItem("prefix");
@@ -112,6 +122,7 @@ class DataXmlLoader {
                 list.add(batchMemory);
             }
         }
+        return MemoryRoms.of(headerFilename, list);
     }
 
     private RomData nodeToData(final Node node) {
@@ -129,17 +140,17 @@ class DataXmlLoader {
         }
         switch (node.getNodeName()) {
             case CHAR:
-                return RomCHAR.of(name, value.charAt(0));
+                return RomCHAR.of(name, parseCharAt0(value));
             case INT8:
-                return RomINT8.of(name, Byte.parseByte(value));
+                return RomINT8.of(name, parseByte(value));
             case INT16:
-                return RomINT16.of(name, Short.parseShort(value));
+                return RomINT16.of(name, parseShort(value));
             case INT32:
-                return RomINT32.of(name, Integer.parseInt(value));
+                return RomINT32.of(name, parseInt(value));
             case FLOAT:
-                return RomFLOAT.of(name, Float.parseFloat(value));
+                return RomFLOAT.of(name, parseFloat(value));
             case DOUBLE:
-                return RomDOUBLE.of(name, Double.parseDouble(value));
+                return RomDOUBLE.of(name, parseDouble(value));
             case STRING:
                 return RomSTRING.of(name, value);
             case OBJECT:

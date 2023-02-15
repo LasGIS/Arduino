@@ -1,0 +1,9 @@
+#define EEPROM_factorBattery 0x0000
+#define EEPROM_factorCharger 0x0004
+#define AT24C_music 0x0000
+#define AT24C_music_0_JingleBells 0x0005
+#define AT24C_music_0_JingleBells_name 0x000b
+#define AT24C_music_0_JingleBells_music 0x0019
+#define AT24C_music_1_TwoFunnyGeese 0x00f8
+#define AT24C_music_1_TwoFunnyGeese_name 0x00fe
+#define AT24C_music_1_TwoFunnyGeese_music 0x0114

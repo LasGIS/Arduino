@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 15.02.2023
+ *  @(#)Runner.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -10,7 +10,7 @@ package com.lasgis.arduino.eeprom;
 
 import com.lasgis.arduino.eeprom.create.CreateHelper;
 import com.lasgis.arduino.eeprom.load.LoadHelper;
-import com.lasgis.arduino.eeprom.memory.BatchMemory;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.panels.ControlHelper;
 import com.lasgis.arduino.eeprom.test.TestHelper;
 import com.lasgis.arduino.eeprom.upload.UploadHelper;
@@ -48,9 +48,7 @@ public class Runner {
         PROP_PORT_NAME, PROP_BAUD_RATE, PROP_PATCH, PROP_DATA_FILE
     };
     @Getter
-    private static List<BatchMemory> dataList;
-    @Getter
-    private static byte[] dump;
+    private static MemoryRoms memoryRoms;
 
     /**
      * <pre>
@@ -67,7 +65,7 @@ public class Runner {
      * Список команд указываются в конце командной строки (без дефиса в префиксе)
      *   test     - вывод тестовой информации о дампе
      *   create   - создание файлов:
-     *      I2CMemory.h    - определители (#define ...)
+     *      Memory.h    - определители (#define ...)
      *      I2CMemory.hex  - образ памяти
      *   upload   - загрузка образа памяти в arduino
      *              Эту команду можно запускать отдельно (без чтения исходных файлов и создание образа)
@@ -86,19 +84,19 @@ public class Runner {
         if (commands.contains(CommandType.test) ||
             commands.contains(CommandType.create) ||
             commands.contains(CommandType.panel)) {
-            dataList = LoadHelper.load();
-            dump = LoadHelper.createDump();
+            memoryRoms = LoadHelper.load();
+            LoadHelper.createDump(memoryRoms);
         }
 
         /* далее обработка по командам */
         if (commands.contains(CommandType.test)) {
-            TestHelper.show();
+            TestHelper.show(memoryRoms);
         }
         if (commands.contains(CommandType.create)) {
-            CreateHelper.create();
+            CreateHelper.create(memoryRoms);
         }
         if (commands.contains(CommandType.upload)) {
-            UploadHelper.upload();
+            UploadHelper.upload(memoryRoms);
         }
         if (commands.contains(CommandType.read)) {
             UploadHelper.read();

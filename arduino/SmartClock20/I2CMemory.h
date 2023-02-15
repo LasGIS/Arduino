@@ -1,9 +1,0 @@
-#define EEPROM_factorBattery 0x0000
-#define EEPROM_factorCharger 0x0004
-#define EEPROM_music 0x0008
-#define EEPROM_music_0_JingleBells 0x000d
-#define EEPROM_music_0_JingleBells_name 0x0013
-#define EEPROM_music_0_JingleBells_music 0x0021
-#define EEPROM_music_1_TwoFunnyGeese 0x0100
-#define EEPROM_music_1_TwoFunnyGeese_name 0x0106
-#define EEPROM_music_1_TwoFunnyGeese_music 0x011c

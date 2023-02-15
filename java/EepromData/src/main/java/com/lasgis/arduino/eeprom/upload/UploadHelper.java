@@ -1,5 +1,5 @@
 /*
- *  @(#)UploadHelper.java  last: 06.02.2023
+ *  @(#)UploadHelper.java  last: 15.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,6 +9,7 @@
 package com.lasgis.arduino.eeprom.upload;
 
 import com.lasgis.arduino.eeprom.Runner;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.util.ByteArrayBuilder;
@@ -32,6 +33,8 @@ import static com.lasgis.arduino.eeprom.Runner.PROP_DATA_FILE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_DEVICE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PORT_NAME;
+import static com.lasgis.util.Util.parseInt;
+import static java.lang.Byte.parseByte;
 
 /**
  * Загружаем дамп в arduino.
@@ -50,14 +53,14 @@ public class UploadHelper implements PortReaderListener {
         this.portReader.addListener(this);
     }
 
-    public static void upload() throws InterruptedException, IOException {
+    public static void upload(final MemoryRoms memoryRoms) throws InterruptedException, IOException {
         final Properties prop = Runner.getProperties();
         final String fileName = FilenameUtils.removeExtension((new File(
             prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
         )).getPath()) + ".hex";
 
         final String portName = prop.getProperty(PROP_PORT_NAME);
-        final int baudRate = Integer.parseInt(prop.getProperty(PROP_BAUD_RATE));
+        final int baudRate = parseInt(prop.getProperty(PROP_BAUD_RATE));
         final byte device = getPropByte(PROP_DEVICE);
 
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
@@ -68,11 +71,7 @@ public class UploadHelper implements PortReaderListener {
     private static byte getPropByte(final String key) {
         final Properties prop = Runner.getProperties();
         final String value = Optional.ofNullable(prop.getProperty(key)).orElse("87").trim().toLowerCase();
-        if (value.startsWith("0x")) {
-            return Byte.parseByte(value.substring(2), 16);
-        } else {
-            return Byte.parseByte(value, 10);
-        }
+        return parseByte(value);
     }
 
     public static void uploadFile(final byte device, final PortReader portReader) throws InterruptedException, IOException {
@@ -162,7 +161,7 @@ public class UploadHelper implements PortReaderListener {
 //        )).getPath()) + ".hex";
 
         final String portName = prop.getProperty(PROP_PORT_NAME);
-        final int baudRate = Integer.parseInt(prop.getProperty(PROP_BAUD_RATE));
+        final int baudRate = parseInt(prop.getProperty(PROP_BAUD_RATE));
 
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
 

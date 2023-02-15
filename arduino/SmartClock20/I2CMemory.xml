@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)I2CMemory.xml  last: 13.02.2023
+  ~  @(#)I2CMemory.xml  last: 15.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
   ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
-<ROM xmlns="http://www.lasgis.com/arduino/schema/rom"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">
-  <FLOAT name="factorBattery" val="0.00661"/>
-  <FLOAT name="factorCharger" val="0.00654"/>
-  <ARRAY name="music">
-    <OBJECT name="JingleBells">
-      <STRING name="name" val="Jingle Bells"/>
-      <DUMP name="music"><![CDATA[
+<Memory headerFilename="Memory"
+        xmlns="http://www.lasgis.com/arduino/schema/rom"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">
+  <BatchMemory prefix="EEPROM" device="00">
+    <FLOAT name="factorBattery" val="0.00661"/>
+    <FLOAT name="factorCharger" val="0.00654"/>
+  </BatchMemory>
+  <BatchMemory prefix="AT24C" device="57">
+    <ARRAY name="music">
+      <OBJECT name="JingleBells">
+        <STRING name="name" val="Jingle Bells"/>
+        <DUMP name="music"><![CDATA[
 440244024401440244024401440247024002420244004502450245014402
 440244014402420242024402420147014402440244014402440244014402
 470240024202440045024502450144024402440147024702450242024000
@@ -24,14 +28,15 @@
 440244024401440247024002420244004502450245014402440244014702
 4702450242024000
       ]]></DUMP>
-    </OBJECT>
-    <OBJECT name="TwoFunnyGeese">
-      <STRING name="name" val="Жили у бабуси 2 гуси"/>
-      <DUMP name="music"><![CDATA[
+      </OBJECT>
+      <OBJECT name="TwoFunnyGeese">
+        <STRING name="name" val="Жили у бабуси 2 гуси"/>
+        <DUMP name="music"><![CDATA[
 450244024202400247014701450244024202400247014701450249024902
 450244024702470244024202440245024202400140014502490249024502
 4402470247024402420244024502420240014001
       ]]></DUMP>
-    </OBJECT>
-  </ARRAY>
-</ROM>
+      </OBJECT>
+    </ARRAY>
+  </BatchMemory>
+</Memory>
