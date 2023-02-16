@@ -109,7 +109,7 @@ public class CreateHelper {
         log.info("Hex Dump File = \"{}\"", fileName);
         try (final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("windows-1251"))) {
             for (int j = 0; j < dump.length; j += HEX_SIZE_STR_LEN) {
-                final int len = dump.length - j < HEX_SIZE_STR_LEN ? dump.length - j : HEX_SIZE_STR_LEN;
+                final int len = Math.min(dump.length - j, HEX_SIZE_STR_LEN);
                 final byte[] buf = new byte[len];
                 System.arraycopy(dump, j, buf, 0, len);
                 writer.write(":" + DatatypeConverter.printHexBinary(buf) + "\n");

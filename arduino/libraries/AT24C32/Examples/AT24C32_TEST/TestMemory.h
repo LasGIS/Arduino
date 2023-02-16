@@ -1,3 +1,5 @@
+#define EEPROM_English 0x0000
+#define EEPROM_Russian 0x0028
 #define AT24C_Char 0x0000
 #define AT24C_Byte 0x0001
 #define AT24C_Int 0x0002

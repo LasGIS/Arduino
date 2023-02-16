@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)I2CMemory.xml  last: 15.02.2023
+  ~  @(#)I2CMemory.xml  last: 16.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -10,11 +10,11 @@
         xmlns="http://www.lasgis.com/arduino/schema/rom"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">
-  <BatchMemory prefix="EEPROM" device="00">
+  <BatchMemory prefix="EEPROM" device="0x00">
     <FLOAT name="factorBattery" val="0.00661"/>
     <FLOAT name="factorCharger" val="0.00654"/>
   </BatchMemory>
-  <BatchMemory prefix="AT24C" device="57">
+  <BatchMemory prefix="AT24C" device="0x57">
     <ARRAY name="music">
       <OBJECT name="JingleBells">
         <STRING name="name" val="Jingle Bells"/>

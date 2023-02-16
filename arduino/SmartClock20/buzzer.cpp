@@ -9,7 +9,7 @@ uint8_t musicSoundVolume = 8;
  *  musicAlarm
  */
 void musicAlarm() {
-  LoadClass lc = LoadClass(DEVICE, EEPROM_music_0_JingleBells_music);
+  LoadClass lc = LoadClass(DEVICE, AT24C_music_0_JingleBells_music);
   int len;
   Note * music = lc.readArray(len);
 #ifdef HAS_SERIAL
@@ -33,7 +33,7 @@ void musicAlarm() {
 }
 
 /**
- * пищит <del> милисекунд с частотой <hertz> герц
+ * пищит <del> миллисекунд с частотой <hertz> герц
  */
 void buzzerOut(uint16_t hertz, uint32_t del, uint8_t soundVolume) {
   if (soundVolume == 0) return;

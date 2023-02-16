@@ -2,7 +2,7 @@
 #include <SerialBlock.h>
 #include <LoadClass.h>
 #include "AT24C32_TEST.h"
-#include "AT24CTestMemory.h"
+#include "TestMemory.h"
 
 struct TestObject {
   char c;
@@ -26,7 +26,7 @@ struct TestObjectArray {
  */
 void testString() {
   LoadClass lc = LoadClass(DEVICE, 0);
-  char* s = lc.readString(EEPROM_ArrayOfObject_0_Object_String);
+  char* s = lc.readString(AT24C_ArrayOfObject_0_Object_String);
   Serial.print("=> String(");
   Serial.print((int) s, HEX);
   Serial.print(") = \"");
@@ -41,7 +41,7 @@ void testString() {
 void testObject() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
-  TestObject * obj = (TestObject *) lc.readObject(EEPROM_Object, len);
+  TestObject * obj = (TestObject *) lc.readObject(AT24C_Object, len);
   Serial.print("=> Object(");
   Serial.print((int) &obj, HEX);
   Serial.print("-");
@@ -72,7 +72,7 @@ void testObject() {
 void testArray() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
-  int *arr = lc.readArray(EEPROM_ArrayOfInt, len);
+  int *arr = lc.readArray(AT24C_ArrayOfInt, len);
   Serial.print("=> testArray(");
   Serial.print(len);
   Serial.println(") = ");
@@ -91,7 +91,7 @@ void testArray() {
 void testArrayObject() {
   LoadClass lc = LoadClass(DEVICE, 0);
   int len = 0;
-  TestObjectArray ** objs = lc.readArray(EEPROM_ArrayOfObject, len);
+  TestObjectArray ** objs = lc.readArray(AT24C_ArrayOfObject, len);
   Serial.print("=> testArrayObject(");
   Serial.print(len);
   Serial.println(") = ");
@@ -114,7 +114,7 @@ void testArrayObject() {
  */
 void testJingleBells() {
   Serial.println("testJingleBells");
-  LoadClass lc = LoadClass(DEVICE, EEPROM_music_0_JingleBells_music);
+  LoadClass lc = LoadClass(DEVICE, AT24C_music_0_JingleBells_music);
   int len = 0;
   uint8_t * objs = lc.readArray(len);
   Serial.print("=> testJingleBells(");
@@ -129,7 +129,7 @@ void testJingleBells() {
  * @brief testAT24C32
  */
 void testAT24C32() {
-  LoadClass lc = LoadClass(DEVICE, EEPROM_Char);
+  LoadClass lc = LoadClass(DEVICE, AT24C_Char);
   Serial.print("=> testAT24C32:");
   char c = lc.readChar();
   Serial.print(" Char = ");

@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 15.02.2023
+ *  @(#)ConfigPanel.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -92,8 +93,31 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private SerialPortWrap[] commPorts = Arrays.stream(SerialPort.getCommPorts()).map(SerialPortWrap::new).toArray(SerialPortWrap[]::new);
     /** ComboBox for serial ports. */
     private final JComboBox<SerialPortWrap> portsComboBox = new JComboBox<>(commPorts);
+    /** Button Link */
+    private final JButton link = createImageButton("Link", null, 80, 20, "Восстановить связь", null);
     /** Port Reader. */
     private PortReader portReader;
+
+    private void checkPortReader() {
+        final SerialPort serialPort = ((SerialPortWrap) Objects.requireNonNull(portsComboBox.getSelectedItem())).getSerialPort();
+        final int baudRate = (Integer) Optional.ofNullable(baudRatesComboBox.getSelectedItem()).orElse(9600);
+        portReader = PortReader.getPortReader();
+        log.debug("check Port Reader");
+        if (isNull(portReader)) {
+            portReader = PortReader.createPortReader(serialPort, baudRate);
+            portReader.addListener(this);
+//            portReader.addListener(mainFrame.getMapPanel());
+            link.setBackground(new Color(255, 225, 0));
+            link.setForeground(new Color(188, 148, 0));
+            link.setText("Stop");
+        } else if (isNull(portReader.getSerialPort())) {
+            portReader.connect(serialPort, baudRate);
+            link.setBackground(new Color(255, 0, 0));
+            link.setForeground(new Color(128, 0, 0));
+            link.setText("Stop");
+        }
+    }
+
     /** Восстановление или установление связи с девайсом. */
     private final ActionListener resetLinkAction = (event -> {
         final JButton button = (JButton) event.getSource();
@@ -188,7 +212,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         portsComboBox.setSize(16, 20);
         baudRatesComboBox.setSize(16, 20);
         baudRatesComboBox.setSelectedItem(9600);
-        final JButton link = createImageButton("Link", null, 80, 20, "Восстановить связь", resetLinkAction);
+        link.addActionListener(resetLinkAction);
         link.setBackground(new Color(0, 255, 255));
         link.setForeground(new Color(0, 128, 128));
         link.setBorderPainted(false);
@@ -271,8 +295,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
     }
 
-    enum CommandActionType {AsIs, Move, Turn}
-
     /** Обработка события нажатия кнопочки. */
     class CommandActionListener implements ActionListener {
 
@@ -284,6 +306,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
         @Override
         public void actionPerformed(final ActionEvent event) {
+            checkPortReader();
             final MemoryRoms memoryRoms = Runner.getMemoryRoms();
             switch (command) {
                 case test: {

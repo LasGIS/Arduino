@@ -19,14 +19,14 @@ GravVector gravVector;
 uint8_t currentCommand = 0;
 ModeType mode = show;
 
-ScreenTft * screens[] = {
+ScreenTft* screens[] = {
   new ScreenDateTime(),
   new ScreenTimer(),
   new ScreenDump()
 };
 int numberOfScreens = sizeof(screens) / sizeof(ScreenTft*);
-ScreenTft * screen = screens[currentCommand];
-ScreenTft * changeCurrentCommand(bool);
+ScreenTft* screen = screens[currentCommand];
+ScreenTft* changeCurrentCommand(bool);
 
 /**
  * @brief printText вывод текста на экран
@@ -36,7 +36,7 @@ ScreenTft * changeCurrentCommand(bool);
  * @param text выводимый текст
  * @param color
  */
-void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char * text, uint16_t color) {
+void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char* text, uint16_t color) {
   uint8_t oldFontSize = tft.getFontSize();
   uint16_t x = col * fontSize * FONT_SPACE + 1,
            y = row * fontSize * FONT_Y + 1;
@@ -70,7 +70,7 @@ void setCursor(uint8_t col, uint8_t row, uint8_t fontSize) {
  */
 void drawDouble(uint8_t col, uint8_t row, uint8_t fontSize, double val, uint16_t color) {
   dtostrf(val, 5, 2, comBuffer);
-//  comBuffer[strlen(comBuffer)] = 0;
+  // comBuffer[strlen(comBuffer)] = 0;
   printText(col, row, fontSize, comBuffer, color);
 }
 
@@ -146,21 +146,7 @@ void setup() {
 #else
   setOrientation(GravVector());
 #endif
-/*
-  uint8_t buffer[0x100];
-  for (int16_t i = 0; i < 0x100; i++) {
-    buffer[i]=0;
-  }
-  for (int16_t a = 0x00; a < 0x1000; a += 0x100) {
-    I2CEEPROM.write_buffer(DEVICE, a, buffer, 0x100);
-  }
-*/
-  uint8_t * ref = (uint8_t *) screen;
-  size_t refSize = sizeof(ref);
-  Serial.print("ScreenDateTime(");
-  Serial.print(refSize);
-  Serial.println(")");
-//  I2CEEPROM.write_buffer(DEVICE, 0x400, 0x00, 0x800);
+  // clearEEPROM();
 }
 
 /**
@@ -252,24 +238,41 @@ void loop() {
  * <:BW><SerialBlock> - запись блока памяти, полученного из компьютера;
  */
 void serialEvent() {
-  if (Serial.available() && serialReadShort() == 0x423A) {
+  if (Serial.available() && serialReadByte() == 0x3A && serialReadByte() == 0x42) {
     int8_t bt = serialReadByte();
     if (bt == 'W') {
       serialWriteBlock();
-    } else
-    if (bt == 'R') {
+    } else if (bt == 'R') {
       serialReadBlock();
     }
   }
 }
 
-ScreenTft * changeCurrentCommand(bool isIncrement) {
+/**
+ * Стираем память EEPROM + AT24C (Осторожно! Только для отладки!)
+ */
+void clearEEPROM() {
+  Serial.println("Clear EEPROM:");
+  uint8_t buffer[0x100];
+  for (int16_t i = 0; i < 0x100; i++) {
+    buffer[i] = 0;
+  }
+  for (int16_t a = 0x00; a < 0x1000; a += 0x100) {
+    I2CEEPROM.write_buffer(DEVICE, a, buffer, 0x100);
+  }
+  for (int16_t a = 0x00; a < 0x400; a += 0x100) {
+    I2CEEPROM.write_buffer(EEPROM_DEVICE, a, buffer, 0x100);
+  }
+  Serial.println();
+}
+
+ScreenTft* changeCurrentCommand(bool isIncrement) {
   if (isIncrement) {
     currentCommand = (currentCommand < numberOfScreens - 1) ? currentCommand + 1 : 0;
   } else {
     currentCommand = currentCommand > 0 ? currentCommand - 1 : numberOfScreens - 1;
   }
-  ScreenTft * screen = screens[currentCommand];
+  ScreenTft* screen = screens[currentCommand];
   screen->showOnce();
   return screen;
 }

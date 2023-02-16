@@ -10,7 +10,7 @@
 #include <Wire.h>
 #include <TFT_LG_ILI9225.h>
 #include <IrControl.h>
-#include "I2CMemory.h"
+#include "Memory.h"
 #include "screen_tft.h"
 #include "screen_date_time.h"
 #include "screen_timer.h"

@@ -77,8 +77,9 @@ void serialWriteBlock() {
       if (len == sb->size) {
         // обязательный ответ
         Serial.print(":adr=");
+        Serial.print(sb->device);
+        Serial.print(",");
         Serial.println(sb->address);
-        /*? todo: надо проверять КС ?*/
         I2CEEPROM.write_buffer(sb->device, sb->address, sb->body, sb->size);
 #ifdef HAS_SERIAL
         Serial.print("block size = ");

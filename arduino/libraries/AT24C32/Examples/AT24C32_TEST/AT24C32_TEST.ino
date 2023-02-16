@@ -28,8 +28,8 @@ void loop() {
  */
 void serialEvent() {
   if (Serial.available()) {
-    int16_t key = serialReadShort();
-    if (key == 0x423A) {
+    uint8_t key;
+    if ((key = serialReadByte()) == 0x3A && serialReadByte() == 0x42) {
       int8_t bt = serialReadByte();
       if (bt == 'W') {
         serialWriteBlock();
@@ -39,22 +39,22 @@ void serialEvent() {
         }
     } else {
       switch (key) {
-      case '11':
+      case '1':
         testAT24C32();
         break;
-      case '22':
+      case '2':
         testString();
         break;
-      case '33':
+      case '3':
         testObject();
         break;
-      case '44':
+      case '4':
         testArray();
         break;
-      case '55':
+      case '5':
         testArrayObject();
         break;
-      case '06':
+      case '6':
         testJingleBells();
         break;
       default:
@@ -70,11 +70,11 @@ void clearEEPROM() {
   for (int16_t i = 0; i < 0x100; i++) {
     buffer[i]=0;
   }
-  for (int16_t a = 0x00; a < 0x100; a += 0x100) {
+  for (int16_t a = 0x00; a < 0x1000; a += 0x100) {
     I2CEEPROM.write_buffer(DEVICE, a, buffer, 0x100);
   }
-  //  for(uint16_t i = 0; i < 0x100; i++) {
-  //    I2CEEPROM.write(DEVICE, i, i & 0xff);
-  //  }
+  for (int16_t a = 0x00; a < 0x400; a += 0x100) {
+    I2CEEPROM.write_buffer(EEPROM_DEVICE, a, buffer, 0x100);
+  }
   Serial.print('\n');
 }

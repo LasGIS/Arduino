@@ -1,5 +1,5 @@
 /*
- *  @(#)UploadHelper.java  last: 15.02.2023
+ *  @(#)UploadHelper.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,12 +9,16 @@
 package com.lasgis.arduino.eeprom.upload;
 
 import com.lasgis.arduino.eeprom.Runner;
+import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.util.ByteArrayBuilder;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
@@ -23,17 +27,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 
 import static com.lasgis.arduino.eeprom.Runner.PROP_BAUD_RATE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_DATA_FILE;
-import static com.lasgis.arduino.eeprom.Runner.PROP_DEVICE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PORT_NAME;
 import static com.lasgis.util.Util.parseInt;
+import static com.lasgis.util.Util.parseShort;
 import static java.lang.Byte.parseByte;
 
 /**
@@ -45,8 +49,15 @@ import static java.lang.Byte.parseByte;
 @Slf4j
 public class UploadHelper implements PortReaderListener {
 
-    private final Map<Short, SerialBlock> blockMap = new Hashtable<>();
+    private final Map<DeviceAddress, SerialBlock> blockMap = new Hashtable<>();
     private final PortReader portReader;
+
+    @AllArgsConstructor(staticName = "of")
+    @EqualsAndHashCode
+    static private class DeviceAddress {
+        byte device;
+        short address;
+    }
 
     public UploadHelper(final PortReader portReader) {
         this.portReader = portReader;
@@ -54,26 +65,31 @@ public class UploadHelper implements PortReaderListener {
     }
 
     public static void upload(final MemoryRoms memoryRoms) throws InterruptedException, IOException {
-        final Properties prop = Runner.getProperties();
-        final String fileName = FilenameUtils.removeExtension((new File(
-            prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
-        )).getPath()) + ".hex";
-
-        final String portName = prop.getProperty(PROP_PORT_NAME);
-        final int baudRate = parseInt(prop.getProperty(PROP_BAUD_RATE));
-        final byte device = getPropByte(PROP_DEVICE);
-
+        final String headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
+        final Properties props = Runner.getProperties();
+        final String portName = props.getProperty(PROP_PORT_NAME);
+        final int baudRate = parseInt(props.getProperty(PROP_BAUD_RATE));
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
-        helper.uploadAll(device, fileName);
+        helper.blockMap.clear();
+        for (BatchMemory batchMemory : memoryRoms.getList()) {
+            final byte[] dump = batchMemory.getDump();
+            final String fileName = Path.of(props.getProperty(PROP_PATCH), batchMemory.getPrefix() + headerFilename + ".hex").toString();
+            final byte device = batchMemory.getDevice();
+            helper.createSerialBlocks(device, fileName);
+        }
+        helper.waitForSubmit();
+        log.info("helper.portReader.stop()");
         helper.portReader.stop();
     }
 
-    private static byte getPropByte(final String key) {
-        final Properties prop = Runner.getProperties();
-        final String value = Optional.ofNullable(prop.getProperty(key)).orElse("87").trim().toLowerCase();
-        return parseByte(value);
-    }
-
+    /**
+     * Upload single file from UI panel
+     *
+     * @param device     device (0x00 - для EEPROM, 0x5[0-7] - для AT24Cxx)
+     * @param portReader открытый serial ports
+     * @throws InterruptedException on ...
+     * @throws IOException          on ...
+     */
     public static void uploadFile(final byte device, final PortReader portReader) throws InterruptedException, IOException {
         final Properties prop = Runner.getProperties();
         final String fileName = FilenameUtils.removeExtension((new File(
@@ -81,21 +97,13 @@ public class UploadHelper implements PortReaderListener {
         )).getPath()) + ".hex";
 
         final UploadHelper helper = new UploadHelper(portReader);
-        helper.uploadAll(device, fileName);
-    }
-
-    private void uploadAll(final byte device, final String fileName) throws InterruptedException, IOException {
-        createSerialBlocks(device, fileName);
-        portWriterRun();
-        do {
-            Thread.sleep(1000);
-        } while (blockMap.values().stream().anyMatch(serialBlock -> !serialBlock.isUploaded()));
-        portReader.removeListener(this);
+        helper.blockMap.clear();
+        helper.createSerialBlocks(device, fileName);
+        helper.waitForSubmit();
     }
 
     private void createSerialBlocks(final byte device, final String fileName) throws IOException {
         log.info("Hex Dump File = \"{}\"", fileName);
-        blockMap.clear();
         try (
             final BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
@@ -105,17 +113,21 @@ public class UploadHelper implements PortReaderListener {
         ) {
             String line;
             short address = 0;
-            while ((line = reader.readLine()) != null) if (line.startsWith(":")) {
-                final byte[] body = DatatypeConverter.parseHexBinary(line.substring(1));
-                final byte size = (byte) body.length;
-                final SerialBlock block = new SerialBlock();
-                block.setDevice(device);
-                block.setBody(body);
-                block.setSize(size);
-                block.setAddress(address);
-                blockMap.put(address, block);
-                log.info("[" + address + "]" + DatatypeConverter.printHexBinary(body));
-                address += size;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("@")) {
+                    log.info("смена device и offset @{}", line.substring(1));
+                } else if (line.startsWith(":")) {
+                    final byte[] body = DatatypeConverter.parseHexBinary(line.substring(1));
+                    final byte size = (byte) body.length;
+                    final SerialBlock block = new SerialBlock();
+                    block.setDevice(device);
+                    block.setBody(body);
+                    block.setSize(size);
+                    block.setAddress(address);
+                    blockMap.put(DeviceAddress.of(device, address), block);
+                    log.info("[{},{}]{}", device, address, DatatypeConverter.printHexBinary(body));
+                    address += size;
+                }
             }
         }
     }
@@ -123,8 +135,10 @@ public class UploadHelper implements PortReaderListener {
     @Override
     public void portReaderCarriageReturn(final String str) {
         if (str.startsWith(":adr=")) {
-            final short address = Short.parseShort(str.substring(5));
-            final SerialBlock block = blockMap.get(address);
+            final String[] spl = StringUtils.split(str.substring(5), ",");
+            final byte device = parseByte(spl[0]);
+            final short address = parseShort(spl[1]);
+            final SerialBlock block = blockMap.get(DeviceAddress.of(device, address));
             if (block != null) {
                 block.setUploaded(true);
             }
@@ -132,9 +146,29 @@ public class UploadHelper implements PortReaderListener {
         log.info("From Arduino: {}", str);
     }
 
+    private void waitForSubmit() throws InterruptedException {
+        portReader.writeString("\n");
+        boolean hasNotUploaded = true;
+        do {
+            for (int i = 0; i < 5 && hasNotUploaded; i++) {
+                log.info("waitForSubmit i:{}", i);
+                Thread.sleep(1000);
+                hasNotUploaded = blockMap.values().stream().anyMatch(serialBlock -> !serialBlock.isUploaded());
+            }
+            blockMap.values().forEach(serialBlock -> {
+                if (!serialBlock.isUploaded()) {
+                    log.info("serialBlock[{},{}] set processed true", serialBlock.getDevice(), serialBlock.getAddress());
+                    serialBlock.setProcessed(true);
+                }
+            });
+            portReader.writeString("\n");
+        } while (hasNotUploaded);
+        portReader.removeListener(this);
+    }
+
     @Override
     public void portReaderTrash(final byte[] data) {
-//        log.info("Reader Trash: \"{}\"", string);
+//        log.info("Reader Trash: \"{}\"", DatatypeConverter.printHexBinary(data));
     }
 
     @Override
@@ -143,9 +177,10 @@ public class UploadHelper implements PortReaderListener {
             for (final SerialBlock block : blockMap.values()) {
                 if (block.isProcessed()) {
                     final byte[] dump = block.getWriteBytes();
-                    log.info("hex[{}] = \"{}\"", block.address, DatatypeConverter.printHexBinary(dump));
+                    log.info("hex[{},{}] = \"{}\"", block.getDevice(), block.getAddress(), DatatypeConverter.printHexBinary(dump));
                     portReader.writeByte(dump, dump.length);
                     block.setProcessed(false);
+                    Thread.sleep(100);
                     return;
                 }
             }

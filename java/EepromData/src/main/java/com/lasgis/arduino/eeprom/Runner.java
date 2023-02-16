@@ -39,7 +39,6 @@ public class Runner {
     public final static String PROP_BAUD_RATE = "baud.rate";
     public final static String PROP_PATCH = "patch";
     public final static String PROP_DATA_FILE = "data";
-    public final static String PROP_DEVICE = "device";
     @Getter
     private static final Properties properties = new Properties();
     @Getter
@@ -83,7 +82,9 @@ public class Runner {
 
         if (commands.contains(CommandType.test) ||
             commands.contains(CommandType.create) ||
-            commands.contains(CommandType.panel)) {
+            commands.contains(CommandType.panel) ||
+            commands.contains(CommandType.upload)
+        ) {
             memoryRoms = LoadHelper.load();
             LoadHelper.createDump(memoryRoms);
         }

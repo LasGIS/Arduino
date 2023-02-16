@@ -1,5 +1,5 @@
 /*
- *  @(#)SerialBlock.java  last: 06.02.2023
+ *  @(#)SerialBlock.java  last: 16.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -22,15 +22,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SerialBlock {
     /** номер микросхемы (0x57 для CMOS) */
-    byte device = 0x57;
+    private byte device = 0x57;
     /** адрес блока в EEPROM памяти */
-    short address;
+    private short address;
     /** Размер блока */
-    short size = 0;
+    private short size = 0;
     /** Контрольная сумма блока */
-    short cs;
+    private short cs;
     /** тело блока */
-    byte[] body;
+    private byte[] body;
     /** true, если этот блок ещё не передали */
     private boolean processed = true;
     /** true, если пришло подтверждение о загрузке */
