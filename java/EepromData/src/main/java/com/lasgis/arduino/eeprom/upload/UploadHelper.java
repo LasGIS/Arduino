@@ -1,5 +1,5 @@
 /*
- *  @(#)UploadHelper.java  last: 16.02.2023
+ *  @(#)UploadHelper.java  last: 17.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,7 +9,6 @@
 package com.lasgis.arduino.eeprom.upload;
 
 import com.lasgis.arduino.eeprom.Runner;
-import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
@@ -36,8 +35,9 @@ import static com.lasgis.arduino.eeprom.Runner.PROP_BAUD_RATE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_DATA_FILE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PORT_NAME;
-import static com.lasgis.util.Util.parseInt;
-import static com.lasgis.util.Util.parseShort;
+import static com.lasgis.util.Util.parseHexByte;
+import static com.lasgis.util.Util.parseHexInt;
+import static com.lasgis.util.Util.parseHexShort;
 import static java.lang.Byte.parseByte;
 
 /**
@@ -68,15 +68,11 @@ public class UploadHelper implements PortReaderListener {
         final String headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
         final Properties props = Runner.getProperties();
         final String portName = props.getProperty(PROP_PORT_NAME);
-        final int baudRate = parseInt(props.getProperty(PROP_BAUD_RATE));
+        final int baudRate = parseHexInt(props.getProperty(PROP_BAUD_RATE));
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
         helper.blockMap.clear();
-        for (BatchMemory batchMemory : memoryRoms.getList()) {
-            final byte[] dump = batchMemory.getDump();
-            final String fileName = Path.of(props.getProperty(PROP_PATCH), batchMemory.getPrefix() + headerFilename + ".hex").toString();
-            final byte device = batchMemory.getDevice();
-            helper.createSerialBlocks(device, fileName);
-        }
+        final String fileName = Path.of(props.getProperty(PROP_PATCH), headerFilename + ".hex").toString();
+        helper.createSerialBlocks(fileName);
         helper.waitForSubmit();
         log.info("helper.portReader.stop()");
         helper.portReader.stop();
@@ -85,12 +81,12 @@ public class UploadHelper implements PortReaderListener {
     /**
      * Upload single file from UI panel
      *
-     * @param device     device (0x00 - для EEPROM, 0x5[0-7] - для AT24Cxx)
      * @param portReader открытый serial ports
      * @throws InterruptedException on ...
      * @throws IOException          on ...
      */
-    public static void uploadFile(final byte device, final PortReader portReader) throws InterruptedException, IOException {
+    public static void uploadFile(final PortReader portReader) throws InterruptedException, IOException {
+        /* todo: надо убрать ссылки на Runner, Properties... */
         final Properties prop = Runner.getProperties();
         final String fileName = FilenameUtils.removeExtension((new File(
             prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
@@ -98,11 +94,11 @@ public class UploadHelper implements PortReaderListener {
 
         final UploadHelper helper = new UploadHelper(portReader);
         helper.blockMap.clear();
-        helper.createSerialBlocks(device, fileName);
+        helper.createSerialBlocks(fileName);
         helper.waitForSubmit();
     }
 
-    private void createSerialBlocks(final byte device, final String fileName) throws IOException {
+    private void createSerialBlocks(final String fileName) throws IOException {
         log.info("Hex Dump File = \"{}\"", fileName);
         try (
             final BufferedReader reader = new BufferedReader(
@@ -112,10 +108,27 @@ public class UploadHelper implements PortReaderListener {
             )
         ) {
             String line;
+            byte device = 0;
             short address = 0;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("@")) {
-                    log.info("смена device и offset @{}", line.substring(1));
+                    String prefix = "";
+                    final String[] spl = StringUtils.split(line.substring(1), ',');
+                    for (final String param : spl) {
+                        final String[] splitParam = StringUtils.split(param, ':');
+                        switch (splitParam[0]) {
+                            case "prefix":
+                                prefix = splitParam[1];
+                                break;
+                            case "device":
+                                device = parseHexByte(splitParam[1]);
+                                break;
+                            case "address":
+                                address = parseHexShort(splitParam[1]);
+                                break;
+                        }
+                    }
+                    log.info("смена { prefix: {}, device: {}, address: {} }", prefix, device, address);
                 } else if (line.startsWith(":")) {
                     final byte[] body = DatatypeConverter.parseHexBinary(line.substring(1));
                     final byte size = (byte) body.length;
@@ -137,7 +150,7 @@ public class UploadHelper implements PortReaderListener {
         if (str.startsWith(":adr=")) {
             final String[] spl = StringUtils.split(str.substring(5), ",");
             final byte device = parseByte(spl[0]);
-            final short address = parseShort(spl[1]);
+            final short address = parseHexShort(spl[1]);
             final SerialBlock block = blockMap.get(DeviceAddress.of(device, address));
             if (block != null) {
                 block.setUploaded(true);
@@ -196,7 +209,7 @@ public class UploadHelper implements PortReaderListener {
 //        )).getPath()) + ".hex";
 
         final String portName = prop.getProperty(PROP_PORT_NAME);
-        final int baudRate = parseInt(prop.getProperty(PROP_BAUD_RATE));
+        final int baudRate = parseHexInt(prop.getProperty(PROP_BAUD_RATE));
 
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
 

@@ -1,5 +1,5 @@
 /*
- *  @(#)Util.java  last: 16.02.2023
+ *  @(#)Util.java  last: 17.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -244,29 +244,29 @@ public final class Util {
         return nonNull(value) ? value.charAt(0) : '\0';
     }
 
-    static public byte parseByte(final String value) {
+    static public byte parseHexByte(final String value) {
         return nonNull(value) ? value.startsWith("0x")
             ? Byte.parseByte(value.substring(2), 16)
             : Byte.parseByte(value, 10) : 0;
     }
 
-    static public short parseShort(final String value) {
+    static public short parseHexShort(final String value) {
         return nonNull(value) ? value.startsWith("0x")
             ? Short.parseShort(value.substring(2), 16)
             : Short.parseShort(value, 10) : 0;
     }
 
-    static public int parseInt(final String value) {
+    static public int parseHexInt(final String value) {
         return nonNull(value) ? value.startsWith("0x")
             ? Integer.parseInt(value.substring(2), 16)
             : Integer.parseInt(value, 10) : 0;
     }
 
-    static public float parseFloat(final String value) {
+    static public float parseFloatOfNull(final String value) {
         return nonNull(value) ? Float.parseFloat(value) : 0.0F;
     }
 
-    static public double parseDouble(final String value) {
+    static public double parseDoubleOfNull(final String value) {
         return nonNull(value) ? Double.parseDouble(value) : 0.0;
     }
 }

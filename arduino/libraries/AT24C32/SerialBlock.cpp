@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <SerialBlock.h>
 
-#define READ_BLOCK_LENGTH 31
+#define READ_BLOCK_LENGTH 16
 
 int8_t charToHex(char ch) {
   return ((ch < 'A') ? (ch - '0') : (ch - 'A' + 0xA)) & 0x0F;
@@ -134,9 +134,7 @@ void serialReadBlock() {
     }
     I2CEEPROM.read_buffer(sb->device, sb->address + l, buf, len);
     Serial.print(":");
-    for (uint16_t i = 0; i < READ_BLOCK_LENGTH && l + i < sb->size; i++) {
-      SerialPrintHex(buf[i]);
-    }
+    SerialPrintHex(buf, len);
     Serial.println();
   }
 }

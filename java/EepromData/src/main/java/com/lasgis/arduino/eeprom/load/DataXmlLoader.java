@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoader.java  last: 16.02.2023
+ *  @(#)DataXmlLoader.java  last: 17.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -37,12 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.lasgis.util.Util.parseByte;
 import static com.lasgis.util.Util.parseCharAt0;
-import static com.lasgis.util.Util.parseDouble;
-import static com.lasgis.util.Util.parseFloat;
-import static com.lasgis.util.Util.parseInt;
-import static com.lasgis.util.Util.parseShort;
+import static com.lasgis.util.Util.parseDoubleOfNull;
+import static com.lasgis.util.Util.parseFloatOfNull;
+import static com.lasgis.util.Util.parseHexByte;
+import static com.lasgis.util.Util.parseHexInt;
+import static com.lasgis.util.Util.parseHexShort;
 
 /**
  * Загрузчик из XML файла.
@@ -100,12 +100,12 @@ class DataXmlLoader {
                 final NamedNodeMap attrs = batchNode.getAttributes();
 
                 final Node nodeDevice = attrs.getNamedItem("device");
-                final byte device = (nodeDevice != null) ? parseByte(nodeDevice.getNodeValue()) : 0x00;
+                final byte device = (nodeDevice != null) ? parseHexByte(nodeDevice.getNodeValue()) : 0x00;
                 batchMemory.setDevice(device);
 
-                final Node nodeOffset = attrs.getNamedItem("offset");
-                final int offset = (nodeOffset != null) ? parseInt(nodeOffset.getNodeValue()) : 0;
-                batchMemory.setOffset(offset);
+                final Node nodeAddress = attrs.getNamedItem("address");
+                final int address = (nodeAddress != null) ? parseHexInt(nodeAddress.getNodeValue()) : 0;
+                batchMemory.setAddress(address);
 
                 final Node nodePrefix = attrs.getNamedItem("prefix");
                 final String prefix = (nodePrefix != null) ? nodePrefix.getNodeValue() : "";
@@ -142,15 +142,15 @@ class DataXmlLoader {
             case CHAR:
                 return RomCHAR.of(name, parseCharAt0(value));
             case INT8:
-                return RomINT8.of(name, parseByte(value));
+                return RomINT8.of(name, parseHexByte(value));
             case INT16:
-                return RomINT16.of(name, parseShort(value));
+                return RomINT16.of(name, parseHexShort(value));
             case INT32:
-                return RomINT32.of(name, parseInt(value));
+                return RomINT32.of(name, parseHexInt(value));
             case FLOAT:
-                return RomFLOAT.of(name, parseFloat(value));
+                return RomFLOAT.of(name, parseFloatOfNull(value));
             case DOUBLE:
-                return RomDOUBLE.of(name, parseDouble(value));
+                return RomDOUBLE.of(name, parseDoubleOfNull(value));
             case STRING:
                 return RomSTRING.of(name, value);
             case OBJECT:

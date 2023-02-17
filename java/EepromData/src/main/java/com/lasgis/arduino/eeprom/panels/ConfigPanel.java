@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 16.02.2023
+ *  @(#)ConfigPanel.java  last: 17.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -323,8 +323,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 }
                 case upload: {
                     try {
-                        final byte device = ((DeviceWrap) deviceInput.getSelectedItem()).getDevice();
-                        UploadHelper.uploadFile(device, portReader);
+                        UploadHelper.uploadFile(portReader);
                     } catch (InterruptedException | IOException ex) {
                         log.error(ex.getMessage(), ex);
                     }

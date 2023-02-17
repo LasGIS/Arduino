@@ -1,5 +1,5 @@
 /*
- *  @(#)BatchMemory.java  last: 15.02.2023
+ *  @(#)BatchMemory.java  last: 17.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -26,6 +26,6 @@ public class BatchMemory {
     private List<RomData> romDataList = new ArrayList<>();
     private byte[] dump ;
     private byte device;
-    private int offset;
+    private int address;
     private String prefix;
 }

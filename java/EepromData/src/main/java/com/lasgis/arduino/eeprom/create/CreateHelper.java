@@ -1,5 +1,5 @@
 /*
- *  @(#)CreateHelper.java  last: 16.02.2023
+ *  @(#)CreateHelper.java  last: 17.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -35,8 +35,8 @@ import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 /**
  * <pre>
  * создание файлов:
- *   Memory.h       - определители (#define ...)
- *   I2CMemory.hex  - образ памяти
+ *   Memory.h    - определители (#define ...)
+ *   Memory.hex  - образ памяти
  * </pre>
  *
  * @author Vladimir Laskin
@@ -52,13 +52,7 @@ public class CreateHelper {
     private final static int HEX_SIZE_STR_LEN = 16;
 
     public static void create(final MemoryRoms memoryRoms) throws IOException {
-        final String headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
-        final Properties props = Runner.getProperties();
-        for (BatchMemory batchMemory : memoryRoms.getList()) {
-            final byte[] dump = batchMemory.getDump();
-            final String filename = Path.of(props.getProperty(PROP_PATCH), batchMemory.getPrefix() + headerFilename + ".hex").toString();
-            helper.createHexDumpFile(filename, dump);
-        }
+        helper.createHexDumpFile(memoryRoms);
         romNameList.clear();
         helper.createDefinitionFile(memoryRoms);
     }
@@ -73,16 +67,16 @@ public class CreateHelper {
             for (BatchMemory batchMemory : memoryRoms.getList()) {
                 final List<RomData> dataList = batchMemory.getRomDataList();
                 for (final RomData item : dataList) {
-                    writeDefinition(batchMemory.getPrefix(), item, writer);
+                    writeDefinition(batchMemory.getPrefix(), batchMemory.getAddress(), item, writer);
                 }
             }
         }
     }
 
-    private void writeDefinition(final String parentName, final RomData rom, final Writer writer) throws IOException {
+    private void writeDefinition(final String batchPrefix, final int batchOffset, final RomData rom, final Writer writer) throws IOException {
         final String name = rom.getName();
-        final String romName = (StringUtils.isNotBlank(parentName)) ? parentName + "_" + name : name;
-        final String offset = String.format("%#06x", rom.getOffset());
+        final String romName = (StringUtils.isNotBlank(batchPrefix)) ? batchPrefix + "_" + name : name;
+        final String offset = String.format("%#06x", batchOffset + rom.getOffset());
         if (StringUtils.isNotBlank(name)) {
             // проверка на уникальность имени
             if (romNameList.contains(romName)) {
@@ -94,26 +88,34 @@ public class CreateHelper {
         }
         if (rom instanceof RomOBJECT) {
             for (final RomData inst : ((RomOBJECT) rom).getArray()) {
-                writeDefinition(romName, inst, writer);
+                writeDefinition(romName, batchOffset, inst, writer);
             }
         } else if (rom instanceof RomARRAY) {
             final List<RomData> array = ((RomARRAY) rom).getArray();
             for (int i = 0; i < array.size(); i++) {
                 final RomData inst = array.get(i);
-                writeDefinition(romName + "_" + i, inst, writer);
+                writeDefinition(romName + "_" + i, batchOffset, inst, writer);
             }
         }
     }
 
-    private void createHexDumpFile(final String fileName, final byte[] dump) throws IOException {
-        log.info("Hex Dump File = \"{}\"", fileName);
+    private void createHexDumpFile(final MemoryRoms memoryRoms) throws IOException {
+        final String headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
+        final Properties props = Runner.getProperties();
+        final String fileName = Path.of(props.getProperty(PROP_PATCH), headerFilename + ".hex").toString();
         try (final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("windows-1251"))) {
-            for (int j = 0; j < dump.length; j += HEX_SIZE_STR_LEN) {
-                final int len = Math.min(dump.length - j, HEX_SIZE_STR_LEN);
-                final byte[] buf = new byte[len];
-                System.arraycopy(dump, j, buf, 0, len);
-                writer.write(":" + DatatypeConverter.printHexBinary(buf) + "\n");
+            for (BatchMemory batchMemory : memoryRoms.getList()) {
+                final byte[] dump = batchMemory.getDump();
+                writer.write(String.format("@prefix:%s,device:%#04x,address:%#06x\n",
+                    batchMemory.getPrefix(), batchMemory.getDevice(), batchMemory.getAddress()));
+                for (int j = 0; j < dump.length; j += HEX_SIZE_STR_LEN) {
+                    final int len = Math.min(dump.length - j, HEX_SIZE_STR_LEN);
+                    final byte[] buf = new byte[len];
+                    System.arraycopy(dump, j, buf, 0, len);
+                    writer.write(":" + DatatypeConverter.printHexBinary(buf) + "\n");
+                }
             }
         }
+        log.info("Hex Dump File = \"{}\"", fileName);
     }
 }

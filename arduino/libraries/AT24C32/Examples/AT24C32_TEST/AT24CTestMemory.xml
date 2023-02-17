@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)AT24CTestMemory.xml  last: 16.02.2023
+  ~  @(#)AT24CTestMemory.xml  last: 17.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -11,11 +11,11 @@
         xmlns="http://www.lasgis.com/arduino/schema/rom"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">
-  <BatchMemory device="0" prefix="EEPROM">
+  <BatchMemory device="0" prefix="EEPROM" address="0x200">
     <STRING name="English" val="This is the string from EEPROM Memory."/>
     <STRING name="Russian" val="Это строка из памяти EEPROM."/>
   </BatchMemory>
-  <BatchMemory device="0x50" prefix="AT24C">
+  <BatchMemory device="0x50" prefix="AT24C" address="0x700">
     <CHAR name="Char" val="c"/>
     <INT8 name="Byte" val="127"/>
     <INT16 name="Int" val="32767"/>

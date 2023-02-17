@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 16.02.2023
+ *  @(#)Runner.java  last: 17.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -65,7 +65,7 @@ public class Runner {
      *   test     - вывод тестовой информации о дампе
      *   create   - создание файлов:
      *      Memory.h    - определители (#define ...)
-     *      I2CMemory.hex  - образ памяти
+     *      Memory.hex  - образ памяти
      *   upload   - загрузка образа памяти в arduino
      *              Эту команду можно запускать отдельно (без чтения исходных файлов и создание образа)
      *   panel    - Открываем окно и все команды выполняем в интерактивном режиме

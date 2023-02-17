@@ -1,5 +1,5 @@
 /*
- *  @(#)BatchDump.java  last: 15.02.2023
+ *  @(#)BatchDump.java  last: 17.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -22,5 +22,5 @@ import lombok.RequiredArgsConstructor;
 public class BatchDump {
     private final byte[] dump;
     private final byte device;
-    private final int offset;
+    private final int address;
 }
