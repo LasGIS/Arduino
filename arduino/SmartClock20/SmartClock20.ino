@@ -15,6 +15,9 @@ uint16_t boxCenterX;
 uint16_t boxCenterY;
 GravVector gravVector;
 
+// главный LoadClass
+LoadClass loadClass(DEVICE, 0);
+
 // текущая команда
 uint8_t currentCommand = 0;
 ModeType mode = show;
@@ -147,6 +150,7 @@ void setup() {
   setOrientation(GravVector());
 #endif
   // clearEEPROM();
+ ScreenTft* screenTimer = new ScreenTimer(AT24C_ScreenTimer);
 }
 
 /**

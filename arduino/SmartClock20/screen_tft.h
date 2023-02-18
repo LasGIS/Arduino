@@ -18,6 +18,16 @@ enum ModeType: uint8_t {
   show, edit
 };
 
+struct FieldTftStruct {
+  uint8_t row;
+  uint8_t col;
+  uint8_t fontSize;
+  uint8_t len;
+  uint16_t minVal;
+  uint16_t maxVal;
+  uint16_t val;
+};
+
 class FieldTft {
 public:
 // --- данные ---
@@ -32,6 +42,14 @@ public:
 // --- методы ---
   void setValue(int8_t nPosit, char key);
   void showField(int8_t nPosit = -1);
+};
+
+struct ScreenTftStruct  {
+  char * name;
+  uint8_t maxFields;
+  uint8_t nField;
+  int8_t nPosit;
+  FieldTftStruct** fields;
 };
 
 class ScreenTft {

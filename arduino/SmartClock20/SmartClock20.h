@@ -52,9 +52,9 @@
 #define BOXH_CENTER_X 109
 #define BOXH_CENTER_Y 87
 
-/* количество экранов */
 extern TFT_LG_ILI9225 tft;
 extern DS3231 Clock;
+extern LoadClass loadClass;
 extern char comBuffer[20];
 extern ModeType mode;
 extern uint8_t isRedraw;

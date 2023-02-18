@@ -11,6 +11,8 @@ ScreenTimer::ScreenTimer(): ScreenTft() {
   fields[2] = {1, 8, 3, 2, 0, 59, 0, NULL};         // секунда
 }
 
+ScreenTimer::ScreenTimer(uint16_t address): ScreenTft(address) {}
+
 void ScreenTimer::changeOrientation() {
   start();
   ScreenTft::changeOrientation();

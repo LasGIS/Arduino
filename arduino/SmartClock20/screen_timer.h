@@ -9,6 +9,8 @@ public:
   uint32_t time;
 // --- методы ---
   ScreenTimer();
+  ScreenTimer(uint16_t address);
+
   virtual void changeOrientation();
   virtual void showTime(DateTime * dateTime);
   virtual void showOnce();

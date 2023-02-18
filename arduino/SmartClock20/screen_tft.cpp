@@ -9,11 +9,11 @@ void printVolts() {
   float factorCharger = lc.readFloat();
 
   // 1 сборка
-//  float vBattery = analogRead(A7) * 0.00664;
-//  float vCharger = analogRead(A6) * 0.00664;
+  //  float vBattery = analogRead(A7) * 0.00664;
+  //  float vCharger = analogRead(A6) * 0.00664;
   // 2 сборка
-//  float vBattery = analogRead(A7) * 0.00661;
-//  float vCharger = analogRead(A6) * 0.00654;
+  //  float vBattery = analogRead(A7) * 0.00661;
+  //  float vCharger = analogRead(A6) * 0.00654;
   // 3 сборка
   float vBattery = analogRead(A7) * factorBattery;
   float vCharger = analogRead(A6) * factorCharger;
@@ -89,9 +89,46 @@ ScreenTft::ScreenTft() {
 }
 
 ScreenTft::ScreenTft(int16_t address) {
-  LoadClass lc = LoadClass(DEVICE, address);
+  Serial.print("screenTft => ");
+  Serial.println(address);
   int len;
-  uint8_t * obj = lc.readObject(len);
+  ScreenTftStruct * screenTft = loadClass.readObject(address, len);
+  Serial.print("screenTft(");
+  Serial.print(len);
+  Serial.print("): ");
+  SerialPrintHex((uint8_t *) screenTft, len);
+  Serial.println();
+  Serial.print("name:");
+  Serial.println(screenTft->name);
+  Serial.print("nField:");
+  Serial.println(screenTft->nField);
+  Serial.print("nPosit:");
+  Serial.println(screenTft->nPosit);
+  Serial.print("maxFields:");
+  Serial.println(screenTft->maxFields);
+  Serial.print("fields(");
+  SerialPrintHex((uint8_t*) screenTft->fields, (screenTft->maxFields+1) * 2);
+  Serial.println("): [");
+  for (int i = 0; i <= screenTft->maxFields; i++) {
+    SerialPrintHex((uint8_t*) (screenTft->fields[i]), 2);
+    Serial.print("  { row: ");
+    Serial.print(screenTft->fields[i]->row);
+    Serial.print(", col: ");
+    Serial.print(screenTft->fields[i]->col);
+    Serial.print(", fontSize: ");
+    Serial.print(screenTft->fields[i]->fontSize);
+    Serial.print(", len: ");
+    Serial.print(screenTft->fields[i]->len);
+    Serial.print(", minVal: ");
+    Serial.print(screenTft->fields[i]->minVal);
+    Serial.print(", maxVal: ");
+    Serial.print(screenTft->fields[i]->maxVal);
+    Serial.print(", val: ");
+    Serial.print(screenTft->fields[i]->val);
+    Serial.println("},");
+  }
+  Serial.println("]");
+
   nField = 0;
   nPosit = 0;
 }
@@ -137,13 +174,13 @@ void ScreenTft::showEveryTime() {
 void ScreenTft::showOnce() {
   tft.fillRectangle(X0, Y0, X1, Y1, COLOR_BLACK);
   tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
-//  tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
-//  tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
-//#ifdef ADXL345_ENABLED
-//  printText(0,  2, 1, "X=", COLOR_GRAY);
-//  printText(8,  2, 1, "Y=", COLOR_GRAY);
-//  printText(16, 2, 1, "Z=", COLOR_GRAY);
-//#endif
+  //  tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
+  //  tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
+  //#ifdef ADXL345_ENABLED
+  //  printText(0,  2, 1, "X=", COLOR_GRAY);
+  //  printText(8,  2, 1, "Y=", COLOR_GRAY);
+  //  printText(16, 2, 1, "Z=", COLOR_GRAY);
+  //#endif
   printText(0,  1, 1, "V", COLOR_GRAY);
   printText(7,  1, 1, "/", COLOR_GRAY);
   printText(14, 1, 1, name, COLOR_RED);
