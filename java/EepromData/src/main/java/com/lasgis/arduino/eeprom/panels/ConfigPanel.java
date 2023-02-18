@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 17.02.2023
+ *  @(#)ConfigPanel.java  last: 18.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -12,6 +12,7 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.lasgis.arduino.eeprom.CommandType;
 import com.lasgis.arduino.eeprom.Runner;
 import com.lasgis.arduino.eeprom.create.CreateHelper;
+import com.lasgis.arduino.eeprom.load.LoadHelper;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.test.TestHelper;
 import com.lasgis.arduino.eeprom.upload.SerialBlock;
@@ -20,6 +21,7 @@ import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.serial.SerialPortWrap;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -41,14 +43,18 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.lasgis.arduino.eeprom.Runner.PROP_DATA_FILE;
+import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 import static com.lasgis.util.Util.createImageButton;
 import static java.awt.GridBagConstraints.BOTH;
 import static java.awt.GridBagConstraints.CENTER;
@@ -295,6 +301,25 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
 
     }
 
+    public void createHexDefinition(final File file) {
+        try {
+            final MemoryRoms memoryRoms = LoadHelper.load(file);
+            LoadHelper.createDump(memoryRoms);
+            CreateHelper.create(memoryRoms);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+        }
+    }
+
+    public void uploadFile(final File file) {
+        try {
+            checkPortReader();
+            UploadHelper.uploadFile(portReader, file);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+        }
+    }
+
     /** Обработка события нажатия кнопочки. */
     class CommandActionListener implements ActionListener {
 
@@ -323,7 +348,11 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                 }
                 case upload: {
                     try {
-                        UploadHelper.uploadFile(portReader);
+                        final Properties prop = Runner.getProperties();
+                        final File file = new File(FilenameUtils.removeExtension((new File(
+                            prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
+                        )).getPath()) + ".hex");
+                        UploadHelper.uploadFile(portReader, file);
                     } catch (InterruptedException | IOException ex) {
                         log.error(ex.getMessage(), ex);
                     }

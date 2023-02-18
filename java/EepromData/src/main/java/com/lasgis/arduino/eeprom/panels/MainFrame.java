@@ -1,5 +1,5 @@
 /*
- *  @(#)MainFrame.java  last: 12.01.2023
+ *  @(#)MainFrame.java  last: 18.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,17 +8,20 @@
 
 package com.lasgis.arduino.eeprom.panels;
 
+import com.lasgis.arduino.eeprom.Runner;
 import com.lasgis.component.StatusBar;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.SettingToolBarItem;
 import com.lasgis.util.Util;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -28,6 +31,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Properties;
+
+import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 
 /**
  * MainFrame class
@@ -56,12 +62,12 @@ public class MainFrame extends JFrame implements ComponentListener {
             "File", "openFile.gif", "", null,
             new SettingMenuItem[]{
                 new SettingMenuItem(
-                    "Exit", null, "Закрываем приложение", this::jMenuFileExitAction, null
+                    "Exit", "exit.png", "Закрываем приложение", this::jMenuFileExitAction, null
                 ),
             }
         ),
         new SettingMenuItem(
-            "Help", "help.gif", "Всякого рода вспоможение", null,
+            "Help", "userGuide.png", "Всякого рода вспоможение", null,
             new SettingMenuItem[]{
                 new SettingMenuItem(
                     "About", "help.gif", "Кто ЭТО сделал!", this::jMenuHelpAboutAction, null
@@ -73,11 +79,19 @@ public class MainFrame extends JFrame implements ComponentListener {
     /** Настройка главной панели инструментов. */
     private final SettingToolBarItem[] toolBarSetting = {
         new SettingToolBarItem(
-            "Помощь", "help.gif", "Help",
+            "Create", "create.png", "Создаем по файлу",
+            TOOL_BAR_WIDTH, TOOL_BAR_HEIGHT, this::jMenuCreateHexDefinitionAction
+        ),
+        new SettingToolBarItem(
+            "Upload", "upload.png", "Запись блока",
+            TOOL_BAR_WIDTH, TOOL_BAR_HEIGHT, this::jMenuUploadFileAction
+        ),
+        new SettingToolBarItem(
+            "Помощь", "userGuide.png", "Help",
             TOOL_BAR_WIDTH, TOOL_BAR_HEIGHT, this::jMenuHelpAboutAction
         ),
         new SettingToolBarItem(
-            "Exit", null, "Exit from programm",
+            "Exit", "exit.png", "Exit from programm",
             TOOL_BAR_WIDTH, TOOL_BAR_HEIGHT, this::jMenuFileExitAction
         )
     };
@@ -123,8 +137,8 @@ public class MainFrame extends JFrame implements ComponentListener {
 
             splitPane.add(configPanel, JSplitPane.RIGHT);
             splitPane.add(mapPanel, JSplitPane.LEFT);
-             splitPane.setLastDividerLocation(size.width - 500);
-             splitPane.setDividerLocation(size.width - 500);
+            splitPane.setLastDividerLocation(size.width - 500);
+            splitPane.setDividerLocation(size.width - 500);
             splitPane.setResizeWeight(1);
         } catch (final Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -158,6 +172,30 @@ public class MainFrame extends JFrame implements ComponentListener {
         dlg.setModal(true);
         dlg.pack();
         dlg.setVisible(true);
+    }
+
+    public void jMenuCreateHexDefinitionAction(final ActionEvent event) {
+        final Properties prop = Runner.getProperties();
+        final JFileChooser chooser = new JFileChooser(prop.getProperty(PROP_PATCH));
+        final FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Файл настройки EEPROM или AT24C памяти", "xml", "data");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            configPanel.createHexDefinition(chooser.getSelectedFile());
+        }
+    }
+
+    public void jMenuUploadFileAction(final ActionEvent event) {
+        final Properties prop = Runner.getProperties();
+        final JFileChooser chooser = new JFileChooser(prop.getProperty(PROP_PATCH));
+        final FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Дамп загрузки в Arduino", "hex");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            configPanel.uploadFile(chooser.getSelectedFile());
+        }
     }
 
     /**

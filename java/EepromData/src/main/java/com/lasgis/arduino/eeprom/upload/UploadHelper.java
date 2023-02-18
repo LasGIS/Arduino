@@ -1,5 +1,5 @@
 /*
- *  @(#)UploadHelper.java  last: 17.02.2023
+ *  @(#)UploadHelper.java  last: 18.02.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.lasgis.arduino.eeprom.Runner.PROP_BAUD_RATE;
-import static com.lasgis.arduino.eeprom.Runner.PROP_DATA_FILE;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 import static com.lasgis.arduino.eeprom.Runner.PROP_PORT_NAME;
 import static com.lasgis.util.Util.parseHexByte;
@@ -71,8 +70,8 @@ public class UploadHelper implements PortReaderListener {
         final int baudRate = parseHexInt(props.getProperty(PROP_BAUD_RATE));
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
         helper.blockMap.clear();
-        final String fileName = Path.of(props.getProperty(PROP_PATCH), headerFilename + ".hex").toString();
-        helper.createSerialBlocks(fileName);
+        final File file = Path.of(props.getProperty(PROP_PATCH), headerFilename + ".hex").toFile();
+        helper.createSerialBlocks(file);
         helper.waitForSubmit();
         log.info("helper.portReader.stop()");
         helper.portReader.stop();
@@ -85,25 +84,19 @@ public class UploadHelper implements PortReaderListener {
      * @throws InterruptedException on ...
      * @throws IOException          on ...
      */
-    public static void uploadFile(final PortReader portReader) throws InterruptedException, IOException {
-        /* todo: надо убрать ссылки на Runner, Properties... */
-        final Properties prop = Runner.getProperties();
-        final String fileName = FilenameUtils.removeExtension((new File(
-            prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
-        )).getPath()) + ".hex";
-
+    public static void uploadFile(final PortReader portReader, final File file) throws InterruptedException, IOException {
         final UploadHelper helper = new UploadHelper(portReader);
         helper.blockMap.clear();
-        helper.createSerialBlocks(fileName);
+        helper.createSerialBlocks(file);
         helper.waitForSubmit();
     }
 
-    private void createSerialBlocks(final String fileName) throws IOException {
-        log.info("Hex Dump File = \"{}\"", fileName);
+    private void createSerialBlocks(final File file) throws IOException {
+        log.info("Hex Dump File = \"{}\"", file.getPath());
         try (
             final BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
-                    new FileInputStream(fileName), Charset.forName("windows-1251")
+                    new FileInputStream(file), Charset.forName("windows-1251")
                 )
             )
         ) {
