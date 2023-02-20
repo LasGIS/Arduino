@@ -22,13 +22,9 @@ LoadClass loadClass(DEVICE, 0);
 uint8_t currentCommand = 0;
 ModeType mode = show;
 
-ScreenTft* screens[] = {
-  new ScreenDateTime(),
-  new ScreenTimer(),
-  new ScreenDump()
-};
-int numberOfScreens = sizeof(screens) / sizeof(ScreenTft*);
-ScreenTft* screen = screens[currentCommand];
+ScreenTft* screens[3];
+int numberOfScreens = 0;
+ScreenTft* screen;
 ScreenTft* changeCurrentCommand(bool);
 
 /**
@@ -143,6 +139,12 @@ void setup() {
 
   Serial.begin(9600);
 //  Serial.begin(115200);
+  screens[0] = new ScreenDateTime();
+  screens[1] = new ScreenTimer();
+  screens[2] = new ScreenDump();
+  numberOfScreens = sizeof(screens) / sizeof(ScreenTft*);
+  screen = screens[currentCommand];
+
 #ifdef ADXL345_ENABLED
   accelBegin();
   setOrientation(accelReadVector());
@@ -150,7 +152,6 @@ void setup() {
   setOrientation(GravVector());
 #endif
   // clearEEPROM();
- ScreenTft* screenTimer = new ScreenTimer(AT24C_ScreenTimer);
 }
 
 /**

@@ -2,16 +2,7 @@
 
 #define SECONDS_FROM_1970_TO_2000 946684800
 
-ScreenTimer::ScreenTimer(): ScreenTft() {
-  name = (char*) "Timer ";
-  maxFields = 2;
-  fields = new FieldTft[maxFields + 1];
-  fields[0] = {1, 2, 3, 2, 0, 23, 0, NULL};         // час
-  fields[1] = {1, 5, 3, 2, 0, 59, 0, NULL};         // минута
-  fields[2] = {1, 8, 3, 2, 0, 59, 0, NULL};         // секунда
-}
-
-ScreenTimer::ScreenTimer(uint16_t address): ScreenTft(address) {}
+ScreenTimer::ScreenTimer(): ScreenTft(AT24C_ScreenTimer) {}
 
 void ScreenTimer::changeOrientation() {
   start();

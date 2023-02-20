@@ -89,10 +89,9 @@ ScreenTft::ScreenTft() {
 }
 
 ScreenTft::ScreenTft(int16_t address) {
-  Serial.print("screenTft => ");
-  Serial.println(address);
   int len;
   ScreenTftStruct * screenTft = loadClass.readObject(address, len);
+#ifdef HAS_SERIAL
   Serial.print("screenTft(");
   Serial.print(len);
   Serial.print("): ");
@@ -100,10 +99,6 @@ ScreenTft::ScreenTft(int16_t address) {
   Serial.println();
   Serial.print("name:");
   Serial.println(screenTft->name);
-  Serial.print("nField:");
-  Serial.println(screenTft->nField);
-  Serial.print("nPosit:");
-  Serial.println(screenTft->nPosit);
   Serial.print("maxFields:");
   Serial.println(screenTft->maxFields);
   Serial.print("fields(");
@@ -128,9 +123,22 @@ ScreenTft::ScreenTft(int16_t address) {
     Serial.println("},");
   }
   Serial.println("]");
-
+#endif
+  name = screenTft->name;
   nField = 0;
   nPosit = 0;
+  maxFields = screenTft->maxFields;
+  fields = new FieldTft[maxFields + 1];
+  for (int i = 0; i <= screenTft->maxFields; i++) {
+    fields[i].row = screenTft->fields[i]->row;
+    fields[i].col = screenTft->fields[i]->col;
+    fields[i].fontSize = screenTft->fields[i]->fontSize;
+    fields[i].len = screenTft->fields[i]->len;
+    fields[i].minVal = screenTft->fields[i]->minVal;
+    fields[i].maxVal = screenTft->fields[i]->maxVal;
+    fields[i].val = screenTft->fields[i]->val;
+    fields[i].getValue = NULL;
+  }
 }
 
 void ScreenTft::changeOrientation() {

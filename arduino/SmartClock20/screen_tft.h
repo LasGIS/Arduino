@@ -47,8 +47,6 @@ public:
 struct ScreenTftStruct  {
   char * name;
   uint8_t maxFields;
-  uint8_t nField;
-  int8_t nPosit;
   FieldTftStruct** fields;
 };
 

@@ -135,19 +135,18 @@ float LoadClass::readFloat(int16_t _address){
  * Читаем строку
  * STRING - 's'
  * @brief LoadClass::readString
+ * @param isLazyDelete если true, то применяется ленивое удаление
+ *  (т.е. не надо удалять принудительно)
  * @return
  */
-char * LoadClass::readString(){
+char * LoadClass::readString(bool isLazyDelete){
   int len = readInt() - 2;
-  char * str = addRef(new char[len + 1]);
+  char * str = new char[len + 1];
+  if (isLazyDelete) addRef(str);
   I2CEEPROM.read_buffer(device, address, (uint8_t*) str, len);
   str[len] = 0;
   address += len;
   return str;
-}
-char * LoadClass::readString(int16_t _address){
-  address = _address;
-  return readString();
 }
 
 /**
@@ -244,18 +243,19 @@ int LoadClass::getObjectLength(char * definition){
 /**
  * Читаем объект
  * OBJECT - '{s}'
- * @brief LoadClass::readString
+ * @brief LoadClass::readObject
  * @return
  */
 void * LoadClass::readObject(int &pos){
   int len = readInt();
-  char * definition = readString();
+  char * definition = newString();
   int objectLength = getObjectLength(definition);
   uint8_t * obj = addRef(new uint8_t[objectLength]);
   pos = 0;
   for (int i = 0; i < strlen(definition); i++) {
     readRom(obj, pos, definition[i]);
   }
+  delete definition;
   return obj;
 }
 void * LoadClass::readObject(int16_t _address, int & pos){

@@ -18,6 +18,7 @@ private:
     int getObjectLength(char * definition);
     void * addRef(void * ref);
     void readRom(uint8_t * obj, int &pos, char charDef);
+    char * readString(bool isNew);
 
 public:
     LoadClass(int8_t device, int16_t address);
@@ -32,8 +33,11 @@ public:
     long readLong(int16_t address);
     float readFloat();
     float readFloat(int16_t address);
-    char * readString();
-    char * readString(int16_t address);
+    inline char * readString(){ return readString(true); }
+    inline char * readString(int16_t _address){ address = _address; return readString(true); }
+    inline char * newString() { return readString(false); }
+    inline char * newString(int16_t _address) { address = _address; return readString(false); }
+
     void * readObject(int & pos);
     void * readObject(int16_t address, int &pos);
     void * readArray(int & pos);

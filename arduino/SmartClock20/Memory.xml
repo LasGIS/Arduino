@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)Memory.xml  last: 18.02.2023
+  ~  @(#)Memory.xml  last: 21.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -18,11 +18,8 @@
     <OBJECT name="ScreenTimer">
       <STRING name="name" val="Timer "/>
       <INT8 name="maxFields" val="2"/>
-      <INT8 name="nField" val="10"/>
-      <INT8 name="nPosit" val="21"/>
       <ARRAY name="fields">
-        <OBJECT name="hour">
-          fields[0] = {1, 2, 3, 2, 0, 23, 0, NULL};         // час
+        <OBJECT name="hour"> fields[0] = {1, 2, 3, 2, 0, 23, 0, NULL};         // час
           <INT8 name="row" val="1"/>
           <INT8 name="col" val="2"/>
           <INT8 name="fontSize" val="3"/>
@@ -31,8 +28,7 @@
           <INT16 name="maxVal" val="23"/>
           <INT16 name="val" val="0"/>
         </OBJECT>
-        <OBJECT name="minute">
-          fields[1] = {1, 5, 3, 2, 0, 59, 0, NULL};         // минута
+        <OBJECT name="minute"> fields[1] = {1, 5, 3, 2, 0, 59, 0, NULL};         // минута
           <INT8 name="row" val="1"/>
           <INT8 name="col" val="5"/>
           <INT8 name="fontSize" val="3"/>
@@ -41,8 +37,7 @@
           <INT16 name="maxVal" val="59"/>
           <INT16 name="val" val="0"/>
         </OBJECT>
-        <OBJECT name="second">
-          fields[2] = {1, 8, 3, 2, 0, 59, 0, NULL};         // секунда
+        <OBJECT name="second"> fields[2] = {1, 8, 3, 2, 0, 59, 0, NULL};         // секунда
           <INT8 name="row" val="1"/>
           <INT8 name="col" val="8"/>
           <INT8 name="fontSize" val="3"/>
