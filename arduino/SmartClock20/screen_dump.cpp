@@ -1,12 +1,6 @@
 #include "SmartClock20.h"
 
-ScreenDump::ScreenDump(): ScreenTft() {
-  name = (char*) "Dump  ";
-  maxFields = 1;
-  fields = new FieldTft[maxFields + 1];
-  fields[0] = {2, 1, 2, 3, 0, 255, 0, NULL}; // device
-  fields[1] = {2, 5, 2, 4, 0, 0x1fff, 0, NULL}; // address
-}
+ScreenDump::ScreenDump(): ScreenTft(AT24C_ScreenDump) {}
 
 void ScreenDump::showOnce() {
   ScreenTft::showOnce();

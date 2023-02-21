@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)RomMemory.xsd  last: 17.02.2023
+  ~  @(#)RomMemory.xsd  last: 21.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -15,11 +15,22 @@
       <xs:documentation>~</xs:documentation>
     </xs:annotation>
   </xs:element>
+  <xs:attribute name="struct">
+    <xs:simpleType>
+      <xs:annotation>
+        <xs:documentation>
+          используется для создания определителя структуры в "Memory.h"
+        </xs:documentation>
+      </xs:annotation>
+      <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+  </xs:attribute>
   <xs:complexType name="CHARType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:string" name="val" use="required"/>
+        <xs:attribute ref="struct"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -28,6 +39,7 @@
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:byte" name="val" use="required"/>
+        <xs:attribute ref="struct"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -36,6 +48,7 @@
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:int" name="val" use="required"/>
+        <xs:attribute ref="struct"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -44,6 +57,7 @@
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:int" name="val" use="required"/>
+        <xs:attribute ref="struct"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -52,6 +66,7 @@
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:float" name="val" use="required"/>
+        <xs:attribute ref="struct"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -60,6 +75,7 @@
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:string" name="val" use="required"/>
+        <xs:attribute ref="struct"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -68,10 +84,18 @@
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:string" name="val"/>
+        <xs:attribute ref="struct"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="OBJECTType">
+    <xs:annotation>
+      <xs:documentation xml:lang="ru"><![CDATA[
+        Тип OBJECT может содержать любые типы
+        атрибут "name" - используется при создании ссылки на данные в памяти EEPROM или AT24C
+        атрибут "structName" - используется для создания определителя структуры в "Memory.h"
+      ]]></xs:documentation>
+    </xs:annotation>
     <xs:sequence>
       <xs:element type="CHARType" name="CHAR"/>
       <xs:element type="INT8Type" name="INT8"/>
@@ -79,10 +103,12 @@
       <xs:element type="INT32Type" name="INT32"/>
       <xs:element type="FLOATType" name="FLOAT"/>
       <xs:element type="STRINGType" name="STRING"/>
+      <xs:element type="OBJECTType" name="OBJECT"/>
       <xs:element type="ARRAYType" name="ARRAY"/>
       <xs:element type="DUMPType" name="DUMP"/>
     </xs:sequence>
     <xs:attribute type="xs:string" name="name"/>
+    <xs:attribute ref="struct"/>
   </xs:complexType>
   <xs:complexType name="MEMORYType">
     <xs:sequence>
@@ -128,5 +154,6 @@
       <xs:element type="ARRAYType" name="ARRAY"/>
     </xs:sequence>
     <xs:attribute type="xs:string" name="name"/>
+    <xs:attribute ref="struct"/>
   </xs:complexType>
 </xs:schema>

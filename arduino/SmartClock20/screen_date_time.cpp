@@ -1,21 +1,7 @@
 #include "SmartClock20.h"
 #include "screen_date_time.h"
 
-ScreenDateTime::ScreenDateTime(): ScreenTft() {
-  name = (char*) "¬рем€ ";
-  maxFields = 6;
-  fields = new FieldTft[maxFields + 1];
-
-  fields[0] = {4, 3, 2, 2, 1, 31, 1, NULL};         // день мес€ца
-  fields[1] = {4, 6, 2, 2, 1, 12, 1, NULL};         // мес€ц
-  fields[2] = {4, 9, 2, 4, 1, 9999, 2015, NULL};    // год
-
-  fields[3] = {5, 3, 2, 2, 0, 23, 0, NULL};         // час
-  fields[4] = {5, 6, 2, 2, 0, 59, 0, NULL};         // минута
-  fields[5] = {5, 9, 2, 2, 0, 59, 0, NULL};         // секунда
-
-  fields[6] = {6, 3, 2, 1, 1,  7, 1, NULL};         // день недели (ѕонедельник...)
-}
+ScreenDateTime::ScreenDateTime(): ScreenTft(AT24C_ScreenDateTime) {}
 
 void ScreenDateTime::showTime(DateTime * dateTime) {
   printBigTime(dateTime);

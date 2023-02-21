@@ -15,36 +15,156 @@
     <FLOAT name="factorCharger" val="0.00654"/>
   </BatchMemory>
   <BatchMemory prefix="AT24C" device="0x57">
+    ScreenDateTime::ScreenDateTime(): ScreenTft()
+    <OBJECT name="ScreenDateTime">
+      <STRING val="Время "/>
+      <INT8 name="maxFields" val="6"/>
+      <ARRAY name="fields">
+        fields[0] = {4, 3, 2, 2, 1, 31, 1, NULL}; // день месяца
+        <OBJECT name="dayOfMonth">
+          <INT8 val="4"/>
+          <INT8 val="3"/>
+          <INT8 val="2"/>
+          <INT8 val="2"/>
+          <INT16 val="1"/>
+          <INT16 val="31"/>
+          <INT16 val="1"/>
+          <INT16 val="0"/>
+        </OBJECT>
+        fields[1] = {4, 6, 2, 2, 1, 12, 1, NULL}; // месяц
+        <OBJECT name="month">
+          <INT8 val="4"/>
+          <INT8 val="6"/>
+          <INT8 val="2"/>
+          <INT8 val="2"/>
+          <INT16 val="1"/>
+          <INT16 val="12"/>
+          <INT16 val="1"/>
+          <INT16 val="0"/>
+        </OBJECT>
+        fields[2] = {4, 9, 2, 4, 1, 9999, 2023, NULL}; // год
+        <OBJECT name="year">
+          <INT8 val="4"/>
+          <INT8 val="9"/>
+          <INT8 val="2"/>
+          <INT8 val="4"/>
+          <INT16 val="1"/>
+          <INT16 val="9999"/>
+          <INT16 val="2015"/>
+          <INT16 val="0"/>
+        </OBJECT>
+        fields[3] = {5, 3, 2, 2, 0, 23, 0, NULL}; // час
+        <OBJECT name="hour">
+          <INT8 val="5"/>
+          <INT8 val="3"/>
+          <INT8 val="2"/>
+          <INT8 val="2"/>
+          <INT16 val="0"/>
+          <INT16 val="23"/>
+          <INT16 val="0"/>
+          <INT16 val="0"/>
+        </OBJECT>
+        fields[4] = {5, 6, 2, 2, 0, 59, 0, NULL}; // минута
+        <OBJECT name="minute">
+          <INT8 val="5"/>
+          <INT8 val="6"/>
+          <INT8 val="2"/>
+          <INT8 val="2"/>
+          <INT16 val="0"/>
+          <INT16 val="59"/>
+          <INT16 val="0"/>
+          <INT16 val="0"/>
+        </OBJECT>
+        fields[5] = {5, 9, 2, 2, 0, 59, 0, NULL}; // секунда
+        <OBJECT name="second">
+          <INT8 val="5"/>
+          <INT8 val="9"/>
+          <INT8 val="2"/>
+          <INT8 val="2"/>
+          <INT16 val="0"/>
+          <INT16 val="59"/>
+          <INT16 val="0"/>
+          <INT16 val="0"/>
+        </OBJECT>
+        fields[6] = {6, 3, 2, 1, 1, 7, 1, NULL}; // день недели (Понедельник...)
+        <OBJECT name="dayOfWeek">
+          <INT8 val="6"/>
+          <INT8 val="3"/>
+          <INT8 val="2"/>
+          <INT8 val="1"/>
+          <INT16 val="1"/>
+          <INT16 val="7"/>
+          <INT16 val="1"/>
+          <INT16 val="0"/>
+        </OBJECT>
+      </ARRAY>
+    </OBJECT>
+    ScreenTimer::ScreenTimer(): ScreenTft()
     <OBJECT name="ScreenTimer">
       <STRING name="name" val="Timer "/>
       <INT8 name="maxFields" val="2"/>
       <ARRAY name="fields">
-        <OBJECT name="hour"> fields[0] = {1, 2, 3, 2, 0, 23, 0, NULL};         // час
-          <INT8 name="row" val="1"/>
-          <INT8 name="col" val="2"/>
-          <INT8 name="fontSize" val="3"/>
-          <INT8 name="len" val="2"/>
-          <INT16 name="minVal" val="0"/>
-          <INT16 name="maxVal" val="23"/>
-          <INT16 name="val" val="0"/>
+        fields[0] = {1, 2, 3, 2, 0, 23, 0, NULL}; // час
+        <OBJECT name="hour" struct="FieldTft">
+          <INT8 struct="row" val="1"/>
+          <INT8 struct="col" val="2"/>
+          <INT8 struct="fontSize" val="3"/>
+          <INT8 struct="len" val="2"/>
+          <INT16 struct="minVal" val="0"/>
+          <INT16 struct="maxVal" val="23"/>
+          <INT16 struct="val" val="0"/>
+          <INT16 struct="const char* (*getValue) (const uint16_t val)" val="0"/>
         </OBJECT>
-        <OBJECT name="minute"> fields[1] = {1, 5, 3, 2, 0, 59, 0, NULL};         // минута
-          <INT8 name="row" val="1"/>
-          <INT8 name="col" val="5"/>
-          <INT8 name="fontSize" val="3"/>
-          <INT8 name="len" val="2"/>
-          <INT16 name="minVal" val="0"/>
-          <INT16 name="maxVal" val="59"/>
-          <INT16 name="val" val="0"/>
+        fields[1] = {1, 5, 3, 2, 0, 59, 0, NULL}; // минута
+        <OBJECT name="minute">
+          <INT8 val="1"/>
+          <INT8 val="5"/>
+          <INT8 val="3"/>
+          <INT8 val="2"/>
+          <INT16 val="0"/>
+          <INT16 val="59"/>
+          <INT16 val="0"/>
+          <INT16 val="0"/>
         </OBJECT>
-        <OBJECT name="second"> fields[2] = {1, 8, 3, 2, 0, 59, 0, NULL};         // секунда
-          <INT8 name="row" val="1"/>
-          <INT8 name="col" val="8"/>
-          <INT8 name="fontSize" val="3"/>
-          <INT8 name="len" val="2"/>
-          <INT16 name="minVal" val="0"/>
-          <INT16 name="maxVal" val="59"/>
-          <INT16 name="val" val="0"/>
+        fields[2] = {1, 8, 3, 2, 0, 59, 0, NULL}; // секунда
+        <OBJECT name="second">
+          <INT8 val="1"/>
+          <INT8 val="8"/>
+          <INT8 val="3"/>
+          <INT8 val="2"/>
+          <INT16 val="0"/>
+          <INT16 val="59"/>
+          <INT16 val="0"/>
+          <INT16 val="0"/>
+        </OBJECT>
+      </ARRAY>
+    </OBJECT>
+    ScreenDump::ScreenDump(): ScreenTft()
+    <OBJECT name="ScreenDump">
+      <STRING name="name" val="Dump "/>
+      <INT8 name="maxFields" val="1"/>
+      <ARRAY name="fields">
+        fields[0] = {2, 1, 2, 3, 0, 255, 0, NULL}; // device
+        <OBJECT name="device">
+          <INT8 val="2"/>
+          <INT8 val="1"/>
+          <INT8 val="2"/>
+          <INT8 val="3"/>
+          <INT16 val="0"/>
+          <INT16 val="255"/>
+          <INT16 val="0"/>
+          <INT16 val="0"/>
+        </OBJECT>
+        fields[1] = {2, 5, 2, 4, 0, 0x1fff, 0, NULL}; // address
+        <OBJECT name="address">
+          <INT8 val="2"/>
+          <INT8 val="5"/>
+          <INT8 val="2"/>
+          <INT8 val="4"/>
+          <INT16 val="0"/>
+          <INT16 val="0x1fff"/>
+          <INT16 val="0"/>
+          <INT16 val="0"/>
         </OBJECT>
       </ARRAY>
     </OBJECT>
