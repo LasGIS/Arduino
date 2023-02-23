@@ -2,6 +2,7 @@
 
 DS3231 Clock;
 char * bufTime = (char*) "xx:xx:xx";
+char * bufDate = (char*) "xx.xx.20xx";
 
 /**
  * переводим целое в строку (две цифры)
@@ -69,7 +70,6 @@ void printBigTime(DateTime * dateTime) {
  * выводим реальную дату.
  */
 void printRealDate(DateTime * dateTime) {
-  static char * buf = (char*) "xx.xx.20xx";
   static uint8_t dayLast   = 0xff;
   static uint8_t monthLast = 0xff;
   static uint8_t yearLast  = 0xff;
@@ -77,16 +77,39 @@ void printRealDate(DateTime * dateTime) {
   uint8_t month  = dateTime->month();
   uint8_t year   = dateTime->year() - 2000;
   if (isRedraw || dayLast != day || monthLast != month || yearLast != year) {
-    toTwoChar(day, buf, 0);
-    toTwoChar(month, buf, 3);
-    toTwoChar(year, buf, 8);
+    toTwoChar(day, bufDate, 0);
+    toTwoChar(month, bufDate, 3);
+    toTwoChar(year, bufDate, 8);
 #ifdef HAS_SERIAL
     Serial.println(buf);
 #endif
-    printText(0, 0, 1, buf, COLOR_WHITE);
+    printText(0, 0, 1, bufDate, COLOR_WHITE);
     dayLast   = day;
     monthLast = month;
     yearLast  = year;
   }
 }
 
+int16_t getAddressDayOfWeekName(uint8_t dayOfWeek) {
+  /* чистая магия. надо добавить функцию в LoadClass */
+  if (isHorisontalOrientation()) {
+    return AT24C_DayOfWeekHorizontal + 5 + (dayOfWeek - 1) * 0x000D;
+  } else {
+    return AT24C_DayOfWeekVertical + 5 + (dayOfWeek - 1) * 0x000B;
+  }
+}
+
+/**
+ * выводим день недели в заголовок.
+ */
+void printDayOfWeek() {
+  static uint8_t dayOfWeekLast = 0xff;
+  uint8_t dayOfWeek = Clock.getDoW();
+  if (isRedraw || dayOfWeekLast != dayOfWeek) {
+    int address = getAddressDayOfWeekName(dayOfWeek);
+    LoadClass lc = LoadClass(DEVICE, address);
+    char * str = lc.readString();
+    printText(20, 0, 1, str, COLOR_BROWN);
+    dayOfWeekLast = dayOfWeek;
+  }
+}

@@ -173,6 +173,7 @@ void ScreenTft::changeOrientation() {
 void ScreenTft::showTime(DateTime * dateTime) {
   printShortTime(dateTime);
   printRealDate(dateTime);
+  printDayOfWeek();
   printVolts();
 }
 
@@ -230,10 +231,10 @@ void ScreenTft::edit(char key) {
     if (nPosit < 0) {
       if (nField > 0) {
         nField--;
+        nPosit = fields[nField].len - 1;
       } else {
         nPosit++;
       }
-      nPosit = fields[nField].len - 1;
     }
     break;
   case '+':

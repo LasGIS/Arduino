@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)Memory.xml  last: 21.02.2023
+  ~  @(#)Memory.xml  last: 23.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -15,6 +15,24 @@
     <FLOAT name="factorCharger" val="0.00654"/>
   </BatchMemory>
   <BatchMemory prefix="AT24C" device="0x57">
+    <ARRAY name="DayOfWeekVertical">
+      <STRING val="Воскресен"/>
+      <STRING val="Понедельн"/>
+      <STRING val="Вторник  "/>
+      <STRING val="Среда    "/>
+      <STRING val="Четверг  "/>
+      <STRING val="Пятница  "/>
+      <STRING val="Суббота  "/>
+    </ARRAY>
+    <ARRAY name="DayOfWeekHorizontal">
+      <STRING val="Воскресенье"/>
+      <STRING val="Понедельник"/>
+      <STRING val="Вторник    "/>
+      <STRING val="Среда      "/>
+      <STRING val="Четверг    "/>
+      <STRING val="Пятница    "/>
+      <STRING val="Суббота    "/>
+    </ARRAY>
     ScreenDateTime::ScreenDateTime(): ScreenTft()
     <OBJECT name="ScreenDateTime">
       <STRING val="Время "/>

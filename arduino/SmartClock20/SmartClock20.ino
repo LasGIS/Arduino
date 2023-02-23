@@ -1,5 +1,7 @@
 #include "SmartClock20.h"
 
+//#define SERIAL_BLOCK_ONLY
+
 // драйвер экранчика
 TFT_LG_ILI9225 tft;
 
@@ -139,17 +141,18 @@ void setup() {
 
   Serial.begin(9600);
 //  Serial.begin(115200);
+#ifndef SERIAL_BLOCK_ONLY
   screens[0] = new ScreenDateTime();
   screens[1] = new ScreenTimer();
   screens[2] = new ScreenDump();
   numberOfScreens = sizeof(screens) / sizeof(ScreenTft*);
   screen = screens[currentCommand];
-
 #ifdef ADXL345_ENABLED
   accelBegin();
   setOrientation(accelReadVector());
 #else
   setOrientation(GravVector());
+#endif
 #endif
   // clearEEPROM();
 }
@@ -178,7 +181,7 @@ void serIRkey(long code, char key) {
  * @brief loop
  */
 void loop() {
-
+#ifndef SERIAL_BLOCK_ONLY
   if (irControl.hasCode()) {
     long code = irControl.getCode();
     IrControlKey* controlKey = irControl.toControlKey(code);
@@ -233,6 +236,7 @@ void loop() {
     }
     screen->showEveryTime();
   }
+#endif
   delay(10);
 }
 

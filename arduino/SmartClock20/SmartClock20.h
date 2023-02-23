@@ -71,9 +71,13 @@ extern void printText (uint8_t col, uint8_t row, uint8_t fontSize, const char * 
 extern void setCursor (uint8_t col, uint8_t row, uint8_t fontSize);
 extern void drawDouble(uint8_t col, uint8_t row, uint8_t fontSize, double val, uint16_t color);
 extern void drawHex   (uint8_t col, uint8_t row, uint8_t fontSize, uint16_t val, uint8_t size, uint16_t color);
-extern void printShortTime(DateTime * dateTime);
-extern void printBigTime  (DateTime * dateTime);
-extern void printRealDate (DateTime * dateTime);
+
+extern int16_t getAddressDayOfWeekName(uint8_t dayOfWeek);
+extern void printShortTime(DateTime* dateTime);
+extern void printBigTime  (DateTime* dateTime);
+extern void printRealDate (DateTime* dateTime);
+extern void printDayOfWeek();
+
 extern bool isHorisontalOrientation();
 
 class GravVector {
