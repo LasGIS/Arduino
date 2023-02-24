@@ -74,9 +74,9 @@ extern void drawHex   (uint8_t col, uint8_t row, uint8_t fontSize, uint16_t val,
 
 extern int16_t getAddressDayOfWeekName(uint8_t dayOfWeek);
 extern void printShortTime(DateTime* dateTime);
-extern void printBigTime  (DateTime* dateTime);
-extern void printRealDate (DateTime* dateTime);
-extern void printDayOfWeek();
+extern void printShortDate(DateTime* dateTime);
+extern void printBigTime(DateTime* dateTime);
+extern void printDayOfWeek(DateTime* dateTime);
 
 extern bool isHorisontalOrientation();
 

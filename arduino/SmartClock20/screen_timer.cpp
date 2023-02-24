@@ -12,7 +12,7 @@ void ScreenTimer::changeOrientation() {
 void ScreenTimer::showTime(DateTime * dateTime) {
   static boolean isMusicAlarm = true;
   ScreenTft::showTime(dateTime);
-  uint32_t longTime = RTClib().now().unixtime();
+  uint32_t longTime = Clock.now().unixtime();
   long deltaTime = time - longTime;
   if (deltaTime >= 0L)  {
 #ifdef HAS_SERIAL
@@ -74,6 +74,6 @@ void ScreenTimer::start() {
     fields[i].col = i * 3 + addx;
   }
   // вычисляем время Ч
-  time = RTClib().now().unixtime() + startTime;
+  time = Clock.now().unixtime() + startTime;
   isRedraw = true;
 }

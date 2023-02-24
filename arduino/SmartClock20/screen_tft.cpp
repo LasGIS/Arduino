@@ -172,8 +172,8 @@ void ScreenTft::changeOrientation() {
 
 void ScreenTft::showTime(DateTime * dateTime) {
   printShortTime(dateTime);
-  printRealDate(dateTime);
-  printDayOfWeek();
+  printShortDate(dateTime);
+  printDayOfWeek(dateTime);
   printVolts();
 }
 

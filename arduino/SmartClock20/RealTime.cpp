@@ -18,28 +18,6 @@ void toTwoChar(uint8_t val, char * str, uint8_t start) {
 }
 
 /**
- * выводим короткое время (в заголовок)
- */
-void printShortTime(DateTime * dateTime) {
-  static uint8_t minLast  = 0xff;
-  static uint8_t hourLast = 0xff;
-  uint8_t hour = dateTime->hour();
-  uint8_t min = dateTime->minute();
-  uint8_t sec = dateTime->second();
-  if (isRedraw || minLast != min || hourLast != hour) {
-    toTwoChar(hour, bufTime, 0);
-    toTwoChar(min, bufTime, 3);
-    toTwoChar(sec, bufTime, 6);
-    printText(11, 0, 1, bufTime, COLOR_WHITE);
-    minLast = min;
-    hourLast = hour;
-  } else {
-    toTwoChar(sec, bufTime, 6);
-    printText(17, 0, 1, bufTime + 6, COLOR_WHITE);
-  }
-}
-
-/**
  * выводим большое время (посередине).
  */
 void printBigTime(DateTime * dateTime) {
@@ -67,9 +45,31 @@ void printBigTime(DateTime * dateTime) {
 }
 
 /**
- * выводим реальную дату.
+ * выводим короткое время (в заголовок)
  */
-void printRealDate(DateTime * dateTime) {
+void printShortTime(DateTime * dateTime) {
+  static uint8_t minLast  = 0xff;
+  static uint8_t hourLast = 0xff;
+  uint8_t hour = dateTime->hour();
+  uint8_t min = dateTime->minute();
+  uint8_t sec = dateTime->second();
+  if (isRedraw || minLast != min || hourLast != hour) {
+    toTwoChar(hour, bufTime, 0);
+    toTwoChar(min, bufTime, 3);
+    toTwoChar(sec, bufTime, 6);
+    printText(11, 0, 1, bufTime, COLOR_WHITE);
+    minLast = min;
+    hourLast = hour;
+  } else {
+    toTwoChar(sec, bufTime, 6);
+    printText(17, 0, 1, bufTime + 6, COLOR_WHITE);
+  }
+}
+
+/**
+ * выводим короткую дату (в заголовок)
+ */
+void printShortDate(DateTime * dateTime) {
   static uint8_t dayLast   = 0xff;
   static uint8_t monthLast = 0xff;
   static uint8_t yearLast  = 0xff;
@@ -102,9 +102,9 @@ int16_t getAddressDayOfWeekName(uint8_t dayOfWeek) {
 /**
  * выводим день недели в заголовок.
  */
-void printDayOfWeek() {
+void printDayOfWeek(DateTime * dateTime) {
   static uint8_t dayOfWeekLast = 0xff;
-  uint8_t dayOfWeek = Clock.getDoW();
+  uint8_t dayOfWeek = dateTime->dayOfWeek();
   if (isRedraw || dayOfWeekLast != dayOfWeek) {
     int address = getAddressDayOfWeekName(dayOfWeek);
     LoadClass lc = LoadClass(DEVICE, address);

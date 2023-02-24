@@ -229,7 +229,7 @@ void loop() {
     long time = millis();
     if (lastTime != time / 1000) {
       //drawDouble(12, 0, 1, time/1000.0, COLOR_BLUE);
-      DateTime dateTime = RTClib().now();
+      DateTime dateTime = Clock.now();
       screen->showTime(&dateTime);
       lastTime = time / 1000;
       isRedraw = false;
