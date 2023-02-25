@@ -5,43 +5,42 @@
 
 class LoadClass {
 private:
-    /* номер микосхемы (0x57 дл€ CMOS) */
-    int8_t device;
-    /* адрес блока в EEPROM пам€ти */
-    int16_t address;
-    /* адреса выделенных блоков пам€ти дл€ удалени€ */
-    void **refs;
-    int refMaxLength = 10;
-    int refLength = 0;
+  /* номер микосхемы (0x57 дл€ CMOS) */
+  int8_t device;
+  /* адрес блока в EEPROM пам€ти */
+  int16_t address;
+  /* адреса выделенных блоков пам€ти дл€ удалени€ */
+  void **refs;
+  int refMaxLength = 10;
+  int refLength = 0;
 private:
-    int getRomLength(char charDef);
-    int getObjectLength(char * definition);
-    void * addRef(void * ref);
-    void readRom(uint8_t * obj, int &pos, char charDef);
-    char * readString(bool isNew);
+  int getRomLength(char charDef);
+  int getObjectLength(char * definition);
+  void * addRef(void * ref);
+  void readRom(uint8_t * obj, int &pos, char charDef);
+  char * readString(bool isNew);
+  int16_t toNext(char charDef);
 
 public:
-    LoadClass(int8_t device, int16_t address);
-    ~LoadClass();
-    char readChar();
-    char readChar(int16_t address);
-    uint8_t readByte();
-    uint8_t readByte(int16_t address);
-    int readInt();
-    int readInt(int16_t address);
-    long readLong();
-    long readLong(int16_t address);
-    float readFloat();
-    float readFloat(int16_t address);
-    inline char * readString(){ return readString(true); }
-    inline char * readString(int16_t _address){ address = _address; return readString(true); }
-    inline char * newString() { return readString(false); }
-    inline char * newString(int16_t _address) { address = _address; return readString(false); }
+  LoadClass(int8_t device, int16_t address);
+  ~LoadClass();
+  inline  void toAddress(int16_t _address) { address = _address; }
 
-    void * readObject(int & pos);
-    void * readObject(int16_t address, int &pos);
-    void * readArray(int & pos);
-    void * readArray(int16_t address, int & pos);
+  //=== операции чтени€ ===
+  uint8_t readByte();
+  int readInt();
+  long readLong();
+  float readFloat();
+  inline char * readString(){ return readString(true); }
+  inline char * newString() { return readString(false); }
+
+  int16_t toObjectItem(int item);
+  inline int16_t toObjectItem(int16_t _address, int item) { address = _address; return toObjectItem(item); }
+  void * readObject(int & length);
+
+  int16_t toArrayItem(int item);
+  inline int16_t toArrayItem(int16_t _address, int item) { address = _address; return toArrayItem(item); }
+  void * readArray(int & count);
 };
 
 #endif // LOAD_CLASS_H

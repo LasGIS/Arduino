@@ -9,7 +9,7 @@ uint8_t musicSoundVolume = 8;
  *  musicAlarm
  */
 void musicAlarm() {
-  LoadClass lc = LoadClass(DEVICE, AT24C_music_0_JingleBells_music);
+  LoadClass lc(DEVICE, AT24C_music_0_JingleBells_music);
   int len;
   Note * music = lc.readArray(len);
 #ifdef HAS_SERIAL

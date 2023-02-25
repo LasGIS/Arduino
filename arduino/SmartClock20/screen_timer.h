@@ -5,8 +5,8 @@
 
 class ScreenTimer: public ScreenTft {
 public:
-  uint32_t startTime = 5; //900;
-  uint32_t time;
+  int32_t startTime = 5; //900;
+  int32_t time;
 // --- методы ---
   ScreenTimer();
   virtual void changeOrientation();

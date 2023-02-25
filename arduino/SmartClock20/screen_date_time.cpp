@@ -1,21 +1,6 @@
 #include "SmartClock20.h"
 #include "screen_date_time.h"
 
-const char* strWeekName = NULL;
-
-const char* dayOfWeekName(const uint16_t val) {
-  LoadClass lc = LoadClass(DEVICE, 0);
-  int address = getAddressDayOfWeekName(val);
-  char* str = lc.readString(address);
-  if (strWeekName != NULL) delete strWeekName;
-  int len = strlen(str) + 1;
-  Serial.println(len);
-  strWeekName = new char[strlen(str) + 1];
-  memcpy(strWeekName, str, len);
-  return strWeekName;
-}
-
-
 ScreenDateTime::ScreenDateTime(): ScreenTft(AT24C_ScreenDateTime) {
   fields[6].getValue = dayOfWeekName;
 }

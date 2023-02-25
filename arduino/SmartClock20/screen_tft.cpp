@@ -4,7 +4,7 @@
  * выводим батарейки.
  */
 void printVolts() {
-  LoadClass lc = LoadClass(EEPROM_DEVICE, EEPROM_factorBattery);
+  LoadClass lc(EEPROM_DEVICE, EEPROM_factorBattery);
   float factorBattery = lc.readFloat();
   float factorCharger = lc.readFloat();
 
@@ -14,7 +14,7 @@ void printVolts() {
   // 2 сборка
   //  float vBattery = analogRead(A7) * 0.00661;
   //  float vCharger = analogRead(A6) * 0.00654;
-  // 3 сборка
+  // 3 сборка 
   float vBattery = analogRead(A7) * factorBattery;
   float vCharger = analogRead(A6) * factorCharger;
 #ifdef HAS_SERIAL
@@ -90,7 +90,8 @@ ScreenTft::ScreenTft() {
 
 ScreenTft::ScreenTft(int16_t address) {
   int len;
-  ScreenTftStruct * screenTft = loadClass.readObject(address, len);
+  loadClass.toAddress(address);
+  ScreenTftStruct * screenTft = loadClass.readObject(len);
 #ifdef HAS_SERIAL
   Serial.print("screenTft(");
   Serial.print(len);

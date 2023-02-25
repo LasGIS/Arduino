@@ -72,7 +72,7 @@ extern void setCursor (uint8_t col, uint8_t row, uint8_t fontSize);
 extern void drawDouble(uint8_t col, uint8_t row, uint8_t fontSize, double val, uint16_t color);
 extern void drawHex   (uint8_t col, uint8_t row, uint8_t fontSize, uint16_t val, uint8_t size, uint16_t color);
 
-extern int16_t getAddressDayOfWeekName(uint8_t dayOfWeek);
+extern const char* dayOfWeekName(const int dayOfWeek);
 extern void printShortTime(DateTime* dateTime);
 extern void printShortDate(DateTime* dateTime);
 extern void printBigTime(DateTime* dateTime);

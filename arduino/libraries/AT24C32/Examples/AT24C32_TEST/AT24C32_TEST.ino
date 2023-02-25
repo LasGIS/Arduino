@@ -7,9 +7,13 @@
 extern void testAT24C32();
 extern void testString();
 extern void testObject();
+extern void testObjectToItem();
 extern void testArray();
+extern void testArrayToItem();
 extern void testArrayObject();
+extern void testArrayObjectToItem();
 extern void testJingleBells();
+extern void testJingleBellsToItem();
 
 void setup() {
   Wire.begin(); // initialise the connection
@@ -45,18 +49,34 @@ void serialEvent() {
       case '2':
         testString();
         break;
-      case '3':
-        testObject();
-        break;
-      case '4':
-        testArray();
-        break;
-      case '5':
-        testArrayObject();
-        break;
-      case '6':
-        testJingleBells();
-        break;
+      case '3':{
+        if (serialReadByte() == 0x31) {
+          testObjectToItem();
+        } else {
+          testObject();
+        }
+      } break;
+      case '4': {
+        if (serialReadByte() == 0x31) {
+          testArrayToItem();
+        } else {
+          testArray();
+        }
+      } break;
+      case '5': {
+        if (serialReadByte() == 0x31) {
+          testArrayObjectToItem();
+        } else {
+          testArrayObject();
+        }
+      } break;
+      case '6': {
+        if (serialReadByte() == 0x31) {
+          testJingleBellsToItem();
+        } else {
+          testJingleBells();
+        }
+      } break;
       default:
         break;
       }

@@ -12,9 +12,8 @@ void ScreenTimer::changeOrientation() {
 void ScreenTimer::showTime(DateTime * dateTime) {
   static boolean isMusicAlarm = true;
   ScreenTft::showTime(dateTime);
-  uint32_t longTime = Clock.now().unixtime();
-  long deltaTime = time - longTime;
-  if (deltaTime >= 0L)  {
+  long deltaTime = time - dateTime->unixtime();
+  if (deltaTime > 0L)  {
 #ifdef HAS_SERIAL
     Serial.print("deltaTime = ");
     Serial.println(deltaTime);

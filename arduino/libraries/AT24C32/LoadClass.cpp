@@ -13,6 +13,7 @@ LoadClass::LoadClass(int8_t device, int16_t address) {
   refMaxLength = 10;
   refLength = 0;
 }
+
 LoadClass::~LoadClass() {
 #ifdef HAS_SERIAL_DEBUG
   Serial.print("LoadClass::~LoadClass(");
@@ -31,6 +32,7 @@ LoadClass::~LoadClass() {
 #endif
   delete refs;
 }
+
 void * LoadClass::addRef(void * ref) {
   if (refLength + 1 >= refMaxLength) {
     refMaxLength += 10;
@@ -49,22 +51,6 @@ void * LoadClass::addRef(void * ref) {
 }
 
 /**
- * Читаем знак
- * CHAR   - 'c'
- * @brief LoadClass::readChar
- * @return
- */
-char LoadClass::readChar(){
-  char c = I2CEEPROM.read(device, address);
-  address++;
-  return c;
-}
-char LoadClass::readChar(int16_t _address){
-  address = _address;
-  return readChar();
-}
-
-/**
  * Читаем байт
  * INT8   - 'b'
  * @brief LoadClass::readByte
@@ -74,10 +60,6 @@ uint8_t LoadClass::readByte(){
   uint8_t b = I2CEEPROM.read(device, address);
   address++;
   return b;
-}
-uint8_t LoadClass::readByte(int16_t _address){
-  address = _address;
-  return readByte();
 }
 
 /**
@@ -92,10 +74,6 @@ int LoadClass::readInt(){
   address+=2;
   return i;
 }
-int LoadClass::readInt(int16_t _address){
-  address = _address;
-  return readInt();
-}
 
 /**
  * Читаем длинное целое
@@ -109,10 +87,6 @@ long LoadClass::readLong(){
   address+=4;
   return l;
 }
-long LoadClass::readLong(int16_t _address){
-  address = _address;
-  return readLong();
-}
 
 /**
  * Читаем число с плавающей точкой
@@ -125,10 +99,6 @@ float LoadClass::readFloat(){
   I2CEEPROM.read_buffer(device, address, (uint8_t*) &f, 4);
   address += 4;
   return f;
-}
-float LoadClass::readFloat(int16_t _address){
-  address = _address;
-  return readFloat();
 }
 
 /**
@@ -147,6 +117,29 @@ char * LoadClass::readString(bool isLazyDelete){
   str[len] = 0;
   address += len;
   return str;
+}
+
+int16_t LoadClass::toNext(char charDef) {
+  switch (charDef) {
+  case 'c':
+  case 'b':
+    address++;
+    break;
+  case 'i':
+    address += 2;
+    break;
+  case 'l':
+  case 'f':
+    address += 4;
+    break;
+  case 's':
+  case 'a':
+  case 'o':
+    address += readInt() - 2;
+    break;
+  default: break;
+  }
+  return address;
 }
 
 /**
@@ -179,9 +172,6 @@ int LoadClass::getRomLength(char charDef) {
 void LoadClass::readRom(uint8_t * obj, int &pos, char charDef) {
   switch (charDef) {
   case 'c':
-    obj[pos] = readChar();
-    pos++;
-    break;
   case 'b':
     obj[pos] = readByte();
     pos++;
@@ -240,32 +230,72 @@ int LoadClass::getObjectLength(char * definition){
   }
   return len;
 }
+
+/**
+ * Переводим внутренний адрес на адрес элемента
+ * Действительно только для объектов
+ * @brief LoadClass::toObjectItem
+ * @param item номер элемента
+ */
+int16_t LoadClass::toObjectItem(int item) {
+  readInt(); // пропускаем размер своего блока
+  char * definition = newString();
+  for (int i = 0; i < strlen(definition) && i < item; i++) {
+    toNext(definition[i]);
+  }
+  delete definition;
+  return address;
+}
+
 /**
  * Читаем объект
- * OBJECT - '{s}'
+ * OBJECT - 'o'
  * @brief LoadClass::readObject
  * @return
  */
-void * LoadClass::readObject(int &pos){
-  int len = readInt();
+void * LoadClass::readObject(int &length){
+  readInt(); // пропускаем размер своего блока
   char * definition = newString();
   int objectLength = getObjectLength(definition);
   uint8_t * obj = addRef(new uint8_t[objectLength]);
-  pos = 0;
+  length = 0;
   for (int i = 0; i < strlen(definition); i++) {
-    readRom(obj, pos, definition[i]);
+    readRom(obj, length, definition[i]);
   }
   delete definition;
   return obj;
 }
-void * LoadClass::readObject(int16_t _address, int & pos){
-  address = _address;
-  return readObject(pos);
+
+/**
+ * Переводим внутренний адрес на адрес элемента
+ * Действительно только для массивов
+ * @brief LoadClass::toArrayItem
+ * @param item номер элемента
+ */
+int16_t LoadClass::toArrayItem(int item) {
+  readInt(); // пропускаем размер своего блока
+  char charDef = readByte();
+  int count = readInt();
+  for (int i = 0; i < count && i < item; i++) {
+    toNext(charDef);
+  }
+  return address;
 }
 
+/**
+ * Читаем массив
+ * ARRAY - 'a'
+ * @brief LoadClass::readArray
+ * @param count число членов массива
+ * @return
+ */
 void * LoadClass::readArray(int & count) {
+#ifdef HAS_SERIAL_DEBUG
   int len = readInt();
-  char charDef = readChar();
+#else
+  readInt(); // пропускаем размер своего блока
+#endif
+  char charDef = readByte();
   int romLength = getRomLength(charDef);
   count = readInt();
   int arrayLength = romLength * count;
@@ -299,8 +329,4 @@ void * LoadClass::readArray(int & count) {
   default: break;
   }
   return arr;
-}
-void * LoadClass::readArray(int16_t _address, int & count) {
-  address = _address;
-  return readArray(count);
 }

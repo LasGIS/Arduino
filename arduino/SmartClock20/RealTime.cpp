@@ -17,6 +17,18 @@ void toTwoChar(uint8_t val, char * str, uint8_t start) {
   str[start + 1] = 0x30 + lst;
 }
 
+const char* dayOfWeekName(const int dayOfWeek) {
+  LoadClass lc(DEVICE, 0);
+  if (isHorisontalOrientation()) {
+    lc.toArrayItem(AT24C_DayOfWeekHorizontal, (dayOfWeek - 1));
+  } else {
+    lc.toArrayItem(AT24C_DayOfWeekVertical, (dayOfWeek - 1));
+  }
+  char* str = lc.readString();
+  memcpy(comBuffer, str, strlen(str) + 1);
+  return comBuffer;
+}
+
 /**
  * выводим большое время (посередине).
  */
@@ -90,15 +102,6 @@ void printShortDate(DateTime * dateTime) {
   }
 }
 
-int16_t getAddressDayOfWeekName(uint8_t dayOfWeek) {
-  /* чистая магия. надо добавить функцию в LoadClass */
-  if (isHorisontalOrientation()) {
-    return AT24C_DayOfWeekHorizontal + 5 + (dayOfWeek - 1) * 0x000D;
-  } else {
-    return AT24C_DayOfWeekVertical + 5 + (dayOfWeek - 1) * 0x000B;
-  }
-}
-
 /**
  * выводим день недели в заголовок.
  */
@@ -106,9 +109,7 @@ void printDayOfWeek(DateTime * dateTime) {
   static uint8_t dayOfWeekLast = 0xff;
   uint8_t dayOfWeek = dateTime->dayOfWeek();
   if (isRedraw || dayOfWeekLast != dayOfWeek) {
-    int address = getAddressDayOfWeekName(dayOfWeek);
-    LoadClass lc = LoadClass(DEVICE, address);
-    char * str = lc.readString();
+    char * str = dayOfWeekName(dayOfWeek);
     printText(20, 0, 1, str, COLOR_BROWN);
     dayOfWeekLast = dayOfWeek;
   }
