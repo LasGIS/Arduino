@@ -17,6 +17,8 @@
 #define AT24C_ArrayOfObject_0_Object_String 0x075a
 #define AT24C_ArrayOfObject_0_Object_Char 0x0768
 #define AT24C_ArrayOfObject_1_Object 0x0769
+#define AT24C_ArrayOfObject_2_Object 0x0786
+#define AT24C_ArrayOfObject_2_Object_lastChar 0x07a3
 #define AT24C_music 0x07a4
 #define AT24C_music_0_JingleBells 0x07a9
 #define AT24C_music_0_JingleBells_name 0x07af

@@ -6,6 +6,20 @@
 
 // #define HAS_SERIAL_DEBUG
 
+int getDefinitionSize(CharDefinition cdef) {
+  switch (cdef) {
+  case charDef:
+  case byteDef: return 1;
+  case intDef: return 2;
+  case longDef:
+  case floatDef: return 4;
+  case stringDef:
+  case arrayDef:
+  case objectDef: return -1;
+  default: return 0;
+  }
+}
+
 LoadClass::LoadClass(int8_t device, int16_t address) {
   this->device = device;
   this->address = address;
@@ -119,25 +133,14 @@ char * LoadClass::readString(bool isLazyDelete){
   return str;
 }
 
-int16_t LoadClass::toNext(char charDef) {
-  switch (charDef) {
-  case 'c':
-  case 'b':
-    address++;
-    break;
-  case 'i':
-    address += 2;
-    break;
-  case 'l':
-  case 'f':
-    address += 4;
-    break;
-  case 's':
-  case 'a':
-  case 'o':
-    address += readInt() - 2;
-    break;
-  default: break;
+int16_t LoadClass::toNext(CharDefinition cdef, int inc) {
+  int size = getDefinitionSize(cdef);
+  if (size == -1) {
+    for (int i = 0; i < inc; i++) {
+      address += readInt() - 2;
+    }
+  } else {
+    address += size * inc;
   }
   return address;
 }
@@ -148,18 +151,9 @@ int16_t LoadClass::toNext(char charDef) {
  * @param charDef
  * @return
  */
-int LoadClass::getRomLength(char charDef) {
-  switch (charDef) {
-  case 'c':
-  case 'b': return 1;
-  case 'i': return 2;
-  case 'l':
-  case 'f': return 4;
-  case 's':
-  case 'a':
-  case 'o': return 2;
-  default: return 0;
-  }
+int LoadClass::getRomLength(CharDefinition cdef) {
+  int size = getDefinitionSize(cdef);
+  return size == -1 ? 2 : size;
 }
 
 /**
@@ -240,8 +234,8 @@ int LoadClass::getObjectLength(char * definition){
 int16_t LoadClass::toObjectItem(int item) {
   readInt(); // пропускаем размер своего блока
   char * definition = newString();
-  for (int i = 0; i < strlen(definition) && i < item; i++) {
-    toNext(definition[i]);
+  for (int i = 0; i + 1 < strlen(definition) && i < item; i++) {
+    toNext(definition[i], 1);
   }
   delete definition;
   return address;
@@ -275,11 +269,8 @@ void * LoadClass::readObject(int &length){
 int16_t LoadClass::toArrayItem(int item) {
   readInt(); // пропускаем размер своего блока
   char charDef = readByte();
-  int count = readInt();
-  for (int i = 0; i < count && i < item; i++) {
-    toNext(charDef);
-  }
-  return address;
+  int count = readInt() - 1;
+  return toNext(charDef, item < count ? item : count);
 }
 
 /**

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)AT24CTestMemory.xml  last: 25.02.2023
+  ~  @(#)AT24CTestMemory.xml  last: 28.02.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -51,11 +51,11 @@
         <STRING val="Second object 2"/>
         <CHAR val="S"/>
       </OBJECT>
-      <OBJECT>
+      <OBJECT name="Object">
         <INT8 val="3"/>
         <INT16 val="333"/>
         <STRING val="Third object 3 3"/>
-        <CHAR val="T"/>
+        <CHAR name="lastChar" val="T"/>
       </OBJECT>
     </ARRAY>
     <ARRAY name="music">

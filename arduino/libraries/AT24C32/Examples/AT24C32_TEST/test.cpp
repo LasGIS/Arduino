@@ -1,3 +1,4 @@
+#include "Print.h"
 #include <Arduino.h>
 #include <SerialBlock.h>
 #include <LoadClass.h>
@@ -155,13 +156,21 @@ void testArrayObject() {
 void testArrayObjectToItem() {
   Serial.print("=> testArrayObjectToItem ");
   LoadClass lc(DEVICE, 0);
-  lc.toArrayItem(AT24C_ArrayOfObject, 2);
+  lc.toArrayItem(AT24C_ArrayOfObject, 4);
   lc.toObjectItem(2);
   char* str = lc.readString();
   Serial.print(", STRING(");
   Serial.print((int)str, HEX);
-  Serial.print(") = ");
-  Serial.println(str);
+  Serial.print(") = \"");
+  Serial.print(str);
+
+  Serial.print("\", CHAR(");
+  Serial.print(lc.toArrayItem(AT24C_ArrayOfObject, 4), HEX);  
+  Serial.print(",");
+  Serial.print(lc.toObjectItem(5), HEX);  
+  Serial.print(")=");
+  char chr = lc.readByte();
+  Serial.println(chr);
 }
 
 /**
@@ -186,13 +195,13 @@ void testJingleBells() {
  * @brief testJingleBellsToItem
  */
 void testJingleBellsToItem() {
-  Serial.println("testJingleBellsToItem");
+  Serial.println("=> testJingleBellsToItem");
   LoadClass lc(DEVICE, 0);
 
   lc.toObjectItem(AT24C_music_0_JingleBells, 1);
   int len;
   uint8_t *objs = lc.readArray(len);
-  Serial.print("=> music(");
+  Serial.print("  music(");
   Serial.print(len);
   Serial.print(") = ");
   SerialPrintHex(objs, len);
@@ -200,7 +209,7 @@ void testJingleBellsToItem() {
 
   lc.toObjectItem(AT24C_music_0_JingleBells, 0);
   char *s = lc.readString();
-  Serial.print("=> name(");
+  Serial.print("  name(");
   Serial.print((int)s, HEX);
   Serial.print(") = \"");
   Serial.print(s);

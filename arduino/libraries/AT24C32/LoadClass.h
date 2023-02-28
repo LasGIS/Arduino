@@ -3,6 +3,17 @@
 
 #include <I2C_EEPROM.h>
 
+enum CharDefinition: uint8_t {
+  charDef = 'c',
+  byteDef = 'b',
+  intDef = 'i',
+  longDef = 'l',
+  floatDef = 'f',
+  stringDef = 's',
+  arrayDef = 'a',
+  objectDef = 'o'
+};
+
 class LoadClass {
 private:
   /* номер микосхемы (0x57 для CMOS) */
@@ -14,12 +25,12 @@ private:
   int refMaxLength = 10;
   int refLength = 0;
 private:
-  int getRomLength(char charDef);
+  int getRomLength(CharDefinition cdef);
   int getObjectLength(char * definition);
   void * addRef(void * ref);
   void readRom(uint8_t * obj, int &pos, char charDef);
   char * readString(bool isNew);
-  int16_t toNext(char charDef);
+  int16_t toNext(CharDefinition cdef, int inc);
 
 public:
   LoadClass(int8_t device, int16_t address);
