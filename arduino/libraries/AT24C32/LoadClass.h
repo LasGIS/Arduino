@@ -28,7 +28,7 @@ private:
   int getRomLength(CharDefinition cdef);
   int getObjectLength(char * definition);
   void * addRef(void * ref);
-  void readRom(uint8_t * obj, int &pos, char charDef);
+  void readRom(uint8_t * obj, int &pos, CharDefinition cdef);
   char * readString(bool isNew);
   int16_t toNext(CharDefinition cdef, int inc);
 

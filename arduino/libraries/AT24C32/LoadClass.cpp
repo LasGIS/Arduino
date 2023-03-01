@@ -163,40 +163,40 @@ int LoadClass::getRomLength(CharDefinition cdef) {
  * @param pos
  * @param charDef
  */
-void LoadClass::readRom(uint8_t * obj, int &pos, char charDef) {
-  switch (charDef) {
-  case 'c':
-  case 'b':
+void LoadClass::readRom(uint8_t * obj, int &pos, CharDefinition cdef) {
+  switch (cdef) {
+  case charDef:
+  case byteDef:
     obj[pos] = readByte();
     pos++;
     break;
-  case 'i': {
+  case intDef: {
     int intVal = readInt();
     memcpy(obj + pos, (const void*) &intVal, 2);
     pos += 2;
   } break;
-  case 'l': {
+  case longDef: {
     long longVal = readLong();
     memcpy(obj + pos, (const void*) &longVal, 4);
     pos += 4;
   } break;
-  case 'f': {
+  case floatDef: {
     float floatVal = readFloat();
     memcpy(obj + pos, (const void*) &floatVal, 4);
     pos += 4;
   } break;
-  case 's': {
+  case stringDef: {
     char * stringVal = readString();
     memcpy(obj + pos, (const void*) &stringVal, 2);
     pos += 2;
   } break;
-  case 'a': {
+  case arrayDef: {
     int count;
     void * arrayVal = readArray(count);
     memcpy(obj + pos, (const void*) &arrayVal, 2);
     pos += 2;
   } break;
-  case 'o': {
+  case objectDef: {
     int count;
     void * objectVal = readObject(count);
     memcpy(obj + pos, (const void*) &objectVal, 2);
@@ -286,38 +286,33 @@ void * LoadClass::readArray(int & count) {
 #else
   readInt(); // пропускаем размер своего блока
 #endif
-  char charDef = readByte();
-  int romLength = getRomLength(charDef);
+  CharDefinition cdef = readByte();
   count = readInt();
-  int arrayLength = romLength * count;
+  int size = getDefinitionSize(cdef);
 #ifdef HAS_SERIAL_DEBUG
   Serial.print("readArray len = ");
   Serial.print(len);
-  Serial.print("; charDef = ");
-  Serial.print(charDef);
-  Serial.print("; arrayLength = ");
-  Serial.print(arrayLength);
+  Serial.print("; charDefinition = ");
+  Serial.print(cdef);
+  Serial.print("; definitionSize = ");
+  Serial.print(size);
   Serial.print("; address = ");
   Serial.println(address, HEX);
 #endif
-  void * arr = addRef(new uint8_t[arrayLength]);
-  switch (charDef) {
-  case 'c':
-  case 'b':
-  case 'i':
-  case 'l':
-  case 'f': {
-    I2CEEPROM.read_buffer(device, address, (uint8_t*) arr, arrayLength);
-  } break;
-  case 's':
-  case 'a':
-  case 'o': {
+  if (size == -1) {
+    /** объекты */
+    void * arr = addRef(new uint8_t[count * 2]);
     int pos = 0;
     for (int i = 0; i < count; i++) {
-      readRom(arr, pos, charDef);
+      readRom(arr, pos, cdef);
     }
-  } break;
-  default: break;
+    return arr;
+  } else if (size > 0) {
+    /** простые типы */
+    int arrayLength = count * size;
+    void * arr = addRef(new uint8_t[arrayLength]);
+    I2CEEPROM.read_buffer(device, address, (uint8_t*) arr, arrayLength);
+    return arr;
   }
-  return arr;
+  return NULL;
 }
