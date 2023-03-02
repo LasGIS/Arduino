@@ -1,5 +1,4 @@
 #include "TFT_LG_ILI9225.h"
-#include <avr/pgmspace.h>
 #include <limits.h>
 #include <SPI.h>
 
@@ -508,7 +507,11 @@ uint8_t TFT_LG_ILI9225::drawChar(
     uint16_t x, uint16_t y, uint8_t ascii, uint16_t color
 ) {
   uint8_t buf[8];
+#ifdef FONT_FROM_I2C_EEPROM
+  I2CEEPROM.read_buffer(AT24DEVICE, Font_russFontANSI5x8 + FONT_X * ascii, (uint8_t*) &buf, FONT_X);
+#else
   memcpy_P(&buf, &russFontANSI[ascii], FONT_X);
+#endif
   buf[FONT_X] = 0;
   _setWindow(x, y, x + (FONT_X + 1) * _fontSize - 1, y + FONT_Y * _fontSize - 1);
   uint16_t count = 0;

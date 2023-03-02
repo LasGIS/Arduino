@@ -32,3 +32,4 @@
 #define AT24C_music_1_TwoFunnyGeese 0x0308
 #define AT24C_music_1_TwoFunnyGeese_name 0x030e
 #define AT24C_music_1_TwoFunnyGeese_music 0x0324
+#define Font_russFontANSI5x8 0x0700

@@ -1,9 +1,21 @@
 #ifndef TFT_LG_ILI9225_h
 #define TFT_LG_ILI9225_h
 
+#define FONT_FROM_I2C_EEPROM
+
 #include <Arduino.h>
-#include <avr/pgmspace.h>
-#include <RussFontANSI.c>
+#ifdef FONT_FROM_I2C_EEPROM
+  #include <I2C_EEPROM.h>
+
+  #define AT24DEVICE 0x57
+  #define Font_russFontANSI5x8 0x0705
+  #define FONT_SPACE 6
+  #define FONT_X 5
+  #define FONT_Y 8
+#else
+  #include <avr/pgmspace.h>
+  #include <RussFontANSI.c>
+#endif
 
 /* ILI9225 screen size */
 #define ILI9225_LCD_WIDTH  176
