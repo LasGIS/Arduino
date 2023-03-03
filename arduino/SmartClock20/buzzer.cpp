@@ -11,12 +11,12 @@ uint8_t musicSoundVolume = 8;
 void musicAlarm() {
   LoadClass lc(DEVICE, AT24C_music_0_JingleBells_music);
   int len;
-  Note * music = lc.readArray(len);
+  Note* music = (Note*)lc.readArray(len);
 #ifdef HAS_SERIAL
   Serial.print(" musicSize(");
   Serial.print(len);
   Serial.print(") = ");
-  SerialPrintHex((uint8_t *) music, len);
+  SerialPrintHex((uint8_t*)music, len);
   Serial.println();
 #endif
   for (uint16_t i = 0; i < (len / sizeof(Note)); i++) {

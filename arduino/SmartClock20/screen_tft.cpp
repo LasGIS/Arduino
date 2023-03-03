@@ -14,7 +14,7 @@ void printVolts() {
   // 2 сборка
   //  float vBattery = analogRead(A7) * 0.00661;
   //  float vCharger = analogRead(A6) * 0.00654;
-  // 3 сборка 
+  // 3 сборка
   float vBattery = analogRead(A7) * factorBattery;
   float vCharger = analogRead(A6) * factorCharger;
 #ifdef HAS_SERIAL
@@ -40,13 +40,13 @@ void FieldTft::setValue(int8_t nPosit, char key) {
   if (key >= '0' && key <= '9') {
     comBuffer[nPosit] = key - '0';
   } else switch (key) {
-  case '+':
-    comBuffer[nPosit]++;
-    break;
-  case '-':
-    if (comBuffer[nPosit] > 0) comBuffer[nPosit]--;
-    break;
-  }
+      case '+':
+        comBuffer[nPosit]++;
+        break;
+      case '-':
+        if (comBuffer[nPosit] > 0) comBuffer[nPosit]--;
+        break;
+    }
 
   _val = 0;
   for (int i = 0; i < len; i++) {
@@ -91,22 +91,22 @@ ScreenTft::ScreenTft() {
 ScreenTft::ScreenTft(int16_t address) {
   int len;
   loadClass.toAddress(address);
-  ScreenTftStruct * screenTft = loadClass.readObject(len);
+  ScreenTftStruct *screenTft = (ScreenTftStruct *)loadClass.readObject(len);
 #ifdef HAS_SERIAL
   Serial.print("screenTft(");
   Serial.print(len);
   Serial.print("): ");
-  SerialPrintHex((uint8_t *) screenTft, len);
+  SerialPrintHex((uint8_t *)screenTft, len);
   Serial.println();
   Serial.print("name:");
   Serial.println(screenTft->name);
   Serial.print("maxFields:");
   Serial.println(screenTft->maxFields);
   Serial.print("fields(");
-  SerialPrintHex((uint8_t*) screenTft->fields, (screenTft->maxFields+1) * 2);
+  SerialPrintHex((uint8_t *)screenTft->fields, (screenTft->maxFields + 1) * 2);
   Serial.println("): [");
   for (int i = 0; i <= screenTft->maxFields; i++) {
-    SerialPrintHex((uint8_t*) (screenTft->fields[i]), 2);
+    SerialPrintHex((uint8_t *)(screenTft->fields[i]), 2);
     Serial.print("  { row: ");
     Serial.print(screenTft->fields[i]->row);
     Serial.print(", col: ");
@@ -171,7 +171,7 @@ void ScreenTft::changeOrientation() {
   }
 }
 
-void ScreenTft::showTime(DateTime * dateTime) {
+void ScreenTft::showTime(DateTime *dateTime) {
   printShortTime(dateTime);
   printShortDate(dateTime);
   printDayOfWeek(dateTime);
@@ -191,13 +191,13 @@ void ScreenTft::showOnce() {
   //  printText(8,  2, 1, "Y=", COLOR_GRAY);
   //  printText(16, 2, 1, "Z=", COLOR_GRAY);
   //#endif
-  printText(0,  1, 1, "V", COLOR_GRAY);
-  printText(7,  1, 1, "/", COLOR_GRAY);
+  printText(0, 1, 1, "V", COLOR_GRAY);
+  printText(7, 1, 1, "/", COLOR_GRAY);
   printText(14, 1, 1, name, COLOR_RED);
   isRedraw = true;
 }
 
-void ScreenTft::control(char key __attribute__ ((unused))) { }
+void ScreenTft::control(char key __attribute__((unused))) {}
 
 void ScreenTft::edit(char key) {
 #ifdef HAS_SERIAL
@@ -212,40 +212,40 @@ void ScreenTft::edit(char key) {
     fields[nField].showField(nPosit);
     key = '>';
   }
-  switch(key) {
-  case 1: // начальная
-    mode = ModeType::edit;
-    break;
-  case '>':
-    nPosit++;
-    if (nPosit >= fields[nField].len) {
-      if (nField < maxFields) {
-        nField++;
-        nPosit = 0;
-      } else {
-        nPosit--;
+  switch (key) {
+    case 1:  // начальная
+      mode = ModeType::edit;
+      break;
+    case '>':
+      nPosit++;
+      if (nPosit >= fields[nField].len) {
+        if (nField < maxFields) {
+          nField++;
+          nPosit = 0;
+        } else {
+          nPosit--;
+        }
       }
-    }
-    break;
-  case '<':
-    nPosit--;
-    if (nPosit < 0) {
-      if (nField > 0) {
-        nField--;
-        nPosit = fields[nField].len - 1;
-      } else {
-        nPosit++;
+      break;
+    case '<':
+      nPosit--;
+      if (nPosit < 0) {
+        if (nField > 0) {
+          nField--;
+          nPosit = fields[nField].len - 1;
+        } else {
+          nPosit++;
+        }
       }
-    }
-    break;
-  case '+':
-  case '-':
-    fields[nField].setValue(nPosit, key);
-    break;
-  case 'M': // записываем и выходим
-  case 'r': // выходим без записи
-    mode = ModeType::show;
-    return;
+      break;
+    case '+':
+    case '-':
+      fields[nField].setValue(nPosit, key);
+      break;
+    case 'M':  // записываем и выходим
+    case 'r':  // выходим без записи
+      mode = ModeType::show;
+      return;
   }
   //showCurrentField;
 }

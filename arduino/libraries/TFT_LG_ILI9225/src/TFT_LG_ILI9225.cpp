@@ -508,7 +508,7 @@ uint8_t TFT_LG_ILI9225::drawChar(
 ) {
   uint8_t buf[8];
 #ifdef FONT_FROM_I2C_EEPROM
-  I2CEEPROM.read_buffer(AT24DEVICE, Font_russFontANSI5x8 + FONT_X * ascii, (uint8_t*) &buf, FONT_X);
+  I2CEEPROM.read_buffer(AT24DEVICE, Font_russFontANSI_5x8 + FONT_X * ascii, (uint8_t*) &buf, FONT_X);
 #else
   memcpy_P(&buf, &russFontANSI[ascii], FONT_X);
 #endif

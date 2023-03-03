@@ -109,7 +109,7 @@ void printDayOfWeek(DateTime * dateTime) {
   static uint8_t dayOfWeekLast = 0xff;
   uint8_t dayOfWeek = dateTime->dayOfWeek();
   if (isRedraw || dayOfWeekLast != dayOfWeek) {
-    char * str = dayOfWeekName(dayOfWeek);
+    const char * str = dayOfWeekName(dayOfWeek);
     printText(20, 0, 1, str, COLOR_BROWN);
     dayOfWeekLast = dayOfWeek;
   }

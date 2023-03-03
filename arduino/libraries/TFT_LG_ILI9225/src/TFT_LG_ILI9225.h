@@ -8,7 +8,7 @@
   #include <I2C_EEPROM.h>
 
   #define AT24DEVICE 0x57
-  #define Font_russFontANSI5x8 0x0705
+  #define Font_russFontANSI_5x8 0x0705
   #define FONT_SPACE 6
   #define FONT_X 5
   #define FONT_Y 8

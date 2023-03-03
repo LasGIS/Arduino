@@ -6,7 +6,7 @@
 
 #define ORIENTATION_HORISONTAL 0x01
 
-enum OrientationType: uint8_t {
+enum OrientationType : uint8_t {
   undefine = 0xfe,
   bottom = 0,
   right = 1,
@@ -14,8 +14,9 @@ enum OrientationType: uint8_t {
   left = 3
 };
 
-enum ModeType: uint8_t {
-  show, edit
+enum ModeType : uint8_t {
+  show,
+  edit
 };
 
 struct FieldTftStruct {
@@ -30,7 +31,7 @@ struct FieldTftStruct {
 
 class FieldTft {
 public:
-// --- данные ---
+  // --- данные ---
   uint8_t row;
   uint8_t col;
   uint8_t fontSize;
@@ -38,27 +39,27 @@ public:
   uint16_t minVal;
   uint16_t maxVal;
   uint16_t val;
-  const char* (*getValue) (const uint16_t val);
-// --- методы ---
+  const char* (*getValue)(const int16_t val);
+  // --- методы ---
   void setValue(int8_t nPosit, char key);
   void showField(int8_t nPosit = -1);
 };
 
-struct ScreenTftStruct  {
-  char * name;
+struct ScreenTftStruct {
+  char* name;
   uint8_t maxFields;
   FieldTftStruct** fields;
 };
 
 class ScreenTft {
 public:
-// --- данные ---
-  char * name;
+  // --- данные ---
+  char* name;
   uint8_t maxFields;
   uint8_t nField;
   int8_t nPosit;
-  FieldTft * fields;
-// --- методы ---
+  FieldTft* fields;
+  // --- методы ---
   ScreenTft();
   ScreenTft(int16_t address);
   /** меняется ориентация */
@@ -66,7 +67,7 @@ public:
   /** показываем один раз при загрузке */
   virtual void showOnce();
   /** показываем раз в секунду */
-  virtual void showTime(DateTime * dateTime);
+  virtual void showTime(DateTime* dateTime);
   /** показываем часто ~10 мс */
   virtual void showEveryTime();
   /** работа с экраном в режиме редактирования */
@@ -80,4 +81,4 @@ public:
   void showAllFields();
 };
 
-#endif // SCREEN_TFT_H
+#endif  // SCREEN_TFT_H
