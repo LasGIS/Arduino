@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 18.02.2023
+ *  @(#)ConfigPanel.java  last: 06.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -14,14 +14,12 @@ import com.lasgis.arduino.eeprom.Runner;
 import com.lasgis.arduino.eeprom.create.CreateHelper;
 import com.lasgis.arduino.eeprom.load.LoadHelper;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
-import com.lasgis.arduino.eeprom.test.TestHelper;
 import com.lasgis.arduino.eeprom.upload.SerialBlock;
 import com.lasgis.arduino.eeprom.upload.UploadHelper;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.serial.SerialPortWrap;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -32,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.BorderLayout;
@@ -39,7 +38,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -88,6 +86,8 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private final JTextArea arealInfo = new JTextArea();
     /** поле для ввода команды. */
     private final JTextField commandInput = new JTextField();
+    private final JFileChooserField dataFileInput;
+    private final JFileChooserField hexFileInput;
     /** поле для ввода номера микросхемы (0x57 для CMOS). */
     private final JComboBox<DeviceWrap> deviceInput = new JComboBox<>(DEVICE_WRAPS);
     /** поле для ввода адреса блока в EEPROM памяти. */
@@ -96,34 +96,13 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private final JTextField sizeInput = new JTextField(4);
     /** ComboBox for baud rates. */
     private final JComboBox<Integer> baudRatesComboBox = new JComboBox<>(BAUD_RATES);
+    /** Button Link */
+    private final JButton link = createImageButton("Link", null, 80, 20, "Восстановить связь", null);
     private SerialPortWrap[] commPorts = Arrays.stream(SerialPort.getCommPorts()).map(SerialPortWrap::new).toArray(SerialPortWrap[]::new);
     /** ComboBox for serial ports. */
     private final JComboBox<SerialPortWrap> portsComboBox = new JComboBox<>(commPorts);
-    /** Button Link */
-    private final JButton link = createImageButton("Link", null, 80, 20, "Восстановить связь", null);
     /** Port Reader. */
     private PortReader portReader;
-
-    private void checkPortReader() {
-        final SerialPort serialPort = ((SerialPortWrap) Objects.requireNonNull(portsComboBox.getSelectedItem())).getSerialPort();
-        final int baudRate = (Integer) Optional.ofNullable(baudRatesComboBox.getSelectedItem()).orElse(9600);
-        portReader = PortReader.getPortReader();
-        log.debug("check Port Reader");
-        if (isNull(portReader)) {
-            portReader = PortReader.createPortReader(serialPort, baudRate);
-            portReader.addListener(this);
-//            portReader.addListener(mainFrame.getMapPanel());
-            link.setBackground(new Color(255, 225, 0));
-            link.setForeground(new Color(188, 148, 0));
-            link.setText("Stop");
-        } else if (isNull(portReader.getSerialPort())) {
-            portReader.connect(serialPort, baudRate);
-            link.setBackground(new Color(255, 0, 0));
-            link.setForeground(new Color(128, 0, 0));
-            link.setText("Stop");
-        }
-    }
-
     /** Восстановление или установление связи с девайсом. */
     private final ActionListener resetLinkAction = (event -> {
         final JButton button = (JButton) event.getSource();
@@ -150,6 +129,14 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             button.setText("Connect");
         }
     });
+    /** Обработка события при смене текстовой команды (нажали ENTER в input). */
+    private final ActionListener enterOnInputAction = event -> {
+        final String command = event.getActionCommand();
+        log.debug(command);
+        portReader.writeString(command);
+        commandInput.setText("");
+        arealInfo.append(">> " + command + "\n");
+    };
     /** ссылка на MainFrame. */
     private MainFrame mainFrame = null;
 
@@ -158,13 +145,21 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
      */
     public ConfigPanel() {
         super();
+        final Properties prop = Runner.getProperties();
+        dataFileInput = new JFileChooserField(
+            new File(prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)).getPath(),
+            new FileNameExtensionFilter("Файл настройки EEPROM или AT24C памяти", "xml", "data")
+        );
+        hexFileInput = new JFileChooserField(
+            prop.getProperty(PROP_PATCH),
+            new FileNameExtensionFilter("Дамп загрузки в Arduino", "hex")
+        );
 
         controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
         fillLinkPanel();
-        fillNavigationPanel();
         fillParametersPanel();
 
-        /* панель для получения информации от робота. */
+        /* панель для получения информации */
         arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
         final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
         plantInfoScroll.setViewportView(arealInfo);
@@ -198,14 +193,25 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         );
     }
 
-    /** Обработка события при смене текстовой команды (нажали ENTER в input). */
-    private final ActionListener enterOnInputAction = event -> {
-        final String command = event.getActionCommand();
-        log.debug(command);
-        portReader.writeString(command);
-        commandInput.setText("");
-        arealInfo.append(">> " + command + "\n");
-    };
+    private void checkPortReader() {
+        final SerialPort serialPort = ((SerialPortWrap) Objects.requireNonNull(portsComboBox.getSelectedItem())).getSerialPort();
+        final int baudRate = (Integer) Optional.ofNullable(baudRatesComboBox.getSelectedItem()).orElse(9600);
+        portReader = PortReader.getPortReader();
+        log.debug("check Port Reader");
+        if (isNull(portReader)) {
+            portReader = PortReader.createPortReader(serialPort, baudRate);
+            portReader.addListener(this);
+//            portReader.addListener(mainFrame.getMapPanel());
+            link.setBackground(new Color(255, 225, 0));
+            link.setForeground(new Color(188, 148, 0));
+            link.setText("Stop");
+        } else if (isNull(portReader.getSerialPort())) {
+            portReader.connect(serialPort, baudRate);
+            link.setBackground(new Color(255, 0, 0));
+            link.setForeground(new Color(128, 0, 0));
+            link.setText("Stop");
+        }
+    }
 
     public void setMainFrame(final MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -230,44 +236,59 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         controlPanel.add(linkPanel, BorderLayout.NORTH);
     }
 
-    /** создание навигационных кнопок. */
-    private void fillNavigationPanel() {
-        final JPanel navigationPanel = new JPanel(new GridLayout(3, 2, 5, 5));
-        //keyPanel.setSize(150, 150);
-        navigationPanel.add(createNavigationButton("Create", null, "Создаем по файлу", CommandType.create));
-        navigationPanel.add(createNavigationButton("Upload", null, "Запись блока", CommandType.upload));
-        navigationPanel.add(createNavigationButton("Read", null, "Чтение блока", CommandType.read));
-        controlPanel.add(navigationPanel, BorderLayout.EAST);
-
-        commandInput.addActionListener(enterOnInputAction);
-        controlPanel.add(commandInput, BorderLayout.SOUTH);
-    }
-
     /** создание доп атрибутов. */
     private void fillParametersPanel() {
         deviceInput.setSelectedIndex(1);
         addressInput.setText("0000");
         sizeInput.setText("0200");
         final JPanel parametersPanel = new JPanel(new GridBagLayout());
-        final GridBagConstraints labelGbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
-            CENTER, BOTH, new Insets(2, 5, 2, 4), 0, 0);
-        final GridBagConstraints inputGbc = new GridBagConstraints(1, 0, 1, 1, 0, 0,
-            CENTER, BOTH, new Insets(2, 0, 2, 0), 0, 0);
+        final GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
+            CENTER, BOTH, new Insets(5, 5, 5, 5), 0, 0);
 
-        parametersPanel.add(new JLabel("device", JLabel.RIGHT), labelGbc);
-        parametersPanel.add(deviceInput, inputGbc);
+        gbc.gridy = 0;
+        gbc.gridx = 2;
+        parametersPanel.add(new JLabel("data File", JLabel.RIGHT), gbc);
+        gbc.gridx = 3;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        parametersPanel.add(dataFileInput, gbc);
+        gbc.gridx = 6;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.0;
+        parametersPanel.add(createNavigationButton("Create", "create.png", "Создаем по файлу", CommandType.create), gbc);
 
-        labelGbc.gridy++;
-        inputGbc.gridy++;
-        parametersPanel.add(new JLabel("address", JLabel.RIGHT), labelGbc);
-        parametersPanel.add(addressInput, inputGbc);
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        parametersPanel.add(new JLabel("device", JLabel.RIGHT), gbc);
+        gbc.gridx = 1;
+        parametersPanel.add(deviceInput, gbc);
+        gbc.gridx = 2;
+        parametersPanel.add(new JLabel("HEX File", JLabel.RIGHT), gbc);
+        gbc.gridx = 3;
+        gbc.gridwidth = 3;
+        gbc.weightx = 1.0;
+        parametersPanel.add(hexFileInput, gbc);
+        gbc.gridx = 6;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.0;
+        parametersPanel.add(createNavigationButton("Upload", "upload.png", "Запись блока", CommandType.upload), gbc);
 
-        labelGbc.gridy++;
-        inputGbc.gridy++;
-        parametersPanel.add(new JLabel("size", JLabel.RIGHT), labelGbc);
-        parametersPanel.add(sizeInput, inputGbc);
+        gbc.gridy = 2;
+        gbc.gridx = 2;
+        parametersPanel.add(new JLabel("address", JLabel.RIGHT), gbc);
+        gbc.gridx++;
+        parametersPanel.add(addressInput, gbc);
+        gbc.gridx++;
+        parametersPanel.add(new JLabel("size", JLabel.RIGHT), gbc);
+        gbc.gridx++;
+        parametersPanel.add(sizeInput, gbc);
+        gbc.gridx++;
+        parametersPanel.add(createNavigationButton("Read", "userGuide.png", "Чтение блока", CommandType.read), gbc);
 
-        controlPanel.add(parametersPanel, BorderLayout.WEST);
+        controlPanel.add(parametersPanel, BorderLayout.CENTER);
+
+        commandInput.addActionListener(enterOnInputAction);
+        controlPanel.add(commandInput, BorderLayout.SOUTH);
     }
 
     private JButton createNavigationButton(final String name, final String iconName, final String toolTip, final CommandType command) {
@@ -332,26 +353,20 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         @Override
         public void actionPerformed(final ActionEvent event) {
             checkPortReader();
-            final MemoryRoms memoryRoms = Runner.getMemoryRoms();
             switch (command) {
-                case test: {
-                    TestHelper.show(memoryRoms);
-                    break;
-                }
                 case create: {
                     try {
+                        final MemoryRoms memoryRoms = LoadHelper.load(dataFileInput.getFile());
+                        LoadHelper.createDump(memoryRoms);
                         CreateHelper.create(memoryRoms);
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         log.error(ex.getMessage(), ex);
                     }
                     break;
                 }
                 case upload: {
                     try {
-                        final Properties prop = Runner.getProperties();
-                        final File file = new File(FilenameUtils.removeExtension((new File(
-                            prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
-                        )).getPath()) + ".hex");
+                        final File file = hexFileInput.getFile();
                         UploadHelper.uploadFile(portReader, file);
                     } catch (InterruptedException | IOException ex) {
                         log.error(ex.getMessage(), ex);
