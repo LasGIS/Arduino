@@ -23,7 +23,7 @@ int getDefinitionSize(CharDefinition cdef) {
 LoadClass::LoadClass(int8_t device, int16_t address) {
   this->device = device;
   this->address = address;
-  refs = calloc(10, sizeof(void*));
+  refs = (void**) calloc(10, sizeof(void*));
   refMaxLength = 10;
   refLength = 0;
 }
@@ -38,7 +38,7 @@ LoadClass::~LoadClass() {
     Serial.print((int) ref, HEX);
     Serial.print(",");
 #endif
-    delete ref;
+    delete (uint8_t *) ref;
   }
 #ifdef HAS_SERIAL_DEBUG
   Serial.print((int) refs, HEX);
@@ -50,7 +50,7 @@ LoadClass::~LoadClass() {
 void * LoadClass::addRef(void * ref) {
   if (refLength + 1 >= refMaxLength) {
     refMaxLength += 10;
-    refs = realloc(refs, refMaxLength * sizeof(void*));
+    refs = (void**) realloc(refs, refMaxLength * sizeof(void*));
   }
   refs[refLength++] = ref;
 #ifdef HAS_SERIAL_DEBUG
@@ -153,7 +153,7 @@ int16_t LoadClass::toNext(CharDefinition cdef, int inc) {
  */
 int LoadClass::getRomLength(CharDefinition cdef) {
   int size = getDefinitionSize(cdef);
-  return size == -1 ? 2 : size;
+  return size == -1 ? (cdef == arrayDef ? 4 : 2) : size;
 }
 
 /**
@@ -193,6 +193,8 @@ void LoadClass::readRom(uint8_t * obj, int &pos, CharDefinition cdef) {
   case arrayDef: {
     int count;
     void * arrayVal = readArray(count);
+    memcpy(obj + pos, (const void*) &count, 2);
+    pos += 2;
     memcpy(obj + pos, (const void*) &arrayVal, 2);
     pos += 2;
   } break;
@@ -214,14 +216,20 @@ void LoadClass::readRom(uint8_t * obj, int &pos, CharDefinition cdef) {
  */
 int LoadClass::getObjectLength(char * definition){
 #ifdef HAS_SERIAL_DEBUG
+  Serial.print("getObjectLength definition(");
+  Serial.print(strlen(definition));
+  Serial.print(") = \"");
   Serial.print(definition);
-  Serial.print(" - ");
-  Serial.println(strlen(definition));
+  Serial.print("\"");
 #endif
   int len = 0;
-  for (int i = 0; i < strlen(definition); i++) {
-    len += getRomLength(definition[i]);
+  for (uint16_t i = 0; i < strlen(definition); i++) {
+    len += getRomLength((CharDefinition) definition[i]);
   }
+#ifdef HAS_SERIAL_DEBUG
+  Serial.print("; len = ");
+  Serial.println(len);
+#endif
   return len;
 }
 
@@ -231,11 +239,11 @@ int LoadClass::getObjectLength(char * definition){
  * @brief LoadClass::toObjectItem
  * @param item номер элемента
  */
-int16_t LoadClass::toObjectItem(int item) {
+int16_t LoadClass::toObjectItem(uint16_t item) {
   readInt(); // пропускаем размер своего блока
   char * definition = newString();
-  for (int i = 0; i + 1 < strlen(definition) && i < item; i++) {
-    toNext(definition[i], 1);
+  for (uint16_t i = 0; i + 1 < strlen(definition) && i < item; i++) {
+    toNext((CharDefinition) definition[i], 1);
   }
   delete definition;
   return address;
@@ -249,12 +257,12 @@ int16_t LoadClass::toObjectItem(int item) {
  */
 void * LoadClass::readObject(int &length){
   readInt(); // пропускаем размер своего блока
-  char * definition = newString();
+  char* definition = newString();
   int objectLength = getObjectLength(definition);
-  uint8_t * obj = addRef(new uint8_t[objectLength]);
+  uint8_t* obj = (uint8_t*) addRef(new uint8_t[objectLength]);
   length = 0;
-  for (int i = 0; i < strlen(definition); i++) {
-    readRom(obj, length, definition[i]);
+  for (uint16_t i = 0; i < strlen(definition); i++) {
+    readRom(obj, length, (CharDefinition) definition[i]);
   }
   delete definition;
   return obj;
@@ -268,7 +276,7 @@ void * LoadClass::readObject(int &length){
  */
 int16_t LoadClass::toArrayItem(int item) {
   readInt(); // пропускаем размер своего блока
-  char charDef = readByte();
+  CharDefinition charDef = (CharDefinition) readByte();
   int count = readInt() - 1;
   return toNext(charDef, item < count ? item : count);
 }
@@ -283,17 +291,17 @@ int16_t LoadClass::toArrayItem(int item) {
 void * LoadClass::readArray(int & count) {
 #ifdef HAS_SERIAL_DEBUG
   int len = readInt();
+  Serial.print("readArray len = ");
+  Serial.print(len);
 #else
   readInt(); // пропускаем размер своего блока
 #endif
-  CharDefinition cdef = readByte();
+  CharDefinition cdef = (CharDefinition) readByte();
   count = readInt();
   int size = getDefinitionSize(cdef);
 #ifdef HAS_SERIAL_DEBUG
-  Serial.print("readArray len = ");
-  Serial.print(len);
   Serial.print("; charDefinition = ");
-  Serial.print(cdef);
+  Serial.print((char) cdef);
   Serial.print("; definitionSize = ");
   Serial.print(size);
   Serial.print("; address = ");
@@ -301,10 +309,21 @@ void * LoadClass::readArray(int & count) {
 #endif
   if (size == -1) {
     /** объекты */
-    void * arr = addRef(new uint8_t[count * 2]);
+    size = (cdef == arrayDef) ? 4 : 2;
+#ifdef HAS_SERIAL_DEBUG
+    Serial.print("new uint8_t[");
+    Serial.print(count * size);
+    Serial.print("]");
+#endif
+    void * arr = addRef(new uint8_t[count * size]);
     int pos = 0;
     for (int i = 0; i < count; i++) {
-      readRom(arr, pos, cdef);
+#ifdef HAS_SERIAL_DEBUG
+      Serial.print(i);
+      Serial.print(" |-> address = ");
+      Serial.println(address, HEX);
+#endif
+      readRom((uint8_t*) arr, pos, cdef);
     }
     return arr;
   } else if (size > 0) {
@@ -312,6 +331,7 @@ void * LoadClass::readArray(int & count) {
     int arrayLength = count * size;
     void * arr = addRef(new uint8_t[arrayLength]);
     I2CEEPROM.read_buffer(device, address, (uint8_t*) arr, arrayLength);
+    address += arrayLength;
     return arr;
   }
   return NULL;

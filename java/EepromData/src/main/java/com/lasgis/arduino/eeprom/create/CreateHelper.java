@@ -1,5 +1,5 @@
 /*
- *  @(#)CreateHelper.java  last: 17.02.2023
+ *  @(#)CreateHelper.java  last: 06.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
-
 /**
  * <pre>
  * создание файлов:
@@ -51,16 +49,16 @@ public class CreateHelper {
 
     private final static int HEX_SIZE_STR_LEN = 16;
 
-    public static void create(final MemoryRoms memoryRoms) throws IOException {
-        helper.createHexDumpFile(memoryRoms);
+    public static void create(final String patch, final MemoryRoms memoryRoms) throws IOException {
+        helper.createHexDumpFile(patch, memoryRoms);
         romNameList.clear();
-        helper.createDefinitionFile(memoryRoms);
+        helper.createDefinitionFile(patch, memoryRoms);
     }
 
-    private void createDefinitionFile(final MemoryRoms memoryRoms) throws IOException {
+    private void createDefinitionFile(final String patch, final MemoryRoms memoryRoms) throws IOException {
         final String headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
         final Properties props = Runner.getProperties();
-        final String fileName = FilenameUtils.removeExtension((new File(props.getProperty(PROP_PATCH), headerFilename)).getPath()) + ".h";
+        final String fileName = FilenameUtils.removeExtension((new File(patch, headerFilename)).getPath()) + ".h";
 
         log.info("Definition File = \"{}\"", fileName);
         try (final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("windows-1251"))) {
@@ -99,10 +97,10 @@ public class CreateHelper {
         }
     }
 
-    private void createHexDumpFile(final MemoryRoms memoryRoms) throws IOException {
+    private void createHexDumpFile(final String patch, final MemoryRoms memoryRoms) throws IOException {
         final String headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
         final Properties props = Runner.getProperties();
-        final String fileName = Path.of(props.getProperty(PROP_PATCH), headerFilename + ".hex").toString();
+        final String fileName = Path.of(patch, headerFilename + ".hex").toString();
         try (final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("windows-1251"))) {
             for (BatchMemory batchMemory : memoryRoms.getList()) {
                 final byte[] dump = batchMemory.getDump();

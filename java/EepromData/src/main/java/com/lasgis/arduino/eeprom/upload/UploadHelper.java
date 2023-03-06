@@ -1,5 +1,5 @@
 /*
- *  @(#)UploadHelper.java  last: 18.02.2023
+ *  @(#)UploadHelper.java  last: 06.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -196,13 +196,9 @@ public class UploadHelper implements PortReaderListener {
     }
 
     public static void read() throws InterruptedException {
-        final Properties prop = Runner.getProperties();
-//        final String fileName = FilenameUtils.removeExtension((new File(
-//            prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)
-//        )).getPath()) + ".hex";
-
-        final String portName = prop.getProperty(PROP_PORT_NAME);
-        final int baudRate = parseHexInt(prop.getProperty(PROP_BAUD_RATE));
+        final Properties props = Runner.getProperties();
+        final String portName = props.getProperty(PROP_PORT_NAME);
+        final int baudRate = parseHexInt(props.getProperty(PROP_BAUD_RATE));
 
         final UploadHelper helper = new UploadHelper(PortReader.createPortReader(portName, baudRate));
 

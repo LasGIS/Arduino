@@ -37,7 +37,7 @@ void I2C_EEPROM::write(uint8_t device, uint16_t address, uint8_t data) {
 // also, data can be maximum of about 30 bytes, because the Wire library has a buffer of 32 bytes
 void I2C_EEPROM::write_buffer(uint8_t device, uint16_t address, uint8_t* data, uint16_t length) {
   if (device == EEPROM_DEVICE) {
-    for(int i = 0; i < length; i++) {
+    for(uint16_t i = 0; i < length; i++) {
       EEPROM.write(address + i, data[i]);
     }
     return;
@@ -65,7 +65,7 @@ void I2C_EEPROM::write_buffer(uint8_t device, uint16_t address, uint8_t* data, u
 // maybe let's not read more than 30 or 32 bytes at a time!
 void I2C_EEPROM::read_buffer(uint8_t device, uint16_t address, uint8_t* data, uint16_t length) {
   if (device == EEPROM_DEVICE) {
-    for(int i = 0; i < length; i++) {
+    for(uint16_t i = 0; i < length; i++) {
       data[i] = EEPROM.read(address + i);
     }
     return;

@@ -1,5 +1,5 @@
 /*
- *  @(#)MainFrame.java  last: 18.02.2023
+ *  @(#)MainFrame.java  last: 06.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -175,8 +175,8 @@ public class MainFrame extends JFrame implements ComponentListener {
     }
 
     public void jMenuCreateHexDefinitionAction(final ActionEvent event) {
-        final Properties prop = Runner.getProperties();
-        final JFileChooser chooser = new JFileChooser(prop.getProperty(PROP_PATCH));
+        final Properties props = Runner.getProperties();
+        final JFileChooser chooser = new JFileChooser(props.getProperty(PROP_PATCH));
         final FileNameExtensionFilter filter = new FileNameExtensionFilter(
             "Файл настройки EEPROM или AT24C памяти", "xml", "data");
         chooser.setFileFilter(filter);
@@ -187,8 +187,8 @@ public class MainFrame extends JFrame implements ComponentListener {
     }
 
     public void jMenuUploadFileAction(final ActionEvent event) {
-        final Properties prop = Runner.getProperties();
-        final JFileChooser chooser = new JFileChooser(prop.getProperty(PROP_PATCH));
+        final Properties props = Runner.getProperties();
+        final JFileChooser chooser = new JFileChooser(props.getProperty(PROP_PATCH));
         final FileNameExtensionFilter filter = new FileNameExtensionFilter(
             "Дамп загрузки в Arduino", "hex");
         chooser.setFileFilter(filter);

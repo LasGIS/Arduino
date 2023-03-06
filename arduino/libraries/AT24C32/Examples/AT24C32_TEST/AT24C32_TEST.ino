@@ -14,6 +14,7 @@ extern void testArrayObject();
 extern void testArrayObjectToItem();
 extern void testJingleBells();
 extern void testJingleBellsToItem();
+extern void testLoadMusics();
 
 void setup() {
   Wire.begin(); // initialise the connection
@@ -37,48 +38,59 @@ void serialEvent() {
       int8_t bt = serialReadByte();
       if (bt == 'W') {
         serialWriteBlock();
-      } else
-        if (bt == 'R') {
-          serialReadBlock();
-        }
+      } else if (bt == 'R') {
+        serialReadBlock();
+      }
     } else {
       switch (key) {
-      case '1':
-        testAT24C32();
-        break;
-      case '2':
-        testString();
-        break;
-      case '3':{
-        if (serialReadByte() == 0x31) {
-          testObjectToItem();
-        } else {
-          testObject();
-        }
-      } break;
-      case '4': {
-        if (serialReadByte() == 0x31) {
-          testArrayToItem();
-        } else {
-          testArray();
-        }
-      } break;
-      case '5': {
-        if (serialReadByte() == 0x31) {
-          testArrayObjectToItem();
-        } else {
-          testArrayObject();
-        }
-      } break;
-      case '6': {
-        if (serialReadByte() == 0x31) {
-          testJingleBellsToItem();
-        } else {
-          testJingleBells();
-        }
-      } break;
-      default:
-        break;
+        case '1':
+          testAT24C32();
+          break;
+        case '2':
+          testString();
+          break;
+        case '3':
+          {
+            if (serialReadByte() == 0x31) {
+              testObjectToItem();
+            } else {
+              testObject();
+            }
+          }
+          break;
+        case '4':
+          {
+            if (serialReadByte() == 0x31) {
+              testArrayToItem();
+            } else {
+              testArray();
+            }
+          }
+          break;
+        case '5':
+          {
+            if (serialReadByte() == 0x31) {
+              testArrayObjectToItem();
+            } else {
+              testArrayObject();
+            }
+          }
+          break;
+        case '6':
+          {
+            if (serialReadByte() == 0x31) {
+              testJingleBellsToItem();
+            } else {
+              testJingleBells();
+            }
+          }
+          break;
+        case '7':
+          testLoadMusics();
+          break;
+
+        default:
+          break;
       }
     }
   }
@@ -88,7 +100,7 @@ void clearEEPROM() {
   Serial.println("Clear EEPROM:");
   uint8_t buffer[0x100];
   for (int16_t i = 0; i < 0x100; i++) {
-    buffer[i]=0;
+    buffer[i] = 0;
   }
   for (int16_t a = 0x00; a < 0x1000; a += 0x100) {
     I2CEEPROM.write_buffer(DEVICE, a, buffer, 0x100);

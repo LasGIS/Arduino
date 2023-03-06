@@ -28,7 +28,7 @@ void SerialPrintHex(uint8_t * obj, int len) {
 }
 
 /** Читаем один байт из Serial */
-int8_t serialReadByte() {
+uint8_t serialReadByte() {
   uint8_t bt;
   return (Serial.readBytes(&bt, 1) == 1) ? bt : -1;
 }
@@ -36,7 +36,7 @@ int8_t serialReadByte() {
 /**
  * Читаем один short (2 байта) из Serial
  */
-int16_t serialReadShort() {
+uint16_t serialReadShort() {
   uint8_t bt[2];
   if (Serial.readBytes(bt, 2) == 2) {
     return makeWord(bt[1], bt[0]);
@@ -72,7 +72,7 @@ void serialWriteBlock() {
 #endif
   if (len == 7) {
     if (sb->size > 0 && sb->size < 22) {
-      sb->body = new byte[sb->size];
+      sb->body = new uint8_t[sb->size];
       len = Serial.readBytes((uint8_t *) sb->body, sb->size);
       if (len == sb->size) {
         // обязательный ответ
@@ -113,8 +113,8 @@ void serialWriteBlock() {
  */
 void serialReadBlock() {
   SerialBlock * sb = new SerialBlock();
-  size_t size = Serial.readBytes((uint8_t *) sb, 7);
 #ifdef HAS_SERIAL
+  size_t size = Serial.readBytes((uint8_t *) sb, 7);
   Serial.print("device = ");
   Serial.print(sb->device, HEX);
   Serial.print("; address = ");
@@ -123,6 +123,8 @@ void serialReadBlock() {
   Serial.println(sb->size);
   Serial.print("; cs = ");
   Serial.println(sb->cs);
+#else
+  Serial.readBytes((uint8_t *) sb, 7);
 #endif
   uint8_t buf[32];
   uint16_t len;

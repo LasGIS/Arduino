@@ -20,6 +20,7 @@ import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.serial.SerialPortWrap;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -35,6 +36,7 @@ import javax.swing.text.DefaultCaret;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -44,6 +46,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,6 +60,7 @@ import static com.lasgis.util.Util.createImageButton;
 import static java.awt.GridBagConstraints.BOTH;
 import static java.awt.GridBagConstraints.CENTER;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Панель конфигурации.
@@ -91,9 +95,9 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     /** поле для ввода номера микросхемы (0x57 для CMOS). */
     private final JComboBox<DeviceWrap> deviceInput = new JComboBox<>(DEVICE_WRAPS);
     /** поле для ввода адреса блока в EEPROM памяти. */
-    private final JTextField addressInput = new JTextField(4);
+    private final JTextField addressInput = new JTextField(8);
     /** поле для ввода размера блока. */
-    private final JTextField sizeInput = new JTextField(4);
+    private final JTextField sizeInput = new JTextField(8);
     /** ComboBox for baud rates. */
     private final JComboBox<Integer> baudRatesComboBox = new JComboBox<>(BAUD_RATES);
     /** Button Link */
@@ -145,15 +149,29 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
      */
     public ConfigPanel() {
         super();
-        final Properties prop = Runner.getProperties();
+        final Properties props = Runner.getProperties();
         dataFileInput = new JFileChooserField(
-            new File(prop.getProperty(PROP_PATCH), prop.getProperty(PROP_DATA_FILE)).getPath(),
+            new File(props.getProperty(PROP_PATCH), props.getProperty(PROP_DATA_FILE)).getPath(),
             new FileNameExtensionFilter("Файл настройки EEPROM или AT24C памяти", "xml", "data")
         );
+        String headerFilename = null;
+        try {
+            final MemoryRoms memoryRoms = LoadHelper.load();
+            headerFilename = FilenameUtils.removeExtension(memoryRoms.getHeaderFilename());
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+        }
         hexFileInput = new JFileChooserField(
-            prop.getProperty(PROP_PATCH),
+            nonNull(headerFilename) ? Path.of(props.getProperty(PROP_PATCH), headerFilename + ".hex").toString() : props.getProperty(PROP_PATCH),
             new FileNameExtensionFilter("Дамп загрузки в Arduino", "hex")
         );
+        final Dimension dimension = new Dimension(70, 20);
+        deviceInput.setMinimumSize(dimension);
+        deviceInput.setPreferredSize(dimension);
+        addressInput.setMinimumSize(dimension);
+        addressInput.setMaximumSize(dimension);
+        sizeInput.setMinimumSize(dimension);
+        sizeInput.setMaximumSize(dimension);
 
         controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
         fillLinkPanel();
@@ -246,43 +264,47 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             CENTER, BOTH, new Insets(5, 5, 5, 5), 0, 0);
 
         gbc.gridy = 0;
-        gbc.gridx = 2;
+        gbc.gridx = 0;
         parametersPanel.add(new JLabel("data File", JLabel.RIGHT), gbc);
-        gbc.gridx = 3;
-        gbc.gridwidth = 3;
+        gbc.gridx = 1;
+        gbc.gridwidth = 6;
         gbc.weightx = 1.0;
         parametersPanel.add(dataFileInput, gbc);
-        gbc.gridx = 6;
+        gbc.gridx = 7;
         gbc.gridwidth = 1;
         gbc.weightx = 0.0;
         parametersPanel.add(createNavigationButton("Create", "create.png", "Создаем по файлу", CommandType.create), gbc);
 
         gbc.gridy = 1;
         gbc.gridx = 0;
-        parametersPanel.add(new JLabel("device", JLabel.RIGHT), gbc);
-        gbc.gridx = 1;
-        parametersPanel.add(deviceInput, gbc);
-        gbc.gridx = 2;
         parametersPanel.add(new JLabel("HEX File", JLabel.RIGHT), gbc);
-        gbc.gridx = 3;
-        gbc.gridwidth = 3;
+        gbc.gridx = 1;
+        gbc.gridwidth = 6;
         gbc.weightx = 1.0;
         parametersPanel.add(hexFileInput, gbc);
-        gbc.gridx = 6;
+        gbc.gridx = 7;
         gbc.gridwidth = 1;
         gbc.weightx = 0.0;
         parametersPanel.add(createNavigationButton("Upload", "upload.png", "Запись блока", CommandType.upload), gbc);
 
         gbc.gridy = 2;
+        gbc.gridx = 0;
+        parametersPanel.add(new JLabel("device", JLabel.RIGHT), gbc);
+        gbc.gridx = 1;
+        parametersPanel.add(deviceInput, gbc);
         gbc.gridx = 2;
         parametersPanel.add(new JLabel("address", JLabel.RIGHT), gbc);
-        gbc.gridx++;
+        gbc.gridx = 3;
+//        gbc.weightx = 0.1;
         parametersPanel.add(addressInput, gbc);
-        gbc.gridx++;
+        gbc.gridx = 4;
+//        gbc.weightx = 0.0;
         parametersPanel.add(new JLabel("size", JLabel.RIGHT), gbc);
-        gbc.gridx++;
+        gbc.gridx = 5;
+//        gbc.weightx = 0.1;
         parametersPanel.add(sizeInput, gbc);
-        gbc.gridx++;
+        gbc.gridx = 7;
+//        gbc.weightx = 0.0;
         parametersPanel.add(createNavigationButton("Read", "userGuide.png", "Чтение блока", CommandType.read), gbc);
 
         controlPanel.add(parametersPanel, BorderLayout.CENTER);
@@ -326,7 +348,8 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         try {
             final MemoryRoms memoryRoms = LoadHelper.load(file);
             LoadHelper.createDump(memoryRoms);
-            CreateHelper.create(memoryRoms);
+            final String path = file.getParent();
+            CreateHelper.create(nonNull(path) ? path : "", memoryRoms);
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
         }
@@ -356,9 +379,11 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
             switch (command) {
                 case create: {
                     try {
-                        final MemoryRoms memoryRoms = LoadHelper.load(dataFileInput.getFile());
+                        final File file = dataFileInput.getFile();
+                        final MemoryRoms memoryRoms = LoadHelper.load(file);
                         LoadHelper.createDump(memoryRoms);
-                        CreateHelper.create(memoryRoms);
+                        final String path = file.getParent();
+                        CreateHelper.create(nonNull(path) ? path : "", memoryRoms);
                     } catch (Exception ex) {
                         log.error(ex.getMessage(), ex);
                     }

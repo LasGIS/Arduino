@@ -45,7 +45,7 @@ public:
   inline char * readString(){ return readString(true); }
   inline char * newString() { return readString(false); }
 
-  int16_t toObjectItem(int item);
+  int16_t toObjectItem(uint16_t item);
   inline int16_t toObjectItem(int16_t _address, int item) { address = _address; return toObjectItem(item); }
   void * readObject(int & length);
 

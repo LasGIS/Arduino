@@ -69,7 +69,7 @@ void ScreenTimer::save() {
 void ScreenTimer::start() {
   // поправл€ем смещение от ориентации
   int8_t addx = isHorisontalOrientation() ? 2 : 1;
-  for (int8_t i = 0; i <= maxFields; i++) {
+  for (int8_t i = 0; i < fieldsLength; i++) {
     fields[i].col = i * 3 + addx;
   }
   // вычисл€ем врем€ „

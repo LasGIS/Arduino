@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)Memory.xml  last: 02.03.2023
+  ~  @(#)Memory.xml  last: 06.03.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -36,7 +36,6 @@
     ScreenDateTime::ScreenDateTime(): ScreenTft()
     <OBJECT name="ScreenDateTime">
       <STRING val="Время "/>
-      <INT8 name="maxFields" val="6"/>
       <ARRAY name="fields">
         fields[0] = {4, 3, 2, 2, 1, 31, 1, NULL}; // день месяца
         <OBJECT name="dayOfMonth">
@@ -120,7 +119,6 @@
     ScreenTimer::ScreenTimer(): ScreenTft()
     <OBJECT name="ScreenTimer">
       <STRING name="name" val="Timer "/>
-      <INT8 name="maxFields" val="2"/>
       <ARRAY name="fields">
         fields[0] = {1, 2, 3, 2, 0, 23, 0, NULL}; // час
         <OBJECT name="hour" struct="FieldTft">
@@ -160,7 +158,6 @@
     ScreenDump::ScreenDump(): ScreenTft()
     <OBJECT name="ScreenDump">
       <STRING name="name" val="Dump "/>
-      <INT8 name="maxFields" val="1"/>
       <ARRAY name="fields">
         fields[0] = {2, 1, 2, 3, 0, 255, 0, NULL}; // device
         <OBJECT name="device">

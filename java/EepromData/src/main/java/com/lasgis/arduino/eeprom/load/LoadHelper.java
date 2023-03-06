@@ -1,5 +1,5 @@
 /*
- *  @(#)LoadHelper.java  last: 18.02.2023
+ *  @(#)LoadHelper.java  last: 06.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -42,10 +42,10 @@ public class LoadHelper {
      * @throws Exception on ...
      */
     public static MemoryRoms load() throws Exception {
-        final Properties prop = Runner.getProperties();
+        final Properties props = Runner.getProperties();
         return load(new File(
-            prop.getProperty(PROP_PATCH),
-            prop.getProperty(PROP_DATA_FILE)
+            props.getProperty(PROP_PATCH),
+            props.getProperty(PROP_DATA_FILE)
         ));
     }
 

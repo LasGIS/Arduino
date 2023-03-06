@@ -47,7 +47,7 @@ public:
 
 struct ScreenTftStruct {
   char* name;
-  uint8_t maxFields;
+  int16_t fieldsLength;
   FieldTftStruct** fields;
 };
 
@@ -55,9 +55,9 @@ class ScreenTft {
 public:
   // --- данные ---
   char* name;
-  uint8_t maxFields;
   uint8_t nField;
   int8_t nPosit;
+  int16_t fieldsLength;
   FieldTft* fields;
   // --- методы ---
   ScreenTft();

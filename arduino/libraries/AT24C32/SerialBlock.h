@@ -15,11 +15,11 @@ public:
   /* адрес блока в EEPROM памяти */
   int16_t address;
   /* Размер блока */
-  int16_t size;
-  /* Контрольная сумма блока */
+  uint16_t size;
+  /* Контрольная сумма блока todo: remove */
   int16_t cs;
   /* тело блока */
-  int8_t * body;
+  uint8_t * body;
 };
 
 /** Печатаем ровно 2 символа для байта в HEX  */
@@ -27,9 +27,9 @@ extern void SerialPrintHex(uint8_t bt);
 /** Печатаем ровно все символы в объекте как байты в HEX  */
 extern void SerialPrintHex(uint8_t * obj, int len);
 /** Читаем один байт из Serial */
-extern int8_t serialReadByte();
+extern uint8_t serialReadByte();
 /** Читаем один short (2 байта) из Serial */
-extern int16_t serialReadShort();
+extern uint16_t serialReadShort();
 /** Читаем один блок данных и пишем его в EEPROM */
 extern void serialWriteBlock();
 /** Читаем один блок данных из EEPROM и посылаем его в Serial */

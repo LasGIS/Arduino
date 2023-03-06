@@ -100,12 +100,12 @@ ScreenTft::ScreenTft(int16_t address) {
   Serial.println();
   Serial.print("name:");
   Serial.println(screenTft->name);
-  Serial.print("maxFields:");
-  Serial.println(screenTft->maxFields);
+  Serial.print("fieldsLength:");
+  Serial.println(screenTft->fieldsLength);
   Serial.print("fields(");
-  SerialPrintHex((uint8_t *)screenTft->fields, (screenTft->maxFields + 1) * 2);
+  SerialPrintHex((uint8_t *)screenTft->fields, screenTft->fieldsLength * 2);
   Serial.println("): [");
-  for (int i = 0; i <= screenTft->maxFields; i++) {
+  for (int i = 0; i < screenTft->fieldsLength; i++) {
     SerialPrintHex((uint8_t *)(screenTft->fields[i]), 2);
     Serial.print("  { row: ");
     Serial.print(screenTft->fields[i]->row);
@@ -128,9 +128,9 @@ ScreenTft::ScreenTft(int16_t address) {
   name = screenTft->name;
   nField = 0;
   nPosit = 0;
-  maxFields = screenTft->maxFields;
-  fields = new FieldTft[maxFields + 1];
-  for (int i = 0; i <= screenTft->maxFields; i++) {
+  fieldsLength = screenTft->fieldsLength;
+  fields = new FieldTft[fieldsLength];
+  for (int i = 0; i < screenTft->fieldsLength; i++) {
     fields[i].row = screenTft->fields[i]->row;
     fields[i].col = screenTft->fields[i]->col;
     fields[i].fontSize = screenTft->fields[i]->fontSize;
@@ -219,7 +219,7 @@ void ScreenTft::edit(char key) {
     case '>':
       nPosit++;
       if (nPosit >= fields[nField].len) {
-        if (nField < maxFields) {
+        if (nField < fieldsLength - 1) {
           nField++;
           nPosit = 0;
         } else {
@@ -257,7 +257,7 @@ void ScreenTft::showCurrentField() {
 
 /** показать все поля */
 void ScreenTft::showAllFields() {
-  for (uint8_t i = 0; i <= maxFields; i++) {
+  for (uint8_t i = 0; i < fieldsLength; i++) {
     fields[i].showField();
   }
 }

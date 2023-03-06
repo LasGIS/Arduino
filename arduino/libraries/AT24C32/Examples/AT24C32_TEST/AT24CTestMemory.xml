@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)AT24CTestMemory.xml  last: 28.02.2023
+  ~  @(#)AT24CTestMemory.xml  last: 06.03.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -80,5 +80,6 @@
       ]]></DUMP>
       </OBJECT>
     </ARRAY>
+    <INT8 val="-1" name="EndOfBlock"/>
   </BatchMemory>
 </Memory>

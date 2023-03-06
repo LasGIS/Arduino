@@ -26,3 +26,4 @@
 #define AT24C_music_1_TwoFunnyGeese 0x089c
 #define AT24C_music_1_TwoFunnyGeese_name 0x08a2
 #define AT24C_music_1_TwoFunnyGeese_music 0x08b8
+#define AT24C_EndOfBlock 0x08e5

@@ -93,7 +93,7 @@ void printShortDate(DateTime * dateTime) {
     toTwoChar(month, bufDate, 3);
     toTwoChar(year, bufDate, 8);
 #ifdef HAS_SERIAL
-    Serial.println(buf);
+    Serial.println(bufDate);
 #endif
     printText(0, 0, 1, bufDate, COLOR_WHITE);
     dayLast   = day;
