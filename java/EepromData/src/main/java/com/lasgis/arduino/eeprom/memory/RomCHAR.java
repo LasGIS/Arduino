@@ -1,5 +1,5 @@
 /*
- *  @(#)RomCHAR.java  last: 08.02.2023
+ *  @(#)RomCHAR.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -26,17 +26,17 @@ public class RomCHAR extends RomData {
 
     private char val;
 
-    private RomCHAR(final String name, final char val) {
-        super(name);
+    private RomCHAR(final String name, final String refId, final char val) {
+        super(name, refId);
         this.val = val;
     }
 
     public static RomCHAR of(final char val) {
-        return new RomCHAR(null, val);
+        return new RomCHAR(null, null, val);
     }
 
-    public static RomCHAR of(final String name, final char val) {
-        return new RomCHAR(name, val);
+    public static RomCHAR of(final String name, final String refId, final char val) {
+        return new RomCHAR(name, refId, val);
     }
 
     @Override

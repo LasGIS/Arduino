@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoaderTest.java  last: 17.02.2023
+ *  @(#)DataXmlLoaderTest.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -55,7 +55,7 @@ class DataXmlLoaderTest {
                     final byte[] dump = batchMemory.getDump();
                     final List<RomData> romDataList = batchMemory.getRomDataList();
                     Assertions.assertNotNull(romDataList);
-                    Assertions.assertEquals(10, romDataList.size());
+                    Assertions.assertEquals(12, romDataList.size());
                     Assertions.assertNotNull(dump);
                     Assertions.assertEquals(485, dump.length);
                 }

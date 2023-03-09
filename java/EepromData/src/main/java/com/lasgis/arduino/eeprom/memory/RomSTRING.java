@@ -1,5 +1,5 @@
 /*
- *  @(#)RomSTRING.java  last: 08.02.2023
+ *  @(#)RomSTRING.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -26,17 +26,17 @@ public class RomSTRING extends RomData {
 
     private String val;
 
-    private RomSTRING(final String name, final String val) {
-        super(name);
+    private RomSTRING(final String name, final String refId, final String val) {
+        super(name, refId);
         this.val = val;
     }
 
     public static RomSTRING of(final String val) {
-        return new RomSTRING(null, val);
+        return new RomSTRING(null, null, val);
     }
 
-    public static RomSTRING of(final String name, final String val) {
-        return new RomSTRING(name, val);
+    public static RomSTRING of(final String name, final String refId, final String val) {
+        return new RomSTRING(name, refId, val);
     }
 
     @Override

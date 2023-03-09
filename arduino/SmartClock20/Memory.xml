@@ -1,192 +1,192 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)Memory.xml  last: 06.03.2023
+  ~  @(#)Memory.xml  last: 09.03.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
   ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
-<Memory headerFilename="Memory"
+<memory headerFilename="Memory"
         xmlns="http://www.lasgis.com/arduino/schema/rom"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">
-  <BatchMemory prefix="EEPROM" device="0x00">
-    <FLOAT name="factorBattery" val="0.00661"/>
-    <FLOAT name="factorCharger" val="0.00654"/>
-  </BatchMemory>
-  <BatchMemory prefix="AT24C" device="0x57">
-    <ARRAY name="DayOfWeekVertical">
-      <STRING val="Воскресен"/>
-      <STRING val="Понедельн"/>
-      <STRING val="Вторник  "/>
-      <STRING val="Среда    "/>
-      <STRING val="Четверг  "/>
-      <STRING val="Пятница  "/>
-      <STRING val="Суббота  "/>
-    </ARRAY>
-    <ARRAY name="DayOfWeekHorizontal">
-      <STRING val="Воскресенье"/>
-      <STRING val="Понедельник"/>
-      <STRING val="Вторник    "/>
-      <STRING val="Среда      "/>
-      <STRING val="Четверг    "/>
-      <STRING val="Пятница    "/>
-      <STRING val="Суббота    "/>
-    </ARRAY>
+  <batchMemory prefix="EEPROM" device="0x00">
+    <float name="factorBattery" val="0.00661"/>
+    <float name="factorCharger" val="0.00654"/>
+  </batchMemory>
+  <batchMemory prefix="AT24C" device="0x57">
+    <array name="DayOfWeekVertical">
+      <string val="Воскресен"/>
+      <string val="Понедельн"/>
+      <string val="Вторник  "/>
+      <string val="Среда    "/>
+      <string val="Четверг  "/>
+      <string val="Пятница  "/>
+      <string val="Суббота  "/>
+    </array>
+    <array name="DayOfWeekHorizontal">
+      <string val="Воскресенье"/>
+      <string val="Понедельник"/>
+      <string val="Вторник    "/>
+      <string val="Среда      "/>
+      <string val="Четверг    "/>
+      <string val="Пятница    "/>
+      <string val="Суббота    "/>
+    </array>
     ScreenDateTime::ScreenDateTime(): ScreenTft()
-    <OBJECT name="ScreenDateTime">
-      <STRING val="Время "/>
-      <ARRAY name="fields">
+    <object name="ScreenDateTime">
+      <string val="Время "/>
+      <array name="fields">
         fields[0] = {4, 3, 2, 2, 1, 31, 1, NULL}; // день месяца
-        <OBJECT name="dayOfMonth">
-          <INT8 val="4"/>
-          <INT8 val="3"/>
-          <INT8 val="2"/>
-          <INT8 val="2"/>
-          <INT16 val="1"/>
-          <INT16 val="31"/>
-          <INT16 val="1"/>
-          <INT16 val="0"/>
-        </OBJECT>
+        <object name="dayOfMonth">
+          <int8 val="4"/>
+          <int8 val="3"/>
+          <int8 val="2"/>
+          <int8 val="2"/>
+          <int16 val="1"/>
+          <int16 val="31"/>
+          <int16 val="1"/>
+          <int16 val="0"/>
+        </object>
         fields[1] = {4, 6, 2, 2, 1, 12, 1, NULL}; // месяц
-        <OBJECT name="month">
-          <INT8 val="4"/>
-          <INT8 val="6"/>
-          <INT8 val="2"/>
-          <INT8 val="2"/>
-          <INT16 val="1"/>
-          <INT16 val="12"/>
-          <INT16 val="1"/>
-          <INT16 val="0"/>
-        </OBJECT>
+        <object name="month">
+          <int8 val="4"/>
+          <int8 val="6"/>
+          <int8 val="2"/>
+          <int8 val="2"/>
+          <int16 val="1"/>
+          <int16 val="12"/>
+          <int16 val="1"/>
+          <int16 val="0"/>
+        </object>
         fields[2] = {4, 9, 2, 4, 1, 9999, 2023, NULL}; // год
-        <OBJECT name="year">
-          <INT8 val="4"/>
-          <INT8 val="9"/>
-          <INT8 val="2"/>
-          <INT8 val="4"/>
-          <INT16 val="1"/>
-          <INT16 val="9999"/>
-          <INT16 val="2015"/>
-          <INT16 val="0"/>
-        </OBJECT>
+        <object name="year">
+          <int8 val="4"/>
+          <int8 val="9"/>
+          <int8 val="2"/>
+          <int8 val="4"/>
+          <int16 val="1"/>
+          <int16 val="9999"/>
+          <int16 val="2015"/>
+          <int16 val="0"/>
+        </object>
         fields[3] = {5, 3, 2, 2, 0, 23, 0, NULL}; // час
-        <OBJECT name="hour">
-          <INT8 val="5"/>
-          <INT8 val="3"/>
-          <INT8 val="2"/>
-          <INT8 val="2"/>
-          <INT16 val="0"/>
-          <INT16 val="23"/>
-          <INT16 val="0"/>
-          <INT16 val="0"/>
-        </OBJECT>
+        <object name="hour">
+          <int8 val="5"/>
+          <int8 val="3"/>
+          <int8 val="2"/>
+          <int8 val="2"/>
+          <int16 val="0"/>
+          <int16 val="23"/>
+          <int16 val="0"/>
+          <int16 val="0"/>
+        </object>
         fields[4] = {5, 6, 2, 2, 0, 59, 0, NULL}; // минута
-        <OBJECT name="minute">
-          <INT8 val="5"/>
-          <INT8 val="6"/>
-          <INT8 val="2"/>
-          <INT8 val="2"/>
-          <INT16 val="0"/>
-          <INT16 val="59"/>
-          <INT16 val="0"/>
-          <INT16 val="0"/>
-        </OBJECT>
+        <object name="minute">
+          <int8 val="5"/>
+          <int8 val="6"/>
+          <int8 val="2"/>
+          <int8 val="2"/>
+          <int16 val="0"/>
+          <int16 val="59"/>
+          <int16 val="0"/>
+          <int16 val="0"/>
+        </object>
         fields[5] = {5, 9, 2, 2, 0, 59, 0, NULL}; // секунда
-        <OBJECT name="second">
-          <INT8 val="5"/>
-          <INT8 val="9"/>
-          <INT8 val="2"/>
-          <INT8 val="2"/>
-          <INT16 val="0"/>
-          <INT16 val="59"/>
-          <INT16 val="0"/>
-          <INT16 val="0"/>
-        </OBJECT>
+        <object name="second">
+          <int8 val="5"/>
+          <int8 val="9"/>
+          <int8 val="2"/>
+          <int8 val="2"/>
+          <int16 val="0"/>
+          <int16 val="59"/>
+          <int16 val="0"/>
+          <int16 val="0"/>
+        </object>
         fields[6] = {6, 3, 2, 1, 1, 7, 1, NULL}; // день недели (Понедельник...)
-        <OBJECT name="dayOfWeek">
-          <INT8 val="6"/>
-          <INT8 val="3"/>
-          <INT8 val="2"/>
-          <INT8 val="1"/>
-          <INT16 val="1"/>
-          <INT16 val="7"/>
-          <INT16 val="1"/>
-          <INT16 val="0"/>
-        </OBJECT>
-      </ARRAY>
-    </OBJECT>
+        <object name="dayOfWeek">
+          <int8 val="6"/>
+          <int8 val="3"/>
+          <int8 val="2"/>
+          <int8 val="1"/>
+          <int16 val="1"/>
+          <int16 val="7"/>
+          <int16 val="1"/>
+          <int16 val="0"/>
+        </object>
+      </array>
+    </object>
     ScreenTimer::ScreenTimer(): ScreenTft()
-    <OBJECT name="ScreenTimer">
-      <STRING name="name" val="Timer "/>
-      <ARRAY name="fields">
+    <object name="ScreenTimer">
+      <string name="name" val="Timer "/>
+      <array name="fields">
         fields[0] = {1, 2, 3, 2, 0, 23, 0, NULL}; // час
-        <OBJECT name="hour" struct="FieldTft">
-          <INT8 struct="row" val="1"/>
-          <INT8 struct="col" val="2"/>
-          <INT8 struct="fontSize" val="3"/>
-          <INT8 struct="len" val="2"/>
-          <INT16 struct="minVal" val="0"/>
-          <INT16 struct="maxVal" val="23"/>
-          <INT16 struct="val" val="0"/>
-          <INT16 struct="const char* (*getValue) (const uint16_t val)" val="0"/>
-        </OBJECT>
+        <object name="hour" struct="FieldTft">
+          <int8 struct="row" val="1"/>
+          <int8 struct="col" val="2"/>
+          <int8 struct="fontSize" val="3"/>
+          <int8 struct="len" val="2"/>
+          <int16 struct="minVal" val="0"/>
+          <int16 struct="maxVal" val="23"/>
+          <int16 struct="val" val="0"/>
+          <int16 struct="const char* (*getValue) (const uint16_t val)" val="0"/>
+        </object>
         fields[1] = {1, 5, 3, 2, 0, 59, 0, NULL}; // минута
-        <OBJECT name="minute">
-          <INT8 val="1"/>
-          <INT8 val="5"/>
-          <INT8 val="3"/>
-          <INT8 val="2"/>
-          <INT16 val="0"/>
-          <INT16 val="59"/>
-          <INT16 val="0"/>
-          <INT16 val="0"/>
-        </OBJECT>
+        <object name="minute">
+          <int8 val="1"/>
+          <int8 val="5"/>
+          <int8 val="3"/>
+          <int8 val="2"/>
+          <int16 val="0"/>
+          <int16 val="59"/>
+          <int16 val="0"/>
+          <int16 val="0"/>
+        </object>
         fields[2] = {1, 8, 3, 2, 0, 59, 0, NULL}; // секунда
-        <OBJECT name="second">
-          <INT8 val="1"/>
-          <INT8 val="8"/>
-          <INT8 val="3"/>
-          <INT8 val="2"/>
-          <INT16 val="0"/>
-          <INT16 val="59"/>
-          <INT16 val="0"/>
-          <INT16 val="0"/>
-        </OBJECT>
-      </ARRAY>
-    </OBJECT>
+        <object name="second">
+          <int8 val="1"/>
+          <int8 val="8"/>
+          <int8 val="3"/>
+          <int8 val="2"/>
+          <int16 val="0"/>
+          <int16 val="59"/>
+          <int16 val="0"/>
+          <int16 val="0"/>
+        </object>
+      </array>
+    </object>
     ScreenDump::ScreenDump(): ScreenTft()
-    <OBJECT name="ScreenDump">
-      <STRING name="name" val="Dump "/>
-      <ARRAY name="fields">
+    <object name="ScreenDump">
+      <string name="name" val="Dump "/>
+      <array name="fields">
         fields[0] = {2, 1, 2, 3, 0, 255, 0, NULL}; // device
-        <OBJECT name="device">
-          <INT8 val="2"/>
-          <INT8 val="1"/>
-          <INT8 val="2"/>
-          <INT8 val="3"/>
-          <INT16 val="0"/>
-          <INT16 val="255"/>
-          <INT16 val="0"/>
-          <INT16 val="0"/>
-        </OBJECT>
+        <object name="device">
+          <int8 val="2"/>
+          <int8 val="1"/>
+          <int8 val="2"/>
+          <int8 val="3"/>
+          <int16 val="0"/>
+          <int16 val="255"/>
+          <int16 val="0"/>
+          <int16 val="0"/>
+        </object>
         fields[1] = {2, 5, 2, 4, 0, 0x1fff, 0, NULL}; // address
-        <OBJECT name="address">
-          <INT8 val="2"/>
-          <INT8 val="5"/>
-          <INT8 val="2"/>
-          <INT8 val="4"/>
-          <INT16 val="0"/>
-          <INT16 val="0x1fff"/>
-          <INT16 val="0"/>
-          <INT16 val="0"/>
-        </OBJECT>
-      </ARRAY>
-    </OBJECT>
-    <ARRAY name="music">
-      <OBJECT name="JingleBells">
-        <STRING name="name" val="Jingle Bells"/>
-        <DUMP name="music"><![CDATA[
+        <object name="address">
+          <int8 val="2"/>
+          <int8 val="5"/>
+          <int8 val="2"/>
+          <int8 val="4"/>
+          <int16 val="0"/>
+          <int16 val="0x1fff"/>
+          <int16 val="0"/>
+          <int16 val="0"/>
+        </object>
+      </array>
+    </object>
+    <array name="music">
+      <object name="JingleBells">
+        <string name="name" val="Jingle Bells"/>
+        <dump name="music"><![CDATA[
 440244024401440244024401440247024002420244004502450245014402
 440244014402420242024402420147014402440244014402440244014402
 470240024202440045024502450144024402440147024702450242024000
@@ -195,20 +195,20 @@
 390245024402420247024702470149024702450242024000440244024401
 440244024401440247024002420244004502450245014402440244014702
 4702450242024000
-      ]]></DUMP>
-      </OBJECT>
-      <OBJECT name="TwoFunnyGeese">
-        <STRING name="name" val="Жили у бабуси 2 гуси"/>
-        <DUMP name="music"><![CDATA[
+      ]]></dump>
+      </object>
+      <object name="TwoFunnyGeese">
+        <string name="name" val="Жили у бабуси 2 гуси"/>
+        <dump name="music"><![CDATA[
 450244024202400247014701450244024202400247014701450249024902
 450244024702470244024202440245024202400140014502490249024502
 4402470247024402420244024502420240014001
-      ]]></DUMP>
-      </OBJECT>
-    </ARRAY>
-  </BatchMemory>
-  <BatchMemory prefix="Font" device="0x57" address="0x700">
-    <DUMP name="russFontANSI5x8"><![CDATA[
+      ]]></dump>
+      </object>
+    </array>
+  </batchMemory>
+  <batchMemory prefix="Font" device="0x57" address="0x700">
+    <dump name="russFontANSI5x8"><![CDATA[
 00000000003E5B4F5B3E3E6B4F6B3E1C3E7C3E1C183C7E3C181C577D571C
 1C5E7F5E1C00183C1800FFE7C3E7FF0018241800FFE7DBE7FF30483A060E
 2629792926407F050507407F05253F5A3CE73C5A7F3E1C1C08081C1C3E7F
@@ -252,6 +252,6 @@ e0544c44fc38545454186c107c106c44445454287c2010087c7c4122117c
 7C14141408384444442004047c04040C5050503C3048fc48304428102844
 7c404040fc0c1010107c7c407c407c7c407c40fc047c5050207c5050207c
 7c5050200028445454387c10384438085434147c
-]]></DUMP>
-  </BatchMemory>
-</Memory>
+]]></dump>
+  </batchMemory>
+</memory>

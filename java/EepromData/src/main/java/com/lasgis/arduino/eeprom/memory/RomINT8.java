@@ -1,5 +1,5 @@
 /*
- *  @(#)RomINT8.java  last: 08.02.2023
+ *  @(#)RomINT8.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -26,25 +26,25 @@ public class RomINT8 extends RomData {
 
     private byte val;
 
-    private RomINT8(final String name, final byte val) {
-        super(name);
+    private RomINT8(final String name, final String refId, final byte val) {
+        super(name, refId);
         this.val = val;
     }
 
     public static RomINT8 of(final byte val) {
-        return new RomINT8(null, val);
+        return new RomINT8(null, null, val);
     }
 
-    public static RomINT8 of(final String name, final byte val) {
-        return new RomINT8(name, val);
+    public static RomINT8 of(final String name, final String refId, final byte val) {
+        return new RomINT8(name, refId, val);
     }
 
     public static RomINT8 of(final int val) {
-        return new RomINT8(null, (byte) val);
+        return new RomINT8(null, null, (byte) val);
     }
 
-    public static RomINT8 of(final String name, final int val) {
-        return new RomINT8(name, (byte) val);
+    public static RomINT8 of(final String name, final String refId, final int val) {
+        return new RomINT8(name, refId, (byte) val);
     }
 
     @Override

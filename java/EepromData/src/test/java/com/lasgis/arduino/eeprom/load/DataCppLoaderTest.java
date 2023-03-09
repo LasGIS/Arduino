@@ -1,9 +1,9 @@
 /*
- * @(#)DataCppLoaderTest.java
+ *  @(#)DataCppLoaderTest.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load;
@@ -22,8 +22,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-
-import static org.testng.Assert.*;
 
 /**
  * @author Vladimir Laskin
@@ -44,14 +42,14 @@ public class DataCppLoaderTest {
             + "  DOUBLE : -3.1415926; /* Комментарий */ \n"
             + "  STRING WIN_NAME : \"Название машинки\"; /* Комментарий */ \n",
             new ArrayList<RomData>() {{
-                this.add(RomCHAR.of("CHAR_SINGN_WIN", 'B'));
+                this.add(RomCHAR.of("CHAR_SINGN_WIN", null, 'B'));
                 this.add(RomINT8.of(255));
                 this.add(RomINT16.of(65535));
                 this.add(RomINT16.of(-32767));
                 this.add(RomINT32.of(255));
                 this.add(RomDOUBLE.of(3.1415926));
                 this.add(RomDOUBLE.of(-3.1415926));
-                this.add(RomSTRING.of("WIN_NAME", "Название машинки"));
+                this.add(RomSTRING.of("WIN_NAME", null, "Название машинки"));
             }}
         }, {
             "  /* OBJECT */\n"
@@ -68,14 +66,14 @@ public class DataCppLoaderTest {
             + "     STRING : \"Быстрый мустанг\"\n"
             + "  };\n",
             new ArrayList<RomData>() {{
-                this.add(RomCHAR.of("CHAR_SINGN_WIN", 'B'));
+                this.add(RomCHAR.of("CHAR_SINGN_WIN", null, 'B'));
                 this.add(RomINT8.of(255));
                 this.add(RomINT16.of(65535));
                 this.add(RomINT16.of(-32767));
                 this.add(RomINT32.of(255));
                 this.add(RomDOUBLE.of(3.1415926));
-                this.add(RomSTRING.of("WIN_NAME", "Название машинки"));
-                this.add(RomOBJECT.of("OBJECT_VEHICLE")
+                this.add(RomSTRING.of("WIN_NAME", null, "Название машинки"));
+                this.add(RomOBJECT.of("OBJECT_VEHICLE", null)
                     .add(RomINT8.of(255))
                     .add(RomDOUBLE.of(60.78))
                     .add(RomSTRING.of("Быстрый мустанг"))
@@ -101,17 +99,17 @@ public class DataCppLoaderTest {
             + "     DOUBLE : -3.1415926\n"
             + "  ];\n",
             new ArrayList<RomData>() {{
-                this.add(RomCHAR.of("CHAR_SINGN_WIN", 'B'));
-                this.add(RomARRAY.of("ARRAY_of_CHAR")
+                this.add(RomCHAR.of("CHAR_SINGN_WIN", null, 'B'));
+                this.add(RomARRAY.of("ARRAY_of_CHAR", null)
                     .add(RomCHAR.of('A'))
                     .add(RomCHAR.of('a'))
                     .add(RomCHAR.of('А'))
                     .add(RomCHAR.of('а')));
-                this.add(RomARRAY.of("ARRAY_of_INT16")
+                this.add(RomARRAY.of("ARRAY_of_INT16", null)
                     .add(RomINT16.of(31415))
                     .add(RomINT16.of(6078))
                     .add(RomINT16.of(-31415)));
-                this.add(RomARRAY.of("ARRAY_of_DOUBLE")
+                this.add(RomARRAY.of("ARRAY_of_DOUBLE", null)
                     .add(RomDOUBLE.of(3.1415926))
                     .add(RomDOUBLE.of(60.78))
                     .add(RomDOUBLE.of(-3.1415926)));
@@ -123,18 +121,18 @@ public class DataCppLoaderTest {
             + "  ARRAY_of_INT16 INT16 : [31415, 6078, -31415];\n"
             + "  ARRAY_of_DOUBLE DOUBLE : [ Число_Пи : 3.1415926, 60.78, -3.1415926];\n",
             new ArrayList<RomData>() {{
-                this.add(RomCHAR.of("CHAR_SINGN_WIN", 'B'));
-                this.add(RomARRAY.of("ARRAY_of_CHAR")
+                this.add(RomCHAR.of("CHAR_SINGN_WIN", null, 'B'));
+                this.add(RomARRAY.of("ARRAY_of_CHAR", null)
                     .add(RomCHAR.of('A'))
                     .add(RomCHAR.of('a'))
                     .add(RomCHAR.of('А'))
                     .add(RomCHAR.of('а')));
-                this.add(RomARRAY.of("ARRAY_of_INT16")
+                this.add(RomARRAY.of("ARRAY_of_INT16", null)
                     .add(RomINT16.of(31415))
                     .add(RomINT16.of(6078))
                     .add(RomINT16.of(-31415)));
-                this.add(RomARRAY.of("ARRAY_of_DOUBLE")
-                    .add(RomDOUBLE.of("Число_Пи", 3.1415926))
+                this.add(RomARRAY.of("ARRAY_of_DOUBLE", null)
+                    .add(RomDOUBLE.of("Число_Пи", null, 3.1415926))
                     .add(RomDOUBLE.of(60.78))
                     .add(RomDOUBLE.of(-3.1415926)));
             }}

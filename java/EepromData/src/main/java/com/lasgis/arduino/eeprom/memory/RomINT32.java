@@ -1,5 +1,5 @@
 /*
- *  @(#)RomINT32.java  last: 08.02.2023
+ *  @(#)RomINT32.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -26,17 +26,17 @@ public class RomINT32 extends RomData {
 
     private int val;
 
-    public RomINT32(final String name, final int val) {
-        super(name);
+    public RomINT32(final String name, final String refId, final int val) {
+        super(name, refId);
         this.val = val;
     }
 
     public static RomINT32 of(final int val) {
-        return new RomINT32(null, val);
+        return new RomINT32(null, null, val);
     }
 
-    public static RomINT32 of(final String name, final int val) {
-        return new RomINT32(name, val);
+    public static RomINT32 of(final String name, final String refId, final int val) {
+        return new RomINT32(name, refId, val);
     }
 
     @Override

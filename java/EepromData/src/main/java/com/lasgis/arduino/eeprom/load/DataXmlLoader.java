@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoader.java  last: 17.02.2023
+ *  @(#)DataXmlLoader.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -11,6 +11,7 @@ package com.lasgis.arduino.eeprom.load;
 import com.lasgis.arduino.eeprom.CommonInfoException;
 import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
+import com.lasgis.arduino.eeprom.memory.RomADDRESS;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
 import com.lasgis.arduino.eeprom.memory.RomDOUBLE;
@@ -54,18 +55,19 @@ import static com.lasgis.util.Util.parseHexShort;
 class DataXmlLoader {
 
     private final static String UNKNOWN_FORMAT = "Формат XML файла: ";
-    private final static String MEMORY = "Memory";
-    private final static String BATCH_MEMORY = "BatchMemory";
-    private final static String CHAR = "CHAR";
-    private final static String INT8 = "INT8";
-    private final static String INT16 = "INT16";
-    private final static String INT32 = "INT32";
-    private final static String FLOAT = "FLOAT";
-    private final static String DOUBLE = "DOUBLE";
-    private final static String STRING = "STRING";
-    private final static String OBJECT = "OBJECT";
-    private final static String ARRAY = "ARRAY";
-    private final static String DUMP = "DUMP";
+    private final static String MEMORY = "memory";
+    private final static String BATCH_MEMORY = "batchMemory";
+    private final static String CHAR = "char";
+    private final static String INT8 = "int8";
+    private final static String INT16 = "int16";
+    private final static String INT32 = "int32";
+    private final static String FLOAT = "float";
+    private final static String DOUBLE = "double";
+    private final static String STRING = "string";
+    private final static String OBJECT = "object";
+    private final static String ARRAY = "array";
+    private final static String DUMP = "dump";
+    private final static String ADDRESS = "eepromAddress";
 
     private final DocumentBuilder dBuilder;
 
@@ -129,36 +131,42 @@ class DataXmlLoader {
         final NamedNodeMap attrs = node.getAttributes();
         final String name;
         final String value;
+        final String refId;
         if (attrs != null) {
             final Node nodeName = attrs.getNamedItem("name");
             name = (nodeName != null) ? nodeName.getNodeValue() : null;
             final Node nodeValue = attrs.getNamedItem("val");
             value = (nodeValue != null) ? nodeValue.getNodeValue() : null;
+            final Node nodeReference = attrs.getNamedItem("reference");
+            refId = (nodeReference != null) ? nodeReference.getNodeValue() : null;
         } else {
             name = null;
             value = null;
+            refId = null;
         }
         switch (node.getNodeName()) {
             case CHAR:
-                return RomCHAR.of(name, parseCharAt0(value));
+                return RomCHAR.of(name, refId, parseCharAt0(value));
             case INT8:
-                return RomINT8.of(name, parseHexByte(value));
+                return RomINT8.of(name, refId, parseHexByte(value));
             case INT16:
-                return RomINT16.of(name, parseHexShort(value));
+                return RomINT16.of(name, refId, parseHexShort(value));
             case INT32:
-                return RomINT32.of(name, parseHexInt(value));
+                return RomINT32.of(name, refId, parseHexInt(value));
             case FLOAT:
-                return RomFLOAT.of(name, parseFloatOfNull(value));
+                return RomFLOAT.of(name, refId, parseFloatOfNull(value));
             case DOUBLE:
-                return RomDOUBLE.of(name, parseDoubleOfNull(value));
+                return RomDOUBLE.of(name, refId, parseDoubleOfNull(value));
             case STRING:
-                return RomSTRING.of(name, value);
+                return RomSTRING.of(name, refId, value);
             case OBJECT:
-                return addSubNode(RomOBJECT.of(name), node);
+                return addSubNode(RomOBJECT.of(name, refId), node);
             case ARRAY:
-                return addSubNode(RomARRAY.of(name), node);
+                return addSubNode(RomARRAY.of(name,  refId), node);
             case DUMP:
-                return dumpNode(name, value, node);
+                return dumpNode(name, refId, value, node);
+            case ADDRESS:
+                return RomADDRESS.of(name, refId);
             case "#comment":
             case "#text":
                 return null;
@@ -169,8 +177,8 @@ class DataXmlLoader {
         }
     }
 
-    private RomData dumpNode(final String name, final String value, final Node node) {
-        final RomARRAY rom = RomARRAY.of(name);
+    private RomData dumpNode(final String name, final String refId, final String value, final Node node) {
+        final RomARRAY rom = RomARRAY.of(name, refId);
         String dumpStr = Objects.nonNull(value) ? value : node.getTextContent().trim().replaceAll("[ \n\t\r]", "");
         byte[] dump = DatatypeConverter.parseHexBinary(dumpStr);
         for (final byte bt : dump) {

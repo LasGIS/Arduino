@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAYTest.java  last: 09.02.2023
+ *  @(#)RomARRAYTest.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -40,13 +40,13 @@ public class RomARRAYTest extends RomCommonTest {
                     .add(RomINT16.of(-3))
                 , "0F006905000100020003000000FDFF", "i", 15
             }, {
-                RomARRAY.of("ARRAY")
-                    .add(RomOBJECT.of("OBJECT")
-                        .add(RomINT8.of("INT8", 1))
-                        .add(RomINT16.of("INT16", 111))
-                        .add(RomSTRING.of("STRING", "Первый объект"))
-                        .add(RomCHAR.of("CHAR", 'F')))
-                    .add(RomOBJECT.of("OBJECT")
+                RomARRAY.of("ARRAY", null)
+                    .add(RomOBJECT.of("OBJECT", null)
+                        .add(RomINT8.of("INT8", null, 1))
+                        .add(RomINT16.of("INT16", null, 111))
+                        .add(RomSTRING.of("STRING", null, "Первый объект"))
+                        .add(RomCHAR.of("CHAR", null, 'F')))
+                    .add(RomOBJECT.of("OBJECT", null)
                         .add(RomINT8.of(2))
                         .add(RomINT16.of(222))
                         .add(RomSTRING.of("Второй объект 2"))

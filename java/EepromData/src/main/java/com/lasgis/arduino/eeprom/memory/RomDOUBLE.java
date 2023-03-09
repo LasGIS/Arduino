@@ -1,5 +1,5 @@
 /*
- *  @(#)RomDOUBLE.java  last: 08.02.2023
+ *  @(#)RomDOUBLE.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -26,21 +26,17 @@ public class RomDOUBLE extends RomData {
 
     private double val;
 
-    public RomDOUBLE(final String name) {
-        super(name);
-    }
-
-    private RomDOUBLE(final String name, final double val) {
-        super(name);
+    private RomDOUBLE(final String name, final String refId, final double val) {
+        super(name, refId);
         this.val = val;
     }
 
     public static RomDOUBLE of(final double val) {
-        return new RomDOUBLE(null, val);
+        return new RomDOUBLE(null, null, val);
     }
 
-    public static RomDOUBLE of(final String name, final double val) {
-        return new RomDOUBLE(name, val);
+    public static RomDOUBLE of(final String name, final String refId, final double val) {
+        return new RomDOUBLE(name, refId, val);
     }
 
     @Override

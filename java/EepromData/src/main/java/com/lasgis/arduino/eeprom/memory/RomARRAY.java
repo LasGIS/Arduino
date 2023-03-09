@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAY.java  last: 09.02.2023
+ *  @(#)RomARRAY.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -36,16 +36,16 @@ public class RomARRAY extends RomData {
     private ArrayList<RomData> array = new ArrayList<>();
     private String define;
 
-    private RomARRAY(final String name) {
-        super(name);
+    private RomARRAY(final String name, final String refId) {
+        super(name, refId);
     }
 
     public static RomARRAY of() {
-        return new RomARRAY(null);
+        return new RomARRAY(null, null);
     }
 
-    public static RomARRAY of(final String name) {
-        return new RomARRAY(name);
+    public static RomARRAY of(final String name, final String refId) {
+        return new RomARRAY(name, refId);
     }
 
     @Override

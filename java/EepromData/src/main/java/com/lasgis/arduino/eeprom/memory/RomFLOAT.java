@@ -1,5 +1,5 @@
 /*
- *  @(#)RomFLOAT.java  last: 08.02.2023
+ *  @(#)RomFLOAT.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -26,12 +26,8 @@ public class RomFLOAT extends RomData {
 
     private float val;
 
-    /*public RomFLOAT(final String name) {
-        super(name);
-    }*/
-
-    private RomFLOAT(final String name, final float val) {
-        super(name);
+    private RomFLOAT(final String name, final String refId, final float val) {
+        super(name, refId);
         this.val = val;
     }
 
@@ -41,7 +37,7 @@ public class RomFLOAT extends RomData {
      * @return class instance
      */
     public static RomFLOAT of(final float val) {
-        return new RomFLOAT(null, val);
+        return new RomFLOAT(null, null, val);
     }
 
     /**
@@ -50,8 +46,8 @@ public class RomFLOAT extends RomData {
      * @param val значение
      * @return class instance
      */
-    public static RomFLOAT of(final String name, final float val) {
-        return new RomFLOAT(name, val);
+    public static RomFLOAT of(final String name, final String refId, final float val) {
+        return new RomFLOAT(name, refId, val);
     }
 
     /**
@@ -60,7 +56,7 @@ public class RomFLOAT extends RomData {
      * @return class instance
      */
     public static RomFLOAT of(final double val) {
-        return new RomFLOAT(null, (float) val);
+        return new RomFLOAT(null, null, (float) val);
     }
 
     /**
@@ -69,8 +65,8 @@ public class RomFLOAT extends RomData {
      * @param val значение
      * @return class instance
      */
-    public static RomFLOAT of(final String name, final double val) {
-        return new RomFLOAT(name, (float) val);
+    public static RomFLOAT of(final String name, final String refId, final double val) {
+        return new RomFLOAT(name, refId, (float) val);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- *  @(#)RomData.java  last: 15.02.2023
+ *  @(#)RomData.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -72,14 +72,16 @@ public abstract class RomData {
     public static final Charset CHARSET = Charset.forName("windows-1251");
 
     private String name;
+    private String refId;
     private int offset = 0;
 
     /**
      * Конструктор.
      * @param name имя объекта
      */
-    public RomData(final String name) {
+    public RomData(final String name, final String refId) {
         this.name = name;
+        this.refId = refId;
         this.offset = 0;
     }
 

@@ -2,7 +2,7 @@
 #define SMARTCLOCK20_H
 
 #include <Arduino.h>
-#include <avr/pgmspace.h>
+//#include <avr/pgmspace.h>
 #include <SerialBlock.h>
 #include <LoadClass.h>
 #include <SPI.h>

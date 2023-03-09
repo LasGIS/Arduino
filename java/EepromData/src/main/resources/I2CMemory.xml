@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)I2CMemory.xml  last: 17.02.2023
+  ~  @(#)I2CMemory.xml  last: 09.03.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
   ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
   -->
-<Memory headerFilename="memory"
+<memory headerFilename="memory"
         xmlns="http://www.lasgis.com/arduino/schema/rom"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.lasgis.com/arduino/schema/rom http://www.lasgis.com/arduino/schema/rom.xsd">
-  <BatchMemory device="0x00" prefix="EEPROM" address="4000">
-    <FLOAT name="factorBattery" val="0.00661"/>
-    <FLOAT name="factorCharger" val="0.00654"/>
-  </BatchMemory>
-  <BatchMemory device="0x57" prefix="AT24C">
-    <CHAR name="CHAR_DEF" val="c"/>
-    <INT8 name="BYTE_DEF" val="127"/>
-    <INT16 name="INT_DEF" val="32767"/>
-    <INT32 name="LONG_DEF" val="2147483647"/>
-    <FLOAT name="FLOAT_DEF" val="13.14"/>
-    <STRING name="STRING_DEF" val="некоторый текст"/>
-    <OBJECT name="OBJECT_DEF">
-      <CHAR val="h"/>
-      <INT8 val="-128"/>
-      <INT16 val="-32768"/>
-      <INT32 val="-2147483648"/>
-      <FLOAT val="-13.14"/>
-      <STRING val="другой текст"/>
-    </OBJECT>
-    <ARRAY name="ARRAY_OF_INT_DEFINITION">
-      <INT16 val="-2"/>
-      <INT16 val="-1"/>
-      <INT16 val="0"/>
-      <INT16 val="1"/>
-      <INT16 val="2"/>
-      <INT16 val="3"/>
-    </ARRAY>
-    <DUMP name="music"><![CDATA[
+  <batchMemory device="0x00" prefix="EEPROM" address="4000">
+    <float name="factorBattery" val="0.00661"/>
+    <float name="factorCharger" val="0.00654"/>
+  </batchMemory>
+  <batchMemory device="0x57" prefix="AT24C">
+    <char name="CHAR_DEF" val="c"/>
+    <int8 name="BYTE_DEF" val="127"/>
+    <int16 name="INT_DEF" val="32767"/>
+    <int32 name="LONG_DEF" val="2147483647"/>
+    <float name="FLOAT_DEF" val="13.14"/>
+    <string name="STRING_DEF" val="некоторый текст"/>
+    <object name="OBJECT_DEF">
+      <char val="h"/>
+      <int8 val="-128"/>
+      <int16 val="-32768"/>
+      <int32 val="-2147483648"/>
+      <float val="-13.14"/>
+      <string val="другой текст"/>
+    </object>
+    <array name="ARRAY_OF_INT_DEFINITION">
+      <int16 val="-2"/>
+      <int16 val="-1"/>
+      <int16 val="0"/>
+      <int16 val="1"/>
+      <int16 val="2"/>
+      <int16 val="3"/>
+    </array>
+    <dump name="music"><![CDATA[
 440244024401440244024401440247024002420244004502450245014402
 440244014402420242024402420147014402440244014402440244014402
 470240024202440045024502450144024402440147024702450242024000
@@ -46,6 +46,6 @@
 390245024402420247024702470149024702450242024000440244024401
 440244024401440247024002420244004502450245014402440244014702
 4702450242024000]]>
-    </DUMP>
-  </BatchMemory>
-</Memory>
+    </dump>
+  </batchMemory>
+</memory>

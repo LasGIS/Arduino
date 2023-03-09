@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)RomMemory.xsd  last: 21.02.2023
+  ~  @(#)RomMemory.xsd  last: 09.03.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -10,7 +10,7 @@
            elementFormDefault="qualified"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://www.lasgis.com/arduino/schema/rom">
-  <xs:element name="Memory" type="MEMORYType">
+  <xs:element name="memory" type="memoryType">
     <xs:annotation>
       <xs:documentation>~</xs:documentation>
     </xs:annotation>
@@ -25,70 +25,96 @@
       <xs:restriction base="xs:string"/>
     </xs:simpleType>
   </xs:attribute>
-  <xs:complexType name="CHARType">
+  <xs:attribute name="reference">
+    <xs:simpleType>
+      <xs:annotation>
+        <xs:documentation>
+          Ссылка на элемент используется для указания на место в памяти EEPROM, где находится этот элемент
+        </xs:documentation>
+      </xs:annotation>
+      <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+  </xs:attribute>
+  <xs:complexType name="charType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:string" name="val" use="required"/>
         <xs:attribute ref="struct"/>
+        <xs:attribute ref="reference"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="INT8Type">
+  <xs:complexType name="int8Type">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:byte" name="val" use="required"/>
         <xs:attribute ref="struct"/>
+        <xs:attribute ref="reference"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="INT16Type">
+  <xs:complexType name="int16Type">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:int" name="val" use="required"/>
         <xs:attribute ref="struct"/>
+        <xs:attribute ref="reference"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="INT32Type">
+  <xs:complexType name="int32Type">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:int" name="val" use="required"/>
         <xs:attribute ref="struct"/>
+        <xs:attribute ref="reference"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="FLOATType">
+  <xs:complexType name="floatType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:float" name="val" use="required"/>
         <xs:attribute ref="struct"/>
+        <xs:attribute ref="reference"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="STRINGType">
+  <xs:complexType name="stringType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:string" name="val" use="required"/>
         <xs:attribute ref="struct"/>
+        <xs:attribute ref="reference"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="DUMPType">
+  <xs:complexType name="dumpType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="name"/>
         <xs:attribute type="xs:string" name="val"/>
         <xs:attribute ref="struct"/>
+        <xs:attribute ref="reference"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="OBJECTType">
+  <xs:complexType name="eepromAddressType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name"/>
+        <xs:attribute ref="reference" use="required"/>
+        <xs:attribute ref="struct"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="objectType">
     <xs:annotation>
       <xs:documentation xml:lang="ru"><![CDATA[
         Тип OBJECT может содержать любые типы
@@ -97,36 +123,38 @@
       ]]></xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element type="CHARType" name="CHAR"/>
-      <xs:element type="INT8Type" name="INT8"/>
-      <xs:element type="INT16Type" name="INT16"/>
-      <xs:element type="INT32Type" name="INT32"/>
-      <xs:element type="FLOATType" name="FLOAT"/>
-      <xs:element type="STRINGType" name="STRING"/>
-      <xs:element type="OBJECTType" name="OBJECT"/>
-      <xs:element type="ARRAYType" name="ARRAY"/>
-      <xs:element type="DUMPType" name="DUMP"/>
+      <xs:element type="charType" name="char"/>
+      <xs:element type="int8Type" name="int8"/>
+      <xs:element type="int16Type" name="int16"/>
+      <xs:element type="int32Type" name="int32"/>
+      <xs:element type="floatType" name="float"/>
+      <xs:element type="stringType" name="string"/>
+      <xs:element type="objectType" name="object"/>
+      <xs:element type="arrayType" name="array"/>
+      <xs:element type="dumpType" name="dump"/>
+      <xs:element type="eepromAddressType" name="eepromAddress" />
     </xs:sequence>
     <xs:attribute type="xs:string" name="name"/>
     <xs:attribute ref="struct"/>
+    <xs:attribute ref="reference"/>
   </xs:complexType>
-  <xs:complexType name="MEMORYType">
+  <xs:complexType name="memoryType">
     <xs:sequence>
-      <xs:element type="BatchMemoryType" name="BatchMemory"/>
+      <xs:element type="batchMemoryType" name="batchMemory"/>
     </xs:sequence>
     <xs:attribute type="xs:string" name="headerFilename" use="required"/>
   </xs:complexType>
-  <xs:complexType name="BatchMemoryType">
+  <xs:complexType name="batchMemoryType">
     <xs:sequence>
-      <xs:element type="CHARType" name="CHAR"/>
-      <xs:element type="INT8Type" name="INT8"/>
-      <xs:element type="INT16Type" name="INT16"/>
-      <xs:element type="INT32Type" name="INT32"/>
-      <xs:element type="FLOATType" name="FLOAT"/>
-      <xs:element type="STRINGType" name="STRING"/>
-      <xs:element type="OBJECTType" name="OBJECT"/>
-      <xs:element type="ARRAYType" name="ARRAY"/>
-      <xs:element type="DUMPType" name="DUMP"/>
+      <xs:element type="charType" name="char"/>
+      <xs:element type="int8Type" name="int8"/>
+      <xs:element type="int16Type" name="int16"/>
+      <xs:element type="int32Type" name="int32"/>
+      <xs:element type="floatType" name="float"/>
+      <xs:element type="stringType" name="string"/>
+      <xs:element type="objectType" name="object"/>
+      <xs:element type="arrayType" name="array"/>
+      <xs:element type="dumpType" name="dump"/>
     </xs:sequence>
     <xs:attribute type="deviceType" name="device" use="required"/>
     <xs:attribute type="xs:hexBinary" name="address"/>
@@ -142,18 +170,20 @@
       <xs:length value="4" fixed="true"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:complexType name="ARRAYType">
+  <xs:complexType name="arrayType">
     <xs:sequence>
-      <xs:element type="CHARType" name="CHAR"/>
-      <xs:element type="INT8Type" name="INT8"/>
-      <xs:element type="INT16Type" name="INT16"/>
-      <xs:element type="INT32Type" name="INT32"/>
-      <xs:element type="FLOATType" name="FLOAT"/>
-      <xs:element type="STRINGType" name="STRING"/>
-      <xs:element type="OBJECTType" name="OBJECT"/>
-      <xs:element type="ARRAYType" name="ARRAY"/>
+      <xs:element type="charType" name="char"/>
+      <xs:element type="int8Type" name="int8"/>
+      <xs:element type="int16Type" name="int16"/>
+      <xs:element type="int32Type" name="int32"/>
+      <xs:element type="floatType" name="float"/>
+      <xs:element type="stringType" name="string"/>
+      <xs:element type="objectType" name="object"/>
+      <xs:element type="arrayType" name="array"/>
+      <xs:element type="eepromAddressType" name="eepromAddress" />
     </xs:sequence>
     <xs:attribute type="xs:string" name="name"/>
     <xs:attribute ref="struct"/>
+    <xs:attribute ref="reference"/>
   </xs:complexType>
 </xs:schema>

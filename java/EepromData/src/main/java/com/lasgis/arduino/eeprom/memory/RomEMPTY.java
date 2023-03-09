@@ -1,5 +1,5 @@
 /*
- *  @(#)RomEMPTY.java  last: 09.02.2023
+ *  @(#)RomEMPTY.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -35,7 +35,7 @@ import java.io.UnsupportedEncodingException;
 public class RomEMPTY extends RomData {
 
     private RomEMPTY(final String name) {
-        super(name);
+        super(name, null);
     }
 
     public static RomEMPTY of() {

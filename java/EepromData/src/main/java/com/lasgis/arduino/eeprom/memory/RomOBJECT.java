@@ -1,5 +1,5 @@
 /*
- *  @(#)RomOBJECT.java  last: 08.02.2023
+ *  @(#)RomOBJECT.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -35,16 +35,16 @@ public class RomOBJECT extends RomData {
     private ArrayList<RomData> array = new ArrayList<>();
     private String define;
 
-    private RomOBJECT(final String name) {
-        super(name);
+    private RomOBJECT(final String name, final String refId) {
+        super(name, refId);
     }
 
     public static RomOBJECT of() {
-        return new RomOBJECT(null);
+        return new RomOBJECT(null, null);
     }
 
-    public static RomOBJECT of(final String name) {
-        return new RomOBJECT(name);
+    public static RomOBJECT of(final String name, final String refId) {
+        return new RomOBJECT(name, refId);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- *  @(#)DataCppLoader.java  last: 16.02.2023
+ *  @(#)DataCppLoader.java  last: 09.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -102,31 +102,31 @@ class DataCppLoader extends TokenParser {
             switch (type) {
                 case CHAR: {
                     final char chr = extractChar(tokens, end);
-                    data = RomCHAR.of(name, chr);
+                    data = RomCHAR.of(name, null, chr);
                 } break;
                 case INT8: {
                     final int value = extractInteger(tokens, end);
-                    data = RomINT8.of(name, value);
+                    data = RomINT8.of(name, null, value);
                 } break;
                 case INT16: {
                     final int value = extractInteger(tokens, end);
-                    data = RomINT16.of(name, value);
+                    data = RomINT16.of(name, null, value);
                 } break;
                 case INT32: {
                     final int value = extractInteger(tokens, end);
-                    data = RomINT32.of(name, value);
+                    data = RomINT32.of(name, null, value);
                 } break;
                 case FLOAT: {
                     final double value = extractDouble(tokens, end);
-                    data = RomFLOAT.of(name, value);
+                    data = RomFLOAT.of(name, null, value);
                 } break;
                 case DOUBLE: {
                     final double value = extractDouble(tokens, end);
-                    data = RomDOUBLE.of(name, value);
+                    data = RomDOUBLE.of(name, null, value);
                 } break;
                 case STRING: {
                     final String value = extractString(tokens, end);
-                    data = (value == null) ? RomEMPTY.of(name) : RomSTRING.of(name, value);
+                    data = (value == null) ? RomEMPTY.of(name) : RomSTRING.of(name, null, value);
                 } break;
                 default:
                     break;
@@ -148,7 +148,7 @@ class DataCppLoader extends TokenParser {
         final int end = arrToken.end - 1;
         int i = beg;
         Token token;
-        final RomOBJECT object = RomOBJECT.of(name);
+        final RomOBJECT object = RomOBJECT.of(name, null);
         do {
             final RomDataWrapper wrap = getRomData(i, end, null);
             final RomData data = wrap.getData();
@@ -170,7 +170,7 @@ class DataCppLoader extends TokenParser {
         final int end = arrToken.end - 1;
         int i = beg;
         Token token;
-        final RomARRAY array = RomARRAY.of(name);
+        final RomARRAY array = RomARRAY.of(name, null);
         do {
             final RomDataWrapper wrap = getRomData(i, end, arrayType);
             final RomData data = wrap.getData();

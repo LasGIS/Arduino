@@ -276,7 +276,7 @@ void testLoadMusics() {
     Serial.print(") = ");
     SerialPrintHex(music[i]->notes, music[i]->notesLenght);
     Serial.println();
-    Serial.print(" address = ");
-    Serial.println(lc.address, HEX);
+//    Serial.print(" address = ");
+//    Serial.println(lc.address, HEX);
   }
 }
