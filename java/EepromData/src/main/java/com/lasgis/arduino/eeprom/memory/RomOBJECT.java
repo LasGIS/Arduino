@@ -1,5 +1,5 @@
 /*
- *  @(#)RomOBJECT.java  last: 09.03.2023
+ *  @(#)RomOBJECT.java  last: 12.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -15,6 +15,7 @@ import lombok.ToString;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Объект структуры или класса. Структура имеет разные элементы. Если класс состоит из простых элементов, то размер класса равен размеру в EEPROM Если
@@ -71,12 +72,15 @@ public class RomOBJECT extends RomData {
     }
 
     @Override
-    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
-        setOffset(buff.position());
+    public ByteArrayBuilder toEeprom(
+        final ByteArrayBuilder buff,
+        final Map<String, AddressToRoms> reference2Address
+    ) throws UnsupportedEncodingException {
+        updateOffset(buff, reference2Address);
         buff.putShort(size());
         buff.putShort(2 + define.length()).put(define.getBytes(CHARSET));
         for (final RomData item : array) {
-            item.toEeprom(buff);
+            item.toEeprom(buff, reference2Address);
         }
         return buff;
     }

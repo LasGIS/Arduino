@@ -1,5 +1,5 @@
 /*
- *  @(#)ByteArrayBuilder.java  last: 23.01.2023
+ *  @(#)ByteArrayBuilder.java  last: 12.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -60,13 +60,13 @@ public class ByteArrayBuilder {
     }
 
     /**
-     * Получаем байт по индексу 'i'
+     * Получаем байт по индексу 'index'
      *
-     * @param i индекс
-     * @return байт по индексу 'i'
+     * @param index индекс
+     * @return байт по индексу 'index'
      */
-    public byte get(int i) {
-        return buffer.get(i);
+    public byte get(int index) {
+        return buffer.get(index);
     }
 
     /**
@@ -105,27 +105,27 @@ public class ByteArrayBuilder {
     }
 
     /**
-     * Устанавливаем байт 'x' по индексу 'i'
+     * Устанавливаем байт 'x' по индексу 'index'
      *
-     * @param i индекс
-     * @param x байт
+     * @param index индекс
+     * @param x     байт
      * @return сам себя (ByteArrayBuilder)
      */
-    public ByteArrayBuilder put(int i, byte x) {
-        checkLimit(i, 1);
-        buffer.put(i, x);
+    public ByteArrayBuilder put(int index, byte x) {
+        checkLimit(index, 1);
+        buffer.put(index, x);
         return this;
     }
 
     /**
-     * Устанавливаем байт 'x' по индексу 'i'
+     * Устанавливаем байт 'x' по индексу 'index'
      *
-     * @param i индекс
-     * @param x целое как байт
+     * @param index индекс
+     * @param x     целое как байт
      * @return сам себя (ByteArrayBuilder)
      */
-    public ByteArrayBuilder put(int i, int x) {
-        return put(i, (byte) x);
+    public ByteArrayBuilder put(int index, int x) {
+        return put(index, (byte) x);
     }
 
 
@@ -149,8 +149,8 @@ public class ByteArrayBuilder {
         return buffer.getChar();
     }
 
-    public char getChar(int i) {
-        return buffer.getChar(i);
+    public char getChar(int index) {
+        return buffer.getChar(index);
     }
 
     public ByteArrayBuilder putChar(char x) {
@@ -159,9 +159,9 @@ public class ByteArrayBuilder {
         return this;
     }
 
-    public ByteArrayBuilder putChar(int i, char x) {
-        checkLimit(i, 2);
-        buffer.putChar(i, x);
+    public ByteArrayBuilder putChar(int index, char x) {
+        checkLimit(index, 2);
+        buffer.putChar(index, x);
         return this;
     }
 
@@ -187,14 +187,14 @@ public class ByteArrayBuilder {
         return putShort((short) x);
     }
 
-    public ByteArrayBuilder putShort(int i, short x) {
-        checkLimit(i, 2);
-        buffer.putShort(i, x);
+    public ByteArrayBuilder putShort(int index, short x) {
+        checkLimit(index, 2);
+        buffer.putShort(index, x);
         return this;
     }
 
-    public ByteArrayBuilder putShort(int i, int x) {
-        return putShort(i, (short) x);
+    public ByteArrayBuilder putShort(int index, int x) {
+        return putShort(index, (short) x);
     }
 
     public ShortBuffer asShortBuffer() {
@@ -216,9 +216,9 @@ public class ByteArrayBuilder {
         return this;
     }
 
-    public ByteArrayBuilder putInt(int i, int x) {
-        checkLimit(i, 4);
-        buffer.putInt(i, x);
+    public ByteArrayBuilder putInt(int index, int x) {
+        checkLimit(index, 4);
+        buffer.putInt(index, x);
         return this;
     }
 
@@ -230,8 +230,8 @@ public class ByteArrayBuilder {
         return buffer.getLong();
     }
 
-    public long getLong(int i) {
-        return buffer.getLong(i);
+    public long getLong(int index) {
+        return buffer.getLong(index);
     }
 
     public ByteArrayBuilder putLong(long x) {
@@ -240,9 +240,9 @@ public class ByteArrayBuilder {
         return this;
     }
 
-    public ByteArrayBuilder putLong(int i, long x) {
-        checkLimit(i, 8);
-        buffer.putLong(i, x);
+    public ByteArrayBuilder putLong(int index, long x) {
+        checkLimit(index, 8);
+        buffer.putLong(index, x);
         return this;
     }
 
@@ -264,9 +264,9 @@ public class ByteArrayBuilder {
         return this;
     }
 
-    public ByteArrayBuilder putFloat(int i, float x) {
-        checkLimit(i, 4);
-        buffer.putFloat(i, x);
+    public ByteArrayBuilder putFloat(int index, float x) {
+        checkLimit(index, 4);
+        buffer.putFloat(index, x);
         return this;
     }
 
@@ -288,9 +288,9 @@ public class ByteArrayBuilder {
         return this;
     }
 
-    public ByteArrayBuilder putDouble(int i, double x) {
-        checkLimit(i, 8);
-        buffer.putDouble(i, x);
+    public ByteArrayBuilder putDouble(int index, double x) {
+        checkLimit(index, 8);
+        buffer.putDouble(index, x);
         return this;
     }
 

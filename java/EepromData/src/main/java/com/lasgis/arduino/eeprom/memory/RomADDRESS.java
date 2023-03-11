@@ -1,5 +1,5 @@
 /*
- *  @(#)RomADDRESS.java  last: 09.03.2023
+ *  @(#)RomADDRESS.java  last: 12.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -14,6 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -25,7 +26,7 @@ import java.util.Objects;
 @ToString(callSuper = true)
 public class RomADDRESS extends RomData {
 
-    private Short reference = null;
+    private Integer reference = null;
 
     private RomADDRESS(final String name, final String refId) {
         super(name, refId);
@@ -50,8 +51,11 @@ public class RomADDRESS extends RomData {
     }
 
     @Override
-    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
-        setOffset(buff.position());
-        return buff.putShort(Objects.nonNull(reference) ? reference : 0xffff); // todo ???
+    public ByteArrayBuilder toEeprom(
+        final ByteArrayBuilder buff,
+        final Map<String, AddressToRoms> reference2Address
+    ) throws UnsupportedEncodingException {
+        updateOffset(buff, reference2Address);
+        return buff.putShort(Objects.nonNull(reference) ? reference : 0xffff);
     }
 }

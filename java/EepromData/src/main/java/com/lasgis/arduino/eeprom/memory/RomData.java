@@ -1,5 +1,5 @@
 /*
- *  @(#)RomData.java  last: 09.03.2023
+ *  @(#)RomData.java  last: 12.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,12 +9,20 @@
 package com.lasgis.arduino.eeprom.memory;
 
 import com.lasgis.util.ByteArrayBuilder;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * ROM (Read-only memory) - ПЗУ
@@ -60,10 +68,12 @@ import java.nio.charset.Charset;
  *   Определение загружается в #define и при необходимости вызывается для
  *   именованной десериализации.
  * Будем реализовывать 3-тий вариант
- *</pre>
+ * </pre>
+ *
  * @author Vladimir Laskin
  * @since 16.05.2018
  */
+@Slf4j
 @Data
 @NoArgsConstructor
 @ToString(exclude = {"offset"})
@@ -73,10 +83,12 @@ public abstract class RomData {
 
     private String name;
     private String refId;
+    @Setter(AccessLevel.NONE)
     private int offset = 0;
 
     /**
      * Конструктор.
+     *
      * @param name имя объекта
      */
     public RomData(final String name, final String refId) {
@@ -85,12 +97,32 @@ public abstract class RomData {
         this.offset = 0;
     }
 
+    public void updateOffset(final ByteArrayBuilder buff, final Map<String, AddressToRoms> reference2Address) {
+        offset = buff.position();
+        if (nonNull(refId)) {
+            AddressToRoms addressToRoms = reference2Address.get(refId);
+            if (isNull(addressToRoms)) {
+                addressToRoms = AddressToRoms.of(refId);
+                reference2Address.put(refId, addressToRoms);
+            }
+            if (this instanceof RomADDRESS) {
+                addressToRoms.addRom((RomADDRESS) this);
+            } else {
+                if (nonNull(addressToRoms.getOffset())) {
+                    log.error("Такой reference \"{}\" уже зарезервирован! Объект name: {}", refId, name);
+                }
+                addressToRoms.setOffset(offset);
+            }
+        }
+    }
+
     /**
      * @return размер образа объекта в EEPROM
      */
     public abstract int size();
 
     /**
+     * <pre>
      * Вернуть определение структуры. Структура определяется одно байтовым знаком:
      *   CHAR   - 'c'
      *   INT8   - 'b'
@@ -101,6 +133,8 @@ public abstract class RomData {
      *   STRING - 's'
      *   OBJECT - '{}' ('o')
      *   ARRAY  - '[]' ('a')
+     *   </pre>
+     *
      * @return определение структуры
      */
     public abstract Character defChar();
@@ -111,19 +145,29 @@ public abstract class RomData {
 
     /**
      * Добавляем образ объекта в накопительный массив байт.
-     * @param buff накопительный объект ByteArrayBuilder
+     *
+     * @param buff              накопительный объект ByteArrayBuilder
+     * @param reference2Address связь refId на реальный адрес в EEPROM
      * @return накопительный объект ByteArrayBuilder
      * @throws UnsupportedEncodingException если ошибка
      */
-    public abstract ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException;
+    public abstract ByteArrayBuilder toEeprom(
+        final ByteArrayBuilder buff,
+        final Map<String, AddressToRoms> reference2Address
+    ) throws UnsupportedEncodingException;
 
     /**
+     * <pre>
      * Получаем образ объекта в массив байт.
      * В дальнейшем upload образ в arduino.
+     * </pre>
+     *
      * @return массив байт
      * @throws UnsupportedEncodingException если ошибка
      */
     public byte[] toEeprom() throws UnsupportedEncodingException {
-        return toEeprom(new ByteArrayBuilder()).toByte();
+        final ByteArrayBuilder bab = new ByteArrayBuilder();
+        final Map<String, AddressToRoms> reference2Address = new HashMap<>();
+        return toEeprom(bab, reference2Address).toByte();
     }
 }

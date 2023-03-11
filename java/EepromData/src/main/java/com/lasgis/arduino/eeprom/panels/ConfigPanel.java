@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 06.03.2023
+ *  @(#)ConfigPanel.java  last: 11.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -347,7 +347,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     public void createHexDefinition(final File file) {
         try {
             final MemoryRoms memoryRoms = LoadHelper.load(file);
-            LoadHelper.createDump(memoryRoms);
             final String path = file.getParent();
             CreateHelper.create(nonNull(path) ? path : "", memoryRoms);
         } catch (Exception ex) {
@@ -381,7 +380,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
                     try {
                         final File file = dataFileInput.getFile();
                         final MemoryRoms memoryRoms = LoadHelper.load(file);
-                        LoadHelper.createDump(memoryRoms);
                         final String path = file.getParent();
                         CreateHelper.create(nonNull(path) ? path : "", memoryRoms);
                     } catch (Exception ex) {

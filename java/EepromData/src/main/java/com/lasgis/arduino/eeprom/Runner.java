@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 06.03.2023
+ *  @(#)Runner.java  last: 11.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -86,7 +86,6 @@ public class Runner {
             commands.contains(CommandType.upload)
         ) {
             memoryRoms = LoadHelper.load();
-            LoadHelper.createDump(memoryRoms);
         }
 
         /* далее обработка по командам */
@@ -94,7 +93,6 @@ public class Runner {
             TestHelper.show(memoryRoms);
         }
         if (commands.contains(CommandType.create)) {
-
             CreateHelper.create(properties.getProperty(PROP_PATCH), memoryRoms);
         }
         if (commands.contains(CommandType.upload)) {

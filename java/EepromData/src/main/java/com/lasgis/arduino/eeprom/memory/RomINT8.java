@@ -1,5 +1,5 @@
 /*
- *  @(#)RomINT8.java  last: 09.03.2023
+ *  @(#)RomINT8.java  last: 12.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -14,6 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 /**
  * @author Vladimir Laskin
@@ -58,8 +59,8 @@ public class RomINT8 extends RomData {
     }
 
     @Override
-    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff) throws UnsupportedEncodingException {
-        setOffset(buff.position());
+    public ByteArrayBuilder toEeprom(final ByteArrayBuilder buff, final Map<String, AddressToRoms> reference2Address) throws UnsupportedEncodingException {
+        updateOffset(buff, reference2Address);
         return buff.put(val);
     }
 }
