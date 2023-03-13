@@ -124,7 +124,7 @@ float LoadClass::readFloat(){
  * @return
  */
 char * LoadClass::readString(bool isLazyDelete){
-  int len = readInt() - 2;
+  int len = readInt();
   char * str = new char[len + 1];
   if (isLazyDelete) addRef(str);
   I2CEEPROM.read_buffer(device, address, (uint8_t*) str, len);
@@ -137,7 +137,7 @@ int16_t LoadClass::toNext(CharDefinition cdef, int inc) {
   int size = getDefinitionSize(cdef);
   if (size == -1) {
     for (int i = 0; i < inc; i++) {
-      address += readInt() - 2;
+      address += readInt();
     }
   } else {
     address += size * inc;
@@ -290,7 +290,7 @@ int16_t LoadClass::toArrayItem(int item) {
  */
 void * LoadClass::readArray(int & count) {
 #ifdef HAS_SERIAL_DEBUG
-  int len = readInt();
+  int len = readInt(); // пропускаем размер своего блока
   Serial.print("readArray len = ");
   Serial.print(len);
 #else
