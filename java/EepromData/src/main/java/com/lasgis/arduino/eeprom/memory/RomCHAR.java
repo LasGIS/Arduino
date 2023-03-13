@@ -1,5 +1,5 @@
 /*
- *  @(#)RomCHAR.java  last: 12.03.2023
+ *  @(#)RomCHAR.java  last: 13.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -42,7 +42,7 @@ public class RomCHAR extends RomData {
 
     @Override
     public int size() {
-        return 1;
+        return Byte.BYTES;
     }
 
     @Override

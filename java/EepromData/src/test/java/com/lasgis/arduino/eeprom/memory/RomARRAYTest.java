@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAYTest.java  last: 09.03.2023
+ *  @(#)RomARRAYTest.java  last: 13.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -30,7 +30,7 @@ public class RomARRAYTest extends RomCommonTest {
                     .add(RomINT8.of(3))
                     .add(RomINT8.of(0))
                     .add(RomINT8.of(-1))
-                , "0A0062050001020300FF", "b", 10
+                , "080062050001020300FF", "b", 10
             }, {
                 RomARRAY.of()
                     .add(RomINT16.of(1))
@@ -38,7 +38,7 @@ public class RomARRAYTest extends RomCommonTest {
                     .add(RomINT16.of(3))
                     .add(RomINT16.of(0))
                     .add(RomINT16.of(-3))
-                , "0F006905000100020003000000FDFF", "i", 15
+                , "0D006905000100020003000000FDFF", "i", 15
             }, {
                 RomARRAY.of("ARRAY", null)
                     .add(RomOBJECT.of("OBJECT", null)
@@ -57,10 +57,10 @@ public class RomARRAYTest extends RomCommonTest {
                         .add(RomSTRING.of("Третий объект 3 3"))
                         .add(RomCHAR.of('T'))
                 ),
-                "5C006F0300" +
-                    "1B00060062697363016F000F00CFE5F0E2FBE920EEE1FAE5EAF246" +
-                    "1D0006006269736302DE001100C2F2EEF0EEE920EEE1FAE5EAF2203253" +
-                    "1F00060062697363034D011300D2F0E5F2E8E920EEE1FAE5EAF22033203354",
+                "5A006F0300" +
+                    "1900040062697363016F000D00CFE5F0E2FBE920EEE1FAE5EAF246" +
+                    "1B0004006269736302DE000F00C2F2EEF0EEE920EEE1FAE5EAF2203253" +
+                    "1D00040062697363034D011100D2F0E5F2E8E920EEE1FAE5EAF22033203354",
                 "o", 92
             }};
         } catch (Exception ex) {

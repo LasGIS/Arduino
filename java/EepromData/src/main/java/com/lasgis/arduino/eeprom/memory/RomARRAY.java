@@ -1,5 +1,5 @@
 /*
- *  @(#)RomARRAY.java  last: 12.03.2023
+ *  @(#)RomARRAY.java  last: 13.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -52,7 +52,8 @@ public class RomARRAY extends RomData {
     @Override
     public int size() {
         define = define();
-        int size = 5;
+        /* 1 - size block; 2 - size of definition char; 3 - count of array items */
+        int size = Short.BYTES + Byte.BYTES + Short.BYTES;
         for (final RomData item : array) {
             size += item.size();
         }
@@ -74,9 +75,7 @@ public class RomARRAY extends RomData {
         final ByteArrayBuilder buff, final Map<String, AddressToRoms> reference2Address
     ) throws UnsupportedEncodingException {
         updateOffset(buff, reference2Address);
-        buff.putShort(size());
-        buff.put(define().getBytes(CHARSET));
-        buff.putShort(array.size());
+        buff.putShort(size() - Short.BYTES).put(define().getBytes(CHARSET)).putShort(array.size());
         for (final RomData item : array) {
             item.toEeprom(buff, reference2Address);
         }
