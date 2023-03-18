@@ -1,5 +1,5 @@
 /*
- *  @(#)RomData.java  last: 12.03.2023
+ *  @(#)RomData.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
@@ -97,7 +96,11 @@ public abstract class RomData {
         this.offset = 0;
     }
 
-    public void updateOffset(final ByteArrayBuilder buff, final Map<String, AddressToRoms> reference2Address) {
+    public void updateOffset(
+        final ByteArrayBuilder buff,
+        final int addressEeprom,
+        final Map<String, AddressToRoms> reference2Address
+    ) {
         offset = buff.position();
         if (nonNull(refId)) {
             AddressToRoms addressToRoms = reference2Address.get(refId);
@@ -111,7 +114,7 @@ public abstract class RomData {
                 if (nonNull(addressToRoms.getOffset())) {
                     log.error("Такой reference \"{}\" уже зарезервирован! Объект name: {}", refId, name);
                 }
-                addressToRoms.setOffset(offset);
+                addressToRoms.setOffset(offset + addressEeprom);
             }
         }
     }
@@ -147,27 +150,14 @@ public abstract class RomData {
      * Добавляем образ объекта в накопительный массив байт.
      *
      * @param buff              накопительный объект ByteArrayBuilder
+     * @param addressEeprom     начальный адрес EEPROM памяти для данной загрузки в EEPROM
      * @param reference2Address связь refId на реальный адрес в EEPROM
      * @return накопительный объект ByteArrayBuilder
      * @throws UnsupportedEncodingException если ошибка
      */
     public abstract ByteArrayBuilder toEeprom(
         final ByteArrayBuilder buff,
+        final int addressEeprom,
         final Map<String, AddressToRoms> reference2Address
     ) throws UnsupportedEncodingException;
-
-    /**
-     * <pre>
-     * Получаем образ объекта в массив байт.
-     * В дальнейшем upload образ в arduino.
-     * </pre>
-     *
-     * @return массив байт
-     * @throws UnsupportedEncodingException если ошибка
-     */
-    public byte[] toEeprom() throws UnsupportedEncodingException {
-        final ByteArrayBuilder bab = new ByteArrayBuilder();
-        final Map<String, AddressToRoms> reference2Address = new HashMap<>();
-        return toEeprom(bab, reference2Address).toByte();
-    }
 }

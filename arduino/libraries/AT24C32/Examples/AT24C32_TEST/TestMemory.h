@@ -26,4 +26,9 @@
 #define AT24C_music_1_TwoFunnyGeese 0x089c
 #define AT24C_music_1_TwoFunnyGeese_name 0x08a2
 #define AT24C_music_1_TwoFunnyGeese_music 0x08b8
-#define AT24C_EndOfBlock 0x08e5
+#define AT24C_musicRef 0x08e5
+#define AT24C_musicRef_0_JingleBells 0x08ea
+#define AT24C_musicRef_0_JingleBells_name 0x08f0
+#define AT24C_musicRef_1_TwoFunnyGeese 0x0911
+#define AT24C_musicRef_1_TwoFunnyGeese_name 0x0917
+#define AT24C_EndOfBlock 0x0940

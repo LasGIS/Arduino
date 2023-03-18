@@ -1,5 +1,5 @@
 /*
- *  @(#)RomFLOAT.java  last: 12.03.2023
+ *  @(#)RomFLOAT.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -87,9 +87,10 @@ public class RomFLOAT extends RomData {
     @Override
     public ByteArrayBuilder toEeprom(
         final ByteArrayBuilder buff,
+        final int addressEeprom,
         final Map<String, AddressToRoms> reference2Address
     ) throws UnsupportedEncodingException {
-        updateOffset(buff, reference2Address);
+        updateOffset(buff, addressEeprom, reference2Address);
         return buff.putFloat(val);
     }
 }

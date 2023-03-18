@@ -1,5 +1,5 @@
 /*
- *  @(#)RomSTRINGTest.java  last: 13.03.2023
+ *  @(#)RomSTRINGTest.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -58,7 +58,7 @@ public class RomSTRINGTest {
         final String inp, final String hexOut
     ) throws Exception {
         final RomSTRING rom = RomSTRING.of(inp);
-        final byte[] bytes = rom.toEeprom();
+        final byte[] bytes = MemoryHelper.toEeprom(rom);
         final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
         Assert.assertEquals(hexOutPrint, hexOut);
         Assert.assertEquals(rom.defChar(), 's');

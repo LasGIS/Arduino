@@ -15,6 +15,7 @@ extern void testArrayObjectToItem();
 extern void testJingleBells();
 extern void testJingleBellsToItem();
 extern void testLoadMusics();
+extern void testLoadMusicsRef();
 
 void setup() {
   Wire.begin(); // initialise the connection
@@ -86,7 +87,13 @@ void serialEvent() {
           }
           break;
         case '7':
-          testLoadMusics();
+          {
+            if (serialReadByte() == 0x31) {
+              testLoadMusicsRef();
+            } else {
+              testLoadMusics();
+            }
+          }
           break;
 
         default:

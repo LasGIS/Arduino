@@ -1,5 +1,5 @@
 /*
- *  @(#)RomEMPTY.java  last: 12.03.2023
+ *  @(#)RomEMPTY.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -60,7 +60,7 @@ public class RomEMPTY extends RomData {
     @Override
     public ByteArrayBuilder toEeprom(
         final ByteArrayBuilder buff,
-        final Map<String, AddressToRoms> reference2Address
+        final int addressEeprom, final Map<String, AddressToRoms> reference2Address
     ) throws UnsupportedEncodingException {
         return buff;
     }

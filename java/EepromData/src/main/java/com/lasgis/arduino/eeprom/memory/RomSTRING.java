@@ -1,5 +1,5 @@
 /*
- *  @(#)RomSTRING.java  last: 13.03.2023
+ *  @(#)RomSTRING.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -54,9 +54,9 @@ public class RomSTRING extends RomData {
     @Override
     public ByteArrayBuilder toEeprom(
         final ByteArrayBuilder buff,
-        final Map<String, AddressToRoms> reference2Address
+        final int addressEeprom, final Map<String, AddressToRoms> reference2Address
     ) throws UnsupportedEncodingException {
-        updateOffset(buff, reference2Address);
+        updateOffset(buff, addressEeprom, reference2Address);
         return buff.putShort(size() - Short.BYTES).put(val.getBytes(CHARSET));
     }
 }

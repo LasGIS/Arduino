@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)AT24CTestMemory.xml  last: 09.03.2023
+  ~  @(#)AT24CTestMemory.xml  last: 19.03.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -61,7 +61,7 @@
     <array name="music">
       <object name="JingleBells">
         <string name="name" val="Jingle Bells"/>
-        <dump name="music"><![CDATA[
+        <dump name="music" reference="musicJingleBells"><![CDATA[
 440244024401440244024401440247024002420244004502450245014402
 440244014402420242024402420147014402440244014402440244014402
 470240024202440045024502450144024402440147024702450242024000
@@ -74,10 +74,20 @@
       </object>
       <object name="TwoFunnyGeese">
         <string name="name" val="Жили у бабуси 2 гуси"/>
-        <dump name="music"><![CDATA[
+        <dump name="music" reference="musicTwoFunnyGeese"><![CDATA[
 450244024202400247014701450244024202400247014701450249024902
 45024402470247024402
       ]]></dump>
+      </object>
+    </array>
+    <array name="musicRef">
+      <object name="JingleBells">
+        <string name="name" val="Jingle Bells (with reference)"/>
+        <eepromAddress reference="musicJingleBells"/>
+      </object>
+      <object name="TwoFunnyGeese">
+        <string name="name" val="Жили у бабуси 2 гуси (with reference)"/>
+        <eepromAddress reference="musicTwoFunnyGeese"/>
       </object>
     </array>
     <int8 val="-1" name="EndOfBlock"/>

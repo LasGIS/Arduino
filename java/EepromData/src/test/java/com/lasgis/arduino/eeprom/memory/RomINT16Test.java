@@ -1,5 +1,5 @@
 /*
- *  @(#)RomINT16Test.java  last: 08.02.2023
+ *  @(#)RomINT16Test.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -35,7 +35,7 @@ public class RomINT16Test {
         final short inp, final String expected
     ) throws Exception {
         final RomINT16 rom = RomINT16.of(inp);
-        final byte[] bytes = rom.toEeprom();
+        final byte[] bytes = MemoryHelper.toEeprom(rom);
         Assert.assertEquals(DatatypeConverter.printHexBinary(bytes), expected);
         Assert.assertEquals(rom.defChar(), 'i');
         Assert.assertEquals(rom.size(), 2);

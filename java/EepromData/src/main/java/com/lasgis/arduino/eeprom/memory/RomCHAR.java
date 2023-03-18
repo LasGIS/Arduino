@@ -1,5 +1,5 @@
 /*
- *  @(#)RomCHAR.java  last: 13.03.2023
+ *  @(#)RomCHAR.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -53,9 +53,10 @@ public class RomCHAR extends RomData {
     @Override
     public ByteArrayBuilder toEeprom(
         final ByteArrayBuilder buff,
+        final int addressEeprom,
         final Map<String, AddressToRoms> reference2Address
     ) throws UnsupportedEncodingException {
-        updateOffset(buff, reference2Address);
+        updateOffset(buff, addressEeprom, reference2Address);
         return buff.put(Character.toString(val).getBytes(CHARSET));
     }
 }

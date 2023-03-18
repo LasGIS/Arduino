@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)TestMemory.xml  last: 11.03.2023
+  ~  @(#)TestMemory.xml  last: 19.03.2023
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -14,7 +14,7 @@
     <float name="factorBattery" val="0.00661"/>
     <float name="factorCharger" val="0.00654"/>
   </batchMemory>
-  <batchMemory device="0x57" prefix="CHIP">
+  <batchMemory device="0x57" prefix="CHIP" address="0x400">
     <char name="Char" val="c"/>
     <int8 name="Byte" val="127"/>
     <int16 name="Int" val="32767"/>

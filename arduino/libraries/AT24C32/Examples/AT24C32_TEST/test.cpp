@@ -280,3 +280,36 @@ void testLoadMusics() {
 //    Serial.println(lc.address, HEX);
   }
 }
+
+struct MusicObject {
+  char *name;
+  int16_t notesLenght;
+  uint8_t *notes;
+};
+
+
+/**
+ * case '71':
+ * @brief testLoadMusicsRef
+ */
+void testLoadMusicsRef() {
+  Serial.println("=> testLoadMusicsRef");
+  LoadClass lc(DEVICE, AT24C_music);
+  int count;
+  MusicObject **music = (MusicObject **)lc.readArray(count);
+  for (int16_t i = 0; i < count; i++) {
+    Serial.print("  name(");
+    Serial.print((int)music[i]->name, HEX);
+    Serial.print(") = \"");
+    Serial.print(music[i]->name);
+    Serial.println("\"");
+
+    Serial.print("  music(");
+    Serial.print(music[i]->notesLenght);
+    Serial.print(") = ");
+    SerialPrintHex(music[i]->notes, music[i]->notesLenght);
+    Serial.println();
+//    Serial.print(" address = ");
+//    Serial.println(lc.address, HEX);
+  }
+}

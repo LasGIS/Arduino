@@ -1,5 +1,5 @@
 /*
- *  @(#)BatchMemory.java  last: 17.02.2023
+ *  @(#)BatchMemory.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class BatchMemory содержит одну загрузку в ROM (ПЗУ).
+ * The Class BatchMemory содержит одну загрузку в EEPROM (ПЗУ).
  *
  * @author Vladimir Laskin
  * @since 15.02.2023 : 1:06

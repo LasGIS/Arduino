@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoaderTest.java  last: 12.03.2023
+ *  @(#)DataXmlLoaderTest.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -60,7 +60,7 @@ class DataXmlLoaderTest {
                 break;
                 case "CHIP": {
                     Assertions.assertEquals(0x57, batchMemory.getDevice());
-                    Assertions.assertEquals(0x0000, batchMemory.getAddress());
+                    Assertions.assertEquals(0x0400, batchMemory.getAddress());
                     final byte[] dump = batchMemory.getDump();
                     final List<RomData> romDataList = batchMemory.getRomDataList();
                     Assertions.assertNotNull(romDataList);
@@ -76,8 +76,9 @@ class DataXmlLoaderTest {
         });
         Assertions.assertEquals("test_memory", memoryRoms.getHeaderFilename());
         CreateHelper.create(targetPath, memoryRoms);
-        if (compareDefinitionFile(targetPath, "expected_test_memory.hex", "test_memory.hex")
-            || compareDefinitionFile(targetPath, "expected_test_memory.h", "test_memory.h")) {
+        boolean isHexFail = compareDefinitionFile(targetPath, "expected_test_memory.hex", "test_memory.hex");
+        boolean isDefFail = compareDefinitionFile(targetPath, "expected_test_memory.h", "test_memory.h");
+        if (isHexFail || isDefFail) {
             Assertions.fail();
         }
     }

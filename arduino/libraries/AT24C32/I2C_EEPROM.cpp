@@ -6,13 +6,13 @@
 #define MAX_BLOCK_LENGTH 30
 #define BLOCK_BOUND_MASK 0XFFE0
 
-void I2C_EEPROM::beginTransmission(uint8_t device, uint16_t address) {
+void I2C_EEPROM::beginTransmission(uint8_t device, AddressEeprom address) {
   Wire.beginTransmission(device);
   Wire.write(highByte(address)); // MSB
   Wire.write(lowByte(address)); // LSB
 }
 
-uint8_t I2C_EEPROM::read(uint8_t device, uint16_t address) {
+uint8_t I2C_EEPROM::read(uint8_t device, AddressEeprom address) {
   if (device == EEPROM_DEVICE) {
     return EEPROM.read(address);
   }
@@ -22,7 +22,7 @@ uint8_t I2C_EEPROM::read(uint8_t device, uint16_t address) {
   return Wire.available() ? Wire.read() : 0xFF;
 }
 
-void I2C_EEPROM::write(uint8_t device, uint16_t address, uint8_t data) {
+void I2C_EEPROM::write(uint8_t device, AddressEeprom address, uint8_t data) {
   if (device == EEPROM_DEVICE) {
     EEPROM.write(address, data);
     return;
@@ -35,7 +35,7 @@ void I2C_EEPROM::write(uint8_t device, uint16_t address, uint8_t data) {
 
 // WARNING: address is a page address, 6-bit end will wrap around
 // also, data can be maximum of about 30 bytes, because the Wire library has a buffer of 32 bytes
-void I2C_EEPROM::write_buffer(uint8_t device, uint16_t address, uint8_t* data, uint16_t length) {
+void I2C_EEPROM::write_buffer(uint8_t device, AddressEeprom address, uint8_t* data, uint16_t length) {
   if (device == EEPROM_DEVICE) {
     for(uint16_t i = 0; i < length; i++) {
       EEPROM.write(address + i, data[i]);
@@ -43,7 +43,8 @@ void I2C_EEPROM::write_buffer(uint8_t device, uint16_t address, uint8_t* data, u
     return;
   }
   for (uint16_t i = 0; i < length;) {
-    uint16_t len, addrBound;
+    uint16_t len;
+    AddressEeprom addrBound;
     if (length - i > MAX_BLOCK_LENGTH) {
       len = MAX_BLOCK_LENGTH;
     } else {
@@ -63,14 +64,14 @@ void I2C_EEPROM::write_buffer(uint8_t device, uint16_t address, uint8_t* data, u
 }
 
 // maybe let's not read more than 30 or 32 bytes at a time!
-void I2C_EEPROM::read_buffer(uint8_t device, uint16_t address, uint8_t* data, uint16_t length) {
+void I2C_EEPROM::read_buffer(uint8_t device, AddressEeprom address, uint8_t* data, uint16_t length) {
   if (device == EEPROM_DEVICE) {
     for(uint16_t i = 0; i < length; i++) {
       data[i] = EEPROM.read(address + i);
     }
     return;
   }
-  for (uint16_t offset = 0; offset < length; offset += BUFFER_LENGTH) {
+  for (AddressEeprom offset = 0; offset < length; offset += BUFFER_LENGTH) {
     uint16_t len = length - offset > BUFFER_LENGTH ? BUFFER_LENGTH : length - offset;
     beginTransmission(device, address + offset);
     Wire.endTransmission();

@@ -1,5 +1,5 @@
 /*
- *  @(#)RomCommonTest.java  last: 08.02.2023
+ *  @(#)RomCommonTest.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -27,7 +27,7 @@ class RomCommonTest {
     void testCompositeRom(
         final RomData rom, final String expected, final Character expectedDefChar, final String expectedDefine, final int size
     ) throws Exception {
-        final byte[] bytes = rom.toEeprom();
+        final byte[] bytes = MemoryHelper.toEeprom(rom);
         final String hexOutPrint = DatatypeConverter.printHexBinary(bytes);
         log.info("\"{}\"", new String(bytes, RomData.CHARSET));
         Assert.assertEquals(hexOutPrint, expected);

@@ -1,5 +1,5 @@
 /*
- *  @(#)LoadHelper.java  last: 12.03.2023
+ *  @(#)LoadHelper.java  last: 19.03.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -97,7 +97,7 @@ public class LoadHelper {
             final List<RomData> romDataList = batchMemory.getRomDataList();
             for (final RomData item : romDataList) {
                 try {
-                    item.toEeprom(bab, reference2Address);
+                    item.toEeprom(bab, batchMemory.getAddress(), reference2Address);
                 } catch (UnsupportedEncodingException ex) {
                     exOut.add(ex);
                 }

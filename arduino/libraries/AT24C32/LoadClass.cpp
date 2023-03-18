@@ -20,7 +20,7 @@ int getDefinitionSize(CharDefinition cdef) {
   }
 }
 
-LoadClass::LoadClass(int8_t device, int16_t address) {
+LoadClass::LoadClass(int8_t device, AddressEeprom address) {
   this->device = device;
   this->address = address;
   refs = (void**) calloc(10, sizeof(void*));
@@ -133,7 +133,7 @@ char * LoadClass::readString(bool isLazyDelete){
   return str;
 }
 
-int16_t LoadClass::toNext(CharDefinition cdef, int inc) {
+AddressEeprom LoadClass::toNext(CharDefinition cdef, int inc) {
   int size = getDefinitionSize(cdef);
   if (size == -1) {
     for (int i = 0; i < inc; i++) {
@@ -238,8 +238,9 @@ int LoadClass::getObjectLength(char * definition){
  * Действительно только для объектов
  * @brief LoadClass::toObjectItem
  * @param item номер элемента
+ * @return адрес элемента в EEPROM
  */
-int16_t LoadClass::toObjectItem(uint16_t item) {
+AddressEeprom LoadClass::toObjectItem(uint16_t item) {
   readInt(); // пропускаем размер своего блока
   char * definition = newString();
   for (uint16_t i = 0; i + 1 < strlen(definition) && i < item; i++) {
@@ -253,7 +254,7 @@ int16_t LoadClass::toObjectItem(uint16_t item) {
  * Читаем объект
  * OBJECT - 'o'
  * @brief LoadClass::readObject
- * @return
+ * @return новый объект
  */
 void * LoadClass::readObject(int &length){
   readInt(); // пропускаем размер своего блока
@@ -274,7 +275,7 @@ void * LoadClass::readObject(int &length){
  * @brief LoadClass::toArrayItem
  * @param item номер элемента
  */
-int16_t LoadClass::toArrayItem(int item) {
+AddressEeprom LoadClass::toArrayItem(int item) {
   readInt(); // пропускаем размер своего блока
   CharDefinition charDef = (CharDefinition) readByte();
   int count = readInt() - 1;
