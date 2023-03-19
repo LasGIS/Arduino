@@ -48,11 +48,11 @@ public:
 
   AddressEeprom toObjectItem(uint16_t item);
   inline AddressEeprom toObjectItem(AddressEeprom _address, int item) { address = _address; return toObjectItem(item); }
-  void * readObject(int & length);
+  void * readObject(int & length, bool asReference = true);
 
   AddressEeprom toArrayItem(int item);
   inline AddressEeprom toArrayItem(AddressEeprom _address, int item) { address = _address; return toArrayItem(item); }
-  void * readArray(int & count);
+  void * readArray(int & count, bool asReference = true);
 };
 
 #endif // LOAD_CLASS_H

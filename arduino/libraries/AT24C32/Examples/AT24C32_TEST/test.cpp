@@ -281,10 +281,9 @@ void testLoadMusics() {
   }
 }
 
-struct MusicObject {
+struct MusicObjectRef {
   char *name;
-  int16_t notesLenght;
-  uint8_t *notes;
+  AddressEeprom noteRef;
 };
 
 
@@ -294,9 +293,9 @@ struct MusicObject {
  */
 void testLoadMusicsRef() {
   Serial.println("=> testLoadMusicsRef");
-  LoadClass lc(DEVICE, AT24C_music);
+  LoadClass lc(DEVICE, AT24C_musicRef);
   int count;
-  MusicObject **music = (MusicObject **)lc.readArray(count);
+  MusicObjectRef **music = (MusicObjectRef **)lc.readArray(count, false);
   for (int16_t i = 0; i < count; i++) {
     Serial.print("  name(");
     Serial.print((int)music[i]->name, HEX);
@@ -304,12 +303,17 @@ void testLoadMusicsRef() {
     Serial.print(music[i]->name);
     Serial.println("\"");
 
-    Serial.print("  music(");
-    Serial.print(music[i]->notesLenght);
+    Serial.print("  note(");
+    Serial.print(music[i]->noteRef, HEX);
+    Serial.print(",");
+
+    int notesLenght;
+    uint8_t* notes;
+    lc.toAddress(music[i]->noteRef);
+    notes = (uint8_t*) lc.readArray(notesLenght, false);
+    Serial.print(notesLenght);
     Serial.print(") = ");
-    SerialPrintHex(music[i]->notes, music[i]->notesLenght);
+    SerialPrintHex(notes, notesLenght);
     Serial.println();
-//    Serial.print(" address = ");
-//    Serial.println(lc.address, HEX);
   }
 }

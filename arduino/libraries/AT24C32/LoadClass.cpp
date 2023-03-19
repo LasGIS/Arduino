@@ -10,6 +10,7 @@ int getDefinitionSize(CharDefinition cdef) {
   switch (cdef) {
   case charDef:
   case byteDef: return 1;
+  case referDef:
   case intDef: return 2;
   case longDef:
   case floatDef: return 4;
@@ -170,6 +171,7 @@ void LoadClass::readRom(uint8_t * obj, int &pos, CharDefinition cdef) {
     obj[pos] = readByte();
     pos++;
     break;
+  case referDef:
   case intDef: {
     int intVal = readInt();
     memcpy(obj + pos, (const void*) &intVal, 2);
@@ -256,7 +258,8 @@ AddressEeprom LoadClass::toObjectItem(uint16_t item) {
  * @brief LoadClass::readObject
  * @return новый объект
  */
-void * LoadClass::readObject(int &length){
+void * LoadClass::readObject(int &length, bool asReference) {
+  Serial.print(asReference ? " <object as Reference> " : " <object as Areal> ");
   readInt(); // пропускаем размер своего блока
   char* definition = newString();
   int objectLength = getObjectLength(definition);
@@ -289,7 +292,8 @@ AddressEeprom LoadClass::toArrayItem(int item) {
  * @param count число членов массива
  * @return
  */
-void * LoadClass::readArray(int & count) {
+void * LoadClass::readArray(int & count, bool asReference) {
+  Serial.print(asReference ? " <array as Reference> " : " <array as Areal> ");
 #ifdef HAS_SERIAL_DEBUG
   int len = readInt(); // пропускаем размер своего блока
   Serial.print("readArray len = ");
