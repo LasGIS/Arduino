@@ -207,6 +207,39 @@ void testArrayObjectToItem() {
 }
 
 /**
+ * case '52':
+ * @brief testArrayObjectAreal
+ */
+void testArrayObjectAreal() {
+  //  LoadClass lc(DEVICE, AT24C_ArrayOfObject);
+  //  int len;
+  TestObjectArray objs[] = {
+    { (int8_t)1, 111, (char *)"First object", 'F' },
+    { (int8_t)2, 222, (char *)"Second object 2", 'S' },
+    { (int8_t)3, 333, (char *)"Third object 3 3", 'T' },
+  };
+  Serial.print("=> testArrayObjectAreal(");
+  int len = sizeof(objs) / sizeof(TestObjectArray);
+  Serial.print(len);
+  Serial.print(":");
+  Serial.print((int) &objs[1], HEX);
+  Serial.print(") = ");
+  SerialPrintHex(((uint8_t *)objs) - 6, sizeof(objs) + 12);
+  Serial.println();
+  for (int i = 0; i < len; i++) {
+    Serial.print(" Int8 = ");
+    Serial.print(objs[i].int8);
+    Serial.print(", Int16 = ");
+    Serial.print(objs[i].int16);
+    Serial.print(", String = \"");
+    Serial.print(objs[i].str);
+    Serial.print("\", Char = ");
+    Serial.print(objs[i].chr);
+    Serial.println(";");
+  }
+}
+
+/**
  * case '6':
  * @brief testArrayObject
  */
@@ -276,8 +309,8 @@ void testLoadMusics() {
     Serial.print(") = ");
     SerialPrintHex(music[i]->notes, music[i]->notesLenght);
     Serial.println();
-//    Serial.print(" address = ");
-//    Serial.println(lc.address, HEX);
+    // Serial.print(" address = ");
+    // Serial.println(lc.address, HEX);
   }
 }
 
@@ -308,9 +341,9 @@ void testLoadMusicsRef() {
     Serial.print(",");
 
     int notesLenght;
-    uint8_t* notes;
+    uint8_t *notes;
     lc.toAddress(music[i]->noteRef);
-    notes = (uint8_t*) lc.readArray(notesLenght, false);
+    notes = (uint8_t *)lc.readArray(notesLenght, false);
     Serial.print(notesLenght);
     Serial.print(") = ");
     SerialPrintHex(notes, notesLenght);

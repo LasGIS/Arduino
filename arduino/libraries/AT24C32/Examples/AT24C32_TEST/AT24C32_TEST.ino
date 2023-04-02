@@ -12,6 +12,7 @@ extern void testArray();
 extern void testArrayToItem();
 extern void testArrayObject();
 extern void testArrayObjectToItem();
+extern void testArrayObjectAreal();
 extern void testJingleBells();
 extern void testJingleBellsToItem();
 extern void testLoadMusics();
@@ -70,10 +71,16 @@ void serialEvent() {
           break;
         case '5':
           {
-            if (serialReadByte() == 0x31) {
-              testArrayObjectToItem();
-            } else {
-              testArrayObject();
+            key = serialReadByte();
+            switch (key) {
+              case '1':
+                testArrayObjectToItem();
+                break;
+              case '2':
+                testArrayObjectAreal();
+                break;
+              default:
+                testArrayObject();
             }
           }
           break;
