@@ -77,7 +77,7 @@ DateTime::DateTime (uint32_t t) {
   uint8_t leap;
   for (yOff = 0; ; ++yOff) {
     leap = yOff % 4 == 0;
-    if (days < 365 + leap)
+    if (days < (uint16_t) 365 + leap)
       break;
     days -= 365 + leap;
   }
@@ -204,7 +204,6 @@ byte DS3231::getDate() {
 
 byte DS3231::getMonth(bool& Century) {
   byte temp_buffer;
-  byte hour;
   Wire.beginTransmission(CLOCK_ADDRESS);
   Wire.write(0x05);
   Wire.endTransmission();

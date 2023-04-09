@@ -18,7 +18,7 @@ uint16_t boxCenterY;
 GravVector gravVector;
 
 // главный LoadClass
-LoadClass loadClass(DEVICE, 0);
+LoadClassRef loadClass(DEVICE, 0);
 
 // текущая команда
 uint8_t currentCommand = 0;

@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <SerialBlock.h>
 #include <LoadClass.h>
+#include <LoadClassRef.h>
 #include "AT24C32_TEST.h"
 #include "TestMemory.h"
 
@@ -26,7 +27,7 @@ struct TestObjectArray {
  * @brief testAT24C32
  */
 void testAT24C32() {
-  LoadClass lc(DEVICE, AT24C_Char);
+  LoadClassRef lc(DEVICE, AT24C_Char);
   Serial.print("=> testAT24C32:");
   char c = lc.readByte();
   Serial.print(" Char = ");
@@ -59,7 +60,7 @@ void testAT24C32() {
  * @brief testString
  */
 void testString() {
-  LoadClass lc(DEVICE, AT24C_ArrayOfObject_0_Object_String);
+  LoadClassRef lc(DEVICE, AT24C_ArrayOfObject_0_Object_String);
   char *s = lc.readString();
   Serial.print("=> String(");
   Serial.print((int)s, HEX);
@@ -73,7 +74,7 @@ void testString() {
  * @brief testObject
  */
 void testObject() {
-  LoadClass lc(DEVICE, AT24C_Object);
+  LoadClassRef lc(DEVICE, AT24C_Object);
   int len;
   TestObject *obj = (TestObject *)lc.readObject(len);
   Serial.print("=> Object(");
@@ -104,7 +105,7 @@ void testObject() {
  * @brief testObjectToItem
  */
 void testObjectToItem() {
-  LoadClass lc(DEVICE, 0);
+  LoadClassRef lc(DEVICE, 0);
   Serial.print("=> testObjectToItem ");
 
   lc.toObjectItem(AT24C_Object, 3);
@@ -128,7 +129,7 @@ void testObjectToItem() {
  * @brief testArray
  */
 void testArray() {
-  LoadClass lc(DEVICE, AT24C_ArrayOfInt);
+  LoadClassRef lc(DEVICE, AT24C_ArrayOfInt);
   int len;
   int *arr = (int *)lc.readArray(len);
   Serial.print("=> testArray(");
@@ -147,7 +148,7 @@ void testArray() {
  * @brief testArrayToItem
  */
 void testArrayToItem() {
-  LoadClass lc(DEVICE, 0);
+  LoadClassRef lc(DEVICE, 0);
   Serial.print("=> testArrayToItem ");
   Serial.print("[3] = ");
   lc.toArrayItem(AT24C_ArrayOfInt, 3);
@@ -163,7 +164,7 @@ void testArrayToItem() {
  * @brief testArrayObject
  */
 void testArrayObject() {
-  LoadClass lc(DEVICE, AT24C_ArrayOfObject);
+  LoadClassRef lc(DEVICE, AT24C_ArrayOfObject);
   int len;
   TestObjectArray **objs = (TestObjectArray **)lc.readArray(len);
   Serial.print("=> testArrayObject(");
@@ -188,7 +189,7 @@ void testArrayObject() {
  */
 void testArrayObjectToItem() {
   Serial.print("=> testArrayObjectToItem ");
-  LoadClass lc(DEVICE, 0);
+  LoadClassRef lc(DEVICE, 0);
   lc.toArrayItem(AT24C_ArrayOfObject, 4);
   lc.toObjectItem(2);
   char *str = lc.readString();
@@ -211,18 +212,26 @@ void testArrayObjectToItem() {
  * @brief testArrayObjectAreal
  */
 void testArrayObjectAreal() {
-  //  LoadClass lc(DEVICE, AT24C_ArrayOfObject);
-  //  int len;
-  TestObjectArray objs[] = {
-    { (int8_t)1, 111, (char *)"First object", 'F' },
-    { (int8_t)2, 222, (char *)"Second object 2", 'S' },
-    { (int8_t)3, 333, (char *)"Third object 3 3", 'T' },
-  };
+  LoadClass lc(DEVICE, AT24C_ArrayOfObject);
+  uint8_t leng = 3;
+  TestObjectArray objs[leng];
+//  objs[0] = { (int8_t)1, 111, (char *)"First object", 'F' };
+//  objs[1] = { (int8_t)2, 222, (char *)"Second object 2", 'S' };
+//  objs[2] = { (int8_t)3, 333, (char *)"Third object 3 3", 'T' };
+  int count;
+  int size = lc.readArray(objs, count);
+//  TestObjectArray objs[] = {
+//    { (int8_t)1, 111, (char *)"First object", 'F' },
+//    { (int8_t)2, 222, (char *)"Second object 2", 'S' },
+//    { (int8_t)3, 333, (char *)"Third object 3 3", 'T' },
+//  };
   Serial.print("=> testArrayObjectAreal(");
   int len = sizeof(objs) / sizeof(TestObjectArray);
-  Serial.print(len);
+  Serial.print(size);
   Serial.print(":");
-  Serial.print((int) &objs[1], HEX);
+  Serial.print(count);
+  Serial.print(":");
+  Serial.print((int) objs, HEX);
   Serial.print(") = ");
   SerialPrintHex(((uint8_t *)objs) - 6, sizeof(objs) + 12);
   Serial.println();
@@ -245,7 +254,7 @@ void testArrayObjectAreal() {
  */
 void testJingleBells() {
   Serial.println("testJingleBells");
-  LoadClass lc(DEVICE, AT24C_music_0_JingleBells_music);
+  LoadClassRef lc(DEVICE, AT24C_music_0_JingleBells_music);
   int len;
   uint8_t *objs = (uint8_t *)lc.readArray(len);
   Serial.print("=> testJingleBells(");
@@ -261,7 +270,7 @@ void testJingleBells() {
  */
 void testJingleBellsToItem() {
   Serial.println("=> testJingleBellsToItem");
-  LoadClass lc(DEVICE, 0);
+  LoadClassRef lc(DEVICE, 0);
 
   lc.toObjectItem(AT24C_music_0_JingleBells, 1);
   int len;
@@ -294,7 +303,7 @@ struct MusicObject {
  */
 void testLoadMusics() {
   Serial.println("=> testLoadMusics");
-  LoadClass lc(DEVICE, AT24C_music);
+  LoadClassRef lc(DEVICE, AT24C_music);
   int count;
   MusicObject **music = (MusicObject **)lc.readArray(count);
   for (int16_t i = 0; i < count; i++) {
@@ -326,9 +335,9 @@ struct MusicObjectRef {
  */
 void testLoadMusicsRef() {
   Serial.println("=> testLoadMusicsRef");
-  LoadClass lc(DEVICE, AT24C_musicRef);
+  LoadClassRef lc(DEVICE, AT24C_musicRef);
   int count;
-  MusicObjectRef **music = (MusicObjectRef **)lc.readArray(count, false);
+  MusicObjectRef **music = (MusicObjectRef **)lc.readArray(count);
   for (int16_t i = 0; i < count; i++) {
     Serial.print("  name(");
     Serial.print((int)music[i]->name, HEX);
@@ -343,7 +352,7 @@ void testLoadMusicsRef() {
     int notesLenght;
     uint8_t *notes;
     lc.toAddress(music[i]->noteRef);
-    notes = (uint8_t *)lc.readArray(notesLenght, false);
+    notes = (uint8_t *)lc.readArray(notesLenght);
     Serial.print(notesLenght);
     Serial.print(") = ");
     SerialPrintHex(notes, notesLenght);

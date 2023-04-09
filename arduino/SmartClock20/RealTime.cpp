@@ -18,7 +18,7 @@ void toTwoChar(uint8_t val, char * str, uint8_t start) {
 }
 
 const char* dayOfWeekName(const int dayOfWeek) {
-  LoadClass lc(DEVICE, 0);
+  LoadClassRef lc(DEVICE, 0);
   if (isHorisontalOrientation()) {
     lc.toArrayItem(AT24C_DayOfWeekHorizontal, (dayOfWeek - 1));
   } else {

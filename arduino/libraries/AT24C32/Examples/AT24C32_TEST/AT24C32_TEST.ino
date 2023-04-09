@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <LoadClass.h>
+#include <LoadClassRef.h>
 #include <SerialBlock.h>
 #include "AT24C32_TEST.h"
 

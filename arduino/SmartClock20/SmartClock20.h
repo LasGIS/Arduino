@@ -4,7 +4,7 @@
 #include <Arduino.h>
 //#include <avr/pgmspace.h>
 #include <SerialBlock.h>
-#include <LoadClass.h>
+#include <LoadClassRef.h>
 #include <SPI.h>
 #include <DS3231.h>
 #include <Wire.h>
@@ -54,7 +54,7 @@
 
 extern TFT_LG_ILI9225 tft;
 extern DS3231 Clock;
-extern LoadClass loadClass;
+extern LoadClassRef loadClass;
 extern char comBuffer[20];
 extern ModeType mode;
 extern uint8_t isRedraw;

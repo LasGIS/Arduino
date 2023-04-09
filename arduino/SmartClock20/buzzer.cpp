@@ -5,11 +5,24 @@
 uint8_t keySoundVolume = 1;
 uint8_t musicSoundVolume = 8;
 
+/* Жили у бабуси 2 гуси
+Note music[] = {
+  Note(Fa, 4, 2), Note(Mi, 4, 2), Note(Re, 4, 2), Note(Do, 4, 2), Note(Sl, 4, 1),  Note(Sl, 4, 1),
+  Note(Fa, 4, 2), Note(Mi, 4, 2), Note(Re, 4, 2), Note(Do, 4, 2), Note(Sl, 4, 1),  Note(Sl, 4, 1),
+  Note(Fa, 4, 2), Note(La, 4, 2), Note(La, 4, 2), Note(Fa, 4, 2),
+  Note(Mi, 4, 2), Note(Sl, 4, 2), Note(Sl, 4, 2), Note(Mi, 4, 2),
+  Note(Re, 4, 2), Note(Mi, 4, 2), Note(Fa, 4, 2), Note(Re, 4, 2), Note(Do, 4, 1),  Note(Do, 4, 1),
+  Note(Fa, 4, 2), Note(La, 4, 2), Note(La, 4, 2), Note(Fa, 4, 2),
+  Note(Mi, 4, 2), Note(Sl, 4, 2), Note(Sl, 4, 2), Note(Mi, 4, 2),
+  Note(Re, 4, 2), Note(Mi, 4, 2), Note(Fa, 4, 2), Note(Re, 4, 2), Note(Do, 4, 1),  Note(Do, 4, 1)
+};
+*/
+
 /**
  *  musicAlarm
  */
 void musicAlarm() {
-  LoadClass lc(DEVICE, AT24C_music_0_JingleBells_music);
+  LoadClassRef lc(DEVICE, AT24C_music_0_JingleBells_music);
   int len;
   Note* music = (Note*)lc.readArray(len);
 #ifdef HAS_SERIAL

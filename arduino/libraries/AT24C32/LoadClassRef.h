@@ -1,10 +1,10 @@
-#ifndef LOAD_CLASS_H
-#define LOAD_CLASS_H
+#ifndef LOAD_CLASS_REF_H
+#define LOAD_CLASS_REF_H
 
 #include <I2C_EEPROM.h>
 #include <LoadClassCommon.h>
 
-class LoadClass {
+class LoadClassRef {
 private:
   /* номер микосхемы (0x57 для CMOS) */
   int8_t device;
@@ -15,14 +15,16 @@ private:
   int refMaxLength = 10;
   int refLength = 0;
 private:
+  int getRomLength(CharDefinition cdef);
+  int getObjectLength(char * definition);
   void * addRef(void * ref);
   void readRom(uint8_t * obj, int &pos, CharDefinition cdef);
   char * readString(bool isNew);
   AddressEeprom toNext(CharDefinition cdef, int inc);
 
 public:
-  LoadClass(int8_t device, AddressEeprom address);
-  ~LoadClass();
+  LoadClassRef(int8_t device, AddressEeprom address);
+  ~LoadClassRef();
   inline void toAddress(AddressEeprom _address) { address = _address; }
 
   //=== операции чтения ===
@@ -35,15 +37,11 @@ public:
 
   AddressEeprom toObjectItem(uint16_t item);
   inline AddressEeprom toObjectItem(AddressEeprom _address, int item) { address = _address; return toObjectItem(item); }
-  int getObjectLength();
-  inline int getObjectLength(AddressEeprom _address) { address = _address; return getObjectLength(); }
-  int readObject(void * obj);
+  void * readObject(int & length);
 
   AddressEeprom toArrayItem(int item);
   inline AddressEeprom toArrayItem(AddressEeprom _address, int item) { address = _address; return toArrayItem(item); }
-  int getArrayLength(int &count);
-  inline int getArrayLength(AddressEeprom _address, int &count) { address = _address; return getArrayLength(count); }
-  int readArray(void * obj, int &count);
+  void * readArray(int & count);
 };
 
-#endif // LOAD_CLASS_H
+#endif // LOAD_CLASS_REF_H
