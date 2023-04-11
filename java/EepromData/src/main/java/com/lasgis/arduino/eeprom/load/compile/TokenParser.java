@@ -1,14 +1,13 @@
 /*
- * @(#)TokenParser.java
+ *  @(#)TokenParser.java  last: 11.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright © 2018, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load.compile;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,19 +19,13 @@ import java.util.Map;
 public class TokenParser {
 
     private static final String SPACE_CHARS = " \n\r\t";
-    private static final String DELIMIT_CHARS = ".,;:=<>(){}[]+-*/!|\"\'\\" + "№&%?@#$%^";
+    private static final String DELIMIT_CHARS = ".,;:=<>(){}[]+-*/!|\"'\\№&%?@#$%^";
     private static final String START_BLOCK_CHARS = "{[";
 //    private static final List<String> OPERATORS = Arrays.asList(
 //        "=", "+=", "-=", "*=", "/=", "+", "-", "*", "/", "&&", "||", ">=", "<", "<=", ">", ">=", "==", "!=", "!", "."
 //    );
     private static final String UNARY_DELIMIT = ",;:";
-    @SuppressWarnings("unchecked")
-    private static final Map<Character, Character> BLOCK_CHARS = new HashMap() { {
-            this.put('(', ')');
-            this.put('{', '}');
-            this.put('[', ']');
-        }
-    };
+    private static final Map<Character, Character> BLOCK_CHARS = Map.of('(', ')', '{', '}', '[', ']');
     private static final String DIGIT_CHARS = "0123456789";
 
     protected final StringBuilder sb;
@@ -56,7 +49,7 @@ public class TokenParser {
             }
             return null;
         }
-    };
+    }
 
     /**
      * Типовые знаки.
@@ -94,6 +87,7 @@ public class TokenParser {
 
         /**
          * Передаем только область.
+         *
          * @param beg начало области
          * @param end конец области
          */
@@ -105,9 +99,10 @@ public class TokenParser {
 
         /**
          * Полный конструктор.
+         *
          * @param type тип области
-         * @param beg начало области
-         * @param end конец области
+         * @param beg  начало области
+         * @param end  конец области
          */
         public Token(final TokenType type, final int beg, final int end) {
             this.type = type;
@@ -130,6 +125,7 @@ public class TokenParser {
 
         /**
          * Получаем Token, следующий за этим.
+         *
          * @param parsEnd конец разбора
          * @return от порция с типом
          */
@@ -144,6 +140,7 @@ public class TokenParser {
 
         /**
          * Получаем первый Token внутри за этого.
+         *
          * @param parsEnd конец разбора
          * @return от порция с типом
          */
@@ -153,15 +150,18 @@ public class TokenParser {
 
         /**
          * Проверка на тип лексемы.
+         *
          * @param chkType тип лексемы
          * @return true если тип лексемы совпадает
          */
         public boolean is(final TokenType chkType) {
             return this.type == chkType;
         }
+
         /**
          * Проверка на тип лексемы.
-         * @param chkType тип лексемы
+         *
+         * @param chkType   тип лексемы
          * @param delimiter начало лексемы
          * @return true если тип лексемы совпадает
          */
@@ -171,6 +171,7 @@ public class TokenParser {
 
         /**
          * Пропускаем комментакрий.
+         *
          * @param chkEnd конец
          * @return лексема без комментария
          */
@@ -180,7 +181,8 @@ public class TokenParser {
 
         /**
          * Пропускаем такую лексему.
-         * @param aType тип Пропускаемой лексемы
+         *
+         * @param aType  тип Пропускаемой лексемы
          * @param chkEnd конец
          * @return следующая лексема
          */
@@ -194,6 +196,7 @@ public class TokenParser {
 
         /**
          * .
+         *
          * @param tokenType .
          * @return .
          * @throws ParseException .
@@ -207,14 +210,15 @@ public class TokenParser {
 
         /**
          * ю.
+         *
          * @param tokenType ю
-         * @param values ю
+         * @param values    ю
          * @return ю
          * @throws ParseException .
          */
-        public Token assertion(final TokenType tokenType, final String ... values) throws ParseException {
+        public Token assertion(final TokenType tokenType, final String... values) throws ParseException {
             if (this.type == tokenType) {
-                for (String val: values) {
+                for (String val : values) {
                     if (sb.indexOf(val, beg) == beg) {
                         return this;
                     }
@@ -222,7 +226,7 @@ public class TokenParser {
             }
             final StringBuilder sbx = new StringBuilder("Expected TokenType == \"");
             sbx.append(tokenType.name()).append("\"; with value == [\"");
-            for (String val: values) {
+            for (String val : values) {
                 sbx.append(val).append("\", \"");
             }
             final int len = sbx.length();
@@ -230,7 +234,6 @@ public class TokenParser {
             sbx.append("].");
             throw new ParseException(this, sbx.toString());
         }
-
     }
 
     /**
@@ -242,6 +245,7 @@ public class TokenParser {
 
     /**
      * Конструктор с заполнением кода.
+     *
      * @param prg код программы
      */
     public TokenParser(final StringBuilder prg) {
@@ -250,6 +254,7 @@ public class TokenParser {
 
     /**
      * Один раз код программы надо добавить.
+     *
      * @param programCode код программы
      */
     public void setProgramCode(final StringBuilder programCode) {
@@ -258,8 +263,9 @@ public class TokenParser {
 
     /**
      * Получаем очередной Token (отдельное слово, число или разделитель).
+     *
      * @param token token для получения начало разбора
-     * @param end конец разбора
+     * @param end   конец разбора
      * @return от порция с типом
      */
     public Token nextToken(final Token token, final int end) {
@@ -268,6 +274,7 @@ public class TokenParser {
 
     /**
      * Получаем очередной Token (отдельное слово, число или разделитель).
+     *
      * @param beg начало разбора
      * @param end конец разбора
      * @return порция с типом
@@ -276,7 +283,7 @@ public class TokenParser {
         int i = beg;
         final Token token = new Token();
         Character start = null;
-    loop:
+        loop:
         while (i <= end) {
             final char ch = sb.charAt(i);
             final CharType cl = charLevel(ch);

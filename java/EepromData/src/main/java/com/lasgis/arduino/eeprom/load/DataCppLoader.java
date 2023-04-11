@@ -1,5 +1,5 @@
 /*
- *  @(#)DataCppLoader.java  last: 09.03.2023
+ *  @(#)DataCppLoader.java  last: 10.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -11,6 +11,8 @@ package com.lasgis.arduino.eeprom.load;
 import com.lasgis.arduino.eeprom.load.compile.ParseException;
 import com.lasgis.arduino.eeprom.load.compile.RomDataWrapper;
 import com.lasgis.arduino.eeprom.load.compile.TokenParser;
+import com.lasgis.arduino.eeprom.memory.BatchMemory;
+import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
 import com.lasgis.arduino.eeprom.memory.RomDOUBLE;
@@ -40,17 +42,27 @@ import java.util.List;
 class DataCppLoader extends TokenParser {
 
     @Getter
-    private List<RomData> list = new ArrayList<>();
+    private final List<RomData> list;
 
-    public DataCppLoader(final StringBuilder prg) {
-        super(prg);
-        list.clear();
+    public DataCppLoader() {
+        super();
+        list = new ArrayList<>();
     }
 
-    static List<RomData> load(final File file) throws ParseException {
-        final DataCppLoader loader = new DataCppLoader(Util.loadStringFromFile(file));
-        loader.parse();
-        return loader.list;
+    static MemoryRoms load(final File file) throws ParseException {
+        final DataCppLoader loader = new DataCppLoader();
+        return loader.loadFile(file);
+    }
+
+    private MemoryRoms loadFile(final File file) throws ParseException {
+        setProgramCode(Util.loadStringFromFile(file));
+        list.clear();
+        parse();
+        final List<BatchMemory> roms = new ArrayList<>();
+        final BatchMemory batch = BatchMemory.of();
+        batch.setRomDataList(list);
+        roms.add(batch);
+        return MemoryRoms.of("rom_memory", roms);
     }
 
     public void parse() throws ParseException {
@@ -267,19 +279,16 @@ class DataCppLoader extends TokenParser {
             }
             token = token.next(end);
         }
-        double out = 0.0;
+        double out;
         switch (token.type) {
             case number:
             case real:
-                out = Double.valueOf(token.getString()) * sign;
+                out = Double.parseDouble(token.getString()) * sign;
                 break;
-            case string: {
-                final String str = token.getString();
-                out = Double.valueOf(str.substring(1, str.length() - 1)) * sign;
-            } break;
+            case string:
             case oneChar: {
                 final String str = token.getString();
-                out = Double.valueOf(str.substring(1, str.length() - 1)) * sign;
+                out = Double.parseDouble(str.substring(1, str.length() - 1)) * sign;
             } break;
             default:
                 throw new ParseException(token, "Ошибка разбора");

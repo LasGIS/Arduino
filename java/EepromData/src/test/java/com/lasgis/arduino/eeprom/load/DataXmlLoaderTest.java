@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoaderTest.java  last: 19.03.2023
+ *  @(#)DataXmlLoaderTest.java  last: 11.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -16,13 +16,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.net.URL;
 import java.util.List;
-
-import static java.util.Objects.nonNull;
 
 /**
  * The Class DataXmlLoaderTest definition.
@@ -31,7 +27,7 @@ import static java.util.Objects.nonNull;
  * @since 12.02.2023 : 0:40
  */
 @Slf4j
-class DataXmlLoaderTest {
+class DataXmlLoaderTest extends CompareHelper {
     @Test
     void load() throws Exception {
         final ClassLoader classLoader = getClass().getClassLoader();
@@ -40,9 +36,8 @@ class DataXmlLoaderTest {
         final File dataFile = new File(resource.toURI());
         final String targetPath = dataFile.getParentFile().getAbsolutePath();
         final MemoryRoms memoryRoms = DataXmlLoader.load(dataFile);
-        LoadHelper.createDump(memoryRoms);
         Assertions.assertNotNull(memoryRoms);
-        Assertions.assertEquals("test_memory", memoryRoms.getHeaderFilename());
+        LoadHelper.createDump(memoryRoms);
         List<BatchMemory> list = memoryRoms.getList();
         Assertions.assertNotNull(list);
         list.forEach(batchMemory -> {
@@ -81,32 +76,5 @@ class DataXmlLoaderTest {
         if (isHexFail || isDefFail) {
             Assertions.fail();
         }
-    }
-
-    private boolean compareDefinitionFile(final String targetPath, final String expectedFilename, final String actualFilename) throws Exception {
-        final File expectedFile = new File(targetPath, expectedFilename);
-        final File actualFile = new File(targetPath, actualFilename);
-        boolean isFail = false;
-        try (
-            final BufferedReader expected = new BufferedReader(new FileReader(expectedFile));
-            final BufferedReader actual = new BufferedReader(new FileReader(actualFile));
-        ) {
-            String expectedLine = expected.readLine();
-            String actualLine = actual.readLine();
-            int count = 0;
-            log.info("{}:", actualFilename);
-            while (nonNull(expectedLine) || nonNull(actualLine)) {
-                count++;
-//                Assertions.assertEquals(expectedLine, actualLine);
-                if (!(nonNull(expectedLine) && expectedLine.equals(actualLine))) {
-                    log.info("({}) Expected >{}", count, expectedLine);
-                    log.info("     Actual   >{}", actualLine);
-                    isFail = true;
-                }
-                expectedLine = expected.readLine();
-                actualLine = actual.readLine();
-            }
-        }
-        return isFail;
     }
 }

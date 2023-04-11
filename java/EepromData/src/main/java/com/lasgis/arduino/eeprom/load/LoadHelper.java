@@ -1,5 +1,5 @@
 /*
- *  @(#)LoadHelper.java  last: 19.03.2023
+ *  @(#)LoadHelper.java  last: 11.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -11,7 +11,6 @@ package com.lasgis.arduino.eeprom.load;
 import com.lasgis.arduino.eeprom.CommonInfoException;
 import com.lasgis.arduino.eeprom.Runner;
 import com.lasgis.arduino.eeprom.memory.AddressToRoms;
-import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomData;
 import com.lasgis.util.ByteArrayBuilder;
@@ -68,12 +67,7 @@ public class LoadHelper {
                 break;
             }
             case "data": {
-                // todo надо переделать: DataCppLoader.load(dataFile) должен возвращать List<BatchMemory>
-                final List<BatchMemory> roms = new ArrayList<>();
-                final BatchMemory batch = BatchMemory.of();
-                batch.setRomDataList(DataCppLoader.load(dataFile));
-                roms.add(batch);
-                memoryRoms = MemoryRoms.of("rom_memory", roms);
+                memoryRoms = DataCppLoader.load(dataFile);
                 break;
             }
             default:

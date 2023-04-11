@@ -1,0 +1,40 @@
+/* Комментарий */
+CHAR CHAR_SINGN_WIN : 'B'; /* Комментарий */
+INT8 : 255; /* Комментарий */
+INT16 : 65535; /* Комментарий */
+INT16 : -32767; /* Комментарий */
+INT32 : 255; /* Комментарий */
+DOUBLE : 3.1415926; /* Комментарий */
+DOUBLE : -3.1415926; /* Комментарий */
+STRING WIN_NAME : "Название машинки"; /* Комментарий */
+
+/* OBJECT */
+OBJECT_VEHICLE : {
+   INT8 : 255,
+   DOUBLE : 60.78,
+   STRING : "Быстрый мустанг"
+};
+
+/* ARRAY */
+ARRAY_of_CHAR : [
+   CHAR : 'A',
+   CHAR : 'a',
+   CHAR : 'А',
+   CHAR : 'а'
+];
+ARRAY_of_INT16 : [
+   INT16 : 31415,
+   INT16 : 6078,
+   INT16 : -31415
+];
+ARRAY_of_DOUBLE : [
+   DOUBLE : 3.1415926,
+   DOUBLE : 60.78,
+   DOUBLE : -3.1415926
+];
+
+/* ARRAY Define type */
+CHAR CHAR_SINGN_WIN : 'B';
+ARRAY_of_CHAR CHAR : ['A', 'a','А','а'];
+ARRAY_of_INT16 INT16 : [31415, 6078, -31415];
+ARRAY_of_DOUBLE DOUBLE : [ Число_Пи : 3.1415926, 60.78, -3.1415926];
