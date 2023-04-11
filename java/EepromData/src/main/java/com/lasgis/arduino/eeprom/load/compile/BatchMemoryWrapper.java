@@ -1,5 +1,5 @@
 /*
- *  @(#)RomDataWrapper.java  last: 11.04.2023
+ *  @(#)BatchMemoryWrapper.java  last: 11.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,7 +8,7 @@
 
 package com.lasgis.arduino.eeprom.load.compile;
 
-import com.lasgis.arduino.eeprom.memory.RomData;
+import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,7 +18,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class RomDataWrapper {
-    private RomData data;
+public class BatchMemoryWrapper {
+    private BatchMemory data;
     private TokenParser.Token token;
 }

@@ -1,5 +1,5 @@
 /*
- *  @(#)DataCppLoader.java  last: 10.04.2023
+ *  @(#)DataCppLoader.java  last: 11.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -15,7 +15,6 @@ import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
-import com.lasgis.arduino.eeprom.memory.RomDOUBLE;
 import com.lasgis.arduino.eeprom.memory.RomData;
 import com.lasgis.arduino.eeprom.memory.RomEMPTY;
 import com.lasgis.arduino.eeprom.memory.RomFLOAT;
@@ -71,6 +70,12 @@ class DataCppLoader extends TokenParser {
         int i = beg;
         Token token;
         do {
+/* todo: ***
+            final MemoryRomsWrapper memoryRoms = getMemoryRoms(i, end, KeywordType.MEMORY_ROMS);
+            if (Objects.nonNull(memoryRoms)) {
+                continue;
+            }
+*/
             final RomDataWrapper wrap = getRomData(i, end, null);
             final RomData data = wrap.getData();
             token = wrap.getToken();
@@ -80,6 +85,20 @@ class DataCppLoader extends TokenParser {
             }
         } while (!token.is(TokenType.end));
     }
+
+/* todo: ***
+    private MemoryRomsWrapper getMemoryRoms(
+        final int beg, final int end,
+        final KeywordType expectedType
+    ) throws ParseException {
+        Token token = nextToken(beg, end).SkipComment(end);
+        if (token.is(TokenType.keyword)) {
+
+        } else {
+
+        }
+    }
+*/
 
     private RomDataWrapper getRomData(
         final int beg, final int end,
@@ -115,31 +134,33 @@ class DataCppLoader extends TokenParser {
                 case CHAR: {
                     final char chr = extractChar(tokens, end);
                     data = RomCHAR.of(name, null, chr);
-                } break;
+                }
+                break;
                 case INT8: {
                     final int value = extractInteger(tokens, end);
                     data = RomINT8.of(name, null, value);
-                } break;
+                }
+                break;
                 case INT16: {
                     final int value = extractInteger(tokens, end);
                     data = RomINT16.of(name, null, value);
-                } break;
+                }
+                break;
                 case INT32: {
                     final int value = extractInteger(tokens, end);
                     data = RomINT32.of(name, null, value);
-                } break;
+                }
+                break;
                 case FLOAT: {
                     final double value = extractDouble(tokens, end);
                     data = RomFLOAT.of(name, null, value);
-                } break;
-                case DOUBLE: {
-                    final double value = extractDouble(tokens, end);
-                    data = RomDOUBLE.of(name, null, value);
-                } break;
+                }
+                break;
                 case STRING: {
                     final String value = extractString(tokens, end);
                     data = (value == null) ? RomEMPTY.of(name) : RomSTRING.of(name, null, value);
-                } break;
+                }
+                break;
                 default:
                     break;
             }
@@ -255,7 +276,8 @@ class DataCppLoader extends TokenParser {
             case oneChar: {
                 final String str = token.getString();
                 out = Integer.parseInt(str.substring(1, str.length() - 1)) * sign;
-            } break;
+            }
+            break;
             default:
                 throw new ParseException(token, "Ошибка разбора");
         }
@@ -289,7 +311,8 @@ class DataCppLoader extends TokenParser {
             case oneChar: {
                 final String str = token.getString();
                 out = Double.parseDouble(str.substring(1, str.length() - 1)) * sign;
-            } break;
+            }
+            break;
             default:
                 throw new ParseException(token, "Ошибка разбора");
         }

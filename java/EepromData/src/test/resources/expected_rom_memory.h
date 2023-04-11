@@ -1,0 +1,11 @@
+#define CHAR_SINGN_WIN 0x0000
+#define WIN_NAME 0x0012
+#define OBJECT_VEHICLE 0x0024
+#define ARRAY_of_CHAR 0x0041
+#define ARRAY_of_INT16 0x004a
+#define ARRAY_of_FLOAT 0x0055
+#define CHAR_SIGN_WIN 0x0066
+#define ARRAY_of_CHAR 0x0067
+#define ARRAY_of_INT16 0x0070
+#define ARRAY_of_FLOAT 0x007b
+#define ARRAY_of_FLOAT_0_Pi_Generation 0x0080

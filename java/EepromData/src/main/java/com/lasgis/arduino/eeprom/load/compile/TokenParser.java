@@ -8,6 +8,10 @@
 
 package com.lasgis.arduino.eeprom.load.compile;
 
+import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,9 +25,9 @@ public class TokenParser {
     private static final String SPACE_CHARS = " \n\r\t";
     private static final String DELIMIT_CHARS = ".,;:=<>(){}[]+-*/!|\"'\\№&%?@#$%^";
     private static final String START_BLOCK_CHARS = "{[";
-//    private static final List<String> OPERATORS = Arrays.asList(
-//        "=", "+=", "-=", "*=", "/=", "+", "-", "*", "/", "&&", "||", ">=", "<", "<=", ">", ">=", "==", "!=", "!", "."
-//    );
+    private static final List<String> OPERATORS = Arrays.asList(
+        "=", "+=", "-=", "*=", "/=", "+", "-", "*", "/", "&&", "||", ">=", "<", "<=", ">", ">=", "==", "!=", "!", "."
+    );
     private static final String UNARY_DELIMIT = ",;:";
     private static final Map<Character, Character> BLOCK_CHARS = Map.of('(', ')', '{', '}', '[', ']');
     private static final String DIGIT_CHARS = "0123456789";
@@ -34,8 +38,25 @@ public class TokenParser {
      * типы данных
      */
     public enum KeywordType {
+        /** структурные определители. */
+        MEMORY_ROMS("MemoryRoms"),
+        BATCH_MEMORY("BatchMemory"),
         /** типы данных. */
-        CHAR, INT8, INT16, INT32, FLOAT, DOUBLE, STRING;
+        CHAR("char"),
+        INT8("int8"),
+        INT16("int16"),
+        INT32("int32"),
+        FLOAT("float"),
+        STRING("string"),
+        DUMP("dump"),
+        EEPROM_ADDRESS("eepromAddress");
+
+        @Getter
+        final String name;
+
+        KeywordType(final String name) {
+            this.name = name;
+        }
 
         /**
          * @param value значение
@@ -43,7 +64,7 @@ public class TokenParser {
          */
         public static KeywordType of(final String value) {
             for (KeywordType type : KeywordType.values()) {
-                if (type.name().equalsIgnoreCase(value)) {
+                if (type.getName().equals(value)) {
                     return type;
                 }
             }
@@ -127,7 +148,7 @@ public class TokenParser {
          * Получаем Token, следующий за этим.
          *
          * @param parsEnd конец разбора
-         * @return от порция с типом
+         * @return от порции с типом
          */
         public Token next(final int parsEnd) {
             if (end >= parsEnd) {
@@ -142,7 +163,7 @@ public class TokenParser {
          * Получаем первый Token внутри за этого.
          *
          * @param parsEnd конец разбора
-         * @return от порция с типом
+         * @return от порции с типом
          */
         public Token first(final int parsEnd) {
             return nextToken(beg + 1, parsEnd);
@@ -170,7 +191,7 @@ public class TokenParser {
         }
 
         /**
-         * Пропускаем комментакрий.
+         * Пропускаем комментарий.
          *
          * @param chkEnd конец
          * @return лексема без комментария
@@ -266,7 +287,7 @@ public class TokenParser {
      *
      * @param token token для получения начало разбора
      * @param end   конец разбора
-     * @return от порция с типом
+     * @return от порции с типом
      */
     public Token nextToken(final Token token, final int end) {
         return nextToken(token.end + 1, end);
@@ -505,5 +526,4 @@ public class TokenParser {
             return CharType.letter;
         }
     }
-
 }

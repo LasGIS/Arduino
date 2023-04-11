@@ -13,8 +13,8 @@ import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
 import com.lasgis.arduino.eeprom.memory.RomCHAR;
-import com.lasgis.arduino.eeprom.memory.RomDOUBLE;
 import com.lasgis.arduino.eeprom.memory.RomData;
+import com.lasgis.arduino.eeprom.memory.RomFLOAT;
 import com.lasgis.arduino.eeprom.memory.RomINT16;
 import com.lasgis.arduino.eeprom.memory.RomINT32;
 import com.lasgis.arduino.eeprom.memory.RomINT8;
@@ -44,37 +44,37 @@ public class DataCppLoaderTest extends CompareHelper {
     private static Stream<Arguments> provideTestData() {
         return Stream.of(Arguments.of(
             "  /* Комментарий */\n"
-                + "  CHAR CHAR_SINGN_WIN : 'B'; /* Комментарий */ \n"
-                + "  INT8 : 255; /* Комментарий */ \n"
-                + "  INT16 : 65535; /* Комментарий */ \n"
-                + "  INT16 : -32767; /* Комментарий */ \n"
-                + "  INT32 : 255; /* Комментарий */ \n"
-                + "  DOUBLE : 3.1415926; /* Комментарий */ \n"
-                + "  DOUBLE : -3.1415926; /* Комментарий */ \n"
-                + "  STRING WIN_NAME : \"Название машинки\"; /* Комментарий */ \n",
+                + "  char CHAR_SINGN_WIN : 'B'; /* Комментарий */ \n"
+                + "  int8 : 255; /* Комментарий */ \n"
+                + "  int16 : 65535; /* Комментарий */ \n"
+                + "  int16 : -32767; /* Комментарий */ \n"
+                + "  int32 : 255; /* Комментарий */ \n"
+                + "  float : 3.1415926; /* Комментарий */ \n"
+                + "  float : -3.1415926; /* Комментарий */ \n"
+                + "  string WIN_NAME : \"Название машинки\"; /* Комментарий */ \n",
             new ArrayList<RomData>() {{
                 this.add(RomCHAR.of("CHAR_SINGN_WIN", null, 'B'));
                 this.add(RomINT8.of(255));
                 this.add(RomINT16.of(65535));
                 this.add(RomINT16.of(-32767));
                 this.add(RomINT32.of(255));
-                this.add(RomDOUBLE.of(3.1415926));
-                this.add(RomDOUBLE.of(-3.1415926));
+                this.add(RomFLOAT.of(3.1415926));
+                this.add(RomFLOAT.of(-3.1415926));
                 this.add(RomSTRING.of("WIN_NAME", null, "Название машинки"));
             }}
         ), Arguments.of(
             "  /* OBJECT */\n"
-                + "  CHAR CHAR_SINGN_WIN : 'B';\n"
-                + "  INT8 : 255;\n"
-                + "  INT16 : 65535;\n"
-                + "  INT16 : -32767;\n"
-                + "  INT32 : 255;\n"
-                + "  DOUBLE : 3.1415926;\n"
-                + "  STRING WIN_NAME : \"Название машинки\";\n"
+                + "  char CHAR_SINGN_WIN : 'B';\n"
+                + "  int8 : 255;\n"
+                + "  int16 : 65535;\n"
+                + "  int16 : -32767;\n"
+                + "  int32 : 255;\n"
+                + "  float : 3.1415926;\n"
+                + "  string WIN_NAME : \"Название машинки\";\n"
                 + "  OBJECT_VEHICLE : {\n"
-                + "     INT8 : 255,\n"
-                + "     DOUBLE : 60.78,\n"
-                + "     STRING : \"Быстрый мустанг\"\n"
+                + "     int8 : 255,\n"
+                + "     float : 60.78,\n"
+                + "     string : \"Быстрый мустанг\"\n"
                 + "  };\n",
             new ArrayList<RomData>() {{
                 this.add(RomCHAR.of("CHAR_SINGN_WIN", null, 'B'));
@@ -82,32 +82,32 @@ public class DataCppLoaderTest extends CompareHelper {
                 this.add(RomINT16.of(65535));
                 this.add(RomINT16.of(-32767));
                 this.add(RomINT32.of(255));
-                this.add(RomDOUBLE.of(3.1415926));
+                this.add(RomFLOAT.of(3.1415926));
                 this.add(RomSTRING.of("WIN_NAME", null, "Название машинки"));
                 this.add(RomOBJECT.of("OBJECT_VEHICLE", null)
                     .add(RomINT8.of(255))
-                    .add(RomDOUBLE.of(60.78))
+                    .add(RomFLOAT.of(60.78))
                     .add(RomSTRING.of("Быстрый мустанг"))
                 );
             }}
         ), Arguments.of(
             "  /* ARRAY */\n"
-                + "  CHAR CHAR_SINGN_WIN : 'B';\n"
+                + "  char CHAR_SINGN_WIN : 'B';\n"
                 + "  ARRAY_of_CHAR : [\n"
-                + "     CHAR : 'A',\n"
-                + "     CHAR : 'a',\n"
-                + "     CHAR : 'А',\n"
-                + "     CHAR : 'а'\n"
+                + "     char : 'A',\n"
+                + "     char : 'a',\n"
+                + "     char : 'А',\n"
+                + "     char : 'а'\n"
                 + "  ];\n"
                 + "  ARRAY_of_INT16 : [\n"
-                + "     INT16 : 31415,\n"
-                + "     INT16 : 6078,\n"
-                + "     INT16 : -31415\n"
+                + "     int16 : 31415,\n"
+                + "     int16 : 6078,\n"
+                + "     int16 : -31415\n"
                 + "  ];\n"
                 + "  ARRAY_of_DOUBLE : [\n"
-                + "     DOUBLE : 3.1415926,\n"
-                + "     DOUBLE : 60.78,\n"
-                + "     DOUBLE : -3.1415926\n"
+                + "     float : 3.1415926,\n"
+                + "     float : 60.78,\n"
+                + "     float : -3.1415926\n"
                 + "  ];\n",
             new ArrayList<RomData>() {{
                 this.add(RomCHAR.of("CHAR_SINGN_WIN", null, 'B'));
@@ -121,16 +121,16 @@ public class DataCppLoaderTest extends CompareHelper {
                     .add(RomINT16.of(6078))
                     .add(RomINT16.of(-31415)));
                 this.add(RomARRAY.of("ARRAY_of_DOUBLE", null)
-                    .add(RomDOUBLE.of(3.1415926))
-                    .add(RomDOUBLE.of(60.78))
-                    .add(RomDOUBLE.of(-3.1415926)));
+                    .add(RomFLOAT.of(3.1415926))
+                    .add(RomFLOAT.of(60.78))
+                    .add(RomFLOAT.of(-3.1415926)));
             }}
         ), Arguments.of(
             "  /* ARRAY Define type */\n"
-                + "  CHAR CHAR_SINGN_WIN : 'B';\n"
-                + "  ARRAY_of_CHAR CHAR : ['A', 'a','А','а'];\n"
-                + "  ARRAY_of_INT16 INT16 : [31415, 6078, -31415];\n"
-                + "  ARRAY_of_DOUBLE DOUBLE : [ Число_Пи : 3.1415926, 60.78, -3.1415926];\n",
+                + "  char CHAR_SINGN_WIN : 'B';\n"
+                + "  ARRAY_of_CHAR char : ['A', 'a','А','а'];\n"
+                + "  ARRAY_of_INT16 int16 : [31415, 6078, -31415];\n"
+                + "  ARRAY_of_DOUBLE float : [ Число_Пи : 3.1415926, 60.78, -3.1415926];\n",
             new ArrayList<RomData>() {{
                 this.add(RomCHAR.of("CHAR_SINGN_WIN", null, 'B'));
                 this.add(RomARRAY.of("ARRAY_of_CHAR", null)
@@ -143,9 +143,9 @@ public class DataCppLoaderTest extends CompareHelper {
                     .add(RomINT16.of(6078))
                     .add(RomINT16.of(-31415)));
                 this.add(RomARRAY.of("ARRAY_of_DOUBLE", null)
-                    .add(RomDOUBLE.of("Число_Пи", null, 3.1415926))
-                    .add(RomDOUBLE.of(60.78))
-                    .add(RomDOUBLE.of(-3.1415926)));
+                    .add(RomFLOAT.of("Число_Пи", null, 3.1415926))
+                    .add(RomFLOAT.of(60.78))
+                    .add(RomFLOAT.of(-3.1415926)));
             }}
         ));
     }
@@ -167,9 +167,38 @@ public class DataCppLoaderTest extends CompareHelper {
         }
     }
 
-    //    "TestMemory.data"
     @Test
-    void load() throws Exception {
+    void loadRomMemory() throws Exception {
+        final ClassLoader classLoader = getClass().getClassLoader();
+        final URL resource = classLoader.getResource("RomMemory.data");
+        assert resource != null;
+        final File dataFile = new File(resource.toURI());
+        final String targetPath = dataFile.getParentFile().getAbsolutePath();
+        final MemoryRoms memoryRoms = DataCppLoader.load(dataFile);
+        Assertions.assertNotNull(memoryRoms);
+        LoadHelper.createDump(memoryRoms);
+        List<BatchMemory> list = memoryRoms.getList();
+        Assertions.assertNotNull(list);
+        list.forEach(batchMemory -> {
+            final byte[] dump = batchMemory.getDump();
+            final List<RomData> romDataList = batchMemory.getRomDataList();
+            Assertions.assertNotNull(romDataList);
+            Assertions.assertEquals(16, romDataList.size());
+            Assertions.assertNotNull(dump);
+            log.info("dump: {}", DatatypeConverter.printHexBinary(dump));
+            Assertions.assertEquals(140, dump.length);
+        });
+        Assertions.assertEquals("rom_memory", memoryRoms.getHeaderFilename());
+        CreateHelper.create(targetPath, memoryRoms);
+        boolean isHexFail = compareDefinitionFile(targetPath, "expected_rom_memory.hex", "rom_memory.hex");
+        boolean isDefFail = compareDefinitionFile(targetPath, "expected_rom_memory.h", "rom_memory.h");
+        if (isHexFail || isDefFail) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    void loadTestMemory() throws Exception {
         final ClassLoader classLoader = getClass().getClassLoader();
         final URL resource = classLoader.getResource("TestMemory.data");
         assert resource != null;
@@ -181,38 +210,38 @@ public class DataCppLoaderTest extends CompareHelper {
         List<BatchMemory> list = memoryRoms.getList();
         Assertions.assertNotNull(list);
         list.forEach(batchMemory -> {
-//            switch (batchMemory.getPrefix()) {
-//                case "EEPROM": {
-//                    Assertions.assertEquals(0x00, batchMemory.getDevice());
-//                    Assertions.assertEquals(0x0400, batchMemory.getAddress());
-//                    final byte[] dump = batchMemory.getDump();
-//                    final List<RomData> romDataList = batchMemory.getRomDataList();
-//                    Assertions.assertNotNull(romDataList);
-//                    Assertions.assertEquals(2, romDataList.size());
-//                    Assertions.assertNotNull(dump);
-//                    Assertions.assertEquals(8, dump.length);
-//                }
-//                break;
-//                case "CHIP": {
-                    // Assertions.assertEquals(0x57, batchMemory.getDevice());
-                    // Assertions.assertEquals(0x0400, batchMemory.getAddress());
+            switch (batchMemory.getPrefix()) {
+                case "EEPROM": {
+                    Assertions.assertEquals(0x00, batchMemory.getDevice());
+                    Assertions.assertEquals(0x0400, batchMemory.getAddress());
+                    final byte[] dump = batchMemory.getDump();
+                    final List<RomData> romDataList = batchMemory.getRomDataList();
+                    Assertions.assertNotNull(romDataList);
+                    Assertions.assertEquals(2, romDataList.size());
+                    Assertions.assertNotNull(dump);
+                    Assertions.assertEquals(8, dump.length);
+                }
+                break;
+                case "CHIP": {
+                    Assertions.assertEquals(0x57, batchMemory.getDevice());
+                    Assertions.assertEquals(0x0400, batchMemory.getAddress());
                     final byte[] dump = batchMemory.getDump();
                     final List<RomData> romDataList = batchMemory.getRomDataList();
                     Assertions.assertNotNull(romDataList);
                     Assertions.assertEquals(16, romDataList.size());
                     Assertions.assertNotNull(dump);
                     log.info("dump: {}", DatatypeConverter.printHexBinary(dump));
-                    Assertions.assertEquals(176, dump.length);
-//                }
-//                break;
-//                default:
-//                    Assertions.fail();
-//            }
+                    Assertions.assertEquals(140, dump.length);
+                }
+                break;
+                default:
+                    Assertions.fail();
+            }
         });
         Assertions.assertEquals("rom_memory", memoryRoms.getHeaderFilename());
         CreateHelper.create(targetPath, memoryRoms);
-        boolean isHexFail = compareDefinitionFile(targetPath, "expected_test_memory.hex", "rom_memory.hex");
-        boolean isDefFail = compareDefinitionFile(targetPath, "expected_test_memory.h", "rom_memory.h");
+        boolean isHexFail = compareDefinitionFile(targetPath, "expected_rom_memory.hex", "rom_memory.hex");
+        boolean isDefFail = compareDefinitionFile(targetPath, "expected_rom_memory.h", "rom_memory.h");
         if (isHexFail || isDefFail) {
             Assertions.fail();
         }

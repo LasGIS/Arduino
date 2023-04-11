@@ -1,9 +1,4 @@
 /* Комментарий */
-MemoryRoms: { headerFilename: "test_memory" };
-/* Комментарий */
-BatchMemory: { device: 0, prefix: "EEPROM", address: 0x400 };
-
-/* Комментарий */
 char CHAR_SINGN_WIN : 'B'; /* Комментарий */
 int8 : 255; /* Комментарий */
 int16 : 65535; /* Комментарий */
