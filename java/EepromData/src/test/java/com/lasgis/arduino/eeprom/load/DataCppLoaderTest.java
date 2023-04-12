@@ -1,5 +1,5 @@
 /*
- *  @(#)DataCppLoaderTest.java  last: 11.04.2023
+ *  @(#)DataCppLoaderTest.java  last: 12.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -156,13 +156,15 @@ public class DataCppLoaderTest extends CompareHelper {
         final String data,
         final ArrayList<RomData> expectedList
     ) throws Exception {
-        DataCppLoader loader = new DataCppLoader();
+        final DataCppLoader loader = new DataCppLoader();
         loader.setProgramCode(new StringBuilder(data));
-        loader.parse();
-        Assertions.assertEquals(loader.getList().size(), expectedList.size(), "Размер списка разный");
+        final MemoryRoms memoryRoms = loader.parse();
+        final BatchMemory batchMemory = memoryRoms.getList().get(0);
+        Assertions.assertEquals(batchMemory.getRomDataList().size(), expectedList.size(), "Размер списка разный");
+        final List<RomData> list = batchMemory.getRomDataList();
         for (int i = 0; i < expectedList.size(); i++) {
             final RomData expectedData = expectedList.get(i);
-            final RomData loaderData = loader.getList().get(i);
+            final RomData loaderData = list.get(i);
             Assertions.assertEquals(loaderData, expectedData);
         }
     }

@@ -1,7 +1,7 @@
 /* Комментарий */
 MemoryRoms: { headerFilename: "test_memory" };
 /* Комментарий */
-BatchMemory: { device: 0, prefix: "EEPROM", address: 0x400 };
+BatchMemory: { device: 0, prefix: "EEPROM", address: 400 };
 
 /* Комментарий */
 char CHAR_SINGN_WIN : 'B'; /* Комментарий */
@@ -12,6 +12,8 @@ int32 : 255; /* Комментарий */
 float : 3.1415926; /* Комментарий */
 float : -3.1415926; /* Комментарий */
 string WIN_NAME : "Название машинки"; /* Комментарий */
+
+BatchMemory: { device: 57, prefix: "CHIP", address: 700 };
 
 /* OBJECT */
 OBJECT_VEHICLE : {

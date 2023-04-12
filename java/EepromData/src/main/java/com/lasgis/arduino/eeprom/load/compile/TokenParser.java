@@ -1,5 +1,5 @@
 /*
- *  @(#)TokenParser.java  last: 11.04.2023
+ *  @(#)TokenParser.java  last: 12.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -216,11 +216,11 @@ public class TokenParser {
         }
 
         /**
-         * .
+         * Проверка на соответствие токена конкретному типу
          *
-         * @param tokenType .
-         * @return .
-         * @throws ParseException .
+         * @param tokenType тип токена для проверки
+         * @return токен если все нормально
+         * @throws ParseException ошибка если тип токена не соответствует
          */
         public Token assertion(final TokenType tokenType) throws ParseException {
             if (this.type != tokenType) {
@@ -230,12 +230,12 @@ public class TokenParser {
         }
 
         /**
-         * ю.
+         * Проверка на соответствие токена конкретному типу
          *
-         * @param tokenType ю
-         * @param values    ю
-         * @return ю
-         * @throws ParseException .
+         * @param tokenType тип токена для проверки
+         * @param values    дополнительные параметры для проверки
+         * @return токен если все нормально
+         * @throws ParseException ошибка если тип токена не соответствует
          */
         public Token assertion(final TokenType tokenType, final String... values) throws ParseException {
             if (this.type == tokenType) {

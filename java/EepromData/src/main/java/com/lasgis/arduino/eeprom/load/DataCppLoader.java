@@ -1,5 +1,5 @@
 /*
- *  @(#)DataCppLoader.java  last: 11.04.2023
+ *  @(#)DataCppLoader.java  last: 12.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -11,6 +11,7 @@ package com.lasgis.arduino.eeprom.load;
 import com.lasgis.arduino.eeprom.load.compile.ParseException;
 import com.lasgis.arduino.eeprom.load.compile.RomDataWrapper;
 import com.lasgis.arduino.eeprom.load.compile.TokenParser;
+import com.lasgis.arduino.eeprom.load.compile.TokenWrapper;
 import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomARRAY;
@@ -24,12 +25,15 @@ import com.lasgis.arduino.eeprom.memory.RomINT8;
 import com.lasgis.arduino.eeprom.memory.RomOBJECT;
 import com.lasgis.arduino.eeprom.memory.RomSTRING;
 import com.lasgis.util.Util;
-import lombok.Getter;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.lasgis.arduino.eeprom.load.compile.TokenParser.KeywordType.BATCH_MEMORY;
+import static com.lasgis.arduino.eeprom.load.compile.TokenParser.KeywordType.MEMORY_ROMS;
+import static java.util.Objects.nonNull;
 
 /**
  * Загрузчик из *.data файла.
@@ -40,12 +44,8 @@ import java.util.List;
  */
 class DataCppLoader extends TokenParser {
 
-    @Getter
-    private final List<RomData> list;
-
     public DataCppLoader() {
         super();
-        list = new ArrayList<>();
     }
 
     static MemoryRoms load(final File file) throws ParseException {
@@ -55,27 +55,47 @@ class DataCppLoader extends TokenParser {
 
     private MemoryRoms loadFile(final File file) throws ParseException {
         setProgramCode(Util.loadStringFromFile(file));
-        list.clear();
-        parse();
-        final List<BatchMemory> roms = new ArrayList<>();
-        final BatchMemory batch = BatchMemory.of();
-        batch.setRomDataList(list);
-        roms.add(batch);
-        return MemoryRoms.of("rom_memory", roms);
+        return parse();
     }
 
-    public void parse() throws ParseException {
+    public MemoryRoms parse() throws ParseException {
         final int beg = 0;
         final int end = sb.length() - 1;
         int i = beg;
         Token token;
+        List<RomData> list = new ArrayList<>();
+        List<BatchMemory> roms = new ArrayList<>();
+        MemoryRoms memoryRoms = MemoryRoms.of("rom_memory", roms);
+        BatchMemory batchMemory = BatchMemory.of();
+        batchMemory.setPrefix("batch");
+        batchMemory.setDevice((byte) 0x57);
+        batchMemory.setAddress(0x400);
+        batchMemory.setRomDataList(list);
+        roms.add(batchMemory);
         do {
-/* todo: ***
-            final MemoryRomsWrapper memoryRoms = getMemoryRoms(i, end, KeywordType.MEMORY_ROMS);
-            if (Objects.nonNull(memoryRoms)) {
-                continue;
+            final TokenWrapper<MemoryRoms> memoryWrap = getMemoryRoms(i, end);
+            if (nonNull(memoryWrap)) {
+                memoryRoms = memoryWrap.getData();
+                roms = new ArrayList<>();
+                memoryRoms.setList(roms);
+                batchMemory = BatchMemory.of();
+                roms.add(batchMemory);
+                batchMemory.setPrefix("batch");
+                batchMemory.setDevice((byte) 0x57);
+                batchMemory.setAddress(0x400);
+                list = new ArrayList<>();
+                batchMemory.setRomDataList(list);
+                token = memoryWrap.getToken();
+                i = token.end + 1;
             }
-*/
+            final TokenWrapper<BatchMemory> batchWrap = getBatchMemory(i, end);
+            if (nonNull(batchWrap)) {
+                batchMemory = batchWrap.getData();
+                list = batchMemory.getRomDataList();
+                roms.add(batchMemory);
+                token = batchWrap.getToken();
+                i = token.end + 1;
+            }
             final RomDataWrapper wrap = getRomData(i, end, null);
             final RomData data = wrap.getData();
             token = wrap.getToken();
@@ -84,21 +104,87 @@ class DataCppLoader extends TokenParser {
                 list.add(data);
             }
         } while (!token.is(TokenType.end));
+        return memoryRoms;
     }
 
-/* todo: ***
-    private MemoryRomsWrapper getMemoryRoms(
-        final int beg, final int end,
-        final KeywordType expectedType
+    private TokenWrapper<MemoryRoms> getMemoryRoms(
+        final int beg, final int end
     ) throws ParseException {
         Token token = nextToken(beg, end).SkipComment(end);
-        if (token.is(TokenType.keyword)) {
-
-        } else {
-
+        if (token.is(TokenType.keyword, MEMORY_ROMS.getName())) {
+            token = token.next(end).SkipComment(end).assertion(TokenType.delimit, ":");
+            token = token.next(end).SkipComment(end).assertion(TokenType.block, "{");
+            final MemoryRoms memoryRoms = extractMemoryRoms(token);
+            token = token.next(end).SkipComment(end).assertion(TokenType.delimit, ";");
+            return TokenWrapper.of(memoryRoms, token);
         }
+        return null;
     }
-*/
+
+    private TokenWrapper<BatchMemory> getBatchMemory(
+        final int beg, final int end
+    ) throws ParseException {
+        Token token = nextToken(beg, end).SkipComment(end);
+        if (token.is(TokenType.keyword, BATCH_MEMORY.getName())) {
+            token = token.next(end).SkipComment(end).assertion(TokenType.delimit, ":");
+            token = token.next(end).SkipComment(end).assertion(TokenType.block, "{");
+            final BatchMemory batch = extractBatchMemory(token);
+            token = token.next(end).SkipComment(end).assertion(TokenType.delimit, ";");
+            return TokenWrapper.of(batch, token);
+        }
+        return null;
+    }
+
+    private MemoryRoms extractMemoryRoms(final Token blockToken) throws ParseException {
+        final int beg = blockToken.beg + 1;
+        final int end = blockToken.end - 1;
+        int i = beg;
+        Token token;
+        final MemoryRoms memoryRoms = MemoryRoms.of();
+        do {
+            token = nextToken(i, end).SkipComment(end).assertion(TokenType.name, "headerFilename");
+            token = token.next(end).SkipComment(end).assertion(TokenType.delimit, ":");
+            token = token.next(end).SkipComment(end).assertion(TokenType.string);
+            final Token[] tokens = {token};
+            memoryRoms.setHeaderFilename(extractString(tokens, end));
+            token = tokens[0].next(end).SkipComment(end);
+        } while (!token.is(TokenType.end));
+        return memoryRoms;
+    }
+
+    private BatchMemory extractBatchMemory(final Token blockToken) throws ParseException {
+        final int beg = blockToken.beg + 1;
+        final int end = blockToken.end - 1;
+        int i = beg;
+        Token token;
+        final BatchMemory batch = BatchMemory.of();
+        do {
+            token = nextToken(i, end).SkipComment(end).assertion(TokenType.name, "device", "prefix", "address");
+            final String key = token.getString();
+            token = token.next(end).SkipComment(end).assertion(TokenType.delimit, ":");
+            token = token.next(end).SkipComment(end);
+            final Token[] tokens = {token};
+            switch (key) {
+                case "device":
+                    batch.setDevice((byte) extractInteger(tokens, end));
+                    break;
+                case "prefix":
+                    batch.setPrefix(extractString(tokens, end));
+                    break;
+                case "address":
+                    batch.setAddress(extractInteger(tokens, end));
+                    break;
+                default:
+                    throw new ParseException(token, "Непонятный ключ");
+            }
+            token = tokens[0].next(end)
+                .SkipComment(end)
+                .Skip(TokenType.delimit, end)
+                .SkipComment(end);
+            i = token.beg;
+        } while (!token.is(TokenType.end));
+        return batch;
+    }
 
     private RomDataWrapper getRomData(
         final int beg, final int end,
@@ -166,9 +252,9 @@ class DataCppLoader extends TokenParser {
             }
             token = tokens[0];
         } else if (token.is(TokenType.block, "{")) {
-            data = getRomDataObject(name, token);
+            data = extractRomDataObject(name, token);
         } else if (token.is(TokenType.block, "[")) {
-            data = getRomDataArray(name, token, arrayType);
+            data = extractRomDataArray(name, token, arrayType);
         } else {
             throw new ParseException(token, "Expected type of Rom Data.");
         }
@@ -176,7 +262,7 @@ class DataCppLoader extends TokenParser {
         return RomDataWrapper.of(data, token);
     }
 
-    private RomOBJECT getRomDataObject(final String name, final Token arrToken) throws ParseException {
+    private RomOBJECT extractRomDataObject(final String name, final Token arrToken) throws ParseException {
         final int beg = arrToken.beg + 1;
         final int end = arrToken.end - 1;
         int i = beg;
@@ -194,7 +280,7 @@ class DataCppLoader extends TokenParser {
         return object;
     }
 
-    private RomARRAY getRomDataArray(
+    private RomARRAY extractRomDataArray(
         final String name,
         final Token arrToken,
         final KeywordType arrayType

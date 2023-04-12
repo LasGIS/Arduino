@@ -1,5 +1,5 @@
 /*
- *  @(#)MemoryRomsWrapper.java  last: 11.04.2023
+ *  @(#)TokenWrapper.java  last: 12.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,7 +8,6 @@
 
 package com.lasgis.arduino.eeprom.load.compile;
 
-import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,7 +17,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor(staticName = "of")
-public class MemoryRomsWrapper {
-    private MemoryRoms data;
+public class TokenWrapper<Type> {
+    private Type data;
     private TokenParser.Token token;
 }
