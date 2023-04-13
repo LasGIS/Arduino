@@ -1,5 +1,5 @@
 /*
- *  @(#)ParseException.java  last: 11.04.2023
+ *  @(#)ParseException.java  last: 13.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -37,42 +37,43 @@ public class ParseException extends Exception {
         final StringBuilder sb = token.getSb();
         Line curLine = new Line();
         curLine.beg = 0;
-        char ch0 = ' ';
         int  i = 0;
         for (; i < token.beg; i++) {
             final char ch = sb.charAt(i);
             if (ch == '\r' || ch == '\n') {
-                if (!(ch0 == '\r' && ch == '\n')) {
-                    curLine.end = i;
-                    curLine.count = row++;
-                    lines[0] = lines[1];
-                    lines[1] = curLine;
-                    curLine = new Line();
-                    curLine.beg = i + 1;
+                curLine.end = i;
+                char ch0 = (i + 1 < sb.length()) ? sb.charAt(i + 1) : ' ';
+                if (ch0 == '\r' || ch0 == '\n') {
+                    i++;
                 }
+                curLine.count = row++;
+                lines[0] = lines[1];
+                lines[1] = curLine;
+                curLine = new Line();
+                curLine.beg = i + 1;
                 col = 1;
             } else {
                 curLine.end = i;
                 col++;
             }
-            ch0 = ch;
         }
         lines[0] = lines[1];
         for (int j = 1; i < sb.length() && j < 3; i++) {
             final char ch = sb.charAt(i);
             if (ch == '\r' || ch == '\n') {
-                if (!(ch0 == '\r' && ch == '\n')) {
-                    curLine.end = i;
-                    curLine.count = row + j - 1;
-                    lines[j] = curLine;
-                    curLine = new Line();
-                    curLine.beg = i + 1;
-                    j++;
+                curLine.end = i;
+                char ch0 = (i + 1 < sb.length()) ? sb.charAt(i + 1) : ' ';
+                if (ch0 == '\r' || ch0 == '\n') {
+                    i++;
                 }
+                curLine.count = row + j - 1;
+                lines[j] = curLine;
+                curLine = new Line();
+                curLine.beg = i + 1;
+                j++;
             } else {
                 curLine.end = i;
             }
-            ch0 = ch;
         }
         for (Line line : lines) {
             if (line != null) {

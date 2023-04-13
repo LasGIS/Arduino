@@ -49,7 +49,9 @@ public class TokenParser {
         FLOAT("float"),
         STRING("string"),
         DUMP("dump"),
-        EEPROM_ADDRESS("eepromAddress");
+        EEPROM_ADDRESS("eepromAddress"),
+        OBJECT("object"),
+        ARRAY("array");
 
         @Getter
         final String name;

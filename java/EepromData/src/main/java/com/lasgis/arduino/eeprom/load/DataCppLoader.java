@@ -198,22 +198,29 @@ class DataCppLoader extends TokenParser {
         if (token.is(TokenType.end)) {
             return RomDataWrapper.of(RomEMPTY.of(), token);
         }
+        /* тип основного RomData */
         KeywordType type = expectedType;
+        /* дополнительный тип для RomARRAY */
         KeywordType arrayType = null;
+        /* наименование основного RomData */
         String name = null;
 
+        /* тип основного RomData (для RomOBJECT и RomARRAY пропускается) */
         if (token.is(TokenType.keyword)) {
             type = KeywordType.of(token.getString());
             token = token.next(end).SkipComment(end);
         }
+        /* наименование основного RomData */
         if (token.is(TokenType.name)) {
             name = token.getString();
             token = token.next(end).SkipComment(end);
         }
+        /* дополнительный тип вложенных Rom для RomARRAY */
         if (token.is(TokenType.keyword)) {
             arrayType = KeywordType.of(token.getString());
             token = token.next(end).SkipComment(end);
         }
+        /* окончание описания и переход на заполнение значения */
         if (token.is(TokenType.delimit, ":")) {
             token = token.next(end);
         }
@@ -251,8 +258,18 @@ class DataCppLoader extends TokenParser {
                     data = (value == null) ? RomEMPTY.of(name) : RomSTRING.of(name, null, value);
                 }
                 break;
+                case OBJECT: {
+                    token.assertion(TokenType.block, "{");
+                    data = extractRomDataObject(name, token);
+                }
+                break;
+                case ARRAY: {
+                    token.assertion(TokenType.block, "[");
+                    data = extractRomDataArray(name, token, arrayType);
+                }
+                break;
                 default:
-                    break;
+                    throw new ParseException(token, "Need to parse type: \"" + type + "\"");
             }
             token = tokens[0];
         } else if (token.is(TokenType.block, "{")) {
