@@ -1,5 +1,5 @@
 /*
- *  @(#)DataXmlLoaderTest.java  last: 11.04.2023
+ *  @(#)DataXmlLoaderTest.java  last: 13.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -55,7 +55,7 @@ class DataXmlLoaderTest extends CompareHelper {
                 break;
                 case "CHIP": {
                     Assertions.assertEquals(0x57, batchMemory.getDevice());
-                    Assertions.assertEquals(0x0400, batchMemory.getAddress());
+                    Assertions.assertEquals(0x0700, batchMemory.getAddress());
                     final byte[] dump = batchMemory.getDump();
                     final List<RomData> romDataList = batchMemory.getRomDataList();
                     Assertions.assertNotNull(romDataList);

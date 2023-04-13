@@ -1,5 +1,5 @@
 /* Комментарий */
-char CHAR_SINGN_WIN : 'B'; /* Комментарий */
+char CHAR_SIGN_WIN : 'B'; /* Комментарий */
 int8 : 255; /* Комментарий */
 int16 : 65535; /* Комментарий */
 int16 : -32767; /* Комментарий */
@@ -34,7 +34,6 @@ ARRAY_of_FLOAT : [
 ];
 
 /* ARRAY Define type */
-char CHAR_SIGN_WIN : 'B';
-ARRAY_of_CHAR char: ['A', 'a','А','а'];
-ARRAY_of_INT16 int16 : [31415, 6078, -31415];
-ARRAY_of_FLOAT float : [ Pi_Generation : 3.1415926, 60.78, -3.1415926];
+ARRAY_of_CHAR_type   char: ['A', 'a','А','а'];
+ARRAY_of_INT16_type  int16: [31415, 6078, -31415];
+ARRAY_of_FLOAT_type  float: [ Pi_Generation : 3.1415926, 60.78, -3.1415926];

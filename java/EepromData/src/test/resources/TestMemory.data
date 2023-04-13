@@ -1,47 +1,74 @@
-/* Комментарий */
 MemoryRoms: { headerFilename: "test_memory" };
-/* Комментарий */
-BatchMemory: { device: 0, prefix: "EEPROM", address: 400 };
 
-/* Комментарий */
-char CHAR_SINGN_WIN : 'B'; /* Комментарий */
-int8 : 255; /* Комментарий */
-int16 : 65535; /* Комментарий */
-int16 : -32767; /* Комментарий */
-int32 : 255; /* Комментарий */
-float : 3.1415926; /* Комментарий */
-float : -3.1415926; /* Комментарий */
-string WIN_NAME : "Название машинки"; /* Комментарий */
+BatchMemory: { device: 0, prefix: "EEPROM", address: 1024 };
+float factorBattery: 0.00661;
+float factorCharger: 0.00654;
 
-BatchMemory: { device: 57, prefix: "CHIP", address: 700 };
-
-/* OBJECT */
-OBJECT_VEHICLE : {
-   int8 : 255,
-   float : 60.78,
-   string : "Быстрый мустанг"
+BatchMemory: { device: 87, prefix: "CHIP", address: 1792 };
+char Char: 'c';
+int8 Byte: 127;
+int16 Int: 32767;
+int32 Long: 2147483647;
+float Float: 13.1415926;
+string String: "some text";
+Object: {
+  char: 'h',
+  int8: -128,
+  int16: -32768,
+  int32: 2147483647,
+  float: -13.14,
+  string: "other text"
 };
-
-/* ARRAY */
-ARRAY_of_CHAR : [
-   char : 'A',
-   char : 'a',
-   char : 'А',
-   char : 'а'
+ArrayOfInt: [
+  int16: -2,
+  int16 Definition: -1,
+  int16: 0,
+  int16 Definition: 1,
+  int16: 2,
+  int16: 3
 ];
-ARRAY_of_INT16 : [
-   int16 : 31415,
-   int16 : 6078,
-   int16 : -31415
+ArrayOfObject: [
+  Object: {
+    int8 Int8: 1;
+    int16 Int16: 111;
+    string String: "First object";
+    char Char: 'F';
+  },
+  Object: {
+    int8: 2;
+    int16: 222;
+    string: "Second object 2";
+    char: 'S';
+  },
+  {
+    int8: 3;
+    int16: 333;
+    string: "Third object 3 3";
+    char: 'T';
+  }
 ];
-ARRAY_of_FLOAT : [
-   float : 3.1415926,
-   float : 60.78,
-   float : -3.1415926
+music [
+  JingleBells: {
+    string name: "Jingle Bells";
+    eepromAddress music (ref: jingle-bells-music);
+  };
+  TwoFunnyGeese: {
+    string name: "Жили у бабуси 2 гуси";
+    eepromAddress music (ref: two-funny-geese-music);
+  };
 ];
-
-/* ARRAY Define type */
-char CHAR_SIGN_WIN : 'B';
-ARRAY_of_CHAR char: ['A', 'a','А','а'];
-ARRAY_of_INT16 int16 : [31415, 6078, -31415];
-ARRAY_of_FLOAT float : [ Pi_Generation : 3.1415926, 60.78, -3.1415926];
+dump TwoFunnyGeeseMusic (ref: two-funny-geese-music): [
+  450244024202400247014701450244024202400247014701450249024902
+  45024402470247024402
+];
+dump JingleBellsMusic (ref: jingle-bells-music): [
+  440244024401440244024401440247024002420244004502450245014402
+  440244014402420242024402420147014402440244014402440244014402
+  470240024202440045024502450144024402440147024702450242024000
+  370244024202400237003702440242024002390039024502440242023B00
+  470247024502420244003702440242024002370037024402420240023900
+  390245024402420247024702470149024702450242024000440244024401
+  440244024401440247024002420244004502450245014402440244014702
+  4702450242024000
+];
+int8 EndOfBlock: -1;

@@ -1,5 +1,5 @@
 /*
- *  @(#)TokenParser.java  last: 12.04.2023
+ *  @(#)TokenParser.java  last: 13.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -244,6 +244,8 @@ public class TokenParser {
                         return this;
                     }
                 }
+            } else if (this.type == TokenType.end) {
+                return this;
             }
             final StringBuilder sbx = new StringBuilder("Expected TokenType == \"");
             sbx.append(tokenType.name()).append("\"; with value == [\"");

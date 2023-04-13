@@ -1,5 +1,5 @@
 /*
- *  @(#)MemoryRoms.java  last: 12.04.2023
+ *  @(#)MemoryRoms.java  last: 13.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,5 +25,5 @@ import java.util.List;
 @AllArgsConstructor(staticName = "of")
 public class MemoryRoms {
     private String headerFilename;
-    private List<BatchMemory> list = new ArrayList<>();
+    private List<BatchMemory> list;
 }

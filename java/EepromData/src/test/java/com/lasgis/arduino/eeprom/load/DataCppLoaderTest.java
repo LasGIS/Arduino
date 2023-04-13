@@ -1,5 +1,5 @@
 /*
- *  @(#)DataCppLoaderTest.java  last: 12.04.2023
+ *  @(#)DataCppLoaderTest.java  last: 13.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -185,10 +185,10 @@ public class DataCppLoaderTest extends CompareHelper {
             final byte[] dump = batchMemory.getDump();
             final List<RomData> romDataList = batchMemory.getRomDataList();
             Assertions.assertNotNull(romDataList);
-            Assertions.assertEquals(16, romDataList.size());
+            Assertions.assertEquals(15, romDataList.size());
             Assertions.assertNotNull(dump);
             log.info("dump: {}", DatatypeConverter.printHexBinary(dump));
-            Assertions.assertEquals(140, dump.length);
+            Assertions.assertEquals(139, dump.length);
         });
         Assertions.assertEquals("rom_memory", memoryRoms.getHeaderFilename());
         CreateHelper.create(targetPath, memoryRoms);
@@ -226,24 +226,24 @@ public class DataCppLoaderTest extends CompareHelper {
                 break;
                 case "CHIP": {
                     Assertions.assertEquals(0x57, batchMemory.getDevice());
-                    Assertions.assertEquals(0x0400, batchMemory.getAddress());
+                    Assertions.assertEquals(0x0700, batchMemory.getAddress());
                     final byte[] dump = batchMemory.getDump();
                     final List<RomData> romDataList = batchMemory.getRomDataList();
                     Assertions.assertNotNull(romDataList);
-                    Assertions.assertEquals(16, romDataList.size());
+                    Assertions.assertEquals(10, romDataList.size());
                     Assertions.assertNotNull(dump);
                     log.info("dump: {}", DatatypeConverter.printHexBinary(dump));
-                    Assertions.assertEquals(140, dump.length);
+                    Assertions.assertEquals(165, dump.length);
                 }
                 break;
                 default:
                     Assertions.fail();
             }
         });
-        Assertions.assertEquals("rom_memory", memoryRoms.getHeaderFilename());
+        Assertions.assertEquals("test_memory", memoryRoms.getHeaderFilename());
         CreateHelper.create(targetPath, memoryRoms);
-        boolean isHexFail = compareDefinitionFile(targetPath, "expected_rom_memory.hex", "rom_memory.hex");
-        boolean isDefFail = compareDefinitionFile(targetPath, "expected_rom_memory.h", "rom_memory.h");
+        boolean isHexFail = compareDefinitionFile(targetPath, "expected_test_memory.hex", "test_memory.hex");
+        boolean isDefFail = compareDefinitionFile(targetPath, "expected_test_memory.h", "test_memory.h");
         if (isHexFail || isDefFail) {
             Assertions.fail();
         }
