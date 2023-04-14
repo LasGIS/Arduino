@@ -1,5 +1,5 @@
 /*
- *  @(#)TokenParser.java  last: 13.04.2023
+ *  @(#)TokenParser.java  last: 14.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -24,7 +24,7 @@ public class TokenParser {
 
     private static final String SPACE_CHARS = " \n\r\t";
     private static final String DELIMIT_CHARS = ".,;:=<>(){}[]+-*/!|\"'\\№&%?@#$%^";
-    private static final String START_BLOCK_CHARS = "{[";
+    private static final String START_BLOCK_CHARS = "({[";
     private static final List<String> OPERATORS = Arrays.asList(
         "=", "+=", "-=", "*=", "/=", "+", "-", "*", "/", "&&", "||", ">=", "<", "<=", ">", ">=", "==", "!=", "!", "."
     );
@@ -184,12 +184,19 @@ public class TokenParser {
         /**
          * Проверка на тип лексемы.
          *
-         * @param chkType   тип лексемы
-         * @param delimiter начало лексемы
+         * @param chkType тип лексемы
+         * @param values  удачное начало лексемы
          * @return true если тип лексемы совпадает
          */
-        public boolean is(final TokenType chkType, final String delimiter) {
-            return this.type == chkType && sb.indexOf(delimiter, beg) == beg;
+        public boolean is(final TokenType chkType, final String... values) {
+            if (this.type == chkType) {
+                for (final String val : values) {
+                    if (sb.indexOf(val, beg) == beg) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /**
@@ -226,7 +233,7 @@ public class TokenParser {
          */
         public Token assertion(final TokenType tokenType) throws ParseException {
             if (this.type != tokenType) {
-                throw new ParseException(this, "Expected TokenType == " + tokenType.name() + ".");
+                throw new ParseException(this, "Expected TokenType == " + tokenType.name());
             }
             return this;
         }
@@ -256,7 +263,7 @@ public class TokenParser {
             }
             final int len = sbx.length();
             sbx.delete(len - 3, len);
-            sbx.append("].");
+            sbx.append("]");
             throw new ParseException(this, sbx.toString());
         }
     }

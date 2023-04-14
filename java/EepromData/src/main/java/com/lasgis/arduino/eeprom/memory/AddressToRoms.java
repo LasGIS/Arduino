@@ -1,5 +1,5 @@
 /*
- *  @(#)AddressToRoms.java  last: 12.03.2023
+ *  @(#)AddressToRoms.java  last: 14.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -26,6 +26,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class AddressToRoms {
+    /** уникальное имя ссылки */
     private String refId;
     private Integer offset;
     /** адреса для установки ссылки */

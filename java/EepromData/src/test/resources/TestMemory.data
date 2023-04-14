@@ -1,10 +1,10 @@
 MemoryRoms: { headerFilename: "test_memory" };
 
-BatchMemory: { device: 0, prefix: "EEPROM", address: 1024 };
+BatchMemory: { device: 0, prefix: "EEPROM", address: 0x400 };
 float factorBattery: 0.00661;
 float factorCharger: 0.00654;
 
-BatchMemory: { device: 87, prefix: "CHIP", address: 1792 };
+BatchMemory: { device: 0x57, prefix: "CHIP", address: 0x700 };
 char Char: 'c';
 int8 Byte: 127;
 int16 Int: 32767;
@@ -15,7 +15,7 @@ Object: {
   char: 'h',
   int8: -128,
   int16: -32768,
-  int32: 2147483647,
+  int32: -2147483648,
   float: -13.14,
   string: "other text"
 };
@@ -49,19 +49,19 @@ ArrayOfObject: [
 ];
 music [
   JingleBells: {
-    string name: "Jingle Bells";
-    eepromAddress music (ref: jingle-bells-music);
-  };
+    string name: "Jingle Bells",
+    eepromAddress music (refId: "jingle-bells-music")
+  },
   TwoFunnyGeese: {
-    string name: "Жили у бабуси 2 гуси";
-    eepromAddress music (ref: two-funny-geese-music);
-  };
+    string name: "Жили у бабуси 2 гуси",
+    eepromAddress music (refId: "two-funny-geese-music")
+  }
 ];
-dump TwoFunnyGeeseMusic (ref: two-funny-geese-music): [
+dump TwoFunnyGeeseMusic (refId: "two-funny-geese-music"): [
   450244024202400247014701450244024202400247014701450249024902
   45024402470247024402
 ];
-dump JingleBellsMusic (ref: jingle-bells-music): [
+dump JingleBellsMusic (refId: "jingle-bells-music"): [
   440244024401440244024401440247024002420244004502450245014402
   440244014402420242024402420147014402440244014402440244014402
   470240024202440045024502450144024402440147024702450242024000
