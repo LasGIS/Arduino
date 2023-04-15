@@ -71,4 +71,4 @@ dump JingleBellsMusic (refId: "jingle-bells-music"): [
   440244024401440247024002420244004502450245014402440244014702
   4702450242024000
 ];
-int8 EndOfBlock: -1;
+int8 EndOfBlock: 0xff;
