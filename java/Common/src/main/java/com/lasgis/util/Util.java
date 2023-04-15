@@ -1,5 +1,5 @@
 /*
- *  @(#)Util.java  last: 17.02.2023
+ *  @(#)Util.java  last: 14.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -245,21 +245,24 @@ public final class Util {
     }
 
     static public byte parseHexByte(final String value) {
-        return nonNull(value) ? value.startsWith("0x")
-            ? Byte.parseByte(value.substring(2), 16)
-            : Byte.parseByte(value, 10) : 0;
+        final short s = nonNull(value) ? value.startsWith("0x")
+            ? Short.parseShort(value.substring(2), 16)
+            : Short.parseShort(value, 10) : 0;
+        return (byte) (0xff & s);
     }
 
     static public short parseHexShort(final String value) {
-        return nonNull(value) ? value.startsWith("0x")
-            ? Short.parseShort(value.substring(2), 16)
-            : Short.parseShort(value, 10) : 0;
+        final int i = nonNull(value) ? value.startsWith("0x")
+            ? Integer.parseInt(value.substring(2), 16)
+            : Integer.parseInt(value, 10) : 0;
+        return (short) (0xffff & i);
     }
 
     static public int parseHexInt(final String value) {
-        return nonNull(value) ? value.startsWith("0x")
-            ? Integer.parseInt(value.substring(2), 16)
-            : Integer.parseInt(value, 10) : 0;
+        final long l = nonNull(value) ? value.startsWith("0x")
+            ? Long.parseLong(value.substring(2), 16)
+            : Long.parseLong(value, 10) : 0L;
+        return (int) (0xffffffffL & l);
     }
 
     static public float parseFloatOfNull(final String value) {

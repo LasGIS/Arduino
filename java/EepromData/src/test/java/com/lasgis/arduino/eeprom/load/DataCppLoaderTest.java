@@ -68,7 +68,8 @@ public class DataCppLoaderTest extends CompareHelper {
                 + "  int8 : 255;\n"
                 + "  int16 : 65535;\n"
                 + "  int16 : -32767;\n"
-                + "  int32 : 255;\n"
+                + "  int32 : 4294967295;\n"
+                + "  int32 : 4294967296;\n"
                 + "  float : 3.1415926;\n"
                 + "  string WIN_NAME : \"Название машинки\";\n"
                 + "  OBJECT_VEHICLE : {\n"
@@ -81,7 +82,8 @@ public class DataCppLoaderTest extends CompareHelper {
                 this.add(RomINT8.of(255));
                 this.add(RomINT16.of(65535));
                 this.add(RomINT16.of(-32767));
-                this.add(RomINT32.of(255));
+                this.add(RomINT32.of(-1));
+                this.add(RomINT32.of(0));
                 this.add(RomFLOAT.of(3.1415926));
                 this.add(RomSTRING.of("WIN_NAME", null, "Название машинки"));
                 this.add(RomOBJECT.of("OBJECT_VEHICLE", null)
