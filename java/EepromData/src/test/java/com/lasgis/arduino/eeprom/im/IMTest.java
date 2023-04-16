@@ -1,5 +1,5 @@
 /*
- *  @(#)IMTest.java  last: 15.04.2023
+ *  @(#)IMTest.java  last: 16.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -11,6 +11,8 @@ package com.lasgis.arduino.eeprom.im;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,10 +45,8 @@ public class IMTest {
     }
 
     /**
-     * Задача:  List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-     * отфильтровать список и привести отфильтрованные объекты к типа Y и Z.
-     * Есть метод для фильтрации (callExtSystem)
-     * и методы для преобразования (change2Y и change2Z)
+     * Задача:  List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10); отфильтровать список и привести отфильтрованные объекты к типа Y и Z.
+     * Есть метод для фильтрации (callExtSystem) и методы для преобразования (change2Y и change2Z)
      */
     @Test
     void sortList() throws Exception {
@@ -68,5 +68,18 @@ public class IMTest {
         /*
          * Какие недостатки в моем новом решении (в последней строке будет ошибка времени выполнения, т.к.поток закрыт)
          */
+    }
+
+    @Test
+    void boxTest() throws Exception {
+        Box<Integer> boxInteger = new Box<>(123);
+//        Box<Integer> boxInt = new Box<>("String");
+        Box<String> boxString = new Box<>("String");
+        Annotation an = Box.class.getAnnotation(MyAnnotation.class);
+        log.info("Annotation an = {}", an);
+        Field item = Box.class.getDeclaredField("item");
+        log.info("Field item = {}", item);
+        Annotation anField = item.getAnnotation(MyAnnotation.class);
+        log.info("Annotation anField = {}", anField);
     }
 }
