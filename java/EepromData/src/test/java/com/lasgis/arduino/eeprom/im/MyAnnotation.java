@@ -22,5 +22,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE, ElementType.FIELD})
 public @interface MyAnnotation {
-    String name = "MyAnnotation";
+    String value() default "SomeValue";
 }

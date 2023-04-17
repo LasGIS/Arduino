@@ -1,5 +1,5 @@
 /*
- *  @(#)IMTest.java  last: 16.04.2023
+ *  @(#)IMTest.java  last: 17.04.2023
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -11,9 +11,15 @@ package com.lasgis.arduino.eeprom.im;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayDeque;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -81,5 +87,32 @@ public class IMTest {
         log.info("Field item = {}", item);
         Annotation anField = item.getAnnotation(MyAnnotation.class);
         log.info("Annotation anField = {}", anField);
+    }
+
+    @Test
+    void testLinkedHashMap() {
+        final HashMap<Integer, String> map = new HashMap<>();
+        map.put(0, "02");
+        map.put(1, "01");
+        map.put(3, "03");
+        map.put(4, "05");
+        map.put(5, "06");
+        map.put(2, "04");
+        map.put(6, "07");
+        map.put(7, "08");
+        map.put(8, "09");
+        map.put(9, "10");
+        log.info("map = {}", map);
+        List<String> list = map.values().parallelStream().sorted().collect(Collectors.toList());
+        log.info("map = {}", map);
+        log.info("list = {}", list);
+        map.keySet().stream()
+            .peek(number -> System.out.println("Filter operation for number: " + number)) //Peek is used for debugging purposes.
+            .filter(number -> number % 2 == 1) //Filter the odd numbers
+            .limit(4) //After 4th element stop the stream. Process first 4 element.
+            .peek(number -> System.out.println("Map operation for number: " + number)) //Peek is used for debugging purposes.
+            .map(number -> number * 2) //Transform the number to number*2
+            .forEach(number -> System.out.println("Result of stream: " + number)); //Print the results.
+        // ObjectOutputStream
     }
 }

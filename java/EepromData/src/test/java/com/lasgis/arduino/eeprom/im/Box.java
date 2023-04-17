@@ -19,15 +19,16 @@ import lombok.Data;
  * @author Vladimir Laskin
  * @since 16.04.2023 : 12:07
  */
-@Data @MyAnnotation
+@Data
+@MyAnnotation("class (ElementType.TYPE)")
 public final class Box<T> {
-    @MyAnnotation
+    @MyAnnotation(value = "field (ElementType.FIELD)")
     private final T item;
-    @MyAnnotation
+    @MyAnnotation("(ElementType.CONSTRUCTOR)")
     public Box(final T item) {
         this.item = item;
     }
-    @MyAnnotation
+    @MyAnnotation("ElementType.METHOD")
     void print() {
         System.out.printf("item = %n\n", item);
     }
