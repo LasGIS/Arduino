@@ -31,6 +31,29 @@ ScreenTft* changeCurrentCommand(bool);
 
 /**
  * @brief printText вывод текста на экран
+ * @param dx смещение по X
+ * @param dy смещение по Y
+ * @param col колонка (x * 6)
+ * @param row строка (y * 8)
+ * @param fontSize размер шрифта
+ * @param text выводимый текст
+ * @param color
+ */
+void printTextPrec (
+    uint8_t dx, uint8_t dy,
+    uint8_t col, uint8_t row, uint8_t fontSize,
+    const char * text, uint16_t color
+) {
+  uint8_t oldFontSize = tft.getFontSize();
+  uint16_t x = dx + col * fontSize * FONT_SPACE + 1,
+           y = dy + row * fontSize * FONT_Y + 1;
+  tft.setFontSize(fontSize);
+  tft.drawText(x, y, text, color);
+  tft.setFontSize(oldFontSize);
+}
+
+/**
+ * @brief printText вывод текста на экран
  * @param col колонка (x * 6)
  * @param row строка (y * 8)
  * @param fontSize размер щрифта
@@ -38,6 +61,7 @@ ScreenTft* changeCurrentCommand(bool);
  * @param color
  */
 void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char* text, uint16_t color) {
+  printTextPrec (0, 0, col, row, fontSize, text, color  );
   uint8_t oldFontSize = tft.getFontSize();
   uint16_t x = col * fontSize * FONT_SPACE + 1,
            y = row * fontSize * FONT_Y + 1;

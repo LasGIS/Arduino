@@ -184,8 +184,8 @@ void ScreenTft::showEveryTime() {
 void ScreenTft::showOnce() {
   tft.fillRectangle(X0, Y0, X1, Y1, COLOR_BLACK);
   tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
-  //  tft.fillRectangle(ClockX0 + 1, ClockY0 + 1, ClockX1 - 1, ClockY1 - 1, COLOR_GRAY);
-  //  tft.drawRectangle(ClockX0, ClockY0, ClockX1, ClockY1, COLOR_WHITE);
+//  tft.fillRectangle(ClockX0 - 3, ClockY0 - 3, ClockX1 + 3, ClockY1 + 3, COLOR_GRAY);
+//  tft.drawRectangle(ClockX0 - 3, ClockY0 - 3, ClockX1 + 3, ClockY1 + 3, COLOR_WHITE);
   //#ifdef ADXL345_ENABLED
   //  printText(0,  2, 1, "X=", COLOR_GRAY);
   //  printText(8,  2, 1, "Y=", COLOR_GRAY);

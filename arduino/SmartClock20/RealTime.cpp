@@ -35,7 +35,7 @@ const char* dayOfWeekName(const int dayOfWeek) {
 void printBigTime(DateTime * dateTime) {
   static uint8_t minLast  = 0xff;
   static uint8_t hourLast = 0xff;
-  uint8_t clockX = isHorisontalOrientation() ? 2 : 1;
+  uint8_t fontSize = isHorisontalOrientation() ? 4 : 3;
   uint8_t hour = dateTime->hour();
   uint8_t min = dateTime->minute();
   uint8_t sec = dateTime->second();
@@ -44,7 +44,7 @@ void printBigTime(DateTime * dateTime) {
     toTwoChar(hour, bufTime, 0);
     toTwoChar(min, bufTime, 3);
     toTwoChar(sec, bufTime, 6);
-    printText(clockX, 1, 3, bufTime, COLOR_TOMATO);
+    printTextPrec(ClockX0, ClockY0, 0, 0, fontSize, bufTime, COLOR_TOMATO);
     minLast = min;
     hourLast = hour;
   } else {
@@ -52,7 +52,7 @@ void printBigTime(DateTime * dateTime) {
 #ifdef HAS_SERIAL
     Serial.println(bufTime);
 #endif
-    printText(clockX + 6, 1, 3, bufTime + 6, COLOR_TOMATO);
+    printTextPrec(ClockX0, ClockY0, 6, 0, fontSize, bufTime + 6, COLOR_TOMATO);
   }
 }
 

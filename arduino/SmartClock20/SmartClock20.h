@@ -37,15 +37,15 @@
 #define BOXH_Y0 17
 #define BOXH_Y1 175
 
-#define BOXCLOCKV_X0 13
-#define BOXCLOCKV_X1 163
-#define BOXCLOCKV_Y0 19
-#define BOXCLOCKV_Y1 49
+#define BOXCLOCKV_X0 17
+#define BOXCLOCKV_X1 159
+#define BOXCLOCKV_Y0 29
+#define BOXCLOCKV_Y1 52
 
-#define BOXCLOCKH_X0 31
-#define BOXCLOCKH_X1 181
-#define BOXCLOCKH_Y0 19
-#define BOXCLOCKH_Y1 49
+#define BOXCLOCKH_X0 15
+#define BOXCLOCKH_X1 205
+#define BOXCLOCKH_Y0 29
+#define BOXCLOCKH_Y1 59
 
 #define BOXV_CENTER_X 87
 #define BOXV_CENTER_Y 109
@@ -67,6 +67,11 @@ extern uint16_t boxCenterY;
 
 extern void musicAlarm();
 extern void buzzerOut (uint16_t hertz, uint32_t del, uint8_t soundVolume);
+extern void printTextPrec (
+    uint8_t dx, uint8_t dy,
+    uint8_t col, uint8_t row, uint8_t fontSize,
+    const char * text, uint16_t color
+);
 extern void printText (uint8_t col, uint8_t row, uint8_t fontSize, const char * text, uint16_t color);
 extern void setCursor (uint8_t col, uint8_t row, uint8_t fontSize);
 extern void drawDouble(uint8_t col, uint8_t row, uint8_t fontSize, double val, uint16_t color);
