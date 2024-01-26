@@ -11,8 +11,8 @@ String header;
 String output12State = "off";
 String output14State = "off";
 // назначаем выходные переменные контактам GPIO
-#define output12 0
-#define output14 2
+#define output12 12
+#define output14 14
 
 // текущее время
 unsigned long currentTime = millis();
