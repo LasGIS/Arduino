@@ -1,6 +1,6 @@
 //#include <ESP8266HTTPClient.h>
 
-#define PINOUT 2
+#define PINOUT 14
 
 void setup() {
 //  Serial.begin(74880);

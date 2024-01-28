@@ -1,17 +1,17 @@
 // подключяем библиотеку для работы с Wi-Fi server
 #include <WiFi.h>
 // вводим имя и пароль точки доступа
-const char* ssid     = "TP-Link_C857";
-const char* password = "14178054";
+const char* ssid     = "Your_SSID";
+const char* password = "Your_Password";
 // инициализируем сервер на 80 порте
 WiFiServer server(80);
 // заводим буфер и счетчик для буфера
 char lineBuf[80];
 int charCount = 0;
- 
+
 void setup() {
     // инициализируем монитор порта
-    Serial.begin(115200);   
+    Serial.begin(115200);
     // запас времени на открытие монитора порта — 5 секунд
     delay(5000);
     // инициализируем аналоговые пины
@@ -34,7 +34,7 @@ void setup() {
     // запускаем сервер
     server.begin();
 }
- 
+
 void loop() {
     // анализируем канал связи на наличие входящих клиентов
     WiFiClient client = server.available();

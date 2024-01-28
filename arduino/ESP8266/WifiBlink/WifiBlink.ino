@@ -1,13 +1,13 @@
 // подключаем библиотеку Wi-Fi
 #include <ESP8266WiFi.h>
 // замените своими сетевыми учетными данными
-const char* ssid = "TP-Link_C857";
-const char* password = "14178054";
+const char* ssid     = "Your_SSID";
+const char* password = "Your_Password";
 // установите номер порта веб-сервера на 80
 WiFiServer server(80);
 // переменная для хранения HTTP запроса
 String header;
-// вспомогательные переменные для хранения текущего состояния вывода 
+// вспомогательные переменные для хранения текущего состояния вывода
 String output12State = "off";
 String output14State = "off";
 // назначаем выходные переменные контактам GPIO
@@ -96,17 +96,17 @@ void loop(){
             client.println(".button2 {background-color: #555555;}</style></head>");
             // Web Page Heading
             client.println("<body><h1>ESP32 Web Server</h1>");
-            // Display current state, and ON/OFF buttons for GPIO 12  
+            // Display current state, and ON/OFF buttons for GPIO 12
             client.println("<p>GPIO 12 - State " + output12State + "</p>");
-            // If the output12State is off, it displays the ON button      
+            // If the output12State is off, it displays the ON button
             if (output12State=="off") {
               client.println("<p><a href=\"/12/on\"><button class=\"button\">ON</button></a></p>");
             } else {
               client.println("<p><a href=\"/12/off\"><button class=\"button button2\">OFF</button></a></p>");
             }
-            // Display current state, and ON/OFF buttons for GPIO 14  
+            // Display current state, and ON/OFF buttons for GPIO 14
             client.println("<p>GPIO 14 - State " + output14State + "</p>");
-            // If the output14State is off, it displays the ON button      
+            // If the output14State is off, it displays the ON button
             if (output14State=="off") {
               client.println("<p><a href=\"/14/on\"><button class=\"button\">ON</button></a></p>");
             } else {
