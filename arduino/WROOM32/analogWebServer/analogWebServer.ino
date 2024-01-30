@@ -9,17 +9,21 @@ const char* password = "Your_Password";
 WiFiServer server(80);
 TFT_eSPI tft = TFT_eSPI();
 
-#define FONT_DY 16
-int xCursor = 3;
-int yCursor = 3;
+#define VOLT_X 40
+#define VOLT_W 240
+#define VOLT_Y 80
+#define VOLT_H 150
 
+#define START_X 5
+#define START_W 310
+#define START_Y 3
+#define START_H 234
 
 char lineBuf[80];
 int charCount = 0;
 
 void setup() {
   Serial.begin(115200);
-//  delay(5000);
   // инициализируем аналоговые пины
   pinMode(36, INPUT);
   pinMode(39, INPUT);
@@ -47,24 +51,18 @@ void setup() {
   tft.fillScreen(TFT_BLACK);
   tft.drawRect(1, 1, 319, 239, TFT_WHITE);
 
-//  tft.setTextWrap(true, true);
+  //  tft.setTextWrap(true, true);
   tft.setTextColor(TFT_CYAN, TFT_BLACK);
   tft.setTextFont(2);
+  tft.setViewport(START_X, START_Y, START_W, START_H);
 
-  tft.setCursor(xCursor, yCursor);
   tft.print("Connecting to ");
-  tft.print(ssid);
+  tft.println(ssid);
 
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  yCursor += FONT_DY;
-  tft.setCursor(xCursor, yCursor, true);
-  tft.print("Wi-Fi connected");
-  yCursor += FONT_DY;
-  tft.setCursor(xCursor, yCursor, true);
+  tft.println("Wi-Fi connected");
   tft.print("IP-address: ");
-  yCursor += FONT_DY;
-  tft.setCursor(xCursor, yCursor, true);
-  tft.print(WiFi.localIP().toString());
+  tft.println(WiFi.localIP().toString());
 }
 
 void loop() {
@@ -110,28 +108,28 @@ void loop() {
     client.stop();
     Serial.println("client disconnected");
   }
-  //  outToTft();
-}
-/*
-void loop() {
   outToTft();
-  delay(1000);
+  delay(100);
 }
-*/
+
 void outToTft() {
+  tft.setTextColor(TFT_MAGENTA, TFT_DARKGREY, true);
+  tft.setViewport(VOLT_X, VOLT_Y, VOLT_W, VOLT_H);
+  tft.setCursor(0, 0, 4);
+
   String strOut = "AnalogPin 36 = ";
   strOut += analogRead(36) * 3.3 / 4095;
-  strOut += " V";
-  Serial.println(strOut);
-  tft.drawString(strOut, 50, 10);
+  strOut += "V";
+  //  Serial.println(strOut);
+  tft.println(strOut);
   strOut = "AnalogPin 39 = ";
   strOut += analogRead(39) * 3.3 / 4095;
   strOut += "V";
-  Serial.println(strOut);
-  tft.drawString(strOut, 100, 20);
+  //  Serial.println(strOut);
+  tft.println(strOut);
   strOut = "AnalogPin 34 = ";
   strOut += analogRead(34) * 3.3 / 4095;
   strOut += "V";
-  Serial.println(strOut);
-  tft.drawString(strOut, 150, 40, 2);
+  //  Serial.println(strOut);
+  tft.println(strOut);
 }

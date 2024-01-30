@@ -20,6 +20,7 @@ unsigned long currentTime = millis();
 unsigned long previousTime = 0;
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
+
 void setup() {
   Serial.begin(115200);
   // Initialize the output variables as outputs
@@ -43,8 +44,9 @@ void setup() {
   Serial.println(WiFi.localIP());
   server.begin();
 }
+
 void loop(){
-  WiFiClient client = server.accept();   // прослушиваем входящих клиентов
+  WiFiClient client = server.accept();      // прослушиваем входящих клиентов
   if (client) {                             // если подключается новый клиент,
     currentTime = millis();
     previousTime = currentTime;
