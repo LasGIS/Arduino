@@ -18,18 +18,8 @@ char lineBuf[80];
 int charCount = 0;
 
 void setup() {
-  tft.init();
-  tft.setRotation(3);
-  tft.fillScreen(TFT_BLACK);
-  tft.drawRect(1, 1, 319, 239, TFT_WHITE);
-
-//  tft.setTextWrap(true, true);
-  tft.setTextColor(TFT_CYAN, TFT_BLACK);
-  tft.setCursor(xCursor, yCursor);
-  tft.setTextFont(2);
-
   Serial.begin(115200);
-  delay(5000);
+//  delay(5000);
   // инициализируем аналоговые пины
   pinMode(36, INPUT);
   pinMode(39, INPUT);
@@ -37,10 +27,6 @@ void setup() {
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-
-  tft.setCursor(xCursor, yCursor);
-  tft.print("Connecting to ");
-  tft.print(ssid);
 
   // подключаем микроконтроллер к Wi-Fi сети
   WiFi.begin(ssid, password);
@@ -53,16 +39,32 @@ void setup() {
   Serial.println("IP-address: ");
   Serial.println(WiFi.localIP());
 
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.setCursor(xCursor, yCursor += FONT_DY);
-  tft.print("Wi-Fi connected");
-  tft.setCursor(xCursor, yCursor += FONT_DY);
-  tft.print("IP-address: ");
-  tft.setCursor(xCursor, yCursor += FONT_DY);
-  tft.print(WiFi.localIP().toString());
-
   // запускаем сервер
   server.begin();
+
+  tft.init();
+  tft.setRotation(3);
+  tft.fillScreen(TFT_BLACK);
+  tft.drawRect(1, 1, 319, 239, TFT_WHITE);
+
+//  tft.setTextWrap(true, true);
+  tft.setTextColor(TFT_CYAN, TFT_BLACK);
+  tft.setTextFont(2);
+
+  tft.setCursor(xCursor, yCursor);
+  tft.print("Connecting to ");
+  tft.print(ssid);
+
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  yCursor += FONT_DY;
+  tft.setCursor(xCursor, yCursor, true);
+  tft.print("Wi-Fi connected");
+  yCursor += FONT_DY;
+  tft.setCursor(xCursor, yCursor, true);
+  tft.print("IP-address: ");
+  yCursor += FONT_DY;
+  tft.setCursor(xCursor, yCursor, true);
+  tft.print(WiFi.localIP().toString());
 }
 
 void loop() {
