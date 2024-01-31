@@ -3,7 +3,7 @@
 #include <TFT_eSPI.h>
 
 // вводим имя и пароль точки доступа
-const char* ssid     = "Your_SSID";
+const char* ssid = "Your_SSID";
 const char* password = "Your_Password";
 // инициализируем сервер на 80 порте
 WiFiServer server(80);
@@ -80,25 +80,31 @@ void loop() {
       client.println("Connection: close");
       client.println();
       // формируем веб-страницу
-      String webPage = "<!DOCTYPE HTML>";
-      webPage += "<html lang=\"en\">";
-      webPage += "  <head>";
-      webPage += "    <meta charset=\"utf-8\" />";
-      webPage += "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">";
-      webPage += "  </head>";
-      webPage += "  <h1>ESP32 - Web Server (по Русски)</h1>";
-      webPage += "  <p>";
-      webPage += "  AnalogPin 36 = ";
+      String webPage =
+        "<!DOCTYPE HTML>"
+        "<html lang=\"en\">"
+          "<head>"
+            "<meta charset=\"utf-8\" />"
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+          "</head>"
+          "<body>"
+            "<h1>Web Server (по Русски)</h1>"
+            "<p>"
+              "AnalogPin 36 = ";
       webPage += analogRead(36) * 3.3 / 4095;
-      webPage += " V<br>";
-      webPage += "  AnalogPin 39 = ";
+      webPage +=
+              " V<br>"
+              "AnalogPin 39 = ";
       webPage += analogRead(39) * 3.3 / 4095;
-      webPage += " V<br>";
-      webPage += "  AnalogPin 34 = ";
+      webPage +=
+              " V<br>"
+              "AnalogPin 34 = ";
       webPage += analogRead(34) * 3.3 / 4095;
-      webPage += " V<br>";
-      webPage += "  </p>";
-      webPage += "</html>";
+      webPage +=
+              " V<br>"
+            "</p>"
+          "</body>"
+        "</html>";
       client.println(webPage);
       break;
     }
