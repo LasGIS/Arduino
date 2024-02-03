@@ -39,7 +39,7 @@ SOURCES += \
     screen_dump.cpp
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
-INCLUDEPATH += ../libraries/arduino-ds1302-master \
+INCLUDEPATH += \
     ../libraries/ADXL345/src \
     ../libraries/DS3231 \
     ../libraries/TFT_LG_ILI9225/src \

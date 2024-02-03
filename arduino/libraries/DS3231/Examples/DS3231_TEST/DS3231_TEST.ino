@@ -14,7 +14,7 @@ working as they should.
 #include <Wire.h>
 
 DS3231 Clock;
-bool Century=false;
+bool Century = false;
 bool h12;
 bool PM;
 byte ADay, AHour, AMinute, ASecond, ABits;
@@ -23,53 +23,53 @@ bool ADy, A12h, Apm;
 byte year, month, date, DoW, hour, minute, second;
 
 void setup() {
-	// Start the I2C interface
-	Wire.begin();
-        Clock.setSecond(50);//Set the second 
-        Clock.setMinute(59);//Set the minute 
-        Clock.setHour(11);  //Set the hour 
-        Clock.setDoW(5);    //Set the day of the week
-        Clock.setDate(31);  //Set the date of the month
-        Clock.setMonth(5);  //Set the month of the year
-        Clock.setYear(13);  //Set the year (Last two digits of the year)
-	// Start the serial interface
-	Serial.begin(115200);
+  // Start the I2C interface
+  Wire.begin();
+  Clock.setSecond(0);   //Set the second
+  Clock.setMinute(30);  //Set the minute
+  Clock.setHour(14);    //Set the hour
+  Clock.setDoW(0);      //Set the day of the week
+  Clock.setDate(3);     //Set the date of the month
+  Clock.setMonth(2);    //Set the month of the year
+  Clock.setYear(24);    //Set the year (Last two digits of the year)
+  // Start the serial interface
+  Serial.begin(115200);
 }
-void ReadDS3231()
-{
-  int second,minute,hour,date,month,year,temperature; 
-  second=Clock.getSecond();
-  minute=Clock.getMinute();
-  hour=Clock.getHour(h12, PM);
-  date=Clock.getDate();
-  month=Clock.getMonth(Century);
-  year=Clock.getYear();
-  
-  temperature=Clock.getTemperature();
-  
+
+void ReadDS3231() {
+  int second, minute, hour, date, month, year, temperature;
+  second = Clock.getSecond();
+  minute = Clock.getMinute();
+  hour = Clock.getHour(h12, PM);
+  date = Clock.getDate();
+  month = Clock.getMonth(Century);
+  year = Clock.getYear();
+
+  temperature = Clock.getTemperature();
+
   Serial.print("20");
-  Serial.print(year,DEC);
+  Serial.print(year, DEC);
   Serial.print('-');
-  Serial.print(month,DEC);
+  Serial.print(month, DEC);
   Serial.print('-');
-  Serial.print(date,DEC);
+  Serial.print(date, DEC);
   Serial.print(' ');
-  Serial.print(hour,DEC);
+  Serial.print(hour, DEC);
   Serial.print(':');
-  Serial.print(minute,DEC);
+  Serial.print(minute, DEC);
   Serial.print(':');
-  Serial.print(second,DEC);
-  Serial.print('\n');
-  Serial.print("Temperature=");
-  Serial.print(temperature); 
-  Serial.print('\n');
+  Serial.print(second, DEC);
+  Serial.print('  ');
+  Serial.print("Temperature = ");
+  Serial.println(temperature);
 }
+
 void loop() {
   ReadDS3231();
   delay(1000);
-	// send what's going on to the serial monitor.
-	// Start with the year
-/*	Serial.print("2");
+  // send what's going on to the serial monitor.
+  // Start with the year
+  /*	Serial.print("2");
 	if (Century) {			// Won't need this for 89 years.
 		Serial.print("1");
 	} else {
@@ -83,11 +83,11 @@ void loop() {
 	// then the date
 	Serial.print(Clock.getDate(), DEC);
 	Serial.print(' ');*/
-	// and the day of the week
-	/*Serial.print(Clock.getDoW(), DEC);
+  // and the day of the week
+  /*Serial.print(Clock.getDoW(), DEC);
 	Serial.print(' ');*/
-	// Finally the hour, minute, and second
-	/*Serial.print(Clock.getHour(h12, PM), DEC);
+  // Finally the hour, minute, and second
+  /*Serial.print(Clock.getHour(h12, PM), DEC);
 	Serial.print(':');
 	Serial.print(Clock.getMinute(), DEC);
 	Serial.print(':');
@@ -111,18 +111,18 @@ void loop() {
 	} else {
 		Serial.print(" O-");
 	}*/
-	// Indicate whether an alarm went off
-	/*if (Clock.checkIfAlarm(1)) {
+  // Indicate whether an alarm went off
+  /*if (Clock.checkIfAlarm(1)) {
 		Serial.print(" A1!");
 	}
 	if (Clock.checkIfAlarm(2)) {
 		Serial.print(" A2!");
 	}*/
-	// New line on display
-	//Serial.print('\n');
-       // delay(1000);
-	// Display Alarm 1 information
-/*	Serial.print("Alarm 1: ");
+  // New line on display
+  //Serial.print('\n');
+  // delay(1000);
+  // Display Alarm 1 information
+  /*	Serial.print("Alarm 1: ");
 	Clock.getA1Time(ADay, AHour, AMinute, ASecond, ABits, ADy, A12h, Apm);
 	Serial.print(ADay, DEC);
 	if (ADy) {
@@ -172,19 +172,19 @@ void loop() {
 	if (Clock.checkAlarmEnabled(2)) {
 		Serial.print("enabled");
 	}*/
-	/* display alarm bits
+  /* display alarm bits
 	Serial.print('\n');
 	Serial.print('Alarm bits: ');
 	Serial.print(ABits, DEC);
 	*/
-/*
+  /*
 	Serial.print('\n');
 	Serial.print('\n');
 	delay(1000);
 
 	// Display the time once more as a test of the getTime() function
 	Clock.getTime(year, month, date, DoW, hour, minute, second);
-	
+
         Serial.print(year, DEC);
         Serial.print("/");
 	Serial.print(month, DEC);
@@ -198,4 +198,3 @@ void loop() {
         Serial.print(":");
 	Serial.println(second, DEC);*/
 }
-

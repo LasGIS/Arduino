@@ -1,5 +1,7 @@
 #include <WiFi.h>
 #include <SPI.h>
+#include <Wire.h>
+#include <DS3231.h>
 #include <TFT_eSPI.h>
 
 // вводим имя и пароль точки доступа
@@ -8,21 +10,32 @@ const char* password = "Your_Password";
 // инициализируем сервер на 80 порте
 WiFiServer server(80);
 TFT_eSPI tft = TFT_eSPI();
+DS3231 Clock;
 
-#define VOLT_X 40
-#define VOLT_W 240
-#define VOLT_Y 80
-#define VOLT_H 150
+String bufTime("xx:xx:xx");
+String bufDate("xx.xx.20xx");
 
 #define START_X 5
 #define START_W 310
 #define START_Y 3
 #define START_H 234
 
+#define CLOCK_X 5
+#define CLOCK_W 310
+#define CLOCK_Y 70
+#define CLOCK_H 100
+
+#define VOLT_X 40
+#define VOLT_W 240
+#define VOLT_Y 180
+#define VOLT_H 50
+
 char lineBuf[80];
 int charCount = 0;
 
 void setup() {
+  // Start the I2C interface
+  Wire.begin();
   Serial.begin(115200);
   // инициализируем аналоговые пины
   pinMode(36, INPUT);
@@ -50,6 +63,8 @@ void setup() {
   tft.setRotation(3);
   tft.fillScreen(TFT_BLACK);
   tft.drawRect(1, 1, 319, 239, TFT_WHITE);
+//  tft.drawRect(CLOCK_X, CLOCK_Y, CLOCK_W, CLOCK_H, TFT_DARKGREEN);
+//  tft.drawRect(VOLT_X, VOLT_Y, VOLT_W, VOLT_H, TFT_BROWN);
 
   //  tft.setTextWrap(true, true);
   tft.setTextColor(TFT_CYAN, TFT_BLACK);
@@ -83,27 +98,17 @@ void loop() {
       String webPage =
         "<!DOCTYPE HTML>"
         "<html lang=\"en\">"
-          "<head>"
-            "<meta charset=\"utf-8\" />"
-            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
-          "</head>"
-          "<body>"
-            "<h1>Web Server (по Русски)</h1>"
-            "<p>"
-              "AnalogPin 36 = ";
-      webPage += analogRead(36) * 3.3 / 4095;
-      webPage +=
-              " V<br>"
-              "AnalogPin 39 = ";
-      webPage += analogRead(39) * 3.3 / 4095;
-      webPage +=
-              " V<br>"
-              "AnalogPin 34 = ";
+        "<head>"
+        "<meta charset=\"utf-8\" />"
+        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+        "</head>"
+        "<body>"
+        "<h1>Web Server (по Русски)</h1>"
+        "<p>Яркость = ";
       webPage += analogRead(34) * 3.3 / 4095;
       webPage +=
-              " V<br>"
-            "</p>"
-          "</body>"
+        " V</p>"
+        "</body>"
         "</html>";
       client.println(webPage);
       break;
@@ -115,27 +120,55 @@ void loop() {
     Serial.println("client disconnected");
   }
   outToTft();
+  readDS3231();
   delay(100);
 }
 
 void outToTft() {
   tft.setTextColor(TFT_MAGENTA, TFT_BLACK, true);
   tft.setViewport(VOLT_X, VOLT_Y, VOLT_W, VOLT_H);
-  tft.setCursor(0, 0, 4);
+  tft.setTextDatum(CC_DATUM);
 
-  String strOut = "AnalogPin 36 = ";
-  strOut += analogRead(36) * 3.3 / 4095;
-  strOut += "V";
-  //  Serial.println(strOut);
-  tft.println(strOut);
-  strOut = "AnalogPin 39 = ";
-  strOut += analogRead(39) * 3.3 / 4095;
-  strOut += "V";
-  //  Serial.println(strOut);
-  tft.println(strOut);
-  strOut = "AnalogPin 34 = ";
+  String strOut("Bright = ");
   strOut += analogRead(34) * 3.3 / 4095;
   strOut += "V";
-  //  Serial.println(strOut);
-  tft.println(strOut);
+  tft.drawString(strOut, VOLT_W / 2, VOLT_H / 2, 4);
+}
+
+/**
+ * переводим целое в строку (две цифры)
+ * @param val целое значение
+ * @param str строка
+ * @param start начало вывода в строке
+ */
+void toTwoChar(int val, String& str, unsigned int start) {
+  char fst = '0' + (val % 100) / 10;
+  char lst = '0' + val % 10;
+  str[start] = fst;
+  str[start + 1] = lst;
+}
+
+void readDS3231() {
+  static long lastTime = 0L;
+  long time = millis();
+  if (lastTime != time / 1000) {
+    DateTime dateTime = Clock.now();
+
+    toTwoChar(dateTime.hour(), bufTime, 0);
+    toTwoChar(dateTime.minute(), bufTime, 3);
+    toTwoChar(dateTime.second(), bufTime, 6);
+
+    toTwoChar(dateTime.day(), bufDate, 0);
+    toTwoChar(dateTime.month(), bufDate, 3);
+    toTwoChar(dateTime.year(), bufDate, 8);
+
+    tft.setTextColor(TFT_GREENYELLOW, TFT_BLACK, true);
+    tft.setViewport(CLOCK_X, CLOCK_Y, CLOCK_W, CLOCK_H);
+    tft.setTextDatum(TC_DATUM);
+//    tft.setTextSize(2);
+    tft.drawString(bufTime, CLOCK_W / 2, 0, 6);
+//    tft.setTextSize(1);
+    tft.drawString(bufDate, CLOCK_W / 2, 80, 4);
+    lastTime = time / 1000;
+  }
 }
