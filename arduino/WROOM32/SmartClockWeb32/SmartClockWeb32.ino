@@ -1,8 +1,4 @@
-#include <WiFi.h>
-#include <SPI.h>
-#include <Wire.h>
-#include <DS3231.h>
-#include <TFT_eSPI.h>
+#include "SmartClockWeb32.h"
 
 // вводим имя и пароль точки доступа
 const char* ssid = "Your_SSID";
@@ -14,21 +10,6 @@ DS3231 Clock;
 
 String bufTime("xx:xx:xx");
 String bufDate("xx.xx.20xx");
-
-#define START_X 5
-#define START_W 310
-#define START_Y 3
-#define START_H 234
-
-#define CLOCK_X 5
-#define CLOCK_W 310
-#define CLOCK_Y 70
-#define CLOCK_H 100
-
-#define VOLT_X 40
-#define VOLT_W 240
-#define VOLT_Y 180
-#define VOLT_H 50
 
 char lineBuf[80];
 int charCount = 0;
