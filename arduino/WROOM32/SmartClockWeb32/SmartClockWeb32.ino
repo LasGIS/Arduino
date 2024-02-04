@@ -135,19 +135,6 @@ void outToTft() {
   tft.drawString(strOut, VOLT_W / 2, VOLT_H / 2, 4);
 }
 
-/**
- * переводим целое в строку (две цифры)
- * @param val целое значение
- * @param str строка
- * @param start начало вывода в строке
- */
-void toTwoChar(int val, String& str, unsigned int start) {
-  char fst = '0' + (val % 100) / 10;
-  char lst = '0' + val % 10;
-  str[start] = fst;
-  str[start + 1] = lst;
-}
-
 void readDS3231() {
   static long lastTime = 0L;
   long time = millis();
@@ -165,9 +152,9 @@ void readDS3231() {
     tft.setTextColor(TFT_GREENYELLOW, TFT_BLACK, true);
     tft.setViewport(CLOCK_X, CLOCK_Y, CLOCK_W, CLOCK_H);
     tft.setTextDatum(TC_DATUM);
-//    tft.setTextSize(2);
-    tft.drawString(bufTime, CLOCK_W / 2, 0, 6);
-//    tft.setTextSize(1);
+    tft.setTextSize(3);
+    tft.drawString(bufTime, CLOCK_W / 2, 0, 4);
+    tft.setTextSize(1);
     tft.drawString(bufDate, CLOCK_W / 2, 80, 4);
     lastTime = time / 1000;
   }

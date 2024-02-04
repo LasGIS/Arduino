@@ -124,7 +124,7 @@ uint32_t DateTime::unixtime(void) const {
 // Slightly modified from JeeLabs / Ladyada
 // Get all date/time at once to avoid rollover (e.g., minute/second don't match)
 static uint8_t bcd2bin (uint8_t val) { return val - 6 * (val >> 4); }
-static uint8_t bin2bcd (uint8_t val) { return val + 6 * (val / 10); }
+//static uint8_t bin2bcd (uint8_t val) { return val + 6 * (val / 10); }
 
 DateTime DS3231::now() {
   Wire.beginTransmission(CLOCK_ADDRESS);
