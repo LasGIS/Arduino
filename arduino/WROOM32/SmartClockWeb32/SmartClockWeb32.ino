@@ -8,19 +8,24 @@ WiFiServer server(80);
 TFT_eSPI tft = TFT_eSPI();
 DS3231 Clock;
 
+// переменная для хранения HTTP запроса
+String header;
+
 String bufTime("xx:xx:xx");
 String bufDate("xx.xx.20xx");
 
-char lineBuf[80];
-int charCount = 0;
+// текущее время
+unsigned long currentTime = millis();
+// предыдущее время
+unsigned long previousTime = 0;
+// Define timeout time in milliseconds (example: 2000ms = 2s)
+const long timeoutTime = 2000;
 
 void setup() {
   // Start the I2C interface
   Wire.begin();
   Serial.begin(115200);
   // инициализируем аналоговые пины
-  pinMode(36, INPUT);
-  pinMode(39, INPUT);
   pinMode(34, INPUT);
   Serial.println();
   Serial.print("Connecting to ");
@@ -65,40 +70,57 @@ void loop() {
   // анализируем канал связи на наличие входящих клиентов
   WiFiClient client = server.available();
   if (client) {
-    Serial.println("New client");
-    memset(lineBuf, 0, sizeof(lineBuf));
-    charCount = 0;
-    // HTTP-запрос заканчивается пустой строкой
-    //        boolean currentLineIsBlank = true;
-    while (client.connected()) {
-      client.println("HTTP/1.1 200 OK");
-      client.println("Content-Type: text/html");
-      client.println("Connection: close");
-      client.println();
-      // формируем веб-страницу
-      String webPage =
-        "<!DOCTYPE HTML>"
-        "<html lang=\"en\">"
-        "<head>"
-        "<meta charset=\"utf-8\" />"
-        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
-        "</head>"
-        "<body>"
-        "<h1>Web Server (по Русски)</h1>"
-        "<p>Яркость = ";
-      webPage += analogRead(34) * 3.3 / 4095;
-      webPage +=
-        " V</p>"
-        "</body>"
-        "</html>";
-      client.println(webPage);
-      break;
+    currentTime = millis();
+    previousTime = currentTime;
+    Serial.println("New Client.");
+    String currentLine = "";
+    while (client.connected() && currentTime - previousTime <= timeoutTime) {
+      currentTime = millis();
+      if (client.available()) {
+        char c = client.read();
+        // Serial.write(c);
+        header += c;
+        if (c == '\n') {
+          if (currentLine.length() == 0) {
+
+            Serial.println("header: {");
+            Serial.print(header);
+            Serial.println("}");
+
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-type: text/html");
+            client.println("Connection: close");
+            client.println();
+            // формируем веб-страницу
+            String webPage =
+              "<!DOCTYPE HTML>\n"
+              "<html lang=\"en\"><head>\n"
+              "  <meta charset=\"utf-8\" />\n"
+              "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n"
+              "  <link rel=\"icon\" href=\"data:,\">\n"
+              "</head><body>\n"
+              "  <h1>Web Server (по Русски)</h1>\n"
+              "<p>Яркость = ";
+            webPage += analogRead(34) * 3.3 / 4095;
+            webPage +=
+              " V</p>\n"
+              "</body></html>\n";
+            client.println(webPage);
+            // выходим из цикла while
+            break;
+          } else {  // если появилась новая строка, очистим текущую строку
+            currentLine = "";
+          }
+        } else if (c != '\r') {  // если у вас еще есть что то кроме символа возврата каретки,
+          currentLine += c;      // добавляем его в конец текущей строки
+        }
+      }
     }
-    // даем веб-браузеру время для получения данных
-    delay(1);
+    // очищаем переменную заголовка
+    header = "";
     // закрываем соединение
     client.stop();
-    Serial.println("client disconnected");
+    Serial.println("Client disconnected.");
   }
   outToTft();
   readDS3231();
