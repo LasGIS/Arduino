@@ -1,6 +1,7 @@
 #ifndef SMART_CLOCK_WEB_32_H
 #define SMART_CLOCK_WEB_32_H
 
+//#include <Arduino.h>
 #include <WiFi.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -32,5 +33,6 @@ extern String bufDate;
 
 /** общие функции */
 extern void toTwoChar(int val, String& str, unsigned int start);
+extern void webOutIndexHtml(WiFiClient * client);
 
 #endif // SMART_CLOCK_WEB_32_H

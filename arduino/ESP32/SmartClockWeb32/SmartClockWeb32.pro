@@ -9,6 +9,7 @@ SOURCES += \
     C:/Arduino/arduino/libraries/TFT_eSPI/TFT_eSPI.cpp \
     SmartClockWeb32.ino \
     utility.cpp \
+    IndexHtml.cpp \
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += \

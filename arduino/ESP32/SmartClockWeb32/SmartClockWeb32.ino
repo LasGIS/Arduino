@@ -1,8 +1,8 @@
 #include "SmartClockWeb32.h"
 
 // вводим имя и пароль точки доступа
-const char* ssid = "Your_SSID";
-const char* password = "Your_Password";
+const char* ssid = "TP-Link_C857";
+const char* password = "14178054";
 // инициализируем сервер на 80 порте
 WiFiServer server(80);
 TFT_eSPI tft = TFT_eSPI();
@@ -92,20 +92,7 @@ void loop() {
             client.println("Connection: close");
             client.println();
             // формируем веб-страницу
-            String webPage =
-              "<!DOCTYPE HTML>\n"
-              "<html lang=\"en\"><head>\n"
-              "  <meta charset=\"utf-8\" />\n"
-              "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n"
-              "  <link rel=\"icon\" href=\"data:,\">\n"
-              "</head><body>\n"
-              "  <h1>Web Server (по Русски)</h1>\n"
-              "<p>Яркость = ";
-            webPage += analogRead(34) * 3.3 / 4095;
-            webPage +=
-              " V</p>\n"
-              "</body></html>\n";
-            client.println(webPage);
+            webOutIndexHtml(&client);
             // выходим из цикла while
             break;
           } else {  // если появилась новая строка, очистим текущую строку
