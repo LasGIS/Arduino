@@ -3,54 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="data:,">
-  <link rel="icon" href="favicon.ico" />
-  <style>
-      html {
-          font-family: Helvetica, sans-serif;
-          display: inline-block;
-          margin: 0 auto;
-          text-align: center;
-      }
-
-      .button {
-          background-color: #4CAF50;
-          border: none;
-          color: white;
-          padding: 16px 40px;
-          text-decoration: none;
-          font-size: 30px;
-          margin: 2px;
-          cursor: pointer;
-      }
-
-      .icon {
-          margin-right: 0.01em;
-          width: 20px;
-          height: 20px;
-      }
-
-      .icon.icon-deprecated {
-          background: red url(/static/synchr.svg)  no-repeat;
-      }
-
-      .button2 {
-          background-color: #555555;
-      }
-  </style>
-  <script>
-    let bright = 3.3;
-    const setBright = (volt) => {
-      bright = volt;
-      const elm = document.getElementById("bright");
-      elm.textContent = bright.toFixed(2);
-    };
-  </script>
+  <link rel="icon" href="static/favicon.ico" />
+  <link type="text/css" href="static/styles.css" rel="stylesheet" />
+  <script type="text/javascript" src="src/common.js"></script>
   <title>Умные часы ESP8266</title>
 </head>
 <body onload="setBright(3.3)">
   <h1>Умные часы ESP8266</h1>
-  <p>Яркость = <span id="bright"></span> V<span onclick="setBright(3.1)" class="icon icon-deprecated">____</span></p>
+  <p>Яркость = <span id="bright"></span> V<abbr onclick="setBright(3.1)" class="icon icon-synchronize"></abbr></p>
   <button class="button" onclick="setBright(3.0)">Обновить</button>
 </body>
 </html>

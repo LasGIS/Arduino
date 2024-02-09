@@ -1,0 +1,38 @@
+html {
+  font-family: Helvetica, sans-serif;
+  display: inline-block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 16px 40px;
+  text-decoration: none;
+  font-size: 30px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+.icon {
+  display: inline-block;
+  margin-left: 5px;
+  width: 14px;
+  height: 14px;
+  background-color: crimson;
+  mask-size: 14px;
+}
+
+abbr.icon.icon-deprecated {
+  mask-image: url(deprecated.svg);
+}
+
+abbr.icon.icon-synchronize {
+  mask-image: url(synchronize.svg);
+}
+
+.button2 {
+  background-color: #555555;
+}
