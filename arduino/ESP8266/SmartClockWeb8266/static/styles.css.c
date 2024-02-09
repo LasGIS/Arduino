@@ -1,18 +1,12 @@
-/*
- *  @(#)styles.css  last: 09.02.2024
- *
- * Title: LG Java for Arduino
- * Description: Program for support Arduino.
- * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
- */
+#include "SmartClockWeb8266.h";
 
+const char stylesCss[] PROGMEM = R"=====(
 html {
   font-family: Helvetica, sans-serif;
   display: inline-block;
   margin: 0 auto;
   text-align: center;
 }
-
 .button {
   background-color: #4CAF50;
   border: none;
@@ -23,7 +17,6 @@ html {
   margin: 2px;
   cursor: pointer;
 }
-
 .icon {
   display: inline-block;
   vertical-align: text-bottom;
@@ -33,23 +26,24 @@ html {
   background-color: #DC143C80;
   mask-size: 22px;
 }
-
 abbr.icon.icon-deprecated {
   mask-image: url(deprecated.svg);
 }
-
 abbr.icon.link {
   cursor: pointer;
 }
-
 abbr.icon.link:hover {
   background-color: #DC143CFF;
 }
-
 abbr.icon.icon-synchronize {
   mask-image: url(twocirclingarrows.svg);
 }
-
 .button2 {
   background-color: #555555;
+}
+
+)=====";
+
+void outStylesCss() {
+  client.print((*__FlashStringHelper)stylesCss);
 }
