@@ -1,8 +1,8 @@
 #include "SmartClockWeb32.h"
 
 // вводим имя и пароль точки доступа
-const char* ssid = "TP-Link_C857";
-const char* password = "14178054";
+const char* ssid     = "Your_SSID";
+const char* password = "Your_Password";
 // инициализируем сервер на 80 порте
 WiFiServer server(80);
 TFT_eSPI tft = TFT_eSPI();

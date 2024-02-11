@@ -4,11 +4,15 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/cores/esp32/IPAddress.cpp \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/cores/esp8266/IPAddress.cpp \
     C:/Arduino/arduino/libraries/DS3231/DS3231.cpp \
     C:/Arduino/arduino/libraries/TFT_eSPI/TFT_eSPI.cpp \
     SmartClockWeb8266.ino \
     utility.cpp \
+    webIndexHtml.cpp \
+    webSrcCommonJs.cpp \
+    webStaticStylesCss.cpp \
+    webTwoCirclingArrowsSvg.cpp \
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += \
@@ -18,21 +22,23 @@ INCLUDEPATH += \
     C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/Custom \
     C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/GFXFF \
     C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/TrueType \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/cores/esp32 \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/SPI/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/WiFi/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/EEPROM/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/ArduinoOTA/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/SoftwareSerial/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/SPI/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/Wire/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/Wire/src/utility \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/variants/esp32 \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/tools/sdk/esp32/include/freertos/include \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/tools/sdk/esp32/include/soc/esp32/include/soc \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/cores/esp8266 \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/include \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/EEPROM \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ArduinoOTA \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/SoftwareSerial/src \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/SoftwareSerial/src/circular_queue \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/SPI \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/Wire \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/variants/esp8266 \
+    C:\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\generic\common.h
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/tools/sdk/esp8266/include/freertos/include \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/tools/sdk/esp8266/include/soc/esp8266/include/soc \
 
 HEADERS += \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/variants/esp32/pins_arduino.h \
+    C:\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\generic\common.h \
+    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/variants/generic/pins_arduino.h \
     C:/Arduino/arduino/libraries/DS3231/DS3231.h \
     C:/Arduino/arduino/libraries/TFT_eSPI/User_Setup.h \
     C:/Arduino/arduino/libraries/TFT_eSPI/User_Setup_Select.h \

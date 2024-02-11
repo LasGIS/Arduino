@@ -86,26 +86,16 @@ void loop() {
             Serial.println("header: {");
             Serial.print(header);
             Serial.println("}");
-
-            client.println("HTTP/1.1 200 OK");
-            client.println("Content-type: text/html");
-            client.println("Connection: close");
-            client.println();
-            // формируем веб-страницу
-            String webPage =
-              "<!DOCTYPE HTML>\n"
-              "<html lang=\"en\"><head>\n"
-              "  <meta charset=\"utf-8\" />\n"
-              "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n"
-              "  <link rel=\"icon\" href=\"data:,\">\n"
-              "</head><body>\n"
-              "  <h1>Web Server ESP8266 (по Русски)</h1>\n"
-              "<p>Яркость = ";
-            webPage += analogRead(A0) * 3.3 / 1024;
-            webPage +=
-              " V</p>\n"
-              "</body></html>\n";
-            client.println(webPage);
+            if (header.indexOf("GET / ") >= 0) {
+              // формируем основную веб-страницу
+              webOutIndexHtml(client);
+            } else if (header.indexOf("GET /static/styles.css ") >= 0) {
+              webOutStylesCss(client);
+            } else if (header.indexOf("GET /static/twocirclingarrows.svg ") >= 0) {
+              webOutTwoCirclingArrowsSvg(client);
+            } else if (header.indexOf("GET /src/common.js ") >= 0) {
+              webOutSrcCommonJs(client);
+            }
             // выходим из цикла while
             break;
           } else {  // если появилась новая строка, очистим текущую строку

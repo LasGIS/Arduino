@@ -1,5 +1,5 @@
-#ifndef SMART_CLOCK_WEB_32_H
-#define SMART_CLOCK_WEB_32_H
+#ifndef SMART_CLOCK_WEB_8266_H
+#define SMART_CLOCK_WEB_8266_H
 
 #include <ESP8266WiFi.h>
 #include <SPI.h>
@@ -32,5 +32,9 @@ extern String bufDate;
 
 /** общие функции */
 extern void toTwoChar(int val, String& str, unsigned int start);
+extern void webOutIndexHtml(WiFiClient& client);
+extern void webOutStylesCss(WiFiClient& client);
+extern void webOutTwoCirclingArrowsSvg(WiFiClient& client);
+extern void webOutSrcCommonJs(WiFiClient& client);
 
-#endif // SMART_CLOCK_WEB_32_H
+#endif // SMART_CLOCK_WEB_8266_H
