@@ -31,10 +31,7 @@ INCLUDEPATH += \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/SoftwareSerial/src/circular_queue \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/SPI \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/Wire \
-    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/variants/esp8266 \
-    C:\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\generic\common.h
-    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/tools/sdk/esp8266/include/freertos/include \
-    C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/tools/sdk/esp8266/include/soc/esp8266/include/soc \
+    C:\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\generic \
 
 HEADERS += \
     C:\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\generic\common.h \
