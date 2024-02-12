@@ -17,7 +17,7 @@ const char twoCirclingArrowsSvg[] = R"=====(
 </svg>
 )=====";
 
-void webOutTwoCirclingArrowsSvg(WiFiClient& client) {
+void webGetTwoCirclingArrowsSvg(WiFiClient& client) {
   client.print(R"=====(
 HTTP/1.0 200 OK
 Content-type: image/svg+xml

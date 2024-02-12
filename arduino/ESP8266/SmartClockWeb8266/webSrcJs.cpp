@@ -1,6 +1,6 @@
 #include "SmartClockWeb8266.h"
 
-const char srcCommonJs[] = R"=====(// Common JS 
+const char srcCommonJs[] = R"=====(// Common JS
 let bright = 3.3;
 const setBright = (volt) => {
   bright = volt;
@@ -9,7 +9,7 @@ const setBright = (volt) => {
 };
 )=====";
 
-void webOutSrcCommonJs(WiFiClient& client) {
+void webGetSrcCommonJs(WiFiClient& client) {
   client.print(R"=====(
 HTTP/1.0 200 OK
 Content-type: application/javascript

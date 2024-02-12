@@ -11,8 +11,8 @@ extern WiFiServer server;
 extern TFT_eSPI tft;
 extern DS3231 Clock;
 
-#define START_X 5
-#define START_W 310
+#define START_X 10
+#define START_W 300
 #define START_Y 3
 #define START_H 234
 
@@ -32,9 +32,14 @@ extern String bufDate;
 
 /** общие функции */
 extern void toTwoChar(int val, String& str, unsigned int start);
-extern void webOutIndexHtml(WiFiClient& client);
-extern void webOutStylesCss(WiFiClient& client);
-extern void webOutTwoCirclingArrowsSvg(WiFiClient& client);
-extern void webOutSrcCommonJs(WiFiClient& client);
+extern void connectWiFi();
+extern bool checkWiFiConnected();
+extern void webGetIndexHtml(WiFiClient& client);
+extern void webGetStylesCss(WiFiClient& client);
+extern void webGetTwoCirclingArrowsSvg(WiFiClient& client);
+extern void webGetSrcCommonJs(WiFiClient& client);
+extern void webGetBright(WiFiClient& client);
+extern void webGetDatetime(WiFiClient& client);
+extern void webPostDatetime(WiFiClient& client);
 
 #endif // SMART_CLOCK_WEB_8266_H

@@ -1,0 +1,17 @@
+### Получить яркость
+GET http://192.168.0.100/api/v1/bright
+Accept: application/json
+
+### Получить время
+GET http://192.168.0.100/api/v1/datetime
+Accept: application/json
+
+### Синхронизировать время
+POST http://192.168.0.100/api/v1/datetime
+Accept: application/json
+Content-type: application/json
+
+{
+  "year": 2024, "month": 13, "day": 27,
+  "hour": 1, "min": 59, "sec": 59
+}

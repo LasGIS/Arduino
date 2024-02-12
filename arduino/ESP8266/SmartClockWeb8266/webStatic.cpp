@@ -41,10 +41,9 @@ abbr.icon.icon-synchronize {
 .button2 {
   background-color: #555555;
 }
-
 )=====";
 
-void webOutStylesCss(WiFiClient& client) {
+void webGetStylesCss(WiFiClient& client) {
   client.print(R"=====(
 HTTP/1.0 200 OK
 Content-type: text/css

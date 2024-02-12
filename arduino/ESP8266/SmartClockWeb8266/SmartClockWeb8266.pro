@@ -9,10 +9,12 @@ SOURCES += \
     C:/Arduino/arduino/libraries/TFT_eSPI/TFT_eSPI.cpp \
     SmartClockWeb8266.ino \
     utility.cpp \
+    webApiControllers.cpp \
+    webImages.cpp \
     webIndexHtml.cpp \
-    webSrcCommonJs.cpp \
-    webStaticStylesCss.cpp \
-    webTwoCirclingArrowsSvg.cpp \
+    webMain.cpp \
+    webSrcJs.cpp \
+    webStatic.cpp \
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += \

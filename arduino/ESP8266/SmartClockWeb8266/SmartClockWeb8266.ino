@@ -1,8 +1,5 @@
 #include "SmartClockWeb8266.h"
 
-// вводим имя и пароль точки доступа
-const char* ssid     = "Your_SSID";
-const char* password = "Your_Password";
 // инициализируем сервер на 80 порте
 WiFiServer server(80);
 TFT_eSPI tft = TFT_eSPI();
@@ -22,28 +19,13 @@ unsigned long previousTime = 0;
 const long timeoutTime = 2000;
 
 void setup() {
+  // запускаем сервер
+  server.begin();
   // Start the I2C interface
   Wire.begin(PIN_D1, PIN_D2);
   Serial.begin(115200);
   // инициализируем аналоговые пины
   pinMode(A0, INPUT);
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
-  // подключаем микроконтроллер к Wi-Fi сети
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("Wi-Fi connected");
-  Serial.println("IP-address: ");
-  Serial.println(WiFi.localIP());
-
-  // запускаем сервер
-  server.begin();
 
   tft.init();
   tft.setRotation(3);
@@ -52,65 +34,61 @@ void setup() {
   //  tft.drawRect(CLOCK_X, CLOCK_Y, CLOCK_W, CLOCK_H, TFT_DARKGREEN);
   //  tft.drawRect(VOLT_X, VOLT_Y, VOLT_W, VOLT_H, TFT_BROWN);
 
-  //  tft.setTextWrap(true, true);
-  tft.setTextColor(TFT_CYAN, TFT_BLACK);
-  tft.setTextFont(2);
-  tft.setViewport(START_X, START_Y, START_W, START_H);
-
-  tft.print("Connecting to ");
-  tft.println(ssid);
-
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.println("Wi-Fi connected");
-  tft.print("IP-address: ");
-  tft.println(WiFi.localIP().toString());
+  connectWiFi();
 }
 
 void loop() {
-  // анализируем канал связи на наличие входящих клиентов
-  WiFiClient client = server.accept();
-  if (client) {
-    currentTime = millis();
-    previousTime = currentTime;
-    Serial.println("New Client.");
-    String currentLine = "";
-    while (client.connected() && currentTime - previousTime <= timeoutTime) {
+  if (checkWiFiConnected()) {
+    // анализируем канал связи на наличие входящих клиентов
+    WiFiClient client = server.accept();
+    if (client) {
       currentTime = millis();
-      if (client.available()) {
-        char c = client.read();
-        // Serial.write(c);
-        header += c;
-        if (c == '\n') {
-          if (currentLine.length() == 0) {
-
-            Serial.println("header: {");
-            Serial.print(header);
-            Serial.println("}");
-            if (header.indexOf("GET / ") >= 0) {
-              // формируем основную веб-страницу
-              webOutIndexHtml(client);
-            } else if (header.indexOf("GET /static/styles.css ") >= 0) {
-              webOutStylesCss(client);
-            } else if (header.indexOf("GET /static/twocirclingarrows.svg ") >= 0) {
-              webOutTwoCirclingArrowsSvg(client);
-            } else if (header.indexOf("GET /src/common.js ") >= 0) {
-              webOutSrcCommonJs(client);
+      previousTime = currentTime;
+      Serial.println("New Client.");
+      String currentLine = "";
+      while (client.connected() && currentTime - previousTime <= timeoutTime) {
+        currentTime = millis();
+        if (client.available()) {
+          char c = client.read();
+          // Serial.write(c);
+          header += c;
+          if (c == '\n') {
+            if (currentLine.length() == 0) {
+              Serial.println("header: {");
+              Serial.print(header);
+              Serial.println("}");
+              if (header.indexOf("GET / ") >= 0) {
+                // формируем основную веб-страницу
+                webGetIndexHtml(client);
+              } else if (header.indexOf("GET /static/styles.css ") >= 0) {
+                webGetStylesCss(client);
+              } else if (header.indexOf("GET /static/twocirclingarrows.svg ") >= 0) {
+                webGetTwoCirclingArrowsSvg(client);
+              } else if (header.indexOf("GET /src/common.js ") >= 0) {
+                webGetSrcCommonJs(client);
+              } else if (header.indexOf("GET /api/v1/bright ") >= 0) {
+                webGetBright(client);
+              } else if (header.indexOf("GET /api/v1/datetime ") >= 0) {
+                webGetDatetime(client);
+              } else if (header.indexOf("POST /api/v1/datetime ") >= 0) {
+                webPostDatetime(client);
+              }
+              // выходим из цикла while
+              break;
+            } else {  // если появилась новая строка, очистим текущую строку
+              currentLine = "";
             }
-            // выходим из цикла while
-            break;
-          } else {  // если появилась новая строка, очистим текущую строку
-            currentLine = "";
+          } else if (c != '\r') {  // если у вас еще есть что то кроме символа возврата каретки,
+            currentLine += c;      // добавляем его в конец текущей строки
           }
-        } else if (c != '\r') {  // если у вас еще есть что то кроме символа возврата каретки,
-          currentLine += c;      // добавляем его в конец текущей строки
         }
       }
+      // очищаем переменную заголовка
+      header = "";
+      // закрываем соединение
+      client.stop();
+      Serial.println("Client disconnected.");
     }
-    // очищаем переменную заголовка
-    header = "";
-    // закрываем соединение
-    client.stop();
-    Serial.println("Client disconnected.");
   }
   outToTft();
   readDS3231();

@@ -21,7 +21,7 @@ const char indexHtml2[] = R"=====()">
 </html>
 )=====";
 
-void webOutIndexHtml(WiFiClient& client) {
+void webGetIndexHtml(WiFiClient& client) {
   client.print(R"=====(
 HTTP/1.1 200 OK
 Content-type: text/html
