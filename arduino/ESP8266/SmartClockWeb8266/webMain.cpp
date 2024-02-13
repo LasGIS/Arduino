@@ -1,19 +1,27 @@
 #include "SmartClockWeb8266.h"
 
+// Define timeout time in milliseconds (example: 2000ms = 2s)
+#define TIME_OUT_TIME 2000
+
 // вводим имя и пароль точки доступа
 const char* ssid     = "Your_SSID";
 const char* password = "Your_Password";
 
-void webRoute() {
+void webLoop() {
   if (checkWiFiConnected()) {
     // анализируем канал связи на наличие входящих клиентов
     WiFiClient client = server.accept();
     if (client) {
-      currentTime = millis();
-      previousTime = currentTime;
+      // текущее время
+      unsigned long currentTime = millis();
+      // предыдущее время
+      unsigned long previousTime = currentTime;
+      // переменная для хранения HTTP запроса
+      String header;
+
       Serial.println("New Client.");
       String currentLine = "";
-      while (client.connected() && currentTime - previousTime <= timeoutTime) {
+      while (client.connected() && currentTime - previousTime <= TIME_OUT_TIME) {
         currentTime = millis();
         if (client.available()) {
           char c = client.read();
@@ -21,26 +29,7 @@ void webRoute() {
           header += c;
           if (c == '\n') {
             if (currentLine.length() == 0) {
-              Serial.println("header: {");
-              Serial.print(header);
-              Serial.println("}");
-              if (header.indexOf("GET / ") >= 0) {
-                // формируем основную веб-страницу
-                webGetIndexHtml(client);
-              } else if (header.indexOf("GET /static/styles.css ") >= 0) {
-                webGetStylesCss(client);
-              } else if (header.indexOf("GET /static/twocirclingarrows.svg ") >= 0) {
-                webGetTwoCirclingArrowsSvg(client);
-              } else if (header.indexOf("GET /src/common.js ") >= 0) {
-                webGetSrcCommonJs(client);
-              } else if (header.indexOf("GET /api/v1/bright ") >= 0) {
-                webGetBright(client);
-              } else if (header.indexOf("GET /api/v1/datetime ") >= 0) {
-                webGetDatetime(client);
-              } else if (header.indexOf("POST /api/v1/datetime ") >= 0) {
-                webPostDatetime(client);
-              }
-              // выходим из цикла while
+              webRoute(client, header);
               break;
             } else {  // если появилась новая строка, очистим текущую строку
               currentLine = "";
@@ -56,6 +45,43 @@ void webRoute() {
       client.stop();
       Serial.println("Client disconnected.");
     }
+  }
+}
+
+String webLoadContent(WiFiClient& client, unsigned int count) {
+  unsigned long currentTime = millis();
+  unsigned long previousTime = currentTime;
+  char* buf = new char[count + 1];
+  unsigned int pos = 0;
+  while (client.connected() && currentTime - previousTime <= TIME_OUT_TIME && pos <= count) {
+    currentTime = millis();
+    if (client.available()) {
+      pos += client.read(buf + pos, count - pos);
+    }
+  }
+  buf[pos] = 0;
+  return String(buf);
+}
+
+void webRoute(WiFiClient& client, String header) {
+  Serial.println("header: {");
+  Serial.print(header);
+  Serial.println("}");
+  if (header.indexOf("GET / ") >= 0) {
+    // формируем основную веб-страницу
+    webGetIndexHtml(client);
+  } else if (header.indexOf("GET /static/styles.css ") >= 0) {
+    webGetStylesCss(client);
+  } else if (header.indexOf("GET /static/twocirclingarrows.svg ") >= 0) {
+    webGetTwoCirclingArrowsSvg(client);
+  } else if (header.indexOf("GET /src/common.js ") >= 0) {
+    webGetSrcCommonJs(client);
+  } else if (header.indexOf("GET /api/v1/bright ") >= 0) {
+    webGetBright(client);
+  } else if (header.indexOf("GET /api/v1/datetime ") >= 0) {
+    webGetDatetime(client);
+  } else if (header.indexOf("POST /api/v1/datetime ") >= 0) {
+    webPostDatetime(client);
   }
 }
 

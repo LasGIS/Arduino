@@ -1,3 +1,4 @@
+#include "HardwareSerial.h"
 #include "SmartClockWeb8266.h"
 
 void webGetBright(WiFiClient& client) {
@@ -42,6 +43,9 @@ Content-Length: )=====");
 }
 
 void webPostDatetime(WiFiClient& client) {
+  String content = webLoadContent(client, 77);
+  Serial.println(content);
+  
   DateTime dateTime = Clock.now();
   String json("{\"year\": ");
   json += dateTime.year();

@@ -5,18 +5,8 @@ WiFiServer server(80);
 TFT_eSPI tft = TFT_eSPI();
 DS3231 Clock;
 
-// переменная для хранения HTTP запроса
-String header;
-
 String bufTime("xx:xx:xx");
 String bufDate("xx.xx.20xx");
-
-// текущее время
-unsigned long currentTime = millis();
-// предыдущее время
-unsigned long previousTime = 0;
-// Define timeout time in milliseconds (example: 2000ms = 2s)
-const long timeoutTime = 2000;
 
 void setup() {
   // запускаем сервер
@@ -38,7 +28,7 @@ void setup() {
 }
 
 void loop() {
-  webRoute();
+  webLoop();
   outToTft();
   readDS3231();
   delay(100);
