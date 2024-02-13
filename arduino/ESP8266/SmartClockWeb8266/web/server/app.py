@@ -21,11 +21,11 @@ def get_datetime():
 
 @app.route('/api/v1/datetime', methods=['POST'])
 def post_datetime():
-    bright = {"bright": 3.4}
-    return {
-        "year": 2020, "month": 2, "day": 22,
-        "hour": 22, "min": 22, "sec": 22
-    }
+    return request
+    # return {
+    #     "year": 2020, "month": 2, "day": 22,
+    #     "hour": 22, "min": 22, "sec": 22
+    # }
 
 @app.route('/submit', methods=['POST'])
 def submit():
