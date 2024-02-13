@@ -34,6 +34,7 @@ extern String bufDate;
 extern void toTwoChar(int val, String& str, unsigned int start);
 extern void connectWiFi();
 extern bool checkWiFiConnected();
+extern void webRoute();
 extern void webGetIndexHtml(WiFiClient& client);
 extern void webGetStylesCss(WiFiClient& client);
 extern void webGetTwoCirclingArrowsSvg(WiFiClient& client);

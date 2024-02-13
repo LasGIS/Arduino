@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Arduino/arduino/libraries/DS3231/**",
+                "C:/Arduino/arduino/libraries/TFT_eSPI/**",
+                "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/**",
+                "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/Custom/**",
+                "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/GFXFF/**",
+                "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/TrueType/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.19041.0",
+            "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}
