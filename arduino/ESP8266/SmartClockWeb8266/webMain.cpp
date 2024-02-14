@@ -74,6 +74,8 @@ void webRoute(WiFiClient& client, String header) {
     webGetStylesCss(client);
   } else if (header.indexOf("GET /static/twocirclingarrows.svg ") >= 0) {
     webGetTwoCirclingArrowsSvg(client);
+  } else if (header.indexOf("GET /static/deprecated.svg ") >= 0) {
+    webGetDeprecatedSvg(client);
   } else if (header.indexOf("GET /src/common.js ") >= 0) {
     webGetSrcCommonJs(client);
   } else if (header.indexOf("GET /api/v1/bright ") >= 0) {

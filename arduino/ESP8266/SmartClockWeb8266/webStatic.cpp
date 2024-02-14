@@ -7,6 +7,10 @@ html {
   margin: 0 auto;
   text-align: center;
 }
+p > span {
+  color: #002288;
+  font-weight: bolder;
+}
 .button {
   background-color: #4CAF50;
   border: none;

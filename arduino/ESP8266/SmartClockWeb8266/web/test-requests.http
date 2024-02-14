@@ -15,3 +15,21 @@ Content-type: application/json
   "year": 2024, "month": 13, "day": 27,
   "hour": 1, "min": 59, "sec": 59
 }
+
+### Получить яркость (http://localhost:5000)
+GET http://localhost:5000/api/v1/bright
+Accept: application/json
+
+### Получить время (http://localhost:5000)
+GET http://localhost:5000/api/v1/datetime
+Accept: application/json
+
+### Синхронизировать время (http://localhost:5000)
+POST http://localhost:5000/api/v1/datetime
+Accept: application/json
+Content-type: application/json
+
+{
+  "year": 2024, "month": 13, "day": 27,
+  "hour": 1, "min": 59, "sec": 59
+}

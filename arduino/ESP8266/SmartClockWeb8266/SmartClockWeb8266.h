@@ -41,6 +41,7 @@ extern String webLoadContent(WiFiClient& client, unsigned int count);
 extern void webGetIndexHtml(WiFiClient& client);
 extern void webGetStylesCss(WiFiClient& client);
 extern void webGetTwoCirclingArrowsSvg(WiFiClient& client);
+extern void webGetDeprecatedSvg(WiFiClient& client);
 extern void webGetSrcCommonJs(WiFiClient& client);
 extern void webGetBright(WiFiClient& client);
 extern void webGetDatetime(WiFiClient& client);

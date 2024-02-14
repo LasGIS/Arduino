@@ -1,11 +1,24 @@
-let bright = 3.3;
-// let baseUrl = "http://192.168.0.100/";
-let baseUrl = "http://localhost:5000/";
-let dateTime = {
-  year: 2024, month: 13, day: 27,
-  hour: 1, min: 59, sec: 59
-};
-let dateTimeInp = {};
+let baseUrl = "http://192.168.0.100/";
+//let baseUrl = "http://localhost:5000/";
+
+const setBright = (volt) => {
+  const bright = volt;
+  const element = document.getElementById("bright");
+  element.textContent = bright.toFixed(2);
+}
+
+const setDatetime = (datetime) => {
+  const twoDigits = (value) => Number(value).toLocaleString("ru-RU", { minimumIntegerDigits: 2 });
+  const str = ''
+    + twoDigits(datetime.hour) + ':'
+    + twoDigits(datetime.minute) + ':'
+    + twoDigits(datetime.second) + ' - '
+    + twoDigits(datetime.day) + '.'
+    + twoDigits(datetime.month) + '.'
+    + datetime.year;
+  const element = document.getElementById("data-time");
+  element.textContent = str;
+}
 
 const getBright = () => {
   fetch(baseUrl + "api/v1/bright", {
@@ -22,13 +35,7 @@ const getBright = () => {
     .catch(err => {
       console.log(err);
     });
-};
-
-const setBright = (volt) => {
-  bright = volt;
-  const elm = document.getElementById("bright");
-  elm.textContent = bright.toFixed(2);
-};
+}
 
 const getDatetime = () => {
   fetch(baseUrl + "api/v1/datetime", {
@@ -38,30 +45,46 @@ const getDatetime = () => {
     }
   })
     .then(response => response.json())
-    .then(response => {
-      console.log(JSON.stringify(response));
-      setBright(response.bright);
+    .then(datetime => {
+      console.log(JSON.stringify(datetime));
+      setDatetime(datetime);
     })
     .catch(err => {
       console.log(err);
     });
-};
+}
 
-const postDatetime = () => {
+const postDatetime = (dateTime) => {
+  let data = JSON.stringify(dateTime);
   fetch(baseUrl + "api/v1/datetime", {
     method: "POST",
     headers: {
-      "Content-type": "application/json",
-      "Accept": "application/json"
+      "Content-type": "application/x-www-form-urlencoded",
+      "Accept": "application/json",
+      "Content-Length": data.length
     },
-    date: dateTime
+    date: data
   })
     .then(response => response.json())
-    .then(response => {
-      console.log(JSON.stringify(response));
-      dateTime = response;
+    .then(datetime => {
+      console.log(JSON.stringify(datetime));
+      setDatetime(datetime);
     })
     .catch(err => {
       console.log(err);
     });
-};
+}
+
+const synchroDatetime = () => {
+  getBright();
+  const date = new Date();
+  let dateTime = {
+    year: date.getFullYear(),
+    month: date.getMonth(),
+    day: date.getDate(),
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    second: date.getSeconds()
+  };
+  postDatetime(dateTime);
+}

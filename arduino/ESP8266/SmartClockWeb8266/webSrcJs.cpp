@@ -1,12 +1,92 @@
 #include "SmartClockWeb8266.h"
 
 const char srcCommonJs[] = R"=====(// Common JS
-let bright = 3.3;
 const setBright = (volt) => {
-  bright = volt;
-  const elm = document.getElementById("bright");
-  elm.textContent = bright.toFixed(2);
-};
+  const bright = volt;
+  const element = document.getElementById("bright");
+  element.textContent = bright.toFixed(2);
+}
+
+const setDatetime = (datetime) => {
+  const twoDigits = (value) => Number(value).toLocaleString("ru-RU", { minimumIntegerDigits: 2 });
+  const str = ''
+    + twoDigits(datetime.hour) + ':'
+    + twoDigits(datetime.minute) + ':'
+    + twoDigits(datetime.second) + ' - '
+    + twoDigits(datetime.day) + '.'
+    + twoDigits(datetime.month) + '.'
+    + datetime.year;
+  const element = document.getElementById("data-time");
+  element.textContent = str;
+}
+
+const getBright = () => {
+  fetch("/api/v1/bright", {
+    method: "GET",
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+    .then(response => response.json())
+    .then(response => {
+      console.log(JSON.stringify(response));
+      setBright(response.bright);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+const getDatetime = () => {
+  fetch("/api/v1/datetime", {
+    method: "GET",
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+    .then(response => response.json())
+    .then(datetime => {
+      console.log(JSON.stringify(datetime));
+      setDatetime(datetime);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+const postDatetime = (dateTime) => {
+  let data = JSON.stringify(dateTime);
+  fetch("/api/v1/datetime", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+      "Accept": "application/json",
+      "Content-Length": data.length
+    },
+    date: data
+  })
+    .then(response => response.json())
+    .then(datetime => {
+      console.log(JSON.stringify(datetime));
+      setDatetime(datetime);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+const synchroDatetime = () => {
+  getBright();
+  const date = new Date();
+  postDatetime({
+    year: date.getFullYear(),
+    month: date.getMonth(),
+    day: date.getDate(),
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    second: date.getSeconds()
+  });
+}
 )=====";
 
 void webGetSrcCommonJs(WiFiClient& client) {

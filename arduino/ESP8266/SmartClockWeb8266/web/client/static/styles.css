@@ -1,16 +1,13 @@
-/*
- *  @(#)styles.css  last: 09.02.2024
- *
- * Title: LG Java for Arduino
- * Description: Program for support Arduino.
- * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
- */
-
 html {
   font-family: Helvetica, sans-serif;
   display: inline-block;
   margin: 0 auto;
   text-align: center;
+}
+
+p > span {
+  color: #002288;
+  font-weight: bolder;
 }
 
 .button {
