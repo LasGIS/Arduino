@@ -122,8 +122,6 @@ bool checkWiFiConnected() {
       } else {
         Serial.print(".");
       }
-      // } else {
-      // isConnected = WiFi.status() == WL_CONNECTED;
     }
     lastTime = time / 500;
   }

@@ -15,23 +15,23 @@ def get_bright():
 @app.route('/api/v1/datetime', methods=['GET', 'POST', 'OPTIONS'])
 def post_datetime():
   if request.method == 'POST':
-    app.logger.info('POST value = "%s"', request.get_data())    
+    app.logger.info('POST value = "%s"', request.get_data())
     resp = make_response({
         "year": 2024, "month": 24, "day": 24,
-        "hour": 24, "min": 24, "sec": 24
+        "hour": 24, "minute": 24, "second": 24
       }, 200)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
   elif request.method == 'GET':
-    app.logger.info('GET value = "%s"', request.get_data())    
+    app.logger.info('GET value = "%s"', request.get_data())
     resp = make_response({
         "year": 2020, "month": 2, "day": 22,
-        "hour": 22, "min": 22, "sec": 22
+        "hour": 22, "minute": 22, "second": 22
       }, 200)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
   elif request.method == 'OPTIONS':
-    app.logger.info('OPTIONS value = "%s"', request.get_data())    
+    app.logger.info('OPTIONS value = "%s"', request.get_data())
     respo = make_response('OK', 204)
     respo.headers['Access-Control-Allow-Origin'] = '*'
     respo.headers['Access-Control-Request-Method'] = 'POST, GET, OPTIONS'

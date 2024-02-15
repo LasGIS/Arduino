@@ -1,5 +1,5 @@
-let baseUrl = "http://192.168.0.100/";
-//let baseUrl = "http://localhost:5000/";
+let baseUrl = "http://192.168.0.100";
+//let baseUrl = "http://localhost:5000";
 
 const setBright = (volt) => {
   const bright = volt;
@@ -21,7 +21,7 @@ const setDatetime = (datetime) => {
 }
 
 const getBright = () => {
-  fetch(baseUrl + "api/v1/bright", {
+  fetch(baseUrl + "/api/v1/bright", {
     method: "GET",
     headers: {
       "Accept": "application/json"
@@ -38,7 +38,7 @@ const getBright = () => {
 }
 
 const getDatetime = () => {
-  fetch(baseUrl + "api/v1/datetime", {
+  fetch(baseUrl + "/api/v1/datetime", {
     method: "GET",
     headers: {
       "Accept": "application/json"
@@ -56,14 +56,13 @@ const getDatetime = () => {
 
 const postDatetime = (dateTime) => {
   let data = JSON.stringify(dateTime);
-  fetch(baseUrl + "api/v1/datetime", {
+  fetch(baseUrl + "/api/v1/datetime", {
     method: "POST",
     headers: {
-      "Content-type": "application/x-www-form-urlencoded",
       "Accept": "application/json",
-      "Content-Length": data.length
+      "Content-type": "application/x-www-form-urlencoded"
     },
-    date: data
+    body: data
   })
     .then(response => response.json())
     .then(datetime => {

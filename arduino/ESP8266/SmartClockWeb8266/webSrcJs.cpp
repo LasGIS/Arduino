@@ -61,9 +61,8 @@ const postDatetime = (dateTime) => {
     headers: {
       "Content-type": "application/json",
       "Accept": "application/json",
-      "Content-Length": data.length
     },
-    date: data
+    body: data
   })
     .then(response => response.json())
     .then(datetime => {
