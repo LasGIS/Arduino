@@ -75,7 +75,6 @@ const postDatetime = (dateTime) => {
 }
 
 const synchroDatetime = () => {
-  getBright();
   const date = new Date();
   let dateTime = {
     year: date.getFullYear(),

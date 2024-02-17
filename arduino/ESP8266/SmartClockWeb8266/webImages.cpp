@@ -28,22 +28,10 @@ const char deprecatedSvg[] = R"=====(
 </svg>
 )=====";
 
-void webGetTwoCirclingArrowsSvg(WiFiClient& client) {
-  client.print(R"=====(
-HTTP/1.0 200 OK
-Content-type: image/svg+xml
-Content-Length: )=====");
-  client.println(strlen(twoCirclingArrowsSvg));
-  client.println();
-  client.print(twoCirclingArrowsSvg);
+void webGetTwoCirclingArrowsSvg() {
+  server.send(200, "image/svg+xml", twoCirclingArrowsSvg);
 }
 
-void webGetDeprecatedSvg(WiFiClient& client) {
-  client.print(R"=====(
-HTTP/1.0 200 OK
-Content-type: image/svg+xml
-Content-Length: )=====");
-  client.println(strlen(deprecatedSvg));
-  client.println();
-  client.print(deprecatedSvg);
+void webGetDeprecatedSvg() {
+  server.send(200, "image/svg+xml", deprecatedSvg);
 }

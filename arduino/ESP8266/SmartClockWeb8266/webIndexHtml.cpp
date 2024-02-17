@@ -24,14 +24,9 @@ const char indexHtml2[] = R"=====()">
 </html>
 )=====";
 
-void webGetIndexHtml(WiFiClient& client) {
-  client.print(R"=====(
-HTTP/1.1 200 OK
-Content-type: text/html
-Connection: close
-)=====");
-  client.println();
-  client.print(indexHtml1);
-  client.print(analogRead(34) * 3.3 / 1024);
-  client.print(indexHtml2);
+void webGetIndexHtml() {
+  String out = indexHtml1;
+  out += analogRead(34) * 3.3 / 1024;
+  out += indexHtml2;
+  server.send(200, "text/html", out);
 }

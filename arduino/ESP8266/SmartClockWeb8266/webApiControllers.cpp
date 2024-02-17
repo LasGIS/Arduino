@@ -1,21 +1,16 @@
+#include "ESP8266WebServer.h"
 #include "HardwareSerial.h"
 #include "SmartClockWeb8266.h"
 
-void webGetBright(WiFiClient& client) {
+void apiBright() {
   String json("{\"bright\":");
   json += analogRead(A0) * 3.3 / 1024;
   json += "}";
-  client.print(R"=====(
-HTTP/1.0 200 OK
-Content-type: application/json
-Access-Control-Allow-Origin: *
-Content-Length: )=====");
-  client.println(json.length());
-  client.println();
-  client.print(json);
+  server.enableCORS(true);
+  server.send(200, "application/json", json);
 }
 
-void webGetDatetime(WiFiClient& client) {
+void apiDatetime() {
   DateTime dateTime = Clock.now();
   String json("{\"year\": ");
   json += dateTime.year();
@@ -31,43 +26,21 @@ void webGetDatetime(WiFiClient& client) {
   json += dateTime.second();
   json += "}";
 
-  client.print(R"=====(
-HTTP/1.0 200 OK
-Accept: application/json
-Content-type: application/json
-Access-Control-Allow-Origin: *
-Content-Length: )=====");
-  client.println(json.length());
-  client.println();
-  client.print(json);
-}
+  if (server.method() == HTTP_GET) {
+    Serial.println("method == GET");
+    server.enableCORS(true);
+    server.send(200, "application/json", json);
+  } else if (server.method() == HTTP_POST) {
+    Serial.println("method == POST");
+    String message = "  Form was:\n";
+    for (uint8_t i = 0; i < server.args(); i++) { message += " " + server.argName(i) + ": " + server.arg(i) + "\n"; }
+    Serial.println(message);
+    Serial.println(server.argName(0));
+    Serial.println(server.arg(0));
 
-void webPostDatetime(WiFiClient& client) {
-  String content = webLoadContent(client, 77);
-  Serial.println(content);
-  
-  DateTime dateTime = Clock.now();
-  String json("{\"year\": ");
-  json += dateTime.year();
-  json += ", \"month\": ";
-  json += dateTime.month();
-  json += ", \"day\": ";
-  json += dateTime.day();
-  json += ", \"hour\": ";
-  json += dateTime.hour();
-  json += ", \"minute\": ";
-  json += dateTime.minute();
-  json += ", \"second\": ";
-  json += dateTime.second();
-  json += "}";
-
-  client.print(R"=====(
-HTTP/1.0 200 OK
-Accept: application/json
-Content-type: application/json
-Access-Control-Allow-Origin: *
-Content-Length: )=====");
-  client.println(json.length());
-  client.println();
-  client.print(json);
+    server.enableCORS(true);
+    server.send(200, "application/json", json);
+  } else {
+    server.send(405, "text/plain", "Method Not Allowed");
+  }
 }

@@ -47,12 +47,6 @@ abbr.icon.icon-synchronize {
 }
 )=====";
 
-void webGetStylesCss(WiFiClient& client) {
-  client.print(R"=====(
-HTTP/1.0 200 OK
-Content-type: text/css
-Content-Length: )=====");
-  client.println(strlen(stylesCss));
-  client.println();
-  client.print(stylesCss);
+void webGetStylesCss() {
+  server.send(200, "text/css", stylesCss);
 }

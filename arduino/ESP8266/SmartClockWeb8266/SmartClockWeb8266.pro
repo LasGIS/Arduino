@@ -40,6 +40,7 @@ INCLUDEPATH += \
 HEADERS += \
     C:\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\generic\common.h \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/variants/generic/pins_arduino.h \
+    C:\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\libraries\ESP8266WebServer\src\Parsing-impl.h \
     C:/Arduino/arduino/libraries/DS3231/DS3231.h \
     C:/Arduino/arduino/libraries/TFT_eSPI/User_Setup.h \
     C:/Arduino/arduino/libraries/TFT_eSPI/User_Setup_Select.h \

@@ -9,8 +9,7 @@
 #include <DS3231.h>
 #include <TFT_eSPI.h>
 
-//extern ESP8266WebServer server;
-extern WiFiServer server;
+extern ESP8266WebServer server;
 extern TFT_eSPI tft;
 extern DS3231 Clock;
 
@@ -22,7 +21,7 @@ extern DS3231 Clock;
 #define CLOCK_X 5
 #define CLOCK_W 310
 #define CLOCK_Y 70
-#define CLOCK_H 100
+#define CLOCK_H 105
 
 #define VOLT_X 40
 #define VOLT_W 240
@@ -39,18 +38,15 @@ extern void saveRealTime(DateTime* dateTime);
 extern void tftShowRealTime();
 
 /* Web */
-extern void webLoop();
-extern void webRoute(WiFiClient& client, String header);
 extern void connectWiFi();
 extern bool checkWiFiConnected();
-extern String webLoadContent(WiFiClient& client, unsigned int count);
-extern void webGetIndexHtml(WiFiClient& client);
-extern void webGetStylesCss(WiFiClient& client);
-extern void webGetTwoCirclingArrowsSvg(WiFiClient& client);
-extern void webGetDeprecatedSvg(WiFiClient& client);
-extern void webGetSrcCommonJs(WiFiClient& client);
-extern void webGetBright(WiFiClient& client);
-extern void webGetDatetime(WiFiClient& client);
-extern void webPostDatetime(WiFiClient& client);
+
+extern void webGetIndexHtml();
+extern void webGetStylesCss();
+extern void webGetTwoCirclingArrowsSvg();
+extern void webGetDeprecatedSvg();
+extern void webGetSrcCommonJs();
+extern void apiBright();
+extern void apiDatetime();
 
 #endif // SMART_CLOCK_WEB_8266_H

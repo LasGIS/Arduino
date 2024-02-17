@@ -88,12 +88,6 @@ const synchroDatetime = () => {
 }
 )=====";
 
-void webGetSrcCommonJs(WiFiClient& client) {
-  client.print(R"=====(
-HTTP/1.0 200 OK
-Content-type: application/javascript
-Content-Length: )=====");
-  client.println(strlen(srcCommonJs));
-  client.println();
-  client.print(srcCommonJs);
+void webGetSrcCommonJs() {
+  server.send(200, "application/javascript", srcCommonJs);
 }

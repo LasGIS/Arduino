@@ -1,8 +1,7 @@
 #include "SmartClockWeb8266.h"
 
 // инициализируем сервер на 80 порте
-WiFiServer server(80);
-//ESP8266WebServer server(80);
+ESP8266WebServer server(80);
 TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
@@ -28,7 +27,9 @@ void setup() {
 }
 
 void loop() {
-  webLoop();
+  if (checkWiFiConnected()) {
+    server.handleClient();
+  }
   outToTft();
   tftShowRealTime();
   delay(100);
