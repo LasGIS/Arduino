@@ -8,6 +8,7 @@ SOURCES += \
     C:/Arduino/arduino/libraries/DS3231/DS3231.cpp \
     C:/Arduino/arduino/libraries/TFT_eSPI/TFT_eSPI.cpp \
     SmartClockWeb8266.ino \
+    RealTime.cpp \
     utility.cpp \
     webApiControllers.cpp \
     webImages.cpp \
@@ -27,6 +28,7 @@ INCLUDEPATH += \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/cores/esp8266 \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ESP8266WiFi/src/include \
+    C:\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\libraries\ESP8266WebServer\src \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/EEPROM \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/ArduinoOTA \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/libraries/SoftwareSerial/src \

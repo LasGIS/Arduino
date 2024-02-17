@@ -1,7 +1,7 @@
 TEMPLATE = app
-
-QT += qml quick
-CONFIG += c++11
+CONFIG += console c++17
+CONFIG -= app_bundle
+CONFIG -= qt
 
 #// THE_ANSWER 42
 DEFINES += ARDUINO=10612
@@ -12,22 +12,22 @@ DEFINES += __AVR__
 DEFINES += __AVR_ATmega328P__
 
 SOURCES += \
-    ../libraries/ADXL345/src/ADXL345.cpp \
-    ../libraries/AT24C32/LoadClass.cpp \
-    ../libraries/AT24C32/LoadClassRef.cpp \
-    ../libraries/AT24C32/LoadClassCommon.cpp \
-    ../libraries/AT24C32/SerialBlock.cpp \
-    ../libraries/DS3231/DS3231.cpp \
-    ../libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.cpp \
-    ../libraries/TFT_LG_ILI9225/src/RussFontANSI.c \
-    ../libraries/TFT_LG_ILI9225/src/RussFontOEM.c \
-    ../libraries/TFT_LG_ILI9225/src/DefaultFonts.c \
-    ../libraries/TFT_LG_ILI9225/examples/Demo/Demo.ino \
-    ../libraries/DHT-sensor-library-master/DHT.cpp \
-    ../libraries/IrControl/IrControl.cpp \
-    ../libraries/MsTimer2/MsTimer2.cpp \
-    ../libraries/AT24C32/I2C_EEPROM.cpp \
-    ../libraries/AT24C32/Examples/AT24C32_TEST/AT24C32_TEST.ino \
+    C:/Arduino/arduino/libraries/ADXL345/src/ADXL345.cpp \
+    C:/Arduino/arduino/libraries/AT24C32/LoadClass.cpp \
+    C:/Arduino/arduino/libraries/AT24C32/LoadClassRef.cpp \
+    C:/Arduino/arduino/libraries/AT24C32/LoadClassCommon.cpp \
+    C:/Arduino/arduino/libraries/AT24C32/SerialBlock.cpp \
+    C:/Arduino/arduino/libraries/DS3231/DS3231.cpp \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.cpp \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/src/RussFontANSI.c \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/src/RussFontOEM.c \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/src/DefaultFonts.c \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/examples/Demo/Demo.ino \
+    C:/Arduino/arduino/libraries/DHT-sensor-library-master/DHT.cpp \
+    C:/Arduino/arduino/libraries/IrControl/IrControl.cpp \
+    C:/Arduino/arduino/libraries/MsTimer2/MsTimer2.cpp \
+    C:/Arduino/arduino/libraries/AT24C32/I2C_EEPROM.cpp \
+    C:/Arduino/arduino/libraries/AT24C32/Examples/AT24C32_TEST/AT24C32_TEST.ino \
     SmartClock20.ino \
     Accel.cpp \
     RealTime.cpp \
@@ -40,13 +40,13 @@ SOURCES += \
 
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += \
-    ../libraries/ADXL345/src \
-    ../libraries/DS3231 \
-    ../libraries/TFT_LG_ILI9225/src \
-    ../libraries/DHT-sensor-library-master \
-    ../libraries/IrControl \
-    ../libraries/MsTimer2 \
-    ../libraries/AT24C32 \
+    C:/Arduino/arduino/libraries/ADXL345/src \
+    C:/Arduino/arduino/libraries/DS3231 \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/src \
+    C:/Arduino/arduino/libraries/DHT-sensor-library-master \
+    C:/Arduino/arduino/libraries/IrControl \
+    C:/Arduino/arduino/libraries/MsTimer2 \
+    C:/Arduino/arduino/libraries/AT24C32 \
     C:/Arduino15/packages/arduino/hardware/avr/1.8.6/cores/arduino \
     C:/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include \
     C:/Arduino15/packages/arduino/hardware/avr/1.8.6/variants/standard \
@@ -60,17 +60,17 @@ INCLUDEPATH += \
     D:/local/Arduino/libraries/Servo/src
 
 HEADERS += \
-    ../libraries/AT24C32/LoadClass.h \
-    ../libraries/AT24C32/LoadClassRef.h \
-    ../libraries/AT24C32/LoadClassCommon.h \
-    ../libraries/AT24C32/SerialBlock.h \
-    ../libraries/DHT-sensor-library-master/DHT.h \
-    ../libraries/IrControl/IrControl.h \
-    ../libraries/MsTimer2/MsTimer2.h \
-    ../libraries/ADXL345/src/ADXL345.h \
-    ../libraries/DS3231/DS3231.h \
-    ../libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.h \
-    ../libraries/AT24C32/I2C_EEPROM.h \
+    C:/Arduino/arduino/libraries/AT24C32/LoadClass.h \
+    C:/Arduino/arduino/libraries/AT24C32/LoadClassRef.h \
+    C:/Arduino/arduino/libraries/AT24C32/LoadClassCommon.h \
+    C:/Arduino/arduino/libraries/AT24C32/SerialBlock.h \
+    C:/Arduino/arduino/libraries/DHT-sensor-library-master/DHT.h \
+    C:/Arduino/arduino/libraries/IrControl/IrControl.h \
+    C:/Arduino/arduino/libraries/MsTimer2/MsTimer2.h \
+    C:/Arduino/arduino/libraries/ADXL345/src/ADXL345.h \
+    C:/Arduino/arduino/libraries/DS3231/DS3231.h \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.h \
+    C:/Arduino/arduino/libraries/AT24C32/I2C_EEPROM.h \
     SmartClock20.h \
     pitches.h \
     note.h \
@@ -81,20 +81,20 @@ HEADERS += \
     I2CMemory.h
 
 DISTFILES += \
-    ../libraries/ADXL345/library.json \
-    ../libraries/TFT_LG_ILI9225/library.json \
-    ../libraries/ADXL345/lib/readme.txt \
-    ../libraries/ADXL345/keywords.txt \
-    ../libraries/ADXL345/library.properties \
-    ../libraries/ADXL345/License.txt \
-    ../libraries/ADXL345/platformio.ini \
-    ../libraries/TFT_LG_ILI9225/keywords.txt \
-    ../libraries/TFT_LG_ILI9225/library.properties \
-    ../libraries/ADXL345/README.md \
-    ../libraries/TFT_LG_ILI9225/README.md \
-    ../libraries/DS3231/keywords.txt \
-    ../libraries/DS3231/Readme.txt \
-    ../libraries/AT24C32/keywords.txt \
+    C:/Arduino/arduino/libraries/ADXL345/library.json \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/library.json \
+    C:/Arduino/arduino/libraries/ADXL345/lib/readme.txt \
+    C:/Arduino/arduino/libraries/ADXL345/keywords.txt \
+    C:/Arduino/arduino/libraries/ADXL345/library.properties \
+    C:/Arduino/arduino/libraries/ADXL345/License.txt \
+    C:/Arduino/arduino/libraries/ADXL345/platformio.ini \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/keywords.txt \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/library.properties \
+    C:/Arduino/arduino/libraries/ADXL345/README.md \
+    C:/Arduino/arduino/libraries/TFT_LG_ILI9225/README.md \
+    C:/Arduino/arduino/libraries/DS3231/keywords.txt \
+    C:/Arduino/arduino/libraries/DS3231/Readme.txt \
+    C:/Arduino/arduino/libraries/AT24C32/keywords.txt \
     I2CMemory.data \
     I2CMemory.xml \
     I2CMemory.hex

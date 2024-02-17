@@ -2,11 +2,14 @@
 #define SMART_CLOCK_WEB_8266_H
 
 #include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <ESP8266WebServer.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <DS3231.h>
 #include <TFT_eSPI.h>
 
+//extern ESP8266WebServer server;
 extern WiFiServer server;
 extern TFT_eSPI tft;
 extern DS3231 Clock;
@@ -32,7 +35,10 @@ extern String bufDate;
 
 /** общие функции */
 extern void toTwoChar(int val, String& str, unsigned int start);
+extern void saveRealTime(DateTime* dateTime);
+extern void tftShowRealTime();
 
+/* Web */
 extern void webLoop();
 extern void webRoute(WiFiClient& client, String header);
 extern void connectWiFi();
