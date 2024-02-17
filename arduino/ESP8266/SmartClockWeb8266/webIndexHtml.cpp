@@ -1,6 +1,6 @@
 #include "SmartClockWeb8266.h"
 
-const char indexHtml1[] = R"=====(
+const char indexHtml[] = R"=====(<!DOCTYPE HTML>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -10,9 +10,7 @@ const char indexHtml1[] = R"=====(
   <script type="text/javascript" src="src/common.js"></script>
   <title>Умные часы ESP8266</title>
 </head>
-<body onload="synchroDatetime()=====";
-
-const char indexHtml2[] = R"=====()">
+<body onload="{getBright();getDatetime();}">
   <h1>Умные часы ESP8266</h1>
   <p>Яркость = <span id="bright"></span> V
     <abbr onclick="getBright()" class="icon icon-synchronize link"></abbr></p>
@@ -25,8 +23,5 @@ const char indexHtml2[] = R"=====()">
 )=====";
 
 void webGetIndexHtml() {
-  String out = indexHtml1;
-  out += analogRead(34) * 3.3 / 1024;
-  out += indexHtml2;
-  server.send(200, "text/html", out);
+  server.send(200, "text/html", indexHtml);
 }
