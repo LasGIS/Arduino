@@ -4,6 +4,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <HardwareSerial.h>
+#include <Arduino_JSON.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <DS3231.h>
@@ -34,7 +36,7 @@ extern String bufDate;
 
 /** общие функции */
 extern void toTwoChar(int val, String& str, unsigned int start);
-extern void saveRealTime(DateTime* dateTime);
+extern void saveRealTime(DateTime * dateTime);
 extern void tftShowRealTime();
 
 /* Web */
