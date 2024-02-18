@@ -13,10 +13,25 @@ const char indexHtml[] = R"=====(<!DOCTYPE HTML>
 <body onload="{getBright();getDatetime();}">
   <h1>Умные часы ESP8266</h1>
   <p>Яркость = <span id="bright"></span> V
-    <abbr onclick="getBright()" class="icon icon-synchronize link"></abbr></p>
-  <p>Время на контроллере = <span id="data-time"></span>
+    <abbr onclick="getBright()" class="icon icon-synchronize link"></abbr>
+  </p>
+  <p>Время = <span id="control-time"></span>
     <abbr onclick="getDatetime()" class="icon icon-synchronize link"></abbr>
-    <abbr onclick="synchroDatetime()" class="icon icon-deprecated link"></abbr></p>
+  </p>
+  <p>Дата = <span id="control-data"></span></p>
+  <p><label for="day-of-week">День недели</label>
+    <select id="day-of-week">
+      <option value="0">Воскресенье</option>
+      <option value="1">Понедельник</option>
+      <option value="2">Вторник</option>
+      <option value="3">Среда</option>
+      <option value="4">Четверг</option>
+      <option value="5">Пятница</option>
+      <option value="6">Суббота</option>
+    </select>
+    <abbr onclick="synchroDatetime()" class="icon icon-synchronize link"
+          title="Синхронизировать часы со значением на компьютере"></abbr>
+  </p>
   <a href="/"><button class="button">Обновить</button></a>
 </body>
 </html>

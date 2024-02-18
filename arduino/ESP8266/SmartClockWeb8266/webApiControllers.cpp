@@ -15,6 +15,8 @@ String toJson(DateTime * dateTime) {
   json += dateTime->month();
   json += ", \"day\": ";
   json += dateTime->day();
+  json += ", \"dayOfWeek\": ";
+  json += dateTime->dayOfWeek();
   json += ", \"hour\": ";
   json += dateTime->hour();
   json += ", \"minute\": ";
@@ -33,17 +35,6 @@ void apiDatetime() {
     server.send(200, "application/json", toJson(&dateTime));
   } else if (server.method() == HTTP_POST) {
     Serial.println("method == POST");
-
-    //    Serial.print("Content-Type == ");
-    //    Serial.println(server.header("Content-Type"));
-    /*
-    String message = "  Form was:\n";
-    for (uint8_t i = 0; i < server.args(); i++) { message += " " + server.argName(i) + ": " + server.arg(i) + "\n"; }
-    Serial.println(message);
-    Serial.println(server.argName(0));
-    Serial.println(server.arg(0));
-*/
-
     String inJson;
     if (server.hasArg("plain")) {
       inJson = server.arg("plain");
@@ -53,7 +44,7 @@ void apiDatetime() {
     Serial.println("json = " + inJson);
     JSONVar objJson = JSON.parse(inJson);
     DateTime * dateTime = new DateTime(
-      objJson["year"], objJson["month"], objJson["day"], 0,
+      objJson["year"], objJson["month"], objJson["day"], objJson["dayOfWeek"],
       objJson["hour"], objJson["minute"], objJson["second"]);
     saveRealTime(dateTime);
 

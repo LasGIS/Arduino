@@ -9,15 +9,18 @@ const setBright = (volt) => {
 
 const setDatetime = (datetime) => {
   const twoDigits = (value) => Number(value).toLocaleString("ru-RU", { minimumIntegerDigits: 2 });
-  const str = ''
+  const elementTime = document.getElementById("control-time");
+  elementTime.textContent = ''
     + twoDigits(datetime.hour) + ':'
     + twoDigits(datetime.minute) + ':'
-    + twoDigits(datetime.second) + ' - '
+    + twoDigits(datetime.second);
+  const elementData = document.getElementById("control-data");
+  elementData.textContent = ''
     + twoDigits(datetime.day) + '.'
     + twoDigits(datetime.month) + '.'
     + datetime.year;
-  const element = document.getElementById("data-time");
-  element.textContent = str;
+  const elementDayOfWeek = document.getElementById("day-of-week");
+  elementDayOfWeek.selectedIndex = datetime.dayOfWeek;
 }
 
 const getBright = () => {
@@ -75,6 +78,7 @@ const postDatetime = (dateTime) => {
 }
 
 const synchroDatetime = () => {
+  const elementDayOfWeek = document.getElementById("day-of-week");
   const date = new Date();
   let dateTime = {
     year: date.getFullYear(),
@@ -82,7 +86,8 @@ const synchroDatetime = () => {
     day: date.getDate(),
     hour: date.getHours(),
     minute: date.getMinutes(),
-    second: date.getSeconds()
+    second: date.getSeconds(),
+    dayOfWeek: elementDayOfWeek.selectedIndex
   };
   postDatetime(dateTime);
 }

@@ -8,8 +8,18 @@ html {
   text-align: center;
 }
 p > span {
+  font-size: 16px;
   color: #002288;
-  font-weight: bolder;
+  font-weight: bold;
+}
+p > select {
+  font-size: 16px;
+  color: #002288;
+  font-weight: bold;
+  padding: 5px;
+}
+p > select > option {
+  font-weight: bold;
 }
 .button {
   background-color: #4CAF50;
