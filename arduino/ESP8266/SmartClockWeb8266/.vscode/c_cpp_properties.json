@@ -9,7 +9,11 @@
                 "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/**",
                 "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/Custom/**",
                 "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/GFXFF/**",
-                "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/TrueType/**"
+                "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/TrueType/**",
+                "C:/Arduino/arduino/libraries/Arduino_JSON/src/**",
+                "C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/**",
+                "C:/Arduino15/packages/esp8266/tools/**",
+                "C:/Arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/**"
             ],
             "defines": [
                 "_DEBUG",
