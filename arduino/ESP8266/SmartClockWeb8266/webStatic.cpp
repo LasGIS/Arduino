@@ -25,9 +25,9 @@ p > select > option {
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 16px 40px;
+  padding: 10px 20px;
   text-decoration: none;
-  font-size: 30px;
+  font-size: 24px;
   margin: 2px;
   cursor: pointer;
 }

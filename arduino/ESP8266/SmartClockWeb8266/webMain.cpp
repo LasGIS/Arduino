@@ -4,27 +4,16 @@
 #define TIME_OUT_TIME 2000
 
 // вводим имя и пароль точки доступа
-const char* ssid =     "IT_One Guest";
-const char* password = "IT-One2020";
-//const char* ssid =     "TP-Link_C857";
-//const char* password = "14178054";
+//const char* ssid =     "IT_One Guest";
+//const char* password = "IT-One2020";
+const char* ssid =     "TP-Link_C857";
+const char* password = "14178054";
 //const char* ssid =     "POCO M4 Pro";
 //const char* password = "5cc2crfftk4ur6v";
 
-void webRoute() {
-  // формируем основную веб-страницу
-  server.on("/", webGetIndexHtml);
-  server.on("/static/styles.css", webGetStylesCss);
-  server.on("/static/twocirclingarrows.svg", webGetTwoCirclingArrowsSvg);
-  server.on("/static/deprecated.svg", webGetDeprecatedSvg);
-  server.on("/src/common.js", webGetSrcCommonJs);
-
-  // API
-  server.on("/api/v1/bright", apiBright);
-  server.on("/api/v1/datetime", apiDatetime);
-
-  server.begin();
-}
+void webRoute();
+void connectWiFi();
+bool checkWiFiConnected();
 
 void connectWiFi() {
   Serial.println();
@@ -66,4 +55,20 @@ bool checkWiFiConnected() {
     lastTime = time / 500;
   }
   return isConnected;
+}
+
+void webRoute() {
+  // формируем основную веб-страницу
+  server.on("/", webGetIndexHtml);
+  server.on("/static/styles.css", webGetStylesCss);
+  server.on("/static/twocirclingarrows.svg", webGetTwoCirclingArrowsSvg);
+  server.on("/static/deprecated.svg", webGetDeprecatedSvg);
+  server.on("/src/common.js", webGetSrcCommonJs);
+
+  // API
+  server.on("/api/v1/bright", apiBright);
+  server.on("/api/v1/datetime", apiDatetime);
+  server.on("/api/v1/scan-networks", scanNetworks);
+
+  server.begin();
 }

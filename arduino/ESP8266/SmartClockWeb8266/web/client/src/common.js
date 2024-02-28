@@ -1,4 +1,4 @@
-let baseUrl = "http://192.168.0.100";
+let baseUrl = "http://192.168.0.103";
 //let baseUrl = "http://localhost:5000";
 
 const setBright = (volt) => {
@@ -32,7 +32,6 @@ const getBright = () => {
   })
     .then(response => response.json())
     .then(response => {
-      console.log(JSON.stringify(response));
       setBright(response.bright);
     })
     .catch(err => {
@@ -49,7 +48,6 @@ const getDatetime = () => {
   })
     .then(response => response.json())
     .then(datetime => {
-      console.log(JSON.stringify(datetime));
       setDatetime(datetime);
     })
     .catch(err => {
@@ -69,9 +67,22 @@ const postDatetime = (dateTime) => {
   })
     .then(response => response.json())
     .then(datetime => {
-      console.log(JSON.stringify(datetime));
       setDatetime(datetime);
     })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+const getScanNetworks = (resolve) => {
+  fetch(baseUrl + "/api/v1/scan-networks", {
+    method: "GET",
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+    .then(response => response.json())
+    .then(scanNetworks => resolve(scanNetworks))
     .catch(err => {
       console.log(err);
     });
@@ -80,7 +91,7 @@ const postDatetime = (dateTime) => {
 const synchroDatetime = () => {
   const elementDayOfWeek = document.getElementById("day-of-week");
   const date = new Date();
-  let dateTime = {
+  postDatetime({
     year: date.getFullYear(),
     month: date.getMonth() + 1,
     day: date.getDate(),
@@ -88,6 +99,11 @@ const synchroDatetime = () => {
     minute: date.getMinutes(),
     second: date.getSeconds(),
     dayOfWeek: elementDayOfWeek.selectedIndex
-  };
-  postDatetime(dateTime);
+  });
+}
+
+const showScanNetworks = () => {
+  getScanNetworks(scanNetworks => {
+    console.log(JSON.stringify(scanNetworks));
+  });
 }

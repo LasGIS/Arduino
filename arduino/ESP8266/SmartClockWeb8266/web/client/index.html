@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,6 +9,7 @@
   <script type="text/javascript" src="src/common.js"></script>
   <title>Умные часы ESP8266</title>
 </head>
+
 <body onload="{ getBright(); getDatetime(); }">
   <h1>Умные часы ESP8266</h1>
   <p>Яркость = <span id="bright"></span> V
@@ -28,9 +30,13 @@
       <option value="6">Суббота</option>
     </select>
     <abbr onclick="synchroDatetime()" class="icon icon-synchronize link"
-          title="Синхронизировать часы со значением на компьютере"></abbr>
+      title="Синхронизировать часы со значением на компьютере"></abbr>
   </p>
-
-  <a href="/"><button class="button">Обновить</button></a>
+  <div>
+    <a href="/"><button class="button">Обновить</button></a>
+    <a href="#" onclick="synchroDatetime()"><button class="button">Синхронизировать</button></a>
+    <a href="#" onclick="showScanNetworks()"><button class="button">Сканировать WiFi</button></a>
+  </div>
 </body>
+
 </html>

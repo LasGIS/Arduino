@@ -7,7 +7,8 @@
 	"settings": {
 		"files.associations": {
 			"memory": "cpp",
-			"functional": "cpp"
+			"functional": "cpp",
+			"cstdlib": "cpp"
 		}
 	}
 }

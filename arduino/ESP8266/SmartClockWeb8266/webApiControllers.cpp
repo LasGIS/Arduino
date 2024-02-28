@@ -8,7 +8,7 @@ void apiBright() {
   server.send(200, "application/json", json);
 }
 
-String toJson(DateTime * dateTime) {
+String toJson(DateTime *dateTime) {
   String json("{\"year\": ");
   json += dateTime->year();
   json += ", \"month\": ";
@@ -43,13 +43,39 @@ void apiDatetime() {
     }
     Serial.println("json = " + inJson);
     JSONVar objJson = JSON.parse(inJson);
-    DateTime * dateTime = new DateTime(
+    DateTime *dateTime = new DateTime(
       objJson["year"], objJson["month"], objJson["day"], objJson["dayOfWeek"],
       objJson["hour"], objJson["minute"], objJson["second"]);
     saveRealTime(dateTime);
 
     server.enableCORS(true);
     server.send(200, "application/json", toJson(dateTime));
+  } else {
+    server.send(405, "text/plain", "Method Not Allowed");
+  }
+}
+
+void scanNetworks() {
+  if (server.method() == HTTP_GET) {
+    int numberOfNetworks = WiFi.scanNetworks();
+    JSONVar jsonArray;
+    for (int i = 0; i < numberOfNetworks; i++) {
+      JSONVar jsonVar;
+      // Serial.print("Network name: ");
+      // Serial.println(WiFi.SSID(i));
+      jsonVar["name"] = WiFi.SSID(i);
+      // Serial.print("Signal strength: ");
+      // Serial.println(WiFi.RSSI(i));
+      jsonVar["rssi"] = (int) WiFi.RSSI(i);
+      // Serial.println("-----------------------");
+      jsonArray[i] = jsonVar;
+      Serial.println(JSON.stringify(jsonVar));
+    }
+    JSONVar jsonObject;
+    jsonObject["count"] = numberOfNetworks;
+    jsonObject["ssids"] = jsonArray;
+    server.enableCORS(true);
+    server.send(200, "application/json", JSON.stringify(jsonObject));
   } else {
     server.send(405, "text/plain", "Method Not Allowed");
   }

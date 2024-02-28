@@ -50,5 +50,6 @@ extern void webGetDeprecatedSvg();
 extern void webGetSrcCommonJs();
 extern void apiBright();
 extern void apiDatetime();
+extern void scanNetworks();
 
 #endif // SMART_CLOCK_WEB_8266_H

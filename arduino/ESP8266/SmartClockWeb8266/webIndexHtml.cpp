@@ -30,9 +30,13 @@ const char indexHtml[] = R"=====(<!DOCTYPE HTML>
       <option value="6">Суббота</option>
     </select>
     <abbr onclick="synchroDatetime()" class="icon icon-synchronize link"
-          title="Синхронизировать часы со значением на компьютере"></abbr>
+      title="Синхронизировать часы со значением на компьютере"></abbr>
   </p>
-  <a href="/"><button class="button">Обновить</button></a>
+  <div>
+    <a href="/"><button class="button">Обновить</button></a>
+    <a href="#" onclick="synchroDatetime()"><button class="button">Синхронизировать</button></a>
+    <a href="#" onclick="showScanNetworks()"><button class="button">Сканировать WiFi</button></a>
+  </div>
 </body>
 </html>
 )=====";
