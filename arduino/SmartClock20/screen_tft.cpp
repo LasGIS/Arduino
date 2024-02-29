@@ -242,8 +242,10 @@ void ScreenTft::edit(char key) {
     case '-':
       fields[nField].setValue(nPosit, key);
       break;
-    case 'M':  // записываем и выходим
-    case 'r':  // выходим без записи
+    case 'M':
+    case 'E':
+    case 'P':  // записываем и выходим
+    case 'R':  // выходим без записи
       mode = ModeType::show;
       return;
   }

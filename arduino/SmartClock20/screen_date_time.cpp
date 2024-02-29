@@ -37,9 +37,8 @@ void ScreenDateTime::edit(char key) {
     nPosit = 0;
     load();
     break;
-  case 'M': // записываем
+  case 'P': // записываем
     save();
-  case 'r': // без записи
     break;
   }
   ScreenTft::edit(key);

@@ -5,20 +5,20 @@
 
 IrControl* IrControl::_activeIrControlObject = 0;
 
-#if (KEYBOARD_LAYOUT == FIRST_KEYBOARD)
+#ifdef FIRST_KEYBOARD
 IrControlKey irControlKeyMap[] {
-  {'q', 0xFFA25D, 220}, // quit
-  {'m', 0xFFE21D, 247}, // menu
-  {'b', 0xFFC23D, 262}, // back
-  {'t', 0xFF22DD, 277}, // test
-  {'p', 0xFFA857, 294}, // play
-
-  {'<', 0xFFE01F, 311},
-  {'+', 0xFF02FD, 330},
-  {'>', 0xFF906F, 349},
-  {'-', 0xFF9867, 370},
-  {'C', 0xFFB04F, 392},
-  {'0', 0xFF6897, 415},
+  {'q', 0xFFA25D, 220}, // Quit
+  {'_', 0xFF629D, 233},
+  {'m', 0xFFE21D, 247}, // Menu
+  {'t', 0xFF22DD, 262}, // Test
+  {'+', 0xFF02FD, 277}, // <+>
+  {'b', 0xFFC23D, 294}, // Return
+  {'<', 0xFFE01F, 311}, // Back
+  {'p', 0xFFA857, 330}, // Play
+  {'>', 0xFF906F, 349}, // Forward
+  {'0', 0xFF6897, 370},
+  {'-', 0xFF9867, 392}, // <->
+  {'C', 0xFFB04F, 415}, // Clear
   {'1', 0xFF30CF, 440},
   {'2', 0xFF18E7, 466},
   {'3', 0xFF7A85, 494},
@@ -27,23 +27,48 @@ IrControlKey irControlKeyMap[] {
   {'6', 0xFF5AA5, 587},
   {'7', 0xFF42BD, 622},
   {'8', 0xFF4AB5, 659},
-  {'9', 0xFF52AD, 698}
+  {'9', 0xFF52AD, 698},
 };
-#elif (KEYBOARD_LAYOUT == PLAY_KEYBOARD)
+#endif
+#ifdef PLAY_KEYBOARD
 IrControlKey irControlKeyMap[] {
-  {'q', 0xFFA25D, 220}, // quit
-  {'s', 0xFF629D, 233}, // stop
-  {'m', 0xFFE21D, 247}, // mute
-  {'M', 0xFF22DD, 262}, // mode
-  {'r', 0xFF02FD, 277}, // return
-  {'e', 0xFFC23D, 294}, // EQ
-  {'<', 0xFFE01F, 311}, // tape back
-  {'>', 0xFFA857, 330}, // tape forward
-  {'p', 0xFF906F, 349}, // pause
-
-  {'-', 0xFF6897, 370}, // уменьшение
-  {'+', 0xFF9867, 392}, // увеличение
+  {'Q', 0xFFA25D, 220}, // Quit
+  {'S', 0xFF629D, 233}, // Stop
+  {'U', 0xFFE21D, 247}, // mUte
+  {'M', 0xFF22DD, 262}, // Mode
+  {'R', 0xFF02FD, 277}, // Return
+  {'E', 0xFFC23D, 294}, // EQ
+  {'<', 0xFFE01F, 311}, // tape Back
+  {'>', 0xFFA857, 330}, // tape Forward
+  {'P', 0xFF906F, 349}, // tape Play
+  {'-', 0xFF6897, 370}, // <-> уменьшение
+  {'+', 0xFF9867, 392}, // <+> увеличение
   {'0', 0xFFB04F, 415},
+  {'1', 0xFF30CF, 440},
+  {'2', 0xFF18E7, 466},
+  {'3', 0xFF7A85, 494},
+  {'4', 0xFF10EF, 523},
+  {'5', 0xFF38C7, 554},
+  {'6', 0xFF5AA5, 587},
+  {'7', 0xFF42BD, 622},
+  {'8', 0xFF4AB5, 659},
+  {'9', 0xFF52AD, 698},
+};
+#endif
+#ifdef RUBBER_KEYBOARD
+IrControlKey irControlKeyMap[] {
+  {'Q', 0xFFA25D, 220}, // Quit
+  {'E', 0xFF629D, 233}, // mEnu
+  {'U', 0xFFE21D, 247}, // mUte
+  {'M', 0xFF22DD, 262}, // Mode
+  {'+', 0xFF02FD, 277}, // <+> увеличение
+  {'R', 0xFFC23D, 294}, // Return
+  {'<', 0xFFE01F, 311}, // tape Back
+  {'P', 0xFFA857, 330}, // tape Play
+  {'>', 0xFF906F, 349}, // tape Forward
+  {'0', 0xFF6897, 370},
+  {'-', 0xFF9867, 392}, // <-> уменьшение
+  {'K', 0xFFB04F, 415}, // OK
   {'1', 0xFF30CF, 440},
   {'2', 0xFF18E7, 466},
   {'3', 0xFF7A85, 494},

@@ -46,7 +46,7 @@ void ScreenTimer::edit(char key) {
     nPosit = 0;
     load();
     break;
-  case 'M': // записываем
+  case 'P': // записываем
     save();
     break;
   }

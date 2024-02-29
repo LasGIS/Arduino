@@ -9,10 +9,9 @@
 #define IR_CONTROL_MAXIMAL_COUNT 1300
 #define IR_CONTROL_BOUND_COUNT 80
 
-#define FIRST_KEYBOARD 0
-#define PLAY_KEYBOARD  1
-/* используем вторую клавиатуру */
-#define KEYBOARD_LAYOUT PLAY_KEYBOARD
+//#define FIRST_KEYBOARD
+//#define PLAY_KEYBOARD
+#define RUBBER_KEYBOARD
 
 class IrControlKey {
 public:
