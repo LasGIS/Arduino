@@ -20,7 +20,7 @@ def post_datetime():
         "year": 2024, "month": 24, "day": 24,
         "hour": 24, "minute": 24, "second": 24
       }, 200)
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:8000'
     return resp
   elif request.method == 'GET':
     app.logger.info('GET value = "%s"', request.get_data())
@@ -28,14 +28,14 @@ def post_datetime():
         "year": 2020, "month": 2, "day": 22,
         "hour": 22, "minute": 22, "second": 22
       }, 200)
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Origin'] = 'http://localhost:8000'
     return resp
   elif request.method == 'OPTIONS':
     app.logger.info('OPTIONS value = "%s"', request.get_data())
     respo = make_response('OK', 204)
-    respo.headers['Access-Control-Allow-Origin'] = '*'
-    respo.headers['Access-Control-Request-Method'] = 'POST, GET, OPTIONS'
-    respo.headers['Access-Control-Request-Headers'] = 'Content-Type, Authorization'
+    respo.headers['Access-Control-Allow-Origin'] = 'http://localhost:8000'
+    respo.headers['Access-Control-Allow-Method'] = 'POST, OPTIONS'
+    respo.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return respo
 
 if __name__ == '__main__':
