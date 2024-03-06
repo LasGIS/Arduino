@@ -32,7 +32,6 @@ const getBright = () => {
   })
     .then(response => response.json())
     .then(response => {
-      console.log(JSON.stringify(response));
       setBright(response.bright);
     })
     .catch(err => {
@@ -49,7 +48,6 @@ const getDatetime = () => {
   })
     .then(response => response.json())
     .then(datetime => {
-      console.log(JSON.stringify(datetime));
       setDatetime(datetime);
     })
     .catch(err => {
@@ -62,16 +60,29 @@ const postDatetime = (dateTime) => {
   fetch("/api/v1/datetime", {
     method: "POST",
     headers: {
-      "Content-type": "application/json",
       "Accept": "application/json",
+      "Content-type": "application/json"
     },
     body: data
   })
     .then(response => response.json())
     .then(datetime => {
-      console.log(JSON.stringify(datetime));
       setDatetime(datetime);
     })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+const getScanNetworks = (resolve) => {
+  fetch("/api/v1/scan-networks", {
+    method: "GET",
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+    .then(response => response.json())
+    .then(scanNetworks => resolve(scanNetworks))
     .catch(err => {
       console.log(err);
     });
@@ -82,7 +93,7 @@ const synchroDatetime = () => {
   const date = new Date();
   postDatetime({
     year: date.getFullYear(),
-    month: date.getMonth(),
+    month: date.getMonth() + 1,
     day: date.getDate(),
     hour: date.getHours(),
     minute: date.getMinutes(),
@@ -90,7 +101,12 @@ const synchroDatetime = () => {
     dayOfWeek: elementDayOfWeek.selectedIndex
   });
 }
-)=====";
+
+const showScanNetworks = () => {
+  getScanNetworks(scanNetworks => {
+    console.log(JSON.stringify(scanNetworks));
+  });
+})=====";
 
 void webGetSrcCommonJs() {
   server.send(200, "application/javascript", srcCommonJs);

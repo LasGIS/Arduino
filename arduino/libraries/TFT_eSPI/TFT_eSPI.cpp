@@ -3177,9 +3177,21 @@ int16_t TFT_eSPI::fontHeight(void)
 ** Function name:           drawChar
 ** Description:             draw a single character in the GLCD or GFXFF font
 ***************************************************************************************/
-void TFT_eSPI::drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uint32_t bg, uint8_t size)
+void TFT_eSPI::drawChar(int32_t x, int32_t y, uint16_t chr, uint32_t color, uint32_t bg, uint8_t size)
 {
   if (_vpOoB) return;
+  uint16_t c = chr;
+  if (chr > 255) {
+    if (chr >= 0x0410 && chr <= 0x044F) {
+      c -= 0x0310; // [А-Яа-я]
+    } else if (chr == 0x0401) {
+      c = 0x0140; // Ё
+    } else if (chr == 0x0451) {
+      c = 0x0141; // ё
+    } else {
+      return;
+    }
+  }
 
 #ifdef LOAD_GLCD
 //>>>>>>>>>>>>>>>>>>
@@ -3187,8 +3199,6 @@ void TFT_eSPI::drawChar(int32_t x, int32_t y, uint16_t c, uint32_t color, uint32
   if(!gfxFont) { // 'Classic' built-in GLCD font
   #endif
 //>>>>>>>>>>>>>>>>>>
-
-  if (c > 255) return;
 
   int32_t xd = x + _xDatum;
   int32_t yd = y + _yDatum;

@@ -230,14 +230,14 @@ void loop() {
     // управление экраном
     switch (key) {
       // меняем режим
-      case 'M':
+      case 'E':
         screen->edit(1);
         screen->showOnce();
         screen->showAllFields();
         screen->showCurrentField();
         break;
       // меняем экран
-      case 'e':
+      case 'M':
         screen = changeCurrentCommand(true);
         break;
       default:

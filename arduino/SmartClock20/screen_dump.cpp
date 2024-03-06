@@ -40,7 +40,7 @@ void ScreenDump::edit(char key) {
     fields[0].val = device;
     fields[1].val = address;
     break;
-  case 'M': // записываем
+  case 'P': // записываем
     device = fields[0].val;
     address = fields[1].val;
     break;

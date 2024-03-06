@@ -3,5 +3,12 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"files.associations": {
+			"memory": "cpp",
+			"functional": "cpp",
+			"cstdlib": "cpp"
+		}
+	}
 }
