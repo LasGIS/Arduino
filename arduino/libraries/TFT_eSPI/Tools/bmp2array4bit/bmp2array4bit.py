@@ -24,12 +24,6 @@
 
 '''
 
-#   @(#)bmp2array4bit.py  last: 28.01.2024
-#
-#  Title: LG Java for Arduino
-#  Description: Program for support Arduino.
-#  Copyright (c) 2024, LasGIS Company. All Rights Reserved.
-
 import argparse
 import math
 import os
