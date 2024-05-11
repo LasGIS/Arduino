@@ -27,8 +27,6 @@ void connectWiFi() {
   tft.println(ssid);
   // подключаем микроконтроллер к Wi-Fi сети
   WiFi.begin(ssid, password);
-  // запускаем сервер
-  server.begin();
 }
 
 bool checkWiFiConnected() {
