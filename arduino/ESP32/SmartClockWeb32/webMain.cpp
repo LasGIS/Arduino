@@ -4,12 +4,8 @@
 #define TIME_OUT_TIME 2000
 
 // вводим имя и пароль точки доступа
-//const char* ssid =     "IT_One Guest";
-//const char* password = "IT-One2020";
-const char* ssid =     "TP-Link_C857";
-const char* password = "14178054";
-//const char* ssid =     "POCO M4 Pro";
-//const char* password = "5cc2crfftk4ur6v";
+const char* ssid     = "Your_SSID";
+const char* password = "Your_Password";
 
 void connectWiFi();
 bool checkWiFiConnected();
