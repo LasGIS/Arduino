@@ -5,8 +5,6 @@ ESP8266WebServer server(80);
 TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
-  // запускаем сервер
-  server.begin();
   // Start the I2C interface
   Wire.begin(PIN_D1, PIN_D2);
   Serial.begin(115200);
