@@ -7,13 +7,9 @@
 const char* ssid     = "Your_SSID";
 const char* password = "Your_Password";
 
+void webRoute();
 void connectWiFi();
 bool checkWiFiConnected();
-
-// текущее время
-unsigned long currentTime = millis();
-// предыдущее время
-unsigned long previousTime = 0;
 
 void connectWiFi() {
   Serial.println();
@@ -27,8 +23,6 @@ void connectWiFi() {
   tft.println(ssid);
   // подключаем микроконтроллер к Wi-Fi сети
   WiFi.begin(ssid, password);
-  // запускаем сервер
-  server.begin();
 }
 
 bool checkWiFiConnected() {
@@ -48,6 +42,7 @@ bool checkWiFiConnected() {
         tft.print("Wi-Fi Host: ");
         tft.setTextColor(TFT_WHITE, TFT_BLACK);
         tft.println(WiFi.localIP().toString());
+        webRoute();
         isConnected = true;
       } else {
         Serial.print(".");
@@ -58,50 +53,18 @@ bool checkWiFiConnected() {
   return isConnected;
 }
 
-void handleClient() {
-  // переменная для хранения HTTP запроса
-  String header;
+void webRoute() {
+  // формируем основную веб-страницу
+  server.on("/", webGetIndexHtml);
+  server.on("/static/styles.css", webGetStylesCss);
+  server.on("/static/twocirclingarrows.svg", webGetTwoCirclingArrowsSvg);
+  server.on("/static/deprecated.svg", webGetDeprecatedSvg);
+  server.on("/src/common.js", webGetSrcCommonJs);
 
-  // анализируем канал связи на наличие входящих клиентов
-  WiFiClient client = server.available();
-  if (client) {
-    currentTime = millis();
-    previousTime = currentTime;
-    Serial.println("New Client.");
-    String currentLine = "";
-    while (client.connected() && currentTime - previousTime <= TIME_OUT_TIME) {
-      currentTime = millis();
-      if (client.available()) {
-        char c = client.read();
-        // Serial.write(c);
-        header += c;
-        if (c == '\n') {
-          if (currentLine.length() == 0) {
+  // API
+  server.on("/api/v1/bright", apiBright);
+  server.on("/api/v1/datetime", apiDatetime);
+//  server.on("/api/v1/scan-networks", scanNetworks);
 
-            Serial.println("header: {");
-            Serial.print(header);
-            Serial.println("}");
-
-            client.println("HTTP/1.1 200 OK");
-            client.println("Content-type: text/html");
-            client.println("Connection: close");
-            client.println();
-            // формируем веб-страницу
-            webOutIndexHtml(&client);
-            // выходим из цикла while
-            break;
-          } else {  // если появилась новая строка, очистим текущую строку
-            currentLine = "";
-          }
-        } else if (c != '\r') {  // если у вас еще есть что то кроме символа возврата каретки,
-          currentLine += c;      // добавляем его в конец текущей строки
-        }
-      }
-    }
-    // очищаем переменную заголовка
-    header = "";
-    // закрываем соединение
-    client.stop();
-    Serial.println("Client disconnected.");
-  }
+  server.begin();
 }

@@ -4,12 +4,14 @@
 //#include <Arduino.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include <WebServer.h>
+//#include <Arduino_JSON.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <DS3231.h>
 #include <TFT_eSPI.h>
 
-extern WiFiServer server;
+extern WebServer server;
 extern TFT_eSPI tft;
 extern DS3231 Clock;
 
@@ -41,7 +43,13 @@ extern void tftShowRealTime();
 extern void connectWiFi();
 extern bool checkWiFiConnected();
 
-extern void handleClient();
-extern void webOutIndexHtml(WiFiClient * client);
+extern void webGetIndexHtml();
+extern void webGetStylesCss();
+extern void webGetTwoCirclingArrowsSvg();
+extern void webGetDeprecatedSvg();
+extern void webGetSrcCommonJs();
+extern void apiBright();
+extern void apiDatetime();
+//extern void scanNetworks();
 
 #endif // SMART_CLOCK_WEB_32_H

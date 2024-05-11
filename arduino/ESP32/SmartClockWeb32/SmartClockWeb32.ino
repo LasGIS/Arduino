@@ -4,7 +4,7 @@
 const char* ssid     = "Your_SSID";
 const char* password = "Your_Password";
 // инициализируем сервер на 80 порте
-WiFiServer server(80);
+WebServer server(80);
 TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
@@ -27,7 +27,7 @@ void setup() {
 
 void loop() {
   if (checkWiFiConnected()) {
-    handleClient();
+    server.handleClient();
   }
   outToTft();
   tftShowRealTime();
