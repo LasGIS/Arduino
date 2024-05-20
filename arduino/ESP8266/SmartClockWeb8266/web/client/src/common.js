@@ -104,7 +104,10 @@ const synchroDatetime = () => {
 
 const showScanNetworks = () => {
   getScanNetworks(scanNetworks => {
-    console.log(JSON.stringify(scanNetworks));
+    const value = JSON.stringify(scanNetworks, null, '  ');
+    console.log(value);
+    const scanWifi = document.getElementById("scan-wifi");
+    scanWifi.value = value;
   });
 };
 

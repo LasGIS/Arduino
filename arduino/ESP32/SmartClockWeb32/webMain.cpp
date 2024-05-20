@@ -64,7 +64,7 @@ void webRoute() {
   // API
   server.on("/api/v1/bright", apiBright);
   server.on("/api/v1/datetime", apiDatetime);
-//  server.on("/api/v1/scan-networks", scanNetworks);
+  server.on("/api/v1/scan-networks", scanNetworks);
 
   server.begin();
 }

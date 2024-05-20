@@ -42,10 +42,15 @@ void apiDatetime() {
       inJson = server.argName(0);
     }
     Serial.println("json = " + inJson);
-//    JSONVar objJson = JSON.parse(inJson);
+    Json objJson(inJson);
     DateTime *dateTime = new DateTime(
-//      objJson["year"], objJson["month"], objJson["day"], objJson["dayOfWeek"],
-//      objJson["hour"], objJson["minute"], objJson["second"]
+      objJson["year"].as<uint16_t>(),
+      objJson["month"].as<uint8_t>(),
+      objJson["day"].as<uint8_t>(),
+      objJson["dayOfWeek"].as<uint8_t>(),
+      objJson["hour"].as<uint8_t>(),
+      objJson["minute"].as<uint8_t>(),
+      objJson["second"].as<uint8_t>()
     );
     saveRealTime(dateTime);
 
@@ -56,30 +61,28 @@ void apiDatetime() {
   }
 }
 
-/*
 void scanNetworks() {
   if (server.method() == HTTP_GET) {
     int numberOfNetworks = WiFi.scanNetworks();
-    JSONVar jsonArray;
+    JsonArray jsonArray;
     for (int i = 0; i < numberOfNetworks; i++) {
-      JSONVar jsonVar;
-      // Serial.print("Network name: ");
-      // Serial.println(WiFi.SSID(i));
-      jsonVar["name"] = WiFi.SSID(i);
-      // Serial.print("Signal strength: ");
-      // Serial.println(WiFi.RSSI(i));
-      jsonVar["rssi"] = (int) WiFi.RSSI(i);
-      // Serial.println("-----------------------");
-      jsonArray[i] = jsonVar;
-      Serial.println(JSON.stringify(jsonVar));
+      Json jsonVar;
+      Serial.print("Network name: ");
+      Serial.println(WiFi.SSID(i));
+      jsonVar.add("name", WiFi.SSID(i));
+      Serial.print("Signal strength: ");
+      Serial.println(WiFi.RSSI(i));
+      jsonVar.add("rssi", WiFi.RSSI(i));
+      Serial.println("-----------------------");
+      jsonArray.push(jsonVar);
+      Serial.println(jsonVar.toString());
     }
-    JSONVar jsonObject;
+    Json jsonObject;
     jsonObject["count"] = numberOfNetworks;
     jsonObject["ssids"] = jsonArray;
     server.enableCORS(true);
-    server.send(200, "application/json", JSON.stringify(jsonObject));
+    server.send(200, "application/json", jsonObject.toString());
   } else {
     server.send(405, "text/plain", "Method Not Allowed");
   }
 }
-*/

@@ -1,11 +1,10 @@
 #ifndef SMART_CLOCK_WEB_32_H
 #define SMART_CLOCK_WEB_32_H
 
-//#include <Arduino.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
-//#include <Arduino_JSON.h>
+#include <Json.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <DS3231.h>
@@ -50,6 +49,6 @@ extern void webGetDeprecatedSvg();
 extern void webGetSrcCommonJs();
 extern void apiBright();
 extern void apiDatetime();
-//extern void scanNetworks();
+extern void scanNetworks();
 
 #endif // SMART_CLOCK_WEB_32_H
