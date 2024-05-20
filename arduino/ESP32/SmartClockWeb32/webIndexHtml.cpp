@@ -38,7 +38,7 @@ const char indexHtml[] = R"=====(<!DOCTYPE HTML>
     <a href="#" onclick="showScanNetworks()"><button class="button">Сканировать WiFi</button></a>
   </div>
   <div>
-    <textarea cols="108" rows="20" id="scan-wifi"></textarea>
+    <textarea cols="80" rows="20" id="scan-wifi"></textarea>
   </div>
 </body>
 </html>
