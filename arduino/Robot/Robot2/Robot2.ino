@@ -1,22 +1,23 @@
-#include "Robot2.h"
+#include "Robot.h"
 
 Servo hSer;
 Servo vSer;
 MotorShield mShield(MSHLD_M1, MSHLD_M2);
 
 /* пины Ультразвукового дальномера */
-int echoPin = A3; 
+int echoPin = A3;
 int trigPin = A2;
 
 
 /** пин кнопочки
-int buttonPin = 2; 
+int buttonPin = 2;
 bool isButtonPressed = false;
 bool isAutorun = false;
 */
 
 void setup() {
   Serial.begin(9600);
+  //Serial.begin(128000);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 //  pinMode(buttonPin, INPUT);
@@ -29,7 +30,7 @@ void setup() {
 }
 
 void loop() {
-/*  
+/*
   static long buttonPressTime = 1000000000l;
   if (digitalRead(buttonPin)) {
     isButtonPressed = true;
@@ -73,7 +74,7 @@ void serialEvent() {
       testDrive(buf[i]);
     }
   }
-//  RobotCommand* command = 
+//  RobotCommand* command =
   addRobotCommand(buf, cnt);
 /*  if (command != NULL) {
     action(command);
@@ -90,15 +91,15 @@ void testDrive(char motor) {
     case '1':
       testDriveMotor(MSHLD_M1);
       break;
-    
+
     case '2':
       testDriveMotor(MSHLD_M2);
       break;
-    
+
     case '3':
       testDriveMotor(MSHLD_M3);
       break;
-    
+
     case '4':
       testDriveMotor(MSHLD_M4);
       break;
@@ -113,7 +114,7 @@ void testDrive(char motor) {
         delay(1010);
       }
       break;
-    
+
     case 'r':
       Serial.println("Right MOTOR");
       for (int speed = -5; speed <= 5; speed++) {
@@ -124,7 +125,7 @@ void testDrive(char motor) {
         delay(1010);
       }
       break;
-    
+
     case 's':
       scanSituation();
       break;

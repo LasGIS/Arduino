@@ -1,31 +1,21 @@
-#include <Arduino.h>
-#include <Servo.h>
-#include "TwoMotor.h"
-#include "RobotCommand.h"
+#include "Robot.h"
 
 Servo hSer;
 Servo vSer;
 TwoMotor twoMotor;
 
 /* пины Ультразвукового дальномера */
-int echoPin = A3; 
+int echoPin = A3;
 int trigPin = A2;
 
 extern void leftSpeedometrInterrupt(void);
 extern void rightSpeedometrInterrupt(void);
-
-/** пин кнопочки
-int buttonPin = 2; 
-bool isButtonPressed = false;
-bool isAutorun = false;
-*/
 
 void setup() {
   Serial.begin(9600);
   //Serial.begin(128000);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-//  pinMode(buttonPin, INPUT);
 
   hSer.attach(MSHLD_PWM1A_PIN);
   vSer.attach(MSHLD_PWM1B_PIN);
@@ -35,27 +25,6 @@ void setup() {
 }
 
 void loop() {
-/*  
-  static long buttonPressTime = 1000000000l;
-  if (digitalRead(buttonPin)) {
-    isButtonPressed = true;
-    buttonPressTime = millis();
-  } else if (isButtonPressed
-    && (millis() - buttonPressTime > 100)
-    && !digitalRead(buttonPin)
-  ) {
-    if (isAutorun) {
-      robotStop();
-      Serial.println("ROBOT_STOP");
-      isAutorun = false;
-    } else {
-      addRobotCommand(ROBOT_ANALYSE, 0);
-      Serial.println("ROBOT_ANALYSE");
-      isAutorun = true;
-    }
-    isButtonPressed = false;
-  }
-*/
   if (!twoMotor.isBusy()) {
     RobotCommand* command = getRobotCommand4Run();
     if (command != NULL) {
@@ -79,7 +48,7 @@ void serialEvent() {
       testDrive(buf[i]);
     }
   }
-//  RobotCommand* command = 
+//  RobotCommand* command =
   addRobotCommand(buf, cnt);
 /*  if (command != NULL) {
     action(command);
@@ -103,7 +72,7 @@ void testDrive(char motor) {
         }
 //      }
       break;
-    
+
     case 'r':
       Serial.println("Right MOTOR");
       twoMotor.waitBusy();
@@ -116,7 +85,7 @@ void testDrive(char motor) {
         }
 //      }
       break;
-    
+
     case 's':
       scanSituation();
       break;

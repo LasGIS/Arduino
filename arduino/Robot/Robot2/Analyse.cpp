@@ -1,4 +1,4 @@
-#include "Robot2.h"
+#include "Robot.h"
 
 #define DEGREE_TO_RADIAN 0.0174533
 #define DEGREE_CORRECTION -2
@@ -22,7 +22,7 @@ void robotAnalyse() {
   int grad;
   switch (check) {
     case NO_BLOCK:       // нет препятствий, можно двигать
-      dist = getForward(8);      
+      dist = getForward(8);
       addRobotCommand(MOTOR_FORWARD, (dist > 40 ? 40 : dist) * .75);
       addRobotCommand(ROBOT_ANALYSE, 0);
       return;
@@ -72,7 +72,7 @@ RobotAnalyseCheck checkForward(int centerDegre, float distance) {
 
 /** получить дистанцию спереди (^^) */
 float getForward(int centerDegre) {
-  float min = 1000.0; 
+  float min = 1000.0;
   int angle, i;
   for (angle = 50, i = centerDegre - 4; angle <= 130; angle += 10, i++) {
     if (i >= 0 && i < DISTANCE_BEFORE_COUNT && distanceBefore[i] > 0) {
@@ -85,7 +85,7 @@ float getForward(int centerDegre) {
 
 /** проверка дистанции справа => */
 bool checkRight(int centerDegre, float dist) {
-  float min = 1000.0; 
+  float min = 1000.0;
   int angle, i;
   for (angle = 10, i = centerDegre - 8; angle <= 50; angle += 10, i++) {
     if (i >= 0 && distanceBefore[i] > 0) {
@@ -98,7 +98,7 @@ bool checkRight(int centerDegre, float dist) {
 
 /** проверка дистанции слева <= */
 bool checkLeft(int centerDegre, float dist) {
-  float min = 1000.0; 
+  float min = 1000.0;
   int angle, i;
   for (angle = 10, i = centerDegre + 8; angle <= 50; angle += 10, i--) {
     if (i < DISTANCE_BEFORE_COUNT && distanceBefore[i] > 0) {

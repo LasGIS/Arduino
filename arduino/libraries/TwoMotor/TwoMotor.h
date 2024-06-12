@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "MotorShieldDefine.h"
+
 /**
  * Класс счётчика скорости.
  * Только считаем count, весь анализ и коррекция происходит в моторе

@@ -1,4 +1,4 @@
-#include "Robot2.h"
+#include "Robot.h"
 
 #define WAIT_TIME_DISTANCE 70
 
@@ -8,12 +8,12 @@ extern int trigPin;
 /** получить дистанцию в point`ax (условная единица 1[point]*58.0 = 1[см] .*/
 int getDistance() {
   delay(WAIT_TIME_DISTANCE);
-  digitalWrite(trigPin, LOW); 
-  delayMicroseconds(2); 
-  digitalWrite(trigPin, HIGH); 
-  delayMicroseconds(10); 
-  digitalWrite(trigPin, LOW); 
-  return pulseIn(echoPin, HIGH); 
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  return pulseIn(echoPin, HIGH);
 }
 
 float showDistance(int degre) {
