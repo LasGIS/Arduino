@@ -4,6 +4,7 @@
   millisecond on timer2
   For Details see: http://www.arduino.cc/playground/Main/MsTimer2
 */
+#include <Arduino.h>
 #include <MsTimer2.h>
 
 // Switch on LED on and off each half second

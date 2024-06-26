@@ -22,4 +22,4 @@ namespace MsTimer2 {
   void _overflow();
 }
 
-#endif
+#endif // MsTimer2_h

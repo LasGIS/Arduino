@@ -1,0 +1,76 @@
+screenTft => 0
+addRef(6FF,)
+sbbba - 5
+addRef(6FF,707,)
+addRef(6FF,707,710,)
+readArray len = 68; charDef = o; arrayLength = 6; address = 19
+addRef(6FF,707,710,719,)
+addRef(6FF,707,710,719,721,)
+bbbbiii - 7
+addRef(6FF,707,710,719,721,72B,)
+addRef(6FF,707,710,719,721,72B,737,)
+bbbbiii - 7
+addRef(6FF,707,710,719,721,72B,737,741,)
+addRef(6FF,707,710,719,721,72B,737,741,74D,)
+bbbbiii - 7
+addRef(6FF,707,710,719,721,72B,737,741,74D,757,)
+screenTft(7): 10,07,02,0A,15,19,07
+name:Timer
+nField:10
+nPosit:21
+maxFields:2
+fields(2B,07,41,07): [
+  { row: 43, col: 7, fontSize: 65, len: 7, minVal: 1879, maxVal: 8, val: 25186 },
+  { row: 98, col: 98, fontSize: 105, len: 105, minVal: 105, maxVal: 10, val: 513 },
+  { row: 3, col: 2, fontSize: 0, len: 0, minVal: 23, maxVal: 0, val: 8 },
+]
+screenTft => 0
+  definition = addRef(6FF,)
+sbbba - 5
+  AT24C_ScreenTimer                            -> addRef(6FF,707,)
+  AT24C_ScreenTimer_name                       -> addRef(6FF,707,710,)
+readArray len = 68; charDef = o; arrayLength = 6; address = 19
+  AT24C_ScreenTimer_fields                     -> addRef(6FF,707,710,719,)
+  definition = addRef(6FF,707,710,719,721,)
+bbbbiii - 7
+  AT24C_ScreenTimer_fields_0_hour              -> addRef(6FF,707,710,719,721,72B,)
+  definition = addRef(6FF,707,710,719,721,72B,737,)
+bbbbiii - 7
+  AT24C_ScreenTimer_fields_1_minute            -> addRef(6FF,707,710,719,721,72B,737,741,)
+  definition = addRef(6FF,707,710,719,721,72B,737,741,74D,)
+bbbbiii - 7
+  AT24C_ScreenTimer_fields_2_second            -> addRef(6FF,707,710,719,721,72B,737,741,74D,757,)
+screenTft(7): 0710,0A,02,15,0719
+name:Timer
+nField:10
+nPosit:21
+maxFields:2
+fields(072B,0741,0757): [
+  { row: 43, col: 7, fontSize: 65, len: 7, minVal: 1879, maxVal: 8, val: 25186},
+  { row: 98, col: 98, fontSize: 105, len: 105, minVal: 105, maxVal: 10, val: 513},
+  { row: 3, col: 2, fontSize: 0, len: 0, minVal: 23, maxVal: 0, val: 8},
+]
+
+screenTft => 0
+sbbba - 5
+  AT24C_ScreenTimer                            -> addRef(71D,)
+  AT24C_ScreenTimer_name                       -> addRef(71D,726,)
+readArray len = 68; charDef = o; arrayLength = 6; address = 19
+  AT24C_ScreenTimer_fields                     -> addRef(71D,726,72F,)
+bbbbiii - 7
+  AT24C_ScreenTimer_fields_0_hour              -> addRef(71D,726,72F,741,)
+bbbbiii - 7
+  AT24C_ScreenTimer_fields_1_minute            -> addRef(71D,726,72F,741,74D,)
+bbbbiii - 7
+  AT24C_ScreenTimer_fields_2_second            -> addRef(71D,726,72F,741,74D,759,)
+screenTft(7): 0726,02,0A,15,072F
+name:Timer
+nField:10
+nPosit:21
+maxFields:2
+fields(0741,074D,0759): [
+01,02  { row: 1, col: 2, fontSize: 3, len: 2, minVal: 0, maxVal: 23, val: 0},
+01,05  { row: 1, col: 5, fontSize: 3, len: 2, minVal: 0, maxVal: 59, val: 0},
+01,08  { row: 1, col: 8, fontSize: 3, len: 2, minVal: 0, maxVal: 59, val: 0},
+]
+
