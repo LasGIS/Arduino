@@ -3,7 +3,7 @@
 #define ANGLE_FACTOR 0.583
 
 #define ROBOT_COMMANDS_BUF_SIZE 10
-#define GEAR 5
+#define GEAR 4
 
 static RobotCommand robotCommands[ROBOT_COMMANDS_BUF_SIZE];
 /** последняя записанная команда. */
