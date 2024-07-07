@@ -4,7 +4,6 @@
 #include "TwoMotor.h"
 #include "MsTimer2.h"
 
-
 /** Начальное напряжение от передачи (5 передача - самая высокая) */
 static const uint16_t MSHLD_GEAR_VOLTAGE[6] = {33, 50, 75, 113, 170, 255};
 /** Скорость в мм/мсек от передачи (5 передача - самая высокая) */
@@ -57,8 +56,8 @@ void Speedometer::interrupt() {
   long time = micros();
   uint8_t newVal = digitalRead(countPin);
   // проверка на дребезг
-  if (newVal != val) {
-    if (time - lastTime > 500) {
+  if (time - lastTime > 1000) {
+    if (newVal != val) {
       val = newVal;
       lastTime = time;
       count++;
@@ -67,11 +66,11 @@ void Speedometer::interrupt() {
         timeInterval = time - lastTimeDown;
         lastTimeDown = time;
       }
+    } else if (time - lastTime > 200000) {
+      // счётчик долго находится в одном положении
+      lastTime = time;
+      isChange = true;
     }
-  } else if (time - lastTime > 20000) {
-    // счётчик долго находится в одном положении
-    lastTime = time;
-    isChange = true;
   }
 }
 
@@ -132,7 +131,7 @@ bool DcMotor::speedCorrection(long time) {
 #ifdef MSHLD_DEBUG_MODE
   Serial.println();
 #endif
-  return count >= endCount || time > endTime;
+  return count >= endCount;// || time > endTime;
 }
 
 /** Устанавливаем скорость. */
@@ -153,7 +152,7 @@ void DcMotor::setPower() {
  * показывем параметры старта.
  */
 void DcMotor::showStartParameters() {
-#ifdef MSHLD_DEBUG_MODE
+#ifdef MSHLD_CONTROL_MODE
   Serial.print("time=");
   Serial.print(endTime - startTime);
   Serial.print("; endCount=");
@@ -169,7 +168,7 @@ void DcMotor::showStartParameters() {
  * Конструктор с инициализатором
  */
 TwoMotor::TwoMotor() {
-  //устанавливаем режим OUTPUT
+  // устанавливаем режим OUTPUT
   pinMode(MSHLD_DIR_LATCH_PIN, OUTPUT);
   pinMode(MSHLD_DIR_CLK_PIN, OUTPUT);
   pinMode(MSHLD_DIR_SER_PIN, OUTPUT);
@@ -226,7 +225,7 @@ void TwoMotor::timeAction(DcMotor* motor) {
   }
 
   if (isStop) {
-#ifdef MSHLD_DEBUG_MODE
+#ifdef MSHLD_CONTROL_MODE
     Serial.print("stopMotor(");
     Serial.print(motor->name);
     Serial.print("); count = ");

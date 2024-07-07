@@ -41,7 +41,7 @@ bool Speedometer::check(long time) {
   uint8_t newVal = digitalRead(countPin);
   if (newVal != val ) {
     val = newVal;
-    // проверка на дребезг 
+    // проверка на дребезг
     if (time - lastTime > 1) {
       lastTime = time;
       count++;
@@ -138,7 +138,7 @@ void DcMotor::setPower() {
  * показывем параметры старта.
  */
 void DcMotor::showStartParameters() {
-#ifdef MSHLD_DEBUG_MODE
+#ifdef MSHLD_CONTROL_MODE
 	Serial.print("time=");
 	Serial.print(endTime - startTime);
 	Serial.print("; endCount=");
@@ -211,7 +211,7 @@ void MotorShield::timeAction() {
     }
 
     if (isStop) {
-#ifdef MSHLD_DEBUG_MODE
+#ifdef MSHLD_CONTROL_MODE
       Serial.print("stopMotor(");
       Serial.print(i);
       if (speedometer) {
@@ -309,7 +309,7 @@ void MotorShield::rightMotorStop() {
 
 /**
  * Устанавливаем скорость для левого мотора
- * @speed скорость мотора в 
+ * @speed скорость мотора в
  */
 void MotorShield::leftMotor(int8_t gear, int16_t dist) {
   motor(leftMotorNum, gear, dist);
@@ -327,7 +327,7 @@ void MotorShield::rightMotor(int8_t gear, int16_t dist) {
  *  gear > 0 - вперёд;
  *  gear < 0 - назад;
  *  значения от -5 до +5
- * @dist дистанция в мм, которую надо преодолеть 
+ * @dist дистанция в мм, которую надо преодолеть
  */
 void MotorShield::motor(uint8_t nMotor, int8_t gear, int16_t dist) {
   DcMotor* motor = MSHLD_MOTORS + nMotor;
