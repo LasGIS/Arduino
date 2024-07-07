@@ -34,7 +34,7 @@ RobotCommand* getRobotCommand4Run() {
   } else {
 //    Serial.print("index = ");
 //    Serial.print(index, DEC);
-/*  
+/*
     Serial.print(" robotCommands[index].state = ");
     Serial.println(robotCommands[index].state, DEC);
 */
@@ -84,8 +84,8 @@ void addRobotCommand(char buf[], int len) {
   } else if (buf[0] == 'r') {
     type = MOTOR_RIGHT;
     cnt = 1;
-  } else if (buf[0] == 's') { // 
-    addRobotCommand(ROBOT_SCANING, 0);
+  } else if (buf[0] == 's') { //
+    addRobotCommand(ROBOT_SCANNING, 0);
     return;
   }
   if (cnt > 0 && len > cnt) {
@@ -145,7 +145,7 @@ void action(RobotCommand* command) {
   }
   interrupts();
   switch (command->type) {
-  case ROBOT_SCANING: // сканирование обстановки
+  case ROBOT_SCANNING: // сканирование обстановки
     scanSituation();
     break;
   case ROBOT_ANALYSE: // анализ ситуации и принятие решений

@@ -1,15 +1,17 @@
 #include "Robot.h"
 
-#define FORWARD_FACTOR 2.0
-#define ANGLE_FACTOR 1.0
+#define ANGLE_FACTOR 0.583
 
 #define ROBOT_COMMANDS_BUF_SIZE 10
+#define GEAR 5
 
 static RobotCommand robotCommands[ROBOT_COMMANDS_BUF_SIZE];
 /** последняя записанная команда. */
 static uint8_t lastRobotCommand = -1;
 /** первая команда, готовая к выполнению. */
 static uint8_t firstRobotCommand = -1;
+/** передача от 0 до 5 */
+static uint8_t gear = GEAR;
 
 /** получаем ссылку на команду для заполнения. */
 RobotCommand* getRobotCommand4Load() {
@@ -32,7 +34,7 @@ RobotCommand* getRobotCommand4Run() {
   } else {
 //    Serial.print("index = ");
 //    Serial.print(index, DEC);
-/*  
+/*
     Serial.print(" robotCommands[index].state = ");
     Serial.println(robotCommands[index].state, DEC);
 */
@@ -76,14 +78,17 @@ void addRobotCommand(char buf[], int len) {
   } else if (buf[0] == 'l') {
     type = MOTOR_LEFT;
     cnt = 1;
-  } else if (strcmp(buf, "run") == 0) {
-    addRobotCommand(ROBOT_ANALYSE, 0);
-    return;
   } else if (buf[0] == 'r') {
     type = MOTOR_RIGHT;
     cnt = 1;
-  } else if (buf[0] == 's') { // 
-    addRobotCommand(ROBOT_SCANING, 0);
+  } else if (buf[0] == 'g') {
+    type = MOTOR_SET_GEAR;
+    cnt = 1;
+  } else if (strcmp(buf, "run") == 0) {
+    addRobotCommand(ROBOT_ANALYSE, 0);
+    return;
+  } else if (buf[0] == 's') { //
+    addRobotCommand(ROBOT_SCANNING, 0);
     return;
   }
   if (cnt > 0 && len > cnt) {
@@ -110,36 +115,37 @@ void action(RobotCommand* command) {
   noInterrupts();
   switch (command->type) {
     case MOTOR_FORWARD:
-      twoMotor.leftMotorStart(4, (int) (command->param * FORWARD_FACTOR));
-      twoMotor.rightMotorStart(4, (int) (command->param * FORWARD_FACTOR));
+      twoMotor.leftMotorStart(gear, (int) (command->param));
+      twoMotor.rightMotorStart(gear, (int) (command->param));
       break;
     case MOTOR_BACKWARD:
-      twoMotor.leftMotorStart(-4, (int) (command->param * FORWARD_FACTOR));
-      twoMotor.rightMotorStart(-4, (int) (command->param * FORWARD_FACTOR));
+      twoMotor.leftMotorStart(-gear, (int) (command->param));
+      twoMotor.rightMotorStart(-gear, (int) (command->param));
       break;
     case MOTOR_FORWARD_LEFT:
-      twoMotor.rightMotorStart(4, (int) (command->param * ANGLE_FACTOR));
+      twoMotor.rightMotorStart(gear, (int) (command->param * ANGLE_FACTOR));
       break;
     case MOTOR_FORWARD_RIGHT:
-      twoMotor.leftMotorStart(4, (int) (command->param * ANGLE_FACTOR));
+      twoMotor.leftMotorStart(gear, (int) (command->param * ANGLE_FACTOR));
       break;
 
     case MOTOR_LEFT:
-      twoMotor.rightMotorStart(4, (int) (command->param * ANGLE_FACTOR / 2));
-      twoMotor.leftMotorStart(-4, (int) (command->param * ANGLE_FACTOR / 2));
+      twoMotor.rightMotorStart(gear, (int) (command->param * ANGLE_FACTOR / 2));
+      twoMotor.leftMotorStart(-gear, (int) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_RIGHT:
-      twoMotor.rightMotorStart(-4, (int)(command->param * ANGLE_FACTOR / 2));
-      twoMotor.leftMotorStart(4, (int) (command->param * ANGLE_FACTOR / 2));
+      twoMotor.rightMotorStart(-gear, (int)(command->param * ANGLE_FACTOR / 2));
+      twoMotor.leftMotorStart(gear, (int) (command->param * ANGLE_FACTOR / 2));
       break;
     case MOTOR_BACKWARD_LEFT:
-      twoMotor.leftMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
+      twoMotor.leftMotorStart(-gear, (int) (command->param * ANGLE_FACTOR));
       break;
     case MOTOR_BACKWARD_RIGHT:
-      twoMotor.rightMotorStart(-4, (int) (command->param * ANGLE_FACTOR));
+      twoMotor.rightMotorStart(-gear, (int) (command->param * ANGLE_FACTOR));
       break;
 
-    case ROBOT_SCANING:
+    case MOTOR_SET_GEAR:
+    case ROBOT_SCANNING:
     case ROBOT_ANALYSE:
     case ROBOT_STOP:
       break;
@@ -156,7 +162,10 @@ void action(RobotCommand* command) {
     case MOTOR_BACKWARD_RIGHT:
       break;
 
-    case ROBOT_SCANING: // сканирование обстановки
+    case MOTOR_SET_GEAR:
+      gear = (int) command->param;
+      break;
+    case ROBOT_SCANNING: // сканирование обстановки
       scanSituation();
       break;
     case ROBOT_ANALYSE: // анализ ситуации и принятие решений

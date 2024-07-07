@@ -2,7 +2,7 @@
 #define MotorShieldDefine_h
 
 // установка режима вывода отладочной информации
-#define MSHLD_DEBUG_MODE
+//#define MSHLD_DEBUG_MODE
 
 #define FORWARD true
 #define BACKWARD false

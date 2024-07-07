@@ -40,11 +40,11 @@ public:
   volatile long startTime;     // Начало работы мотора
   volatile long endTime;       // В это время мотор должен остановиться
   volatile uint16_t endCount;  // при этом показании счётчика мотор должен остановиться
-  volatile uint16_t currPower; // текущая мощьность мотора (напряжение от 0 до 511)
+  volatile uint16_t currPower; // текущая мощность мотора (напряжение от 0 до 255)
   volatile uint8_t currGear;   // текущая передача мотора (от 0 до 5) 0 - выключена
   bool isForward;              // направление движения
 
-  volatile bool busy = false;
+  volatile bool busy = false;  // мотор занят (работает)
 
   DcMotor(
     char name,

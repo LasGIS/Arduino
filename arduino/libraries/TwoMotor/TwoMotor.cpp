@@ -6,12 +6,11 @@
 
 
 /** Начальное напряжение от передачи (5 передача - самая высокая) */
-static const uint16_t MSHLD_GEAR_VOLTAGE[6] = {33, 50, 74, 111, 167, 250};
+static const uint16_t MSHLD_GEAR_VOLTAGE[6] = {33, 50, 75, 113, 170, 255};
 /** Скорость в мм/мсек от передачи (5 передача - самая высокая) */
-static const float MSHLD_GEAR_FACTOR[6] = {0.094, 0.141, 0.212, 0.317, 0.476, 0.600};
-/** фактор рзмеров - сколько каунтов нужно отсчитать для перемещения на 1 мм. */
-#define MSHLD_COUNT_FACTOR 0.2
-#define MSHLD_SPEED_FACTOR 1.02
+static const float MSHLD_GEAR_FACTOR[6] = {0.025, 0.037, 0.056, 0.084, 0.126, 0.170};
+/** фактор рзмеров - сколько каунтов нужно отсчитать для перемещения на 1 cм. */
+#define MSHLD_COUNT_FACTOR 1.05
 
 /** Настраиваем пины конкретных моторов.
 static DcMotor MSHLD_MOTORS[4] = {
@@ -57,11 +56,10 @@ void Speedometer::clean() {
 void Speedometer::interrupt() {
   long time = micros();
   uint8_t newVal = digitalRead(countPin);
-  // проверка на дребезг 
+  // проверка на дребезг
   if (newVal != val) {
-    val = newVal;
     if (time - lastTime > 500) {
-      //Serial.print(".");
+      val = newVal;
       lastTime = time;
       count++;
       isChange = true;
@@ -74,8 +72,6 @@ void Speedometer::interrupt() {
     // счётчик долго находится в одном положении
     lastTime = time;
     isChange = true;
-  } else {
-    isChange = false;
   }
 }
 
@@ -97,7 +93,7 @@ DcMotor::DcMotor(
   upMask_B   = _upMask_B;
   downMask_B = _downMask_B;
   powerPin   = _powerPin;
-//  countPin = _countPin;
+
   startTime = 0L;
   endTime = 0L;
   endCount = 0;
@@ -114,7 +110,8 @@ bool DcMotor::speedCorrection(long time) {
   uint16_t power = MSHLD_GEAR_VOLTAGE[currGear];
   int16_t countMust = (int16_t) (endCount * (time - startTime) / (endTime - startTime));
 #ifdef MSHLD_DEBUG_MODE
-  Serial.print("countMust=");
+  Serial.print(name);
+  Serial.print(" -> countMust=");
   Serial.print(countMust);
   Serial.print("; count=");
   Serial.print(count);
@@ -206,8 +203,8 @@ void TwoMotor::handle_interrupt() {
  * процедура запускается каждую милисекунду *
  ********************************************/
 void TwoMotor::timeAction() {
-  timeAction(leftMotor);
   timeAction(rightMotor);
+  timeAction(leftMotor);
 }
 
 /***
@@ -223,7 +220,6 @@ void TwoMotor::timeAction(DcMotor* motor) {
   // проверяем счётчик скорости.
   if (motor->isChange) {
     motor->isChange = false;
-    Serial.print(",");
     isStop = motor->speedCorrection(time);
   } else {
     motor->isChange = false;
@@ -257,9 +253,9 @@ void TwoMotor::disabled() {
 
 /** Останавливаем все что можно. */
 void TwoMotor::stopMotors() {
-  setBitMask(0);
   leftMotorStop();
   rightMotorStop();
+  setBitMask(0);
 }
 
 /**
@@ -310,7 +306,7 @@ void TwoMotor::rightMotorStop() {
 
 /**
  * Устанавливаем скорость для левого мотора
- * @speed скорость мотора в 
+ * @speed скорость мотора в
  */
 void TwoMotor::leftMotorStart(int8_t gear, int16_t dist) {
   motor(leftMotor, gear, dist);
@@ -328,7 +324,7 @@ void TwoMotor::rightMotorStart(int8_t gear, int16_t dist) {
  *  gear > 0 - вперёд;
  *  gear < 0 - назад;
  *  значения от -5 до +5
- * @dist дистанция в мм, которую надо преодолеть 
+ * @dist дистанция в мм, которую надо преодолеть
  */
 void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   long startTime = millis();
@@ -347,9 +343,9 @@ void TwoMotor::motor(DcMotor* motor, int8_t gear, int16_t dist) {
   }
 
   motor->startTime = startTime;
-  motor->endTime = startTime + dist / MSHLD_GEAR_FACTOR[absGear];
+  motor->endTime = startTime + (dist / MSHLD_GEAR_FACTOR[absGear]);
   motor->endCount = dist * MSHLD_COUNT_FACTOR;
-  motor->currPower = 255; // MSHLD_GEAR_VOLTAGE[absGear];
+  motor->currPower = MSHLD_GEAR_VOLTAGE[absGear];
   motor->isForward = isForward;
   motor->currGear = absGear;
   motor->busy = true;
