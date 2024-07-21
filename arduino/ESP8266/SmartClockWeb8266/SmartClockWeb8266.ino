@@ -20,7 +20,7 @@ void setup() {
   tft.drawRect(1, 1, 319, 239, TFT_WHITE);
   //  tft.drawRect(CLOCK_X, CLOCK_Y, CLOCK_W, CLOCK_H, TFT_DARKGREEN);
   //  tft.drawRect(VOLT_X, VOLT_Y, VOLT_W, VOLT_H, TFT_BROWN);
-  testDrawFont();
+  //testDrawFont();
 
   connectWiFi();
 }

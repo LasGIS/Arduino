@@ -5,7 +5,7 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <HardwareSerial.h>
-#include <Arduino_JSON.h>
+#include <Json.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <DS3231.h>

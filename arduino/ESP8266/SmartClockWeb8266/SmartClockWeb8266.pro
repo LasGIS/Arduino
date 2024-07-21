@@ -7,7 +7,7 @@ SOURCES += \
     C:/Arduino15/packages/esp8266/hardware/esp8266/3.1.2/cores/esp8266/IPAddress.cpp \
     C:/Arduino/arduino/libraries/DS3231/DS3231.cpp \
     C:/Arduino/arduino/libraries/TFT_eSPI/TFT_eSPI.cpp \
-    C:\Arduino\arduino\libraries\Arduino_JSON\src\cjson\cJSON.c \
+    C:\Arduino\arduino\libraries\Json\src\Json.cpp \
     SmartClockWeb8266.ino \
     RealTime.cpp \
     utility.cpp \
@@ -21,7 +21,7 @@ SOURCES += \
 # Specifies include paths that are passed to the Windows Resource Compiler.
 INCLUDEPATH += \
     C:/Arduino/arduino/libraries/DS3231 \
-    C:\Arduino\arduino\libraries\Arduino_JSON\src \
+    C:\Arduino\arduino\libraries\Json\src \
     C:/Arduino/arduino/libraries/TFT_eSPI \
     C:/Arduino/arduino/libraries/TFT_eSPI/Fonts \
     C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/Custom \
