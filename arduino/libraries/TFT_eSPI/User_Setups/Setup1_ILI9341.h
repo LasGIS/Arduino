@@ -3,6 +3,9 @@
 
 #define ILI9341_DRIVER
 
+#define TFT_MISO  PIN_D6  // Automatically assigned with ESP8266 if not defined
+#define TFT_MOSI  PIN_D7  // Automatically assigned with ESP8266 if not defined
+#define TFT_SCLK  PIN_D5  // Automatically assigned with ESP8266 if not defined
 
 #define TFT_CS   PIN_D8  // Chip select control pin D8
 #define TFT_DC   PIN_D3  // Data Command control pin
