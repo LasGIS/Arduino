@@ -1,6 +1,4 @@
-#include "SmartClockWeb32.h"
-
-const char srcCommonJs[] = R"=====(// Common JS
+// Common JS
 const setBright = (volt) => {
   const bright = volt;
   const element = document.getElementById("bright");
@@ -114,8 +112,3 @@ const showScanNetworks = () => {
 getBright();
 getDatetime();
 
-)=====";
-
-void webGetSrcCommonJs() {
-  server.send(200, "application/javascript", srcCommonJs);
-}

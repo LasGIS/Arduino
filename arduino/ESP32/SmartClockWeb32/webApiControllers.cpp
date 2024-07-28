@@ -63,9 +63,9 @@ void apiDatetime() {
 
 void scanNetworks() {
   if (server.method() == HTTP_GET) {
-    int numberOfNetworks = WiFi.scanNetworks();
+    int32_t numberOfNetworks = WiFi.scanNetworks();
     JsonArray jsonArray;
-    for (int i = 0; i < numberOfNetworks; i++) {
+    for (int32_t i = 0; i < numberOfNetworks; i++) {
       Json jsonVar;
       Serial.print("Network name: ");
       Serial.println(WiFi.SSID(i));
@@ -78,8 +78,8 @@ void scanNetworks() {
       Serial.println(jsonVar.toString());
     }
     Json jsonObject;
-    jsonObject["count"] = numberOfNetworks;
-    jsonObject["ssids"] = jsonArray;
+    jsonObject.add("count", numberOfNetworks);
+    jsonObject.add("ssids", jsonArray);
     server.enableCORS(true);
     server.send(200, "application/json", jsonObject.toString());
   } else {

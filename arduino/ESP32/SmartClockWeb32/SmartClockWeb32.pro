@@ -4,7 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/cores/esp32/IPAddress.cpp \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/cores/esp32/IPAddress.cpp \
     C:/Arduino/arduino/libraries/Json/Json.cpp \
     C:/Arduino/arduino/libraries/DS3231/DS3231.cpp \
     C:/Arduino/arduino/libraries/TFT_eSPI/TFT_eSPI.cpp \
@@ -21,21 +21,21 @@ INCLUDEPATH += \
     C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/Custom \
     C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/GFXFF \
     C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/TrueType \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/cores/esp32 \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/SPI/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/WiFi/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/EEPROM/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/ArduinoOTA/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/SoftwareSerial/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/SPI/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/Wire/src \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/libraries/Wire/src/utility \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/variants/esp32 \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/tools/sdk/esp32/include/freertos/include \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/tools/sdk/esp32/include/soc/esp32/include/soc \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/cores/esp32 \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/SPI/src \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/WiFi/src \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/EEPROM/src \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/ArduinoOTA/src \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/SoftwareSerial/src \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/SPI/src \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/Wire/src \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/Wire/src/utility \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/variants/esp32 \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/tools/sdk/esp32/include/freertos/include \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/tools/sdk/esp32/include/soc/esp32/include/soc \
 
 HEADERS += \
-    C:/Arduino15/packages/esp32/hardware/esp32/2.0.11/variants/esp32/pins_arduino.h \
+    C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/variants/esp32/pins_arduino.h \
     C:/Arduino/arduino/libraries/Json/Json.h \
     C:/Arduino/arduino/libraries/DS3231/DS3231.h \
     C:/Arduino/arduino/libraries/TFT_eSPI/User_Setup.h \

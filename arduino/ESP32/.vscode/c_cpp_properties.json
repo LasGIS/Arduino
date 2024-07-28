@@ -15,10 +15,10 @@
                 "C:/Arduino15/packages/esp8266/tools/**",
                 "C:/Arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/3.1.0-gcc10.3-e5f9fec/**",
                 "C:/Arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/esp-2021r2-patch5-8.4.0/lib/gcc/**",
-                "C:/Arduino15/packages/esp32/hardware/esp32/2.0.16/cores/**",
-                "C:/Arduino15/packages/esp32/hardware/esp32/2.0.16/libraries/**",
-                "C:/Arduino15/packages/esp32/hardware/esp32/2.0.16/variants/**",
-                "C:/Arduino15/packages/esp32/hardware/esp32/2.0.16/tools/sdk/esp32/**"
+                "C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/cores/**",
+                "C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/**",
+                "C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/variants/**",
+                "C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/tools/sdk/esp32/**"
             ],
             "defines": [
                 "_DEBUG",

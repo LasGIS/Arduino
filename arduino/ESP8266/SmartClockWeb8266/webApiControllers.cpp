@@ -78,8 +78,8 @@ void scanNetworks() {
       Serial.println(jsonVar.toString());
     }
     Json jsonObject;
-    jsonObject["count"] = numberOfNetworks;
-    jsonObject["ssids"] = jsonArray;
+    jsonObject.add("count", numberOfNetworks);
+    jsonObject.add("ssids", jsonArray);
     server.enableCORS(true);
     server.send(200, "application/json", jsonObject.toString());
   } else {
