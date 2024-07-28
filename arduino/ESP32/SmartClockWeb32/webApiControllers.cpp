@@ -5,6 +5,7 @@ void apiBright() {
   json += analogRead(34) * 3.3 / 4095;
   json += "}";
   server.enableCORS(true);
+  server.sendHeader("Cache-Control", "no-cache");
   server.send(200, "application/json", json);
 }
 
@@ -32,6 +33,7 @@ void apiDatetime() {
     Serial.println("method == GET");
     server.enableCORS(true);
     DateTime dateTime = Clock.now();
+    server.sendHeader("Cache-Control", "no-cache");
     server.send(200, "application/json", toJson(&dateTime));
   } else if (server.method() == HTTP_POST) {
     Serial.println("method == POST");
@@ -55,6 +57,7 @@ void apiDatetime() {
     saveRealTime(dateTime);
 
     server.enableCORS(true);
+    server.sendHeader("Cache-Control", "no-cache");
     server.send(200, "application/json", toJson(dateTime));
   } else {
     server.send(405, "text/plain", "Method Not Allowed");
@@ -81,6 +84,7 @@ void scanNetworks() {
     jsonObject.add("count", numberOfNetworks);
     jsonObject.add("ssids", jsonArray);
     server.enableCORS(true);
+    server.sendHeader("Cache-Control", "no-cache");
     server.send(200, "application/json", jsonObject.toString());
   } else {
     server.send(405, "text/plain", "Method Not Allowed");

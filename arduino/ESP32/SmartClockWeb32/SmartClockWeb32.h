@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
+#include <LittleFS.h>
 #include <Json.h>
 #include <SPI.h>
 #include <Wire.h>

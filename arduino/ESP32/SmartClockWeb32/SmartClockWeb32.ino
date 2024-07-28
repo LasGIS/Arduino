@@ -18,6 +18,9 @@ void setup() {
   //  tft.drawRect(CLOCK_X, CLOCK_Y, CLOCK_W, CLOCK_H, TFT_DARKGREEN);
   //  tft.drawRect(VOLT_X, VOLT_Y, VOLT_W, VOLT_H, TFT_BROWN);
 
+  // проверка Little FS
+  littleFsTest();
+
   // запускаем сервер
   connectWiFi();
 }
@@ -40,4 +43,24 @@ void outToTft() {
   strOut += analogRead(34) * 3.3 / 4095;
   strOut += "V";
   tft.drawString(strOut, VOLT_W / 2, VOLT_H / 2, 4);
+}
+
+void littleFsTest() {
+  
+  if(!LittleFS.begin()){
+    Serial.println("An Error has occurred while mounting LittleFS");
+    return;
+  }
+  
+  File file = LittleFS.open("/index.html", "r");
+  if(!file){
+    Serial.println("Failed to open file for reading");
+    return;
+  }
+  
+  Serial.println("File Content:");
+  while(file.available()){
+    Serial.write(file.read());
+  }
+  file.close();
 }
