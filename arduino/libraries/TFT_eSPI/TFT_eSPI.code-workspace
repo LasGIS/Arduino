@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "../../ESP32"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"xstring": "cpp",
+			"xutility": "cpp",
+			"font7srle.c": "cpp",
+			"russfontansi.c": "cpp"
+		}
+	}
+}

@@ -4,13 +4,11 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/Arduino/arduino/libraries/DS3231/**",
                 "C:/Arduino/arduino/libraries/TFT_eSPI/**",
                 "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/**",
                 "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/Custom/**",
                 "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/GFXFF/**",
                 "C:/Arduino/arduino/libraries/TFT_eSPI/Fonts/TrueType/**",
-                "C:/Arduino/arduino/libraries/Json/**",
                 "C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/cores/esp32",
                 "C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/libraries/**",
                 "C:/Arduino15/packages/esp32/hardware/esp32/3.0.2/variants/**",
