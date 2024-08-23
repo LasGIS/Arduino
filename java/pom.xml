@@ -25,6 +25,7 @@
         <module>FazeCastPort</module>
         <module>RobotControl</module>
         <module>EepromData</module>
+        <module>EditFont</module>
     </modules>
 
     <properties>
