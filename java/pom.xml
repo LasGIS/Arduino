@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 06.03.2023
+  ~  @(#)pom.xml  last: 25.08.2024
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2024, LasGIS Company. All Rights Reserved.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -30,10 +30,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
-        <checkstyle.plugin.configLocation>D:\LGEvolution\CheckStyle\LG_Evolution_checks_j2se_5.0.xml
-        </checkstyle.plugin.configLocation>
-        <logback.version>1.2.11</logback.version>
-        <slf.version>1.7.25</slf.version>
+        <checkstyle.plugin.configLocation>C:\Arduino\java\CheckStyle\check_style.xml</checkstyle.plugin.configLocation>
+        <java.version>17</java.version>
     </properties>
 
     <dependencyManagement>
@@ -81,18 +79,18 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>${slf.version}</version>
+                <version>2.0.16</version>
             </dependency>
             <!-- logback -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
+                <version>1.5.7</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
+                <version>1.5.7</version>
             </dependency>
            <dependency>
                 <groupId>commons-io</groupId>

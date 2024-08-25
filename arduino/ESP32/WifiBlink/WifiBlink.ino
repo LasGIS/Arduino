@@ -1,8 +1,8 @@
 // подключаем библиотеку Wi-Fi
 #include <WiFi.h>
 // замените своими сетевыми учетными данными
-const char* ssid     = "Your_SSID";
-const char* password = "Your_Password";
+const char* ssid     = "TP-Link_C857";
+const char* password = "14178054";
 // установите номер порта веб-сервера на 80
 WiFiServer server(80);
 // переменная для хранения HTTP запроса

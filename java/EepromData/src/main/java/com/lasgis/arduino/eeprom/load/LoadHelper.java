@@ -1,9 +1,9 @@
 /*
- *  @(#)LoadHelper.java  last: 11.04.2023
+ *  @(#)LoadHelper.java  last: 25.08.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load;
@@ -38,7 +38,7 @@ import static com.lasgis.arduino.eeprom.Runner.PROP_PATCH;
 public class LoadHelper {
 
     /**
-     * компиляция исходных данных
+     * Компиляция исходных данных
      *
      * @return список полученных RomData объектов
      * @throws Exception on ...
@@ -52,7 +52,7 @@ public class LoadHelper {
     }
 
     /**
-     * компиляция исходных данных
+     * Компиляция исходных данных
      *
      * @param dataFile выбранный файл
      * @return список полученных RomData объектов

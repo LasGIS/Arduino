@@ -1,5 +1,5 @@
-//let baseUrl = "http://192.168.0.103";
-let baseUrl = "http://localhost:5000";
+let baseUrl = "http://192.168.0.102";
+//let baseUrl = "http://localhost:5000";
 
 const setBright = (volt) => {
   const bright = volt;

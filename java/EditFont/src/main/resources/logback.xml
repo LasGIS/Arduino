@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~  @(#)logback.xml  last: 25.08.2024
+  ~
+  ~ Title: LG Java for Arduino
+  ~ Description: Program for support Arduino.
+  ~ Copyright (c) 2024, LasGIS Company. All Rights Reserved.
+  -->
+
+<configuration scan="true" scanPeriod="2 minute">
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>/var/log/arduino/java/logback-EditFont.log</file>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c{1} - %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c{1} - %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
+  <logger name="com.lasgis.arduino.eeprom" level="DEBUG">
+    <appender-ref ref="FILE"/>
+  </logger>
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="FILE"/>
+  </root>
+</configuration>

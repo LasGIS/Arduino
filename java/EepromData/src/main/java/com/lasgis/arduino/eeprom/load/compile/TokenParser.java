@@ -1,9 +1,9 @@
 /*
- *  @(#)TokenParser.java  last: 14.04.2023
+ *  @(#)TokenParser.java  last: 25.08.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load.compile;
@@ -35,13 +35,14 @@ public class TokenParser {
     protected final StringBuilder sb;
 
     /**
-     * типы данных
+     * Типы данных
      */
+    @Getter
     public enum KeywordType {
-        /** структурные определители. */
+        /** Структурные определители. */
         MEMORY_ROMS("MemoryRoms"),
         BATCH_MEMORY("BatchMemory"),
-        /** типы данных. */
+        /** Типы данных. */
         CHAR("char"),
         INT8("int8"),
         INT16("int16"),
@@ -53,7 +54,6 @@ public class TokenParser {
         OBJECT("object"),
         ARRAY("array");
 
-        @Getter
         final String name;
 
         KeywordType(final String name) {
@@ -78,7 +78,7 @@ public class TokenParser {
      * Типовые знаки.
      */
     public enum CharType {
-        /** буква, цифра, разделители, пробельные символы. */
+        /** Буква, цифра, разделители, пробельные символы. */
         letter, digit, delimitChars, space
     }
 
@@ -86,7 +86,7 @@ public class TokenParser {
      * Типы токенов.
      */
     public enum TokenType {
-        /** ошибка; ключевое слово; имя переменной или метода, ... */
+        /** Ошибка; ключевое слово; имя переменной или метода, ... */
         error, keyword, name, delimit, string, oneChar, number, real, block, /*operator, */comment, start, end
     }
 

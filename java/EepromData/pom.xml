@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 12.02.2023
+  ~  @(#)pom.xml  last: 25.08.2024
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2024, LasGIS Company. All Rights Reserved.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+          https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -78,6 +79,7 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -113,4 +115,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
