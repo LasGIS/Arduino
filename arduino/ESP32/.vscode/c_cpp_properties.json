@@ -18,19 +18,19 @@
                 "C:/Arduino15/packages/esp32/tools/esp32-arduino-libs/idf-release_v5.1-bd2b9390ef/esp32/include/**",
                 "C:/Arduino15/packages/esp32/tools/esp32-arduino-libs/idf-release_v5.1-bd2b9390ef/esp32/dio_qspi/include/**",
                 "C:/Arduino15/packages/esp32/tools/esp32-arduino-libs/idf-release_v5.1-bd2b9390ef/esp32/include/newlib/platform_include/**",
-                "C:/Arduino15/packages/esp32/tools/esp32-arduino-libs/idf-release_v5.1-bd2b9390ef/esp32/include/freertos/FreeRTOS-Kernel/include",
+                "C:/Arduino15/packages/esp32/tools/esp32-arduino-libs/idf-release_v5.1-bd2b9390ef/esp32/include/freertos/FreeRTOS-Kernel/include/**",
                 "C:/Arduino15/packages/esp32/tools/esp-x32/2302/xtensa-esp32-elf/include/**"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "ESP8266"
+                "ESP32"
             ],
             "windowsSdkVersion": "10.0.19041.0",
             "compilerPath": "cl.exe",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
             "intelliSenseMode": "windows-msvc-arm64",
             "compilerArgs": []
         }

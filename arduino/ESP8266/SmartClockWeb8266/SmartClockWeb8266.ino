@@ -56,7 +56,7 @@ void testDrawFont() {
     }
     tft.println();
   }
-  tft.println("Сешь этих мягких булок");
+  tft.println("Съешь этих мягких булок");
   tft.println("АБВГДЕЖЗИЙКЛМНОП");
   tft.println("РСТУФХЦЧШЩЪЫЬЭЮЯ");
   tft.println("абвгдежзийклмноп");

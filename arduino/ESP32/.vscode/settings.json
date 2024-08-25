@@ -5,6 +5,6 @@
         "font7srle.c": "cpp",
         "russfontansi.c": "cpp"
     },
-    "cmake.sourceDirectory": "C:/Arduino/arduino/libraries/TFT_eSPI",
+    "cmake.sourceDirectory": "C:/Arduino/arduino/ESP32",
     "C_Cpp.errorSquiggles": "enabled"
 }

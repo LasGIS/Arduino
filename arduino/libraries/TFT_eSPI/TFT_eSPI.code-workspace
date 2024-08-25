@@ -12,7 +12,10 @@
 			"xstring": "cpp",
 			"xutility": "cpp",
 			"font7srle.c": "cpp",
-			"russfontansi.c": "cpp"
-		}
+			"russfontansi.c": "cpp",
+			"string": "cpp"
+		},
+		"C_Cpp.default.cppStandard": "gnu++11",
+		"C_Cpp.default.cStandard": "gnu11"
 	}
 }
