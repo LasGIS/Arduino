@@ -8,8 +8,9 @@
 
 package com.lasgis.arduino.editfont;
 
-import com.lasgis.arduino.editfont.fontdata.FontData;
+import com.lasgis.arduino.editfont.data.FontData;
 import com.lasgis.arduino.editfont.load.LoadHelper;
+import com.lasgis.arduino.editfont.panels.ControlHelper;
 import com.lasgis.arduino.editfont.test.TestHelper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -85,10 +86,10 @@ public class Runner {
         if (commands.contains(CommandType.read)) {
             UploadHelper.read();
         }
+*/
         if (commands.contains(CommandType.panel)) {
             ControlHelper.panel();
         }
-*/
     }
 
     /**

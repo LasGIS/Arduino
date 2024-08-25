@@ -6,7 +6,7 @@
  * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.arduino.editfont.fontdata;
+package com.lasgis.arduino.editfont.data;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

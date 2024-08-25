@@ -8,7 +8,7 @@
 
 package com.lasgis.arduino.editfont.test;
 
-import com.lasgis.arduino.editfont.fontdata.FontData;
+import com.lasgis.arduino.editfont.data.FontData;
 import lombok.extern.slf4j.Slf4j;
 
 /**

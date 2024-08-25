@@ -8,7 +8,7 @@
 
 package com.lasgis.arduino.editfont.load;
 
-import com.lasgis.arduino.editfont.fontdata.FontData;
+import com.lasgis.arduino.editfont.data.FontData;
 import com.lasgis.util.Util;
 
 import java.io.File;
@@ -32,7 +32,7 @@ class DataCppLoader {
 
     private FontData loadFile(final File file) {
         final FontData fontData = FontData.of();
-        fontData.setFileName(file.getAbsolutePath());
+        fontData.setFileName(file.getName());
         fontData.setSource(Util.loadStringFromFile(file));
         return fontData;
     }

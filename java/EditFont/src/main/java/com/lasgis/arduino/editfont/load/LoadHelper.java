@@ -9,7 +9,7 @@
 package com.lasgis.arduino.editfont.load;
 
 import com.lasgis.arduino.editfont.Runner;
-import com.lasgis.arduino.editfont.fontdata.FontData;
+import com.lasgis.arduino.editfont.data.FontData;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -38,8 +38,6 @@ public class LoadHelper {
             props.getProperty(PROP_PATCH),
             props.getProperty(PROP_DATA_FILE)
         );
-        final FontData fontData = DataCppLoader.load(dataFile);
-
-        return fontData;
+        return DataCppLoader.load(dataFile);
     }
 }
