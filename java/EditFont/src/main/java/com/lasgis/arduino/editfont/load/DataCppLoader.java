@@ -1,5 +1,5 @@
 /*
- *  @(#)DataCppLoader.java  last: 25.08.2024
+ *  @(#)DataCppLoader.java  last: 02.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -25,15 +25,17 @@ class DataCppLoader {
         super();
     }
 
-    static FontData load(final File file) {
+    static FontData load(final File cFile, final File hFile) {
         final DataCppLoader loader = new DataCppLoader();
-        return loader.loadFile(file);
+        return loader.loadFile(cFile, hFile);
     }
 
-    private FontData loadFile(final File file) {
+    private FontData loadFile(final File cFile, final File hFile) {
         final FontData fontData = FontData.of();
-        fontData.setFileName(file.getName());
-        fontData.setSource(Util.loadStringFromFile(file));
+        fontData.setCFileName(cFile.getName());
+        fontData.setCSource(Util.loadStringFromFile(cFile));
+        fontData.setHFileName(hFile.getName());
+        fontData.setHSource(Util.loadStringFromFile(hFile));
         return fontData;
     }
 }

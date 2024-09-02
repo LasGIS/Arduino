@@ -1,5 +1,5 @@
 /*
- *  @(#)MainFrame.java  last: 25.08.2024
+ *  @(#)MainFrame.java  last: 02.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -126,8 +126,8 @@ public class MainFrame extends JFrame implements ComponentListener {
 
             splitPane.add(configPanel, JSplitPane.RIGHT);
             splitPane.add(mapPanel, JSplitPane.LEFT);
-            splitPane.setLastDividerLocation(size.width - 500);
-            splitPane.setDividerLocation(size.width - 500);
+            splitPane.setLastDividerLocation(size.width - 355);
+            splitPane.setDividerLocation(size.width - 355);
             splitPane.setResizeWeight(1);
         } catch (final Exception ex) {
             log.error(ex.getMessage(), ex);

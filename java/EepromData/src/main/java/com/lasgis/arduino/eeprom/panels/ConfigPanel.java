@@ -1,9 +1,9 @@
 /*
- *  @(#)ConfigPanel.java  last: 11.03.2023
+ *  @(#)ConfigPanel.java  last: 02.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.panels;
@@ -19,6 +19,7 @@ import com.lasgis.arduino.eeprom.upload.UploadHelper;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.serial.SerialPortWrap;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
@@ -142,6 +143,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         arealInfo.append(">> " + command + "\n");
     };
     /** ссылка на MainFrame. */
+    @Setter
     private MainFrame mainFrame = null;
 
     /**
@@ -231,11 +233,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         }
     }
 
-    public void setMainFrame(final MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-    }
-
-    /** создание панели связи с COM. */
+    /** Создание панели связи с COM. */
     private void fillLinkPanel() {
         final JPanel linkPanel = new JPanel();
         linkPanel.setLayout(new BoxLayout(linkPanel, BoxLayout.LINE_AXIS));
@@ -254,7 +252,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         controlPanel.add(linkPanel, BorderLayout.NORTH);
     }
 
-    /** создание доп атрибутов. */
+    /** Создание доп атрибутов. */
     private void fillParametersPanel() {
         deviceInput.setSelectedIndex(1);
         addressInput.setText("0000");

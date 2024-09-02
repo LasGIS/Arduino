@@ -1,9 +1,9 @@
 /*
- *  @(#)CommandType.java  last: 17.02.2023
+ *  @(#)CommandType.java  last: 02.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom;
@@ -15,7 +15,7 @@ package com.lasgis.arduino.eeprom;
  * @since 31.05.2018
  */
 public enum CommandType {
-    /** вывод тестовой информации о дампе */
+    /** Вывод тестовой информации о дампе */
     test,
     /**
      * <pre>

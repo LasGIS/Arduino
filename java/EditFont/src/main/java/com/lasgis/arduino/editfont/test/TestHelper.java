@@ -1,5 +1,5 @@
 /*
- *  @(#)TestHelper.java  last: 25.08.2024
+ *  @(#)TestHelper.java  last: 02.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -27,8 +27,8 @@ public class TestHelper {
     }
 
     private void showFontData(final FontData fontData) {
-        log.info("\n FileName: \"{}\";\n", fontData.getFileName());
-        final String source = fontData.getSource().toString();
+        log.info("\n FileName: \"{}\";\n", fontData.getCFileName());
+        final String source = fontData.getCSource().toString();
         final String[] split = source.split("\n");
         log.info("\n Source: \n");
         for (final String str : split) {

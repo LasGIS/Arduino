@@ -1,5 +1,5 @@
 /*
- *  @(#)MapPanel.java  last: 25.08.2024
+ *  @(#)MapPanel.java  last: 03.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,13 +8,11 @@
 
 package com.lasgis.arduino.editfont.panels;
 
-import com.lasgis.util.SettingMenuItem;
-import com.lasgis.util.Util;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,34 +43,35 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MapPanel extends JPanel
     implements MouseMotionListener, KeyListener, FocusListener, MouseListener, MouseWheelListener {
 
-    /** серый цвет фона. */
+    /** Серый цвет фона. */
     public static final Color PANEL_GRAY_COLOR = new Color(220, 220, 220);
-    /** цвет фона для выбранной панели. */
+
+    /** Цвет фона для выбранной панели. */
     public static final Color PANEL_FOCUSED_COLOR = new Color(255, 220, 220);
-    /** светло-серый цвет фона. */
+
+    /** Светло-серый цвет фона. */
     public static final Color PANEL_LIGHT_GRAY_COLOR = new Color(240, 240, 240);
-    /** Размер зарамочного оформления. */
-    private static final int SIZE_BORDER = 15;
-    /** Настройка выпадающего меню (пока только заготовка). */
-    private final SettingMenuItem[] setPopUpMenu = {
-        new SettingMenuItem(
-            "Добавить животное", "openFile.gif", "Добавить выделенное животное в данное место",
-            MapPanel.this::addElement, null
-        ),
-    };
-    /** Текущая мышковая координата X для показа в инфо. */
+
+    /** Текущая координата мышки X для показа в инфо. */
     int currentXScreen;
-    /** Текущая мышковая координата Y для показа в инфо. */
+
+    /** Текущая координата мышки Y для показа в инфо. */
     int currentYScreen;
+
     /** Если false, то принципиально не перерисовываем. */
     AtomicBoolean isAutoDraw = new AtomicBoolean(true);
-    /** ссылка на MainFrame. */
+
+    /** Ссылка на MainFrame. */
+    @Setter
     private MainFrame mainFrame = null;
+
     /** Если true, то будем перегружать. */
     private boolean isRedrawMap = true;
-    /** сохраненное изображение. */
+
+    /** Сохраненное изображение. */
     private BufferedImage grBackgroundImage = null;
-    /** признак, что панель в фокусе. */
+
+    /** Признак, что панель в фокусе. */
     private boolean focused = false;
 
     /**
@@ -89,7 +88,6 @@ public class MapPanel extends JPanel
             addKeyListener(this);
             addFocusListener(this);
             setFocusable(true);
-            createPopupMenu();
         } catch (final Exception ex) {
             log.error(ex.getMessage(), ex);
         }
@@ -100,7 +98,7 @@ public class MapPanel extends JPanel
     }
 
     /**
-     * стандартный вход для рисования.
+     * Стандартный вход для рисования.
      *
      * @param gr контекст вывода
      */
@@ -112,26 +110,7 @@ public class MapPanel extends JPanel
             gr.setColor(MapPanel.PANEL_GRAY_COLOR);
         }
         gr.fillRect(0, 0, dim.width, dim.height);
-        gr.draw3DRect(
-            SIZE_BORDER,
-            SIZE_BORDER,
-            dim.width - (SIZE_BORDER * 2) - 1,
-            dim.height - (SIZE_BORDER * 2) - 1,
-            false
-        );
-        gr.setColor(MapPanel.PANEL_GRAY_COLOR);
-        gr.fillRect(
-            SIZE_BORDER + 1,
-            SIZE_BORDER + 1,
-            dim.width - (SIZE_BORDER * 2) - 2,
-            dim.height - (SIZE_BORDER * 2) - 2
-        );
-        gr.clipRect(
-            SIZE_BORDER + 1,
-            SIZE_BORDER + 1,
-            dim.width - (SIZE_BORDER * 2) - 2,
-            dim.height - (SIZE_BORDER * 2) - 2
-        );
+
         if (isRedrawMap || grBackgroundImage == null) {
             grBackgroundImage = new BufferedImage(
                 dim.width, dim.height, BufferedImage.TYPE_INT_RGB
@@ -139,6 +118,10 @@ public class MapPanel extends JPanel
             final Graphics bckGr = grBackgroundImage.getGraphics();
             bckGr.setColor(MapPanel.PANEL_GRAY_COLOR);
             bckGr.fillRect(0, 0, dim.width, dim.height);
+            /* тест out */
+            bckGr.setColor(MapPanel.PANEL_LIGHT_GRAY_COLOR);
+            bckGr.drawLine(1, 1, 100, 100);
+            bckGr.drawLine(1, 100, 100, 1);
             isRedrawMap = false;
         }
         gr.drawImage(grBackgroundImage, 0, 0, dim.width, dim.height, null);
@@ -155,15 +138,6 @@ public class MapPanel extends JPanel
         if (mainFrame != null) {
             mainFrame.outStatus(out, numItem);
         }
-    }
-
-    /**
-     * Установить добавить ссылку на главное окно.
-     *
-     * @param mainFrame главное окно
-     */
-    public void setMainFrame(final MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
     }
 
     /**
@@ -190,31 +164,31 @@ public class MapPanel extends JPanel
         switch (e.getKeyCode()) {
             case KeyEvent.VK_NUMPAD4:
             case KeyEvent.VK_LEFT:
-                // влево
-                //isRedrawMap = true;
+                /* влево */
+                isRedrawMap = true;
                 break;
             case KeyEvent.VK_NUMPAD6:
             case KeyEvent.VK_RIGHT:
-                // вправо
-                //isRedrawMap = true;
+                /* вправо */
+                isRedrawMap = true;
                 break;
             case KeyEvent.VK_NUMPAD8:
             case KeyEvent.VK_UP:
-                // вверх
-                //isRedrawMap = true;
+                /* вверх */
+                isRedrawMap = true;
                 break;
             case KeyEvent.VK_NUMPAD2:
             case KeyEvent.VK_DOWN:
-                // вниз
-                //isRedrawMap = true;
+                /* вниз */
+                isRedrawMap = true;
                 break;
             case KeyEvent.VK_DIVIDE:
-                // уменьшить масштаб
-                //isRedrawMap = true;
+                /* уменьшить масштаб */
+                isRedrawMap = true;
                 break;
             case KeyEvent.VK_MULTIPLY:
-                // увеличить масштаб
-                //isRedrawMap = true;
+                /* увеличить масштаб */
+                isRedrawMap = true;
                 break;
             default:
                 break;
@@ -241,12 +215,12 @@ public class MapPanel extends JPanel
      */
     public void mouseWheelMoved(final MouseWheelEvent e) {
         final Dimension dim = this.getBounds().getSize();
-        //final int modif = e.getModifiersEx();
+        //final int modifier = e.getModifiersEx();
         final int rotation = e.getWheelRotation();
-        Point mouspnt = e.getPoint();
+        Point mousePnt = e.getPoint();
 
         //isRedrawMap = true;
-        showCoordinates(mouspnt.x, mouspnt.y);
+        showCoordinates(mousePnt.x, mousePnt.y);
         this.repaint();
     }
 
@@ -283,27 +257,29 @@ public class MapPanel extends JPanel
         if (e.getButton() == MouseEvent.BUTTON1) {
             boolean isRedraw = false;
             final Rectangle rec = this.getBounds();
-            final Point mouspnt = e.getPoint();
+            final Point mousePnt = e.getPoint();
 
-            if ((mouspnt.x < rec.x + SIZE_BORDER)
-                || (mouspnt.x > rec.x + rec.width - SIZE_BORDER)
-                || (mouspnt.y < rec.y + SIZE_BORDER)
-                || (mouspnt.y > rec.y + rec.height - SIZE_BORDER)
+/*
+            if ((mousePnt.x < rec.x + SIZE_BORDER)
+                || (mousePnt.x > rec.x + rec.width - SIZE_BORDER)
+                || (mousePnt.y < rec.y + SIZE_BORDER)
+                || (mousePnt.y > rec.y + rec.height - SIZE_BORDER)
             ) {
                 // Попали в обрамляющее поле. Переходим по стрелке
-                final Point cntrpnt = new Point(
+                final Point centerPnt = new Point(
                     (rec.x + rec.width) / 2,
                     (rec.y + rec.height) / 2
                 );
-                //outStatus("Move v");
+                outStatus("Move v", 1);
                 requestFocusInWindow();
                 isRedrawMap = true;
                 isRedraw = true;
-                //} else {
+            } else {
                 // Попали в поле карты
             }
+*/
             if (isRedraw) {
-                showCoordinates(mouspnt.x, mouspnt.y);
+                showCoordinates(mousePnt.x, mousePnt.y);
                 repaint();
             }
         }
@@ -343,22 +319,6 @@ public class MapPanel extends JPanel
      */
     public void mouseExited(final MouseEvent e) {
 //        outStatus(e.paramString());
-    }
-
-    /**
-     * создаём и настраиваем выпадающее меню.
-     */
-    public void createPopupMenu() {
-
-        // создаём и настраиваем выпадающее меню
-        final JPopupMenu popup = new JPopupMenu();
-        for (SettingMenuItem aSetMenu : setPopUpMenu) {
-            popup.add(Util.createImageMenuItem(aSetMenu));
-        }
-
-        //Add listener to the text area so the popup menu can come up.
-        final MouseListener popupListener = new PopupListener(popup);
-        this.addMouseListener(popupListener);
     }
 
     /**

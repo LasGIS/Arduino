@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 25.08.2024
+ *  @(#)Runner.java  last: 02.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -33,13 +33,14 @@ import java.util.Properties;
 @Slf4j
 public class Runner {
     public final static String PROP_PATCH = "patch";
-    public final static String PROP_DATA_FILE = "data";
+    public final static String PROP_FONT_C_FILE = "font_c";
+    public final static String PROP_FONT_H_FILE = "font_h";
     @Getter
     private static final Properties properties = new Properties();
     @Getter
     private static final List<CommandType> commands = new ArrayList<>();
     private final static String[] MANDATORY_PROPERTY_KEYS = {
-        PROP_PATCH, PROP_DATA_FILE
+        PROP_PATCH, PROP_FONT_C_FILE, PROP_FONT_H_FILE
     };
     @Getter
     private static FontData fontData;
@@ -48,10 +49,11 @@ public class Runner {
      * <pre>
      * Загружаем свойства и выполняем логику
      * на входе следующие параметры:
-     *   -patch D:\Arduino\arduino\SmartClock20
-     *   -data I2CMemory.cpp
+     *   -patch C:\Arduino\java\EditFont\data\
+     *   -font_c Font16.c
+     *   -font_h Font16.h
      * и / или
-     *   -properties SmartClock20.properties
+     *   -properties Font.properties
      * который содержит все эти параметры.
      *
      * Список команд указываются в конце командной строки (без дефиса в префиксе)
@@ -146,7 +148,7 @@ public class Runner {
                 );
             }
         }
-        final File file = new File(properties.getProperty(PROP_PATCH), properties.getProperty(PROP_DATA_FILE));
+        final File file = new File(properties.getProperty(PROP_PATCH), properties.getProperty(PROP_FONT_C_FILE));
         if (!file.exists() || !file.isFile()) {
             throw new CommonInfoException(
                 MessageFormat.format("Файла \"{0}\" не существует!", file.getPath())

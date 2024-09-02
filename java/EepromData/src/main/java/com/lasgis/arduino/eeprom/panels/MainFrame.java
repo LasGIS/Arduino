@@ -1,9 +1,9 @@
 /*
- *  @(#)MainFrame.java  last: 06.03.2023
+ *  @(#)MainFrame.java  last: 03.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.panels;
@@ -13,6 +13,7 @@ import com.lasgis.component.StatusBar;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.SettingToolBarItem;
 import com.lasgis.util.Util;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JFileChooser;
@@ -52,8 +53,10 @@ public class MainFrame extends JFrame implements ComponentListener {
     /** Строка состояния. */
     private final StatusBar jStatusBar = new StatusBar(new int[]{0, 100, 200});
     /** Панель с картой. */
+    @Getter
     private final MapPanel mapPanel = new MapPanel();
-    /** панель конфигурации. */
+    /** Панель конфигурации. */
+    @Getter
     private final ConfigPanel configPanel = new ConfigPanel();
 
     /** Настройка главного меню. */
@@ -216,20 +219,6 @@ public class MainFrame extends JFrame implements ComponentListener {
      */
     public void outStatus(final String out, final int numItem) {
         jStatusBar.setText(out, numItem);
-    }
-
-    /**
-     * @return панель с картой
-     */
-    public MapPanel getMapPanel() {
-        return mapPanel;
-    }
-
-    /**
-     * @return панель конфигурации
-     */
-    public ConfigPanel getConfigPanel() {
-        return configPanel;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- *  @(#)CommandType.java  last: 25.08.2024
+ *  @(#)CommandType.java  last: 02.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -18,7 +18,9 @@ public enum CommandType {
 
     /** Тестовый прогон */
     test,
-
+    create,
+    upload,
+    read,
     /** Открываем окно и все команды выполняем в интерактивном режиме */
     panel
 }
