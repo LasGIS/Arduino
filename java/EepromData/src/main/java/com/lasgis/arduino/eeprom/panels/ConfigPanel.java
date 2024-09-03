@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 02.09.2024
+ *  @(#)ConfigPanel.java  last: 04.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -19,6 +19,7 @@ import com.lasgis.arduino.eeprom.upload.UploadHelper;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.serial.SerialPortWrap;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -33,7 +34,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.DefaultCaret;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -85,19 +85,20 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         DeviceWrap.of(0x56),
         DeviceWrap.of(0x57)
     };
-    /** дерево конфигурации. */
+    /** Дерево конфигурации. */
     private final JPanel controlPanel = new JPanel(new BorderLayout());
-    /** панель для информации об ячейках. */
+    /** Панель для информации об ячейках. */
+    @Getter
     private final JTextArea arealInfo = new JTextArea();
-    /** поле для ввода команды. */
+    /** Поле для ввода команды. */
     private final JTextField commandInput = new JTextField();
     private final JFileChooserField dataFileInput;
     private final JFileChooserField hexFileInput;
-    /** поле для ввода номера микросхемы (0x57 для CMOS). */
+    /** Поле для ввода номера микросхемы (0x57 для CMOS). */
     private final JComboBox<DeviceWrap> deviceInput = new JComboBox<>(DEVICE_WRAPS);
-    /** поле для ввода адреса блока в EEPROM памяти. */
+    /** Поле для ввода адреса блока в EEPROM памяти. */
     private final JTextField addressInput = new JTextField(8);
-    /** поле для ввода размера блока. */
+    /** Поле для ввода размера блока. */
     private final JTextField sizeInput = new JTextField(8);
     /** ComboBox for baud rates. */
     private final JComboBox<Integer> baudRatesComboBox = new JComboBox<>(BAUD_RATES);
@@ -179,11 +180,10 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         fillLinkPanel();
         fillParametersPanel();
 
-        /* панель для получения информации */
-        arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
+        /* Панель для получения информации */
+        arealInfo.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
         plantInfoScroll.setViewportView(arealInfo);
-        ((DefaultCaret) arealInfo.getCaret()).setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
 
         /* разделительная панелька */
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -319,10 +319,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         button.setFocusPainted(true);
         button.setContentAreaFilled(true);
         return button;
-    }
-
-    public JTextArea getArealInfo() {
-        return arealInfo;
     }
 
     @Override

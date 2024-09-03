@@ -1,9 +1,9 @@
 /*
- *  @(#)ConfigPanel.java  last: 04.02.2023
+ *  @(#)ConfigPanel.java  last: 04.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.robot.panels;
@@ -12,6 +12,8 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.lasgis.serial.PortReader;
 import com.lasgis.serial.PortReaderListener;
 import com.lasgis.serial.SerialPortWrap;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.BoxLayout;
@@ -23,7 +25,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.DefaultCaret;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -58,20 +59,22 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
     private SerialPortWrap[] commPorts = Arrays.stream(SerialPort.getCommPorts()).map(SerialPortWrap::new).toArray(SerialPortWrap[]::new);
     /** Port Reader. */
     private PortReader portReader;
-    /** ссылка на MainFrame. */
-    private MainFrame mainFrame = null;
-    /** дерево конфигурации. */
+    /** Дерево конфигурации. */
     private final JPanel controlPanel = new JPanel(new BorderLayout());
-    /** панель для информации об ячейках. */
+    /** Панель для информации об ячейках. */
+    @Getter
     private final JTextArea arealInfo = new JTextArea();
-    /** поле для ввода команды. */
+    /** Поле для ввода команды. */
     private final JTextField commandInput = new JTextField();
-    /** поле для ввода расстояния. */
+    /** Поле для ввода расстояния. */
     private final JTextField distanceInput = new JTextField();
-    /** поле для ввода угла поворота. */
+    /** Поле для ввода угла поворота. */
     private final JTextField angleInput = new JTextField();
-    /** поле для ввода передачи. */
+    /** Поле для ввода передачи. */
     private final JComboBox<Integer> gearComboBox = new JComboBox<>(GEARS);
+    /** ссылка на MainFrame. */
+    @Setter
+    private MainFrame mainFrame = null;
     /** ComboBox for serial ports. */
     private final JComboBox<SerialPortWrap> portsComboBox = new JComboBox<>(commPorts);
     /** ComboBox for baud rates. */
@@ -111,10 +114,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         commandInput.setText("");
     };
 
-    public void setMainFrame(final MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-    }
-
     enum CommandActionType {AsIs, Move, Turn}
 
     /** Обработка события нажатия кнопочки. */
@@ -149,19 +148,18 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         fillNavigationPanel();
         fillParametersPanel();
 
-        /* панель для получения информации от arduino. */
-        arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
+        /* панель для получения информации. */
+        arealInfo.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
         plantInfoScroll.setViewportView(arealInfo);
-        ((DefaultCaret) arealInfo.getCaret()).setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
 
         /* разделительная панелька */
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitPane.setContinuousLayout(true);
         splitPane.add(controlPanel, JSplitPane.TOP);
         splitPane.add(plantInfoScroll, JSplitPane.BOTTOM);
-        //splitPane.setDividerLocation(100);
-        //splitPane.setLastDividerLocation(100);
+        // splitPane.setDividerLocation(100);
+        // splitPane.setLastDividerLocation(100);
         splitPane.setResizeWeight(0.0);
 
         setLayout(new BorderLayout());
@@ -185,7 +183,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         );
     }
 
-    /** создание панели связи с COM. */
+    /** Создание панели связи с COM. */
     private void fillLinkPanel() {
         final JPanel linkPanel = new JPanel();
         linkPanel.setLayout(new BoxLayout(linkPanel, BoxLayout.LINE_AXIS));
@@ -204,7 +202,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         controlPanel.add(linkPanel, BorderLayout.NORTH);
     }
 
-    /** создание навигационных кнопок. */
+    /** Создание навигационных кнопок. */
     private void fillNavigationPanel() {
         final JPanel navigationPanel = new JPanel(new GridLayout(3, 4, 5, 5));
         //keyPanel.setSize(150, 150);
@@ -244,7 +242,7 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         controlPanel.add(commandInput, BorderLayout.SOUTH);
     }
 
-    /** создание доп атрибутов. */
+    /** Создание доп атрибутов. */
     private void fillParametersPanel() {
         distanceInput.setText("30");
         angleInput.setText("90");
@@ -288,10 +286,6 @@ public class ConfigPanel extends JPanel implements PortReaderListener {
         button.setFocusPainted(false);
         button.setContentAreaFilled(true);
         return button;
-    }
-
-    public JTextArea getArealInfo() {
-        return arealInfo;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 02.09.2024
+ *  @(#)ConfigPanel.java  last: 03.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -22,7 +22,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.DefaultCaret;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -52,7 +51,7 @@ public class ConfigPanel extends JPanel {
     private final JPanel controlPanel = new JPanel(new BorderLayout());
     /** Панель для информации об ячейках. */
     @Getter
-    private final JTextArea arealInfo = new JTextArea();
+    private final JTextArea arealInfo = new JTextArea("<html>0x00, <b>0x00</b>, 0x00, 0x61, 0x91, 0x92, 0x64, 0x08, 0x10, 0x26, 0x49, 0x89, 0x86, 0x00, 0x00, 0x00");
     private final JFileChooserField cppFileInput;
     private final JFileChooserField hppFileInput;
     private final JTextField deviceInput = new JTextField(8);
@@ -82,10 +81,11 @@ public class ConfigPanel extends JPanel {
         fillParametersPanel();
 
         /* панель для получения информации */
-        arealInfo.setFont(new Font("Arial", Font.PLAIN, 12));
+        arealInfo.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        arealInfo.setLineWrap(true);
+        arealInfo.setWrapStyleWord(true);
         final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
         plantInfoScroll.setViewportView(arealInfo);
-        ((DefaultCaret) arealInfo.getCaret()).setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
 
         /* разделительная панелька */
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);

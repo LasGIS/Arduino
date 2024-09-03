@@ -1,5 +1,5 @@
 /*
- *  @(#)MainFrame.java  last: 02.09.2024
+ *  @(#)MainFrame.java  last: 04.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,6 +8,8 @@
 
 package com.lasgis.arduino.editfont.panels;
 
+import com.lasgis.arduino.editfont.Runner;
+import com.lasgis.arduino.editfont.data.FontData;
 import com.lasgis.component.StatusBar;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.SettingToolBarItem;
@@ -18,11 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
@@ -43,9 +49,14 @@ public class MainFrame extends JFrame implements ComponentListener {
     private static final int TOOL_BAR_WIDTH = 27;
     /** Высота кнопки на главной панели инструментов. */
     private static final int TOOL_BAR_HEIGHT = 27;
+    private static final int CONFIG_PANEL_WIDTH = 370;
 
     /** Строка состояния. */
     private final StatusBar jStatusBar = new StatusBar(new int[]{0, 100, 200});
+    @Getter
+    private final JTextArea cFileArea = new JTextArea();
+    @Getter
+    private final JTextArea hFileArea = new JTextArea();
     /** Панель с картой. */
     @Getter
     private final MapPanel mapPanel = new MapPanel();
@@ -90,28 +101,51 @@ public class MainFrame extends JFrame implements ComponentListener {
      */
     public MainFrame() {
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
+        final FontData fontData = Runner.getFontData();
         try {
-            final Dimension size = new Dimension(800, 600);
+            final Dimension size = new Dimension(1450, 800);
             final JPanel contentPane = (JPanel) this.getContentPane();
             contentPane.setLayout(new BorderLayout());
             this.setSize(size);
-            this.setTitle("Управление загрузкой в EEPROM");
+            this.setTitle("Редактор Шрифтов");
 
-            /* настраиваем главное меню */
+            /* Настраиваем главное меню */
             final JMenuBar menuBar = new JMenuBar();
             for (SettingMenuItem aSetMenu : menuSetting) {
                 menuBar.add(Util.createImageMenuItem(aSetMenu));
             }
-            /* настраиваем главный ToolBar */
+
+            /* Настраиваем главный ToolBar */
             final JToolBar toolBar = new JToolBar();
             for (SettingToolBarItem aSetToolBar : toolBarSetting) {
                 toolBar.add(Util.createImageButton(aSetToolBar));
             }
-            /* разделительная панелька */
+
+            /* Разделительная панелька */
             final JSplitPane splitPane = new JSplitPane();
             splitPane.setContinuousLayout(true);
+
+            final Font monoFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+            /* Показываем C File */
+            cFileArea.setFont(monoFont);
+            cFileArea.append(fontData.getCSource().toString());
+            final JScrollPane cFileScroll = new JScrollPane(cFileArea);
+            cFileScroll.setViewportView(cFileArea);
+
+            /* Показываем H File */
+            hFileArea.setFont(monoFont);
+            hFileArea.append(fontData.getHSource().toString());
+            final JScrollPane hFileScroll = new JScrollPane(hFileArea);
+            hFileScroll.setViewportView(hFileArea);
+
+            /* Панель вкладок */
+            final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+            tabbedPane.addTab("C Font File", cFileScroll);
+            tabbedPane.addTab("H Font File", hFileScroll);
+            tabbedPane.addTab("Редактор Знака", mapPanel);
             mapPanel.setMainFrame(this);
             mapPanel.addComponentListener(this);
+
             //Make textField get the focus whenever frame is activated.
             this.addWindowFocusListener(new WindowAdapter() {
                 public void windowGainedFocus(final WindowEvent e) {
@@ -125,9 +159,9 @@ public class MainFrame extends JFrame implements ComponentListener {
             configPanel.setMainFrame(this);
 
             splitPane.add(configPanel, JSplitPane.RIGHT);
-            splitPane.add(mapPanel, JSplitPane.LEFT);
-            splitPane.setLastDividerLocation(size.width - 355);
-            splitPane.setDividerLocation(size.width - 355);
+            splitPane.add(tabbedPane, JSplitPane.LEFT);
+            splitPane.setLastDividerLocation(size.width - CONFIG_PANEL_WIDTH);
+            splitPane.setDividerLocation(size.width - CONFIG_PANEL_WIDTH);
             splitPane.setResizeWeight(1);
         } catch (final Exception ex) {
             log.error(ex.getMessage(), ex);
