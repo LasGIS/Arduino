@@ -51,7 +51,7 @@ public class ConfigPanel extends JPanel {
     private final JPanel controlPanel = new JPanel(new BorderLayout());
     /** Панель для информации об ячейках. */
     @Getter
-    private final JTextArea arealInfo = new JTextArea("<html>0x00, <b>0x00</b>, 0x00, 0x61, 0x91, 0x92, 0x64, 0x08, 0x10, 0x26, 0x49, 0x89, 0x86, 0x00, 0x00, 0x00");
+    private final JTextArea arealInfo = new JTextArea("0x00, 0x00, 0x00, 0x61, 0x91, 0x92, 0x64, 0x08, 0x10, 0x26, 0x49, 0x89, 0x86, 0x00, 0x00, 0x00");
     private final JFileChooserField cppFileInput;
     private final JFileChooserField hppFileInput;
     private final JTextField deviceInput = new JTextField(8);
