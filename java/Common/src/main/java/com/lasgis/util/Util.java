@@ -1,5 +1,5 @@
 /*
- *  @(#)Util.java  last: 05.09.2024
+ *  @(#)Util.java  last: 06.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -141,7 +141,7 @@ public final class Util {
     }
 
     /**
-     * создать кнопку.
+     * Создать кнопку.
      *
      * @param name        надпись на кнопке
      * @param iconName    иконка на кнопке

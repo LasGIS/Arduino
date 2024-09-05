@@ -78,7 +78,7 @@ public class ParseException extends Exception {
      * <pre>
      * 19  :     routine smartRunTo(endCell) {
      * 20  :         until(endCell != nextPoint) {
-     * ^
+     *                             ^
      * 21  :             FindWay(endCell) nextPoint;
      * </pre>
      *
