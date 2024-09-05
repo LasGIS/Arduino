@@ -1,9 +1,9 @@
 /*
- *  @(#)Util.java  last: 14.04.2023
+ *  @(#)Util.java  last: 05.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.util;
@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.nonNull;
 
@@ -85,7 +86,7 @@ public final class Util {
         final InputStream in = ldr.getResourceAsStream(name);
         final StringBuilder sb = new StringBuilder();
         if (in != null) {
-            try (InputStreamReader reader = new InputStreamReader(in, "UTF-8")) {
+            try (InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
                 final char[] buf = new char[BUFF_SIZE];
                 int count = reader.read(buf, 0, BUFF_SIZE);
                 while (count >= 0) {
@@ -121,7 +122,7 @@ public final class Util {
     public static StringBuilder loadStringFromFile(final File file) {
         try (
             InputStream in = new FileInputStream(file);
-            InputStreamReader reader = new InputStreamReader(in, "UTF-8");
+            InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8)
         ) {
             final StringBuilder sb = new StringBuilder();
             final char[] buf = new char[BUFF_SIZE];

@@ -1,5 +1,5 @@
 /*
- *  @(#)FontData.java  last: 02.09.2024
+ *  @(#)FontData.java  last: 05.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -21,7 +21,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(staticName = "of")
 public class FontData {
     private String cFileName;
-    private StringBuilder cSource;
     private String hFileName;
+    private StringBuilder cSource;
     private StringBuilder hSource;
+    private String fontKey;
+
+    /** nr_chrs */
+    private Integer numberChars;
+    /** chr_hgt */
+    private Integer charHeight;
+    /** baseline */
+    private Integer baseLine;
+    /** data_size */
+    private Integer dataSize;
+    /** firstchr */
+    private Integer firstChar;
+
 }
