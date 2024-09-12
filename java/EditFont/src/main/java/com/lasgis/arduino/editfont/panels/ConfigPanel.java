@@ -54,9 +54,10 @@ public class ConfigPanel extends JPanel {
     private final JTextArea arealInfo = new JTextArea("0x00, 0x00, 0x00, 0x61, 0x91, 0x92, 0x64, 0x08, 0x10, 0x26, 0x49, 0x89, 0x86, 0x00, 0x00, 0x00");
     private final JFileChooserField cppFileInput;
     private final JFileChooserField hppFileInput;
-    private final JTextField deviceInput = new JTextField(8);
-    private final JTextField addressInput = new JTextField(8);
-    private final JTextField sizeInput = new JTextField(8);
+    private final JTextField numberCharsInput = new JTextField(8);
+    private final JTextField charHeightInput = new JTextField(8);
+    private final JTextField baseLineInput = new JTextField(8);
+    private final JTextField firstCharInput = new JTextField(8);
 
     /** ссылка на MainFrame. */
     @Setter
@@ -101,9 +102,10 @@ public class ConfigPanel extends JPanel {
 
     /** Создание доп атрибутов. */
     private void fillParametersPanel() {
-        deviceInput.setText("PPP-PP");
-        addressInput.setText("0000");
-        sizeInput.setText("0200");
+        numberCharsInput.setText("96");
+        charHeightInput.setText("16");
+        baseLineInput.setText("13");
+        firstCharInput.setText("13");
         final JPanel parametersPanel = new JPanel(new GridBagLayout());
         final GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
             CENTER, BOTH, new Insets(5, 5, 5, 5), 0, 0);
@@ -124,21 +126,21 @@ public class ConfigPanel extends JPanel {
 
         gbc.gridy = 2;
         gbc.gridx = 0;
-        parametersPanel.add(new JLabel("device", JLabel.RIGHT), gbc);
+        parametersPanel.add(new JLabel("Число знаков", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
-        parametersPanel.add(deviceInput, gbc);
+        parametersPanel.add(numberCharsInput, gbc);
 
         gbc.gridy = 3;
         gbc.gridx = 0;
         parametersPanel.add(new JLabel("address", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
-        parametersPanel.add(addressInput, gbc);
+        parametersPanel.add(charHeightInput, gbc);
 
         gbc.gridy = 4;
         gbc.gridx = 0;
         parametersPanel.add(new JLabel("size", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
-        parametersPanel.add(sizeInput, gbc);
+        parametersPanel.add(baseLineInput, gbc);
 
         final JPanel buttonPanel = new JPanel(new GridBagLayout());
         gbc.gridy = 0;

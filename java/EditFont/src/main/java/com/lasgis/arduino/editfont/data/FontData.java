@@ -26,15 +26,14 @@ public class FontData {
     private StringBuilder hSource;
     private String fontKey;
 
-    /** nr_chrs */
+    /** nr_chrs <Число знаков у шрифта /> */
     private Integer numberChars;
-    /** chr_hgt */
+    /** chr_hgt <Высота знаков />*/
     private Integer charHeight;
-    /** baseline */
+    /** baseline <Средняя линия /> */
     private Integer baseLine;
-    /** data_size */
+    /** data_size <Число пикселей на байт /> */
     private Integer dataSize;
-    /** firstchr */
+    /** firstchr <Первый знак /> */
     private Integer firstChar;
-
 }
