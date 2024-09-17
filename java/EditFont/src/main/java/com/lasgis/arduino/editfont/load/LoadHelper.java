@@ -1,5 +1,5 @@
 /*
- *  @(#)LoadHelper.java  last: 06.09.2024
+ *  @(#)LoadHelper.java  last: 17.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import static com.lasgis.arduino.editfont.Runner.PROP_FONT_C_FILE;
 import static com.lasgis.arduino.editfont.Runner.PROP_FONT_H_FILE;
+import static com.lasgis.arduino.editfont.Runner.PROP_FONT_KEY;
 import static com.lasgis.arduino.editfont.Runner.PROP_PATCH;
 
 /**
@@ -59,6 +60,7 @@ public class LoadHelper {
             props.getProperty(PROP_FONT_H_FILE)
         );
         final FontData fontData = FontData.of();
+        fontData.setFontKey(props.getProperty(PROP_FONT_KEY));
         CppLoader.load(fontData, fontCFile);
         HeadLoader.load(fontData, fontHFile);
         return fontData;

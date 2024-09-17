@@ -1,5 +1,5 @@
 /*
- *  @(#)HeadLoader.java  last: 06.09.2024
+ *  @(#)HeadLoader.java  last: 17.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -15,9 +15,16 @@ import com.lasgis.arduino.editfont.load.compile.TokenWrapper;
 import com.lasgis.arduino.editfont.load.data.CppOperator;
 import com.lasgis.arduino.editfont.load.data.TypeOperator;
 import com.lasgis.util.Util;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.Objects;
 
+import static com.lasgis.arduino.editfont.load.LoadHelper.BASE_LINE_KEY;
+import static com.lasgis.arduino.editfont.load.LoadHelper.CHAR_HEIGHT_KEY;
+import static com.lasgis.arduino.editfont.load.LoadHelper.DATA_SIZE_KEY;
+import static com.lasgis.arduino.editfont.load.LoadHelper.FIRST_CHAR_KEY;
+import static com.lasgis.arduino.editfont.load.LoadHelper.NUMBER_CHARS_KEY;
 import static java.util.Objects.nonNull;
 
 /**
@@ -26,6 +33,7 @@ import static java.util.Objects.nonNull;
  * @author Vladimir Laskin
  * @since 30.05.2018
  */
+@Slf4j
 class HeadLoader extends TokenParser {
 
     public HeadLoader() {
@@ -45,6 +53,7 @@ class HeadLoader extends TokenParser {
     }
 
     public void parse(final FontData fontData) throws ParseException {
+        final String fontKey = fontData.getFontKey();
         final int beg = 0;
         final int end = sb.length() - 1;
         int i = beg;
@@ -53,6 +62,19 @@ class HeadLoader extends TokenParser {
             final TokenWrapper<CppOperator> operatorWrap = getOperator(i, end);
             if (nonNull(operatorWrap)) {
                 final CppOperator cppOperator = operatorWrap.getData();
+                final String name = cppOperator.getName();
+                final String value = cppOperator.getValue();
+                if ((NUMBER_CHARS_KEY + fontKey).equals(name)) {
+                    fontData.setNumberChars(Integer.valueOf(value));
+                } else if ((CHAR_HEIGHT_KEY + fontKey).equals(name)) {
+                    fontData.setCharHeight(Integer.valueOf(value));
+                } else if ((BASE_LINE_KEY + fontKey).equals(name)) {
+                    fontData.setBaseLine(Integer.valueOf(value));
+                } else if ((DATA_SIZE_KEY + fontKey).equals(name)) {
+                    fontData.setDataSize(Integer.valueOf(value));
+                } else if ((FIRST_CHAR_KEY + fontKey).equals(name)) {
+                    fontData.setFirstChar(Integer.valueOf(value));
+                }
                 token = operatorWrap.getToken();
             } else {
                 token = nextToken(i, end).SkipComment(end);
@@ -87,18 +109,8 @@ class HeadLoader extends TokenParser {
                 throw new ParseException(token, "Ошибка разбора");
             }
 
-        } else {
-            while (token.is(TokenType.keyword,
-                KeywordType.PROGMEM.getName(),
-                KeywordType.CONST.getName(),
-                KeywordType.UNSIGNED.getName(),
-                KeywordType.CHAR.getName(),
-                KeywordType.EXTERN.getName()
-            )) {
-                token = token.next(end).SkipComment(end);
-            }
-            cppOperator.setType(TypeOperator.field);
-            token.assertion(TokenType.name);
+        } else if (token.is(TokenType.keyword, KeywordType.EXTERN.getName())) {
+            token = skipPreDefine(token, end, cppOperator);
             cppOperator.setName(token.getString());
             token = token.next(end).SkipComment(end);
             switch (token.type) {
@@ -111,5 +123,38 @@ class HeadLoader extends TokenParser {
             return TokenWrapper.of(cppOperator, token);
         }
         return null;
+    }
+
+    private Token skipPreDefine(final Token inToken, final int end, final CppOperator cppOperator) {
+        Token token = inToken.next(end);
+        cppOperator.setType(TypeOperator.field);
+        do {
+            if (token.is(TokenType.keyword)) {
+                final String keyword = token.getString();
+                switch (Objects.requireNonNull(KeywordType.of(keyword))) {
+                    case PROGMEM: {
+                        log.trace("PROGMEM");
+                    }
+                    break;
+                    case CONST: {
+                        log.trace("CONST");
+                    }
+                    break;
+                    case UNSIGNED: {
+                        log.trace("UNSIGNED");
+                    }
+                    break;
+                    case CHAR: {
+                        log.trace("CHAR");
+                    }
+                    break;
+                }
+            }
+//            token.Skip(TokenType.operator, "*")) {
+//                token = token.next(end).SkipComment(end);
+//            }
+            token = token.next(end).SkipComment(end);
+        } while (!token.is(TokenType.name));
+        return token;
     }
 }

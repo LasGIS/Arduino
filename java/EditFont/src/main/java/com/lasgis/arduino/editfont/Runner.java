@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 02.09.2024
+ *  @(#)Runner.java  last: 17.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -35,12 +35,13 @@ public class Runner {
     public final static String PROP_PATCH = "patch";
     public final static String PROP_FONT_C_FILE = "font_c";
     public final static String PROP_FONT_H_FILE = "font_h";
+    public final static String PROP_FONT_KEY = "font_key";
     @Getter
     private static final Properties properties = new Properties();
     @Getter
     private static final List<CommandType> commands = new ArrayList<>();
     private final static String[] MANDATORY_PROPERTY_KEYS = {
-        PROP_PATCH, PROP_FONT_C_FILE, PROP_FONT_H_FILE
+        PROP_PATCH, PROP_FONT_C_FILE, PROP_FONT_H_FILE, PROP_FONT_KEY
     };
     @Getter
     private static FontData fontData;

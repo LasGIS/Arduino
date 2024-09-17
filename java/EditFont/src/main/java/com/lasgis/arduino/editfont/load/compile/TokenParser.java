@@ -1,5 +1,5 @@
 /*
- *  @(#)TokenParser.java  last: 06.09.2024
+ *  @(#)TokenParser.java  last: 17.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -198,7 +198,7 @@ public class TokenParser {
     private Token getOuterComment(final Token token) {
         int end = sb.indexOf("\r", token.beg);
         final int endN = sb.indexOf("\n", token.beg);
-        if (end < 0 || (end >= 0 && endN >= 0 && endN < end)) {
+        if (end < 0 || (endN >= 0 && endN < end)) {
             end = endN;
         }
         if (end < 0 || end > token.end) {
@@ -351,7 +351,7 @@ public class TokenParser {
      */
     public enum TokenType {
         /** Ошибка; ключевое слово; имя переменной или метода, ... */
-        error, keyword, name, delimit, string, oneChar, number, real, block, /*operator, */comment, start, end
+        error, keyword, name, delimit, string, oneChar, number, real, block, operator, comment, start, end
     }
 
     /**
