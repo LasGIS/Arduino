@@ -1,5 +1,5 @@
 /*
- *  @(#)FontData.java  last: 05.09.2024
+ *  @(#)FontData.java  last: 18.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -36,4 +36,6 @@ public class FontData {
     private Integer dataSize;
     /** firstchr <Первый знак /> */
     private Integer firstChar;
+    /** <Ширина знака /> */
+    private Integer widthChar;
 }

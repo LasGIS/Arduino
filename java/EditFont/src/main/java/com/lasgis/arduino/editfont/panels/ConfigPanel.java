@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 03.09.2024
+ *  @(#)ConfigPanel.java  last: 18.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -10,8 +10,11 @@ package com.lasgis.arduino.editfont.panels;
 
 import com.lasgis.arduino.editfont.CommandType;
 import com.lasgis.arduino.editfont.Runner;
+import com.lasgis.arduino.editfont.data.FontData;
+import com.lasgis.arduino.editfont.load.CppLoader;
+import com.lasgis.arduino.editfont.load.HeadLoader;
+import com.lasgis.arduino.editfont.load.compile.ParseException;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JButton;
@@ -29,12 +32,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.Properties;
 
-import static com.lasgis.arduino.editfont.Runner.PROP_FONT_C_FILE;
-import static com.lasgis.arduino.editfont.Runner.PROP_FONT_H_FILE;
-import static com.lasgis.arduino.editfont.Runner.PROP_PATCH;
 import static com.lasgis.util.Util.createImageButton;
 import static java.awt.GridBagConstraints.BOTH;
 import static java.awt.GridBagConstraints.CENTER;
@@ -47,6 +45,9 @@ import static java.awt.GridBagConstraints.CENTER;
  */
 @Slf4j
 public class ConfigPanel extends JPanel {
+
+    private final FontData fontData;
+
     /** Дерево конфигурации. */
     private final JPanel controlPanel = new JPanel(new BorderLayout());
     /** Панель для информации об ячейках. */
@@ -58,24 +59,43 @@ public class ConfigPanel extends JPanel {
     private final JTextField charHeightInput = new JTextField(8);
     private final JTextField baseLineInput = new JTextField(8);
     private final JTextField firstCharInput = new JTextField(8);
+    private final JTextField widthCharInput = new JTextField(8);
 
     /** ссылка на MainFrame. */
-    @Setter
-    private MainFrame mainFrame = null;
+    private final MainFrame mainFrame;
 
     /**
      * Конструктор.
      */
-    public ConfigPanel() {
+    public ConfigPanel(final MainFrame mainFrame) {
         super();
-        final Properties props = Runner.getProperties();
+        this.mainFrame = mainFrame;
+        fontData = Runner.getFontData();
         cppFileInput = new JFileChooserField(
-            new File(props.getProperty(PROP_PATCH), props.getProperty(PROP_FONT_C_FILE)).getPath(),
-            new FileNameExtensionFilter("Файл CPP, содержащий шрифт", "c", "cpp")
+            fontData.getCFileName(),
+            new FileNameExtensionFilter("Файл CPP, содержащий шрифт", "c", "cpp"),
+            (file) -> {
+                fontData.setCFileName(file.getAbsolutePath());
+                log.debug("Изменили CPP File \"{}\"", file);
+                try {
+                    CppLoader.load(fontData, file);
+                } catch (ParseException ex) {
+                    log.error(ex.getMessage(), ex);
+                }
+            }
         );
         hppFileInput = new JFileChooserField(
-            new File(props.getProperty(PROP_PATCH), props.getProperty(PROP_FONT_H_FILE)).getPath(),
-            new FileNameExtensionFilter("Файл HPP, содержащий описание шрифта", "h", "hpp")
+            fontData.getHFileName(),
+            new FileNameExtensionFilter("Файл HPP, содержащий описание шрифта", "h", "hpp"),
+            (file) -> {
+                fontData.setHFileName(file.getAbsolutePath());
+                log.debug("Изменили H File \"{}\"", file.getAbsolutePath());
+                try {
+                    HeadLoader.load(fontData, file);
+                } catch (ParseException ex) {
+                    log.error(ex.getMessage(), ex);
+                }
+            }
         );
 
         controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
@@ -102,24 +122,25 @@ public class ConfigPanel extends JPanel {
 
     /** Создание доп атрибутов. */
     private void fillParametersPanel() {
-        numberCharsInput.setText("96");
-        charHeightInput.setText("16");
-        baseLineInput.setText("13");
-        firstCharInput.setText("13");
+        numberCharsInput.setText(fontData.getNumberChars().toString());
+        charHeightInput.setText(fontData.getCharHeight().toString());
+        baseLineInput.setText(fontData.getBaseLine().toString());
+        firstCharInput.setText(fontData.getFirstChar().toString());
+        widthCharInput.setText(fontData.getWidthChar().toString());
         final JPanel parametersPanel = new JPanel(new GridBagLayout());
         final GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
             CENTER, BOTH, new Insets(5, 5, 5, 5), 0, 0);
 
         gbc.gridy = 0;
         gbc.gridx = 0;
-        parametersPanel.add(new JLabel("Файл шрифта", JLabel.RIGHT), gbc);
+        parametersPanel.add(new JLabel("Файл шрифта .c", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         gbc.weightx = 1.0;
         parametersPanel.add(cppFileInput, gbc);
 
         gbc.gridy = 1;
         gbc.gridx = 0;
-        parametersPanel.add(new JLabel("Описание", JLabel.RIGHT), gbc);
+        parametersPanel.add(new JLabel("Файл Описания .h", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         gbc.weightx = 1.0;
         parametersPanel.add(hppFileInput, gbc);
@@ -132,15 +153,21 @@ public class ConfigPanel extends JPanel {
 
         gbc.gridy = 3;
         gbc.gridx = 0;
-        parametersPanel.add(new JLabel("address", JLabel.RIGHT), gbc);
+        parametersPanel.add(new JLabel("Высота знаков", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         parametersPanel.add(charHeightInput, gbc);
 
         gbc.gridy = 4;
         gbc.gridx = 0;
-        parametersPanel.add(new JLabel("size", JLabel.RIGHT), gbc);
+        parametersPanel.add(new JLabel("Средняя линия", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         parametersPanel.add(baseLineInput, gbc);
+
+        gbc.gridy = 5;
+        gbc.gridx = 0;
+        parametersPanel.add(new JLabel("Ширина знака", JLabel.RIGHT), gbc);
+        gbc.gridx = 1;
+        parametersPanel.add(widthCharInput, gbc);
 
         final JPanel buttonPanel = new JPanel(new GridBagLayout());
         gbc.gridy = 0;

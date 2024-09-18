@@ -1,5 +1,5 @@
 /*
- *  @(#)MainFrame.java  last: 04.09.2024
+ *  @(#)MainFrame.java  last: 18.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -59,10 +59,10 @@ public class MainFrame extends JFrame implements ComponentListener {
     private final JTextArea hFileArea = new JTextArea();
     /** Панель с картой. */
     @Getter
-    private final MapPanel mapPanel = new MapPanel();
+    private final MapPanel mapPanel;
     /** Панель конфигурации. */
     @Getter
-    private final ConfigPanel configPanel = new ConfigPanel();
+    private final ConfigPanel configPanel;
 
     /** Настройка главного меню. */
     private final SettingMenuItem[] menuSetting = {
@@ -100,6 +100,8 @@ public class MainFrame extends JFrame implements ComponentListener {
      * Construct the frame.
      */
     public MainFrame() {
+        this.mapPanel = new MapPanel(this);
+        this.configPanel = new ConfigPanel(this);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
         final FontData fontData = Runner.getFontData();
         try {
@@ -143,7 +145,6 @@ public class MainFrame extends JFrame implements ComponentListener {
             tabbedPane.addTab("C Font File", cFileScroll);
             tabbedPane.addTab("H Font File", hFileScroll);
             tabbedPane.addTab("Редактор Знака", mapPanel);
-            mapPanel.setMainFrame(this);
             mapPanel.addComponentListener(this);
 
             //Make textField get the focus whenever frame is activated.
@@ -156,7 +157,6 @@ public class MainFrame extends JFrame implements ComponentListener {
             contentPane.add(toolBar, BorderLayout.NORTH);
             contentPane.add(jStatusBar, BorderLayout.SOUTH);
             contentPane.add(splitPane, BorderLayout.CENTER);
-            configPanel.setMainFrame(this);
 
             splitPane.add(configPanel, JSplitPane.RIGHT);
             splitPane.add(tabbedPane, JSplitPane.LEFT);

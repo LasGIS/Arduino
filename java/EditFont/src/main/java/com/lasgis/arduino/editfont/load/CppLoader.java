@@ -1,5 +1,5 @@
 /*
- *  @(#)CppLoader.java  last: 06.09.2024
+ *  @(#)CppLoader.java  last: 18.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -21,19 +21,19 @@ import java.io.File;
  * @author Vladimir Laskin
  * @since 30.05.2018
  */
-class CppLoader extends TokenParser {
+public class CppLoader extends TokenParser {
 
     public CppLoader() {
         super();
     }
 
-    static void load(final FontData fontData, final File file) throws ParseException {
+    public static void load(final FontData fontData, final File file) throws ParseException {
         final CppLoader loader = new CppLoader();
         loader.loadFile(fontData, file);
     }
 
     private void loadFile(final FontData fontData, final File file) throws ParseException {
-        fontData.setCFileName(file.getName());
+        fontData.setCFileName(file.getAbsolutePath());
         fontData.setCSource(Util.loadStringFromFile(file));
         setProgramCode(fontData.getCSource());
 //        parse(fontData);

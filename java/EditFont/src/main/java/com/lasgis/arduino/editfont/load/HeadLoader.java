@@ -1,5 +1,5 @@
 /*
- *  @(#)HeadLoader.java  last: 17.09.2024
+ *  @(#)HeadLoader.java  last: 18.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -34,22 +34,23 @@ import static java.util.Objects.nonNull;
  * @since 30.05.2018
  */
 @Slf4j
-class HeadLoader extends TokenParser {
+public class HeadLoader extends TokenParser {
 
     public HeadLoader() {
         super();
     }
 
-    static void load(final FontData fontData, final File file) throws ParseException {
+    public static void load(final FontData fontData, final File file) throws ParseException {
         final HeadLoader loader = new HeadLoader();
         loader.loadFile(fontData, file);
     }
 
     private void loadFile(final FontData fontData, final File file) throws ParseException {
-        fontData.setHFileName(file.getName());
+        fontData.setHFileName(file.getAbsolutePath());
         fontData.setHSource(Util.loadStringFromFile(file));
         setProgramCode(fontData.getHSource());
         parse(fontData);
+        fontData.setWidthChar(8);
     }
 
     public void parse(final FontData fontData) throws ParseException {

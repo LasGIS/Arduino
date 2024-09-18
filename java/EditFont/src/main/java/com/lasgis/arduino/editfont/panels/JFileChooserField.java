@@ -1,5 +1,5 @@
 /*
- *  @(#)JFileChooserField.java  last: 25.08.2024
+ *  @(#)JFileChooserField.java  last: 18.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.EventListener;
 
 /**
  * <description>
@@ -35,12 +36,18 @@ import java.io.IOException;
 public class JFileChooserField extends JPanel implements ActionListener {
     private final JTextField filename = new JTextField();
     private final FileNameExtensionFilter filter;
+    private final FileChooserListener onChangeListener;
 
-    public JFileChooserField(final String filenameText, final FileNameExtensionFilter filter) {
+    public JFileChooserField(
+        final String filenameText,
+        final FileNameExtensionFilter filter,
+        final FileChooserListener onChangeListener
+    ) {
         super();
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         this.filename.setText(filenameText);
         this.filter = filter;
+        this.onChangeListener = onChangeListener;
         final JButton button = new JButton();
         final Dimension dimension = new Dimension(24, 24);
         try {
@@ -63,8 +70,13 @@ public class JFileChooserField extends JPanel implements ActionListener {
         int returnVal = chooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             final File file = chooser.getSelectedFile();
-            filename.setText(file.getPath());
+            filename.setText(file.getAbsolutePath());
+            onChangeListener.actionPerformed(file);
         }
+    }
+
+    interface FileChooserListener extends EventListener {
+        void actionPerformed(final File file);
     }
 
     public File getFile() throws FileNotFoundException {

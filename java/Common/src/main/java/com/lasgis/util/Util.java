@@ -1,5 +1,5 @@
 /*
- *  @(#)Util.java  last: 06.09.2024
+ *  @(#)Util.java  last: 18.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -152,7 +152,10 @@ public final class Util {
      * @return created JButton
      */
     public static JButton createImageButton(
-        final String name, final String iconName, final int width, final int height, final String toolTip, final ActionListener actListener
+        final String name, final String iconName,
+        final int width, final int height,
+        final String toolTip,
+        final ActionListener actListener
     ) {
         final JButton button = new JButton();
         if (name != null) {

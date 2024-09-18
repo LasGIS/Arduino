@@ -1,5 +1,5 @@
 /*
- *  @(#)MapPanel.java  last: 03.09.2024
+ *  @(#)MapPanel.java  last: 18.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,7 +8,6 @@
 
 package com.lasgis.arduino.editfont.panels;
 
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.BorderFactory;
@@ -62,8 +61,7 @@ public class MapPanel extends JPanel
     AtomicBoolean isAutoDraw = new AtomicBoolean(true);
 
     /** Ссылка на MainFrame. */
-    @Setter
-    private MainFrame mainFrame = null;
+    private final MainFrame mainFrame;
 
     /** Если true, то будем перегружать. */
     private boolean isRedrawMap = true;
@@ -77,7 +75,8 @@ public class MapPanel extends JPanel
     /**
      * Конструктор.
      */
-    public MapPanel() {
+    public MapPanel(final MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         try {
             setBackground(Color.white);
             setBorder(BorderFactory.createLoweredBevelBorder());

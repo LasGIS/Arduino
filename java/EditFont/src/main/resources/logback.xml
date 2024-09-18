@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)logback.xml  last: 25.08.2024
+  ~  @(#)logback.xml  last: 18.09.2024
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -24,12 +24,11 @@
   </appender>
 
   <!-- TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
-  <logger name="com.lasgis.arduino.eeprom" level="DEBUG">
+  <logger name="com.lasgis.arduino.editfont.load" level="TRACE">
     <appender-ref ref="FILE"/>
   </logger>
 
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
-    <appender-ref ref="FILE"/>
   </root>
 </configuration>
