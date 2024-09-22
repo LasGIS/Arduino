@@ -1,9 +1,9 @@
 /*
- *  @(#)DataCppLoader.java  last: 14.04.2023
+ *  @(#)DataCppLoader.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load;
@@ -27,7 +27,7 @@ import com.lasgis.arduino.eeprom.memory.RomSTRING;
 import com.lasgis.util.Util;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;

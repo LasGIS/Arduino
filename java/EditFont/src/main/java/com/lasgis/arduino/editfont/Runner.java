@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 17.09.2024
+ *  @(#)Runner.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,7 +8,7 @@
 
 package com.lasgis.arduino.editfont;
 
-import com.lasgis.arduino.editfont.data.FontData;
+import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.arduino.editfont.load.LoadHelper;
 import com.lasgis.arduino.editfont.panels.ControlHelper;
 import com.lasgis.arduino.editfont.test.TestHelper;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The Class Runner definition.
@@ -43,8 +44,6 @@ public class Runner {
     private final static String[] MANDATORY_PROPERTY_KEYS = {
         PROP_PATCH, PROP_FONT_C_FILE, PROP_FONT_H_FILE, PROP_FONT_KEY
     };
-    @Getter
-    private static FontData fontData;
 
     /**
      * <pre>
@@ -72,13 +71,14 @@ public class Runner {
         }
 
         if (commands.contains(CommandType.test) || commands.contains(CommandType.panel)) {
-            fontData = LoadHelper.load();
+            LoadHelper.load();
         }
 
         /* далее обработка по командам */
         if (commands.contains(CommandType.test)) {
-            TestHelper.show(fontData);
-        }
+            TestHelper.show();
+            FontDataPerformed.stop(10, TimeUnit.SECONDS);
+        } else {
 /*
         if (commands.contains(CommandType.create)) {
             CreateHelper.create(properties.getProperty(PROP_PATCH), memoryRoms);
@@ -90,8 +90,9 @@ public class Runner {
             UploadHelper.read();
         }
 */
-        if (commands.contains(CommandType.panel)) {
-            ControlHelper.panel();
+            if (commands.contains(CommandType.panel)) {
+                ControlHelper.panel();
+            }
         }
     }
 

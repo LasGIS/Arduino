@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 18.09.2024
+ *  @(#)ConfigPanel.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,11 +9,8 @@
 package com.lasgis.arduino.editfont.panels;
 
 import com.lasgis.arduino.editfont.CommandType;
-import com.lasgis.arduino.editfont.Runner;
 import com.lasgis.arduino.editfont.data.FontData;
-import com.lasgis.arduino.editfont.load.CppLoader;
-import com.lasgis.arduino.editfont.load.HeadLoader;
-import com.lasgis.arduino.editfont.load.compile.ParseException;
+import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,31 +67,21 @@ public class ConfigPanel extends JPanel {
     public ConfigPanel(final MainFrame mainFrame) {
         super();
         this.mainFrame = mainFrame;
-        fontData = Runner.getFontData();
+        fontData = FontDataPerformed.getFontData();
         cppFileInput = new JFileChooserField(
-            fontData.getCFileName(),
+            fontData.getCFile().getAbsolutePath(),
             new FileNameExtensionFilter("Файл CPP, содержащий шрифт", "c", "cpp"),
             (file) -> {
-                fontData.setCFileName(file.getAbsolutePath());
                 log.debug("Изменили CPP File \"{}\"", file);
-                try {
-                    CppLoader.load(fontData, file);
-                } catch (ParseException ex) {
-                    log.error(ex.getMessage(), ex);
-                }
+                FontDataPerformed.setCFile(file);
             }
         );
         hppFileInput = new JFileChooserField(
-            fontData.getHFileName(),
+            fontData.getHFile().getAbsolutePath(),
             new FileNameExtensionFilter("Файл HPP, содержащий описание шрифта", "h", "hpp"),
             (file) -> {
-                fontData.setHFileName(file.getAbsolutePath());
                 log.debug("Изменили H File \"{}\"", file.getAbsolutePath());
-                try {
-                    HeadLoader.load(fontData, file);
-                } catch (ParseException ex) {
-                    log.error(ex.getMessage(), ex);
-                }
+                FontDataPerformed.setHFile(file);
             }
         );
 

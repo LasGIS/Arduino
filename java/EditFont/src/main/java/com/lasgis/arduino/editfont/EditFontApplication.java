@@ -1,5 +1,5 @@
 /*
- *  @(#)EditFontApplication.java  last: 06.09.2024
+ *  @(#)EditFontApplication.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,8 +8,11 @@
 
 package com.lasgis.arduino.editfont;
 
+import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.arduino.editfont.load.compile.ParseException;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Запуск Edit Font Application.
@@ -34,6 +37,8 @@ public class EditFontApplication {
             log.error("Parser Exception", ex);
         } catch (final Exception ex) {
             log.error(ex.getMessage(), ex);
+        } finally {
+            FontDataPerformed.stop(0, TimeUnit.MILLISECONDS);
         }
     }
 }

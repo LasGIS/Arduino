@@ -1,5 +1,5 @@
 /*
- *  @(#)MainFrame.java  last: 18.09.2024
+ *  @(#)MainFrame.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,8 +8,8 @@
 
 package com.lasgis.arduino.editfont.panels;
 
-import com.lasgis.arduino.editfont.Runner;
 import com.lasgis.arduino.editfont.data.FontData;
+import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.component.StatusBar;
 import com.lasgis.util.SettingMenuItem;
 import com.lasgis.util.SettingToolBarItem;
@@ -103,7 +103,7 @@ public class MainFrame extends JFrame implements ComponentListener {
         this.mapPanel = new MapPanel(this);
         this.configPanel = new ConfigPanel(this);
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
-        final FontData fontData = Runner.getFontData();
+        final FontData fontData = FontDataPerformed.getFontData();
         try {
             final Dimension size = new Dimension(1450, 800);
             final JPanel contentPane = (JPanel) this.getContentPane();

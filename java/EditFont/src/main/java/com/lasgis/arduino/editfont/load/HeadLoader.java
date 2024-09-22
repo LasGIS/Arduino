@@ -1,5 +1,5 @@
 /*
- *  @(#)HeadLoader.java  last: 18.09.2024
+ *  @(#)HeadLoader.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,6 +9,8 @@
 package com.lasgis.arduino.editfont.load;
 
 import com.lasgis.arduino.editfont.data.FontData;
+import com.lasgis.arduino.editfont.data.FontDataAdapter;
+import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.arduino.editfont.load.compile.ParseException;
 import com.lasgis.arduino.editfont.load.compile.TokenParser;
 import com.lasgis.arduino.editfont.load.compile.TokenWrapper;
@@ -35,25 +37,38 @@ import static java.util.Objects.nonNull;
  */
 @Slf4j
 public class HeadLoader extends TokenParser {
+    static final HeadLoader HEAD_LOADER = new HeadLoader();
 
     public HeadLoader() {
         super();
+        FontDataPerformed.addListener(new FontDataAdapter() {
+            @Override
+            public void onChangeHFile(final File file) {
+                HEAD_LOADER.loadFile(file);
+            }
+
+            @Override
+            public void onChangeHSource(final StringBuilder stringBuilder) {
+                try {
+                    HEAD_LOADER.parse(stringBuilder);
+                } catch (final ParseException ex) {
+                    log.error(ex.getMessage(), ex);
+                }
+            }
+        });
     }
 
-    public static void load(final FontData fontData, final File file) throws ParseException {
-        final HeadLoader loader = new HeadLoader();
-        loader.loadFile(fontData, file);
+    private void loadFile(final File file) {
+        final StringBuilder sb = Util.loadStringFromFile(file);
+        FontDataPerformed.setHSource(sb);
     }
 
-    private void loadFile(final FontData fontData, final File file) throws ParseException {
-        fontData.setHFileName(file.getAbsolutePath());
-        fontData.setHSource(Util.loadStringFromFile(file));
-        setProgramCode(fontData.getHSource());
-        parse(fontData);
+    public void parse(final StringBuilder stringBuilder) throws ParseException {
+        setProgramCode(stringBuilder);
+
+        final FontData fontData = FontDataPerformed.getFontData();
         fontData.setWidthChar(8);
-    }
 
-    public void parse(final FontData fontData) throws ParseException {
         final String fontKey = fontData.getFontKey();
         final int beg = 0;
         final int end = sb.length() - 1;

@@ -1,5 +1,5 @@
 /*
- *  @(#)FontData.java  last: 18.09.2024
+ *  @(#)FontData.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -11,6 +11,8 @@ package com.lasgis.arduino.editfont.data;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.File;
+
 /**
  * The Class FontData definition.
  *
@@ -20,8 +22,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(staticName = "of")
 public class FontData {
-    private String cFileName;
-    private String hFileName;
+    private File cFile;
+    private File hFile;
     private StringBuilder cSource;
     private StringBuilder hSource;
     private String fontKey;

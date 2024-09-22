@@ -1,5 +1,5 @@
 /*
- *  @(#)CppLoader.java  last: 18.09.2024
+ *  @(#)CppLoader.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,10 +8,12 @@
 
 package com.lasgis.arduino.editfont.load;
 
-import com.lasgis.arduino.editfont.data.FontData;
+import com.lasgis.arduino.editfont.data.FontDataAdapter;
+import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.arduino.editfont.load.compile.ParseException;
 import com.lasgis.arduino.editfont.load.compile.TokenParser;
 import com.lasgis.util.Util;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 
@@ -21,24 +23,38 @@ import java.io.File;
  * @author Vladimir Laskin
  * @since 30.05.2018
  */
+@Slf4j
 public class CppLoader extends TokenParser {
+    static final CppLoader CPP_LOADER = new CppLoader();
 
     public CppLoader() {
         super();
+        FontDataPerformed.addListener(new FontDataAdapter() {
+            @Override
+            public void onChangeCFile(final File file) {
+                CPP_LOADER.loadFile(file);
+            }
+
+            @Override
+            public void onChangeCSource(final StringBuilder stringBuilder) {
+                super.onChangeCSource(stringBuilder);
+                try {
+                    CPP_LOADER.parse(stringBuilder);
+                } catch (final ParseException ex) {
+                    log.error(ex.getMessage(), ex);
+                }
+            }
+        });
     }
 
-    public static void load(final FontData fontData, final File file) throws ParseException {
-        final CppLoader loader = new CppLoader();
-        loader.loadFile(fontData, file);
+    private void loadFile(final File file) {
+        final StringBuilder sb = Util.loadStringFromFile(file);
+        FontDataPerformed.setCSource(sb);
     }
 
-    private void loadFile(final FontData fontData, final File file) throws ParseException {
-        fontData.setCFileName(file.getAbsolutePath());
-        fontData.setCSource(Util.loadStringFromFile(file));
-        setProgramCode(fontData.getCSource());
-//        parse(fontData);
+    public void parse(final StringBuilder stringBuilder) throws ParseException {
+        setProgramCode(stringBuilder);
     }
-
 /*
     public void parse(final FontData fontData) throws ParseException {
         final int beg = 0;
