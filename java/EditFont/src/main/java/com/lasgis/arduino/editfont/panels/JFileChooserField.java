@@ -1,5 +1,5 @@
 /*
- *  @(#)JFileChooserField.java  last: 21.09.2024
+ *  @(#)JFileChooserField.java  last: 22.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -43,13 +43,11 @@ public class JFileChooserField extends JPanel implements ActionListener {
     }
 
     public JFileChooserField(
-        final String filenameText,
         final FileNameExtensionFilter filter,
         final FileChooserListener onChangeListener
     ) {
         super();
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        this.filename.setText(filenameText);
         this.filter = filter;
         this.onChangeListener = onChangeListener;
         final JButton button = new JButton();
@@ -65,6 +63,10 @@ public class JFileChooserField extends JPanel implements ActionListener {
         button.addActionListener(this);
         add(filename);
         add(button);
+    }
+
+    public void setFileName(final String fileName) {
+        this.filename.setText(fileName);
     }
 
     @Override

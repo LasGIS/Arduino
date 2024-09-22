@@ -67,7 +67,7 @@ public class HeadLoader extends TokenParser {
         setProgramCode(stringBuilder);
 
         final FontData fontData = FontDataPerformed.getFontData();
-        fontData.setWidthChar(8);
+        FontDataPerformed.setWidthChar(8);
 
         final String fontKey = fontData.getFontKey();
         final int beg = 0;
@@ -81,15 +81,15 @@ public class HeadLoader extends TokenParser {
                 final String name = cppOperator.getName();
                 final String value = cppOperator.getValue();
                 if ((NUMBER_CHARS_KEY + fontKey).equals(name)) {
-                    fontData.setNumberChars(Integer.valueOf(value));
+                    FontDataPerformed.setNumberChars(Integer.valueOf(value));
                 } else if ((CHAR_HEIGHT_KEY + fontKey).equals(name)) {
-                    fontData.setCharHeight(Integer.valueOf(value));
+                    FontDataPerformed.setCharHeight(Integer.valueOf(value));
                 } else if ((BASE_LINE_KEY + fontKey).equals(name)) {
-                    fontData.setBaseLine(Integer.valueOf(value));
+                    FontDataPerformed.setBaseLine(Integer.valueOf(value));
                 } else if ((DATA_SIZE_KEY + fontKey).equals(name)) {
-                    fontData.setDataSize(Integer.valueOf(value));
+                    FontDataPerformed.setDataSize(Integer.valueOf(value));
                 } else if ((FIRST_CHAR_KEY + fontKey).equals(name)) {
-                    fontData.setFirstChar(Integer.valueOf(value));
+                    FontDataPerformed.setFirstChar(Integer.valueOf(value));
                 }
                 token = operatorWrap.getToken();
             } else {

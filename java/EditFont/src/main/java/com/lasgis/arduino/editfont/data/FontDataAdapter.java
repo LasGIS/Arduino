@@ -32,4 +32,28 @@ public abstract class FontDataAdapter implements FontDataListener {
     @Override
     public void onChangeHSource(final StringBuilder stringBuilder) {
     }
+
+    @Override
+    public void onChangeWidthChar(Integer value) {
+    }
+
+    @Override
+    public void onChangeNumberChars(Integer value) {
+    }
+
+    @Override
+    public void onChangeCharHeight(Integer value) {
+    }
+
+    @Override
+    public void onChangeBaseLine(Integer value) {
+    }
+
+    @Override
+    public void onChangeDataSize(Integer value) {
+    }
+
+    @Override
+    public void onChangeFirstChar(Integer value) {
+    }
 }

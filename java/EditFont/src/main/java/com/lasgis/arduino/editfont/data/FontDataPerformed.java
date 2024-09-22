@@ -19,10 +19,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_BASE_LINE;
+import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_CHAR_HEIGHT;
 import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_C_FILE;
 import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_C_SOURCE;
+import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_DATA_SIZE;
+import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_FIRST_CHAR;
 import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_H_FILE;
 import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_H_SOURCE;
+import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_NUMBER_CHARS;
+import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_WIDTH_CHAR;
 
 /**
  * The Class FontDataChangePerformed definition.
@@ -34,10 +40,11 @@ import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_H_SOURCE;
 public final class FontDataPerformed {
     private static final FontDataPerformed PERFORMED = new FontDataPerformed();
     /**
-     * @deprecated todo: временно надо будет удалить
+     * Использование напрямую запрещено!
+     *
+     * @deprecated todo: надо будет удалить @Getter
      */
     @Getter
-    @Deprecated
     private static final FontData fontData = FontData.of();
 
     private final ScheduledExecutorService service;
@@ -46,7 +53,7 @@ public final class FontDataPerformed {
 
     public FontDataPerformed() {
         service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleWithFixedDelay(this::perform, 0, 1, TimeUnit.SECONDS);
+        service.scheduleWithFixedDelay(this::perform, 0, 1, TimeUnit.MILLISECONDS);
     }
 
     public static void stop(final long timeout, final TimeUnit unit) {
@@ -82,6 +89,39 @@ public final class FontDataPerformed {
         addEvent(CHANGE_H_SOURCE);
     }
 
+    public static void setWidthChar(final Integer value) {
+        fontData.setWidthChar(value);
+        addEvent(CHANGE_WIDTH_CHAR);
+    }
+
+    public static void setNumberChars(final Integer value) {
+        fontData.setNumberChars(value);
+        addEvent(CHANGE_NUMBER_CHARS);
+    }
+
+    public static void setCharHeight(final Integer value) {
+        fontData.setCharHeight(value);
+        addEvent(CHANGE_CHAR_HEIGHT);
+    }
+
+    public static void setBaseLine(final Integer value) {
+        fontData.setBaseLine(value);
+        addEvent(CHANGE_BASE_LINE);
+    }
+
+    public static void setDataSize(final Integer value) {
+        fontData.setDataSize(value);
+        addEvent(CHANGE_DATA_SIZE);
+    }
+
+    public static void setFirstChar(final Integer value) {
+        fontData.setFirstChar(value);
+        addEvent(CHANGE_FIRST_CHAR);
+    }
+
+    /**
+     * Производим перерасчет.
+     */
     private void perform() {
         try {
             FontDataEventKey key = queue.take();
@@ -102,6 +142,30 @@ public final class FontDataPerformed {
                 case CHANGE_H_SOURCE:
                     log.trace("CHANGE_H_SOURCE");
                     listeners.forEach(listener -> listener.onChangeHSource(fontData.getHSource()));
+                    break;
+                case CHANGE_WIDTH_CHAR:
+                    log.trace("CHANGE_WIDTH_CHAR = {}", fontData.getWidthChar());
+                    listeners.forEach(listener -> listener.onChangeWidthChar(fontData.getWidthChar()));
+                    break;
+                case CHANGE_NUMBER_CHARS:
+                    log.trace("CHANGE_NUMBER_CHARS = {}", fontData.getNumberChars());
+                    listeners.forEach(listener -> listener.onChangeNumberChars(fontData.getNumberChars()));
+                    break;
+                case CHANGE_CHAR_HEIGHT:
+                    log.trace("CHANGE_CHAR_HEIGHT = {}", fontData.getCharHeight());
+                    listeners.forEach(listener -> listener.onChangeCharHeight(fontData.getCharHeight()));
+                    break;
+                case CHANGE_BASE_LINE:
+                    log.trace("CHANGE_BASE_LINE = {}", fontData.getBaseLine());
+                    listeners.forEach(listener -> listener.onChangeBaseLine(fontData.getBaseLine()));
+                    break;
+                case CHANGE_DATA_SIZE:
+                    log.trace("CHANGE_DATA_SIZE = {}", fontData.getDataSize());
+                    listeners.forEach(listener -> listener.onChangeDataSize(fontData.getDataSize()));
+                    break;
+                case CHANGE_FIRST_CHAR:
+                    log.trace("CHANGE_FIRST_CHAR = {}", fontData.getFirstChar());
+                    listeners.forEach(listener -> listener.onChangeFirstChar(fontData.getFirstChar()));
                     break;
             }
 

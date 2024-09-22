@@ -25,4 +25,16 @@ public interface FontDataListener extends EventListener {
     void onChangeCSource(final StringBuilder stringBuilder);
 
     void onChangeHSource(final StringBuilder stringBuilder);
+
+    void onChangeWidthChar(final Integer value);
+
+    void onChangeNumberChars(final Integer value);
+
+    void onChangeCharHeight(final Integer value);
+
+    void onChangeBaseLine(final Integer value);
+
+    void onChangeDataSize(final Integer value);
+
+    void onChangeFirstChar(final Integer value);
 }
