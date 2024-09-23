@@ -1,5 +1,5 @@
 /*
- *  @(#)Runner.java  last: 22.09.2024
+ *  @(#)Runner.java  last: 24.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -77,7 +77,7 @@ public class Runner {
         /* далее обработка по командам */
         if (commands.contains(CommandType.test)) {
             TestHelper.show();
-            FontDataPerformed.stop(10, TimeUnit.SECONDS);
+            FontDataPerformed.stop(20, TimeUnit.SECONDS);
         } else {
 /*
         if (commands.contains(CommandType.create)) {

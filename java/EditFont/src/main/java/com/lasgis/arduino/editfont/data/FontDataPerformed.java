@@ -1,5 +1,5 @@
 /*
- *  @(#)FontDataPerformed.java  last: 22.09.2024
+ *  @(#)FontDataPerformed.java  last: 24.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,16 +8,18 @@
 
 package com.lasgis.arduino.editfont.data;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 
 import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_BASE_LINE;
 import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_CHAR_HEIGHT;
@@ -39,17 +41,31 @@ import static com.lasgis.arduino.editfont.data.FontDataEventKey.CHANGE_WIDTH_CHA
 @Slf4j
 public final class FontDataPerformed {
     private static final FontDataPerformed PERFORMED = new FontDataPerformed();
+    private static final Map<FontDataEventKey, BiFunction<FontDataListener, FontData, Boolean>>
+        FONT_DATA_KEY_TO_PERFORM_MAP = Map.ofEntries(
+        Map.entry(CHANGE_C_FILE, (listener, fontData) -> listener.onChangeCFile(fontData.getCFile())),
+        Map.entry(CHANGE_H_FILE, (listener, fontData) -> listener.onChangeHFile(fontData.getHFile())),
+        Map.entry(CHANGE_C_SOURCE, (listener, fontData) -> listener.onChangeCSource(fontData.getCSource())),
+        Map.entry(CHANGE_H_SOURCE, (listener, fontData) -> listener.onChangeHSource(fontData.getHSource())),
+        Map.entry(CHANGE_WIDTH_CHAR, (listener, fontData) -> listener.onChangeWidthChar(Optional.ofNullable(fontData.getWidthChar()).orElse(0))),
+        Map.entry(CHANGE_NUMBER_CHARS, (listener, fontData) -> listener.onChangeNumberChars(Optional.ofNullable(fontData.getNumberChars()).orElse(0))),
+        Map.entry(CHANGE_CHAR_HEIGHT, (listener, fontData) -> listener.onChangeCharHeight(Optional.ofNullable(fontData.getCharHeight()).orElse(0))),
+        Map.entry(CHANGE_BASE_LINE, (listener, fontData) -> listener.onChangeBaseLine(Optional.ofNullable(fontData.getBaseLine()).orElse(0))),
+        Map.entry(CHANGE_DATA_SIZE, (listener, fontData) -> listener.onChangeDataSize(Optional.ofNullable(fontData.getDataSize()).orElse(0))),
+        Map.entry(CHANGE_FIRST_CHAR, (listener, fontData) -> listener.onChangeFirstChar(Optional.ofNullable(fontData.getFirstChar()).orElse(0)))
+    );
+
     /**
      * Использование напрямую запрещено!
      *
      * @deprecated todo: надо будет удалить @Getter
      */
-    @Getter
+//    @Getter
     private static final FontData fontData = FontData.of();
+    private static final BlockingQueue<FontDataEventKey> PERFORMED_QUEUE = new LinkedBlockingQueue<>();
 
     private final ScheduledExecutorService service;
     public LinkedList<FontDataListener> listeners = new LinkedList<>();
-    public BlockingQueue<FontDataEventKey> queue = new LinkedBlockingQueue<>();
 
     public FontDataPerformed() {
         service = Executors.newSingleThreadScheduledExecutor();
@@ -61,12 +77,21 @@ public final class FontDataPerformed {
     }
 
     public static void addListener(final FontDataListener listener) {
+        addListener(listener, false);
+    }
+
+    public static void addListener(final FontDataListener listener, final boolean withPerform) {
         log.trace("addListener({})", listener);
+        if (withPerform) {
+            for (FontDataEventKey key : FontDataEventKey.values()) {
+                log.trace("Perform {} = {}", key.name(), FONT_DATA_KEY_TO_PERFORM_MAP.get(key).apply(listener, fontData));
+            }
+        }
         PERFORMED.listeners.add(listener);
     }
 
     private static void addEvent(FontDataEventKey key) {
-        PERFORMED.queue.add(key);
+        PERFORMED_QUEUE.add(key);
     }
 
     public static void setCFile(final File file) {
@@ -124,51 +149,9 @@ public final class FontDataPerformed {
      */
     private void perform() {
         try {
-            FontDataEventKey key = queue.take();
+            final FontDataEventKey key = PERFORMED_QUEUE.take();
             log.trace("FontDataEventKey key = {}, listeners({})", key, listeners.size());
-            switch (key) {
-                case CHANGE_C_FILE:
-                    log.trace("CHANGE_C_FILE");
-                    listeners.forEach(listener -> listener.onChangeCFile(fontData.getCFile()));
-                    break;
-                case CHANGE_H_FILE:
-                    log.trace("CHANGE_H_FILE");
-                    listeners.forEach(listener -> listener.onChangeHFile(fontData.getHFile()));
-                    break;
-                case CHANGE_C_SOURCE:
-                    log.trace("CHANGE_C_SOURCE");
-                    listeners.forEach(listener -> listener.onChangeCSource(fontData.getCSource()));
-                    break;
-                case CHANGE_H_SOURCE:
-                    log.trace("CHANGE_H_SOURCE");
-                    listeners.forEach(listener -> listener.onChangeHSource(fontData.getHSource()));
-                    break;
-                case CHANGE_WIDTH_CHAR:
-                    log.trace("CHANGE_WIDTH_CHAR = {}", fontData.getWidthChar());
-                    listeners.forEach(listener -> listener.onChangeWidthChar(fontData.getWidthChar()));
-                    break;
-                case CHANGE_NUMBER_CHARS:
-                    log.trace("CHANGE_NUMBER_CHARS = {}", fontData.getNumberChars());
-                    listeners.forEach(listener -> listener.onChangeNumberChars(fontData.getNumberChars()));
-                    break;
-                case CHANGE_CHAR_HEIGHT:
-                    log.trace("CHANGE_CHAR_HEIGHT = {}", fontData.getCharHeight());
-                    listeners.forEach(listener -> listener.onChangeCharHeight(fontData.getCharHeight()));
-                    break;
-                case CHANGE_BASE_LINE:
-                    log.trace("CHANGE_BASE_LINE = {}", fontData.getBaseLine());
-                    listeners.forEach(listener -> listener.onChangeBaseLine(fontData.getBaseLine()));
-                    break;
-                case CHANGE_DATA_SIZE:
-                    log.trace("CHANGE_DATA_SIZE = {}", fontData.getDataSize());
-                    listeners.forEach(listener -> listener.onChangeDataSize(fontData.getDataSize()));
-                    break;
-                case CHANGE_FIRST_CHAR:
-                    log.trace("CHANGE_FIRST_CHAR = {}", fontData.getFirstChar());
-                    listeners.forEach(listener -> listener.onChangeFirstChar(fontData.getFirstChar()));
-                    break;
-            }
-
+            listeners.forEach(listener -> FONT_DATA_KEY_TO_PERFORM_MAP.get(key).apply(listener, fontData));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

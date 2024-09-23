@@ -1,5 +1,5 @@
 /*
- *  @(#)HeadLoader.java  last: 22.09.2024
+ *  @(#)HeadLoader.java  last: 24.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,8 +8,8 @@
 
 package com.lasgis.arduino.editfont.load;
 
-import com.lasgis.arduino.editfont.data.FontData;
 import com.lasgis.arduino.editfont.data.FontDataAdapter;
+import com.lasgis.arduino.editfont.data.FontDataListener;
 import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.arduino.editfont.load.compile.ParseException;
 import com.lasgis.arduino.editfont.load.compile.TokenParser;
@@ -37,25 +37,27 @@ import static java.util.Objects.nonNull;
  */
 @Slf4j
 public class HeadLoader extends TokenParser {
-    static final HeadLoader HEAD_LOADER = new HeadLoader();
+
+    final FontDataListener fontDataListener = new FontDataAdapter() {
+        @Override
+        public boolean onChangeHFile(final File file) {
+            loadFile(file);
+            return true;
+        }
+
+        @Override
+        public boolean onChangeHSource(final StringBuilder stringBuilder) {
+            try {
+                parse(stringBuilder);
+            } catch (final ParseException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            return true;
+        }
+    };
 
     public HeadLoader() {
         super();
-        FontDataPerformed.addListener(new FontDataAdapter() {
-            @Override
-            public void onChangeHFile(final File file) {
-                HEAD_LOADER.loadFile(file);
-            }
-
-            @Override
-            public void onChangeHSource(final StringBuilder stringBuilder) {
-                try {
-                    HEAD_LOADER.parse(stringBuilder);
-                } catch (final ParseException ex) {
-                    log.error(ex.getMessage(), ex);
-                }
-            }
-        });
     }
 
     private void loadFile(final File file) {
@@ -66,10 +68,8 @@ public class HeadLoader extends TokenParser {
     public void parse(final StringBuilder stringBuilder) throws ParseException {
         setProgramCode(stringBuilder);
 
-        final FontData fontData = FontDataPerformed.getFontData();
         FontDataPerformed.setWidthChar(8);
 
-        final String fontKey = fontData.getFontKey();
         final int beg = 0;
         final int end = sb.length() - 1;
         int i = beg;
@@ -80,16 +80,18 @@ public class HeadLoader extends TokenParser {
                 final CppOperator cppOperator = operatorWrap.getData();
                 final String name = cppOperator.getName();
                 final String value = cppOperator.getValue();
-                if ((NUMBER_CHARS_KEY + fontKey).equals(name)) {
-                    FontDataPerformed.setNumberChars(Integer.valueOf(value));
-                } else if ((CHAR_HEIGHT_KEY + fontKey).equals(name)) {
-                    FontDataPerformed.setCharHeight(Integer.valueOf(value));
-                } else if ((BASE_LINE_KEY + fontKey).equals(name)) {
-                    FontDataPerformed.setBaseLine(Integer.valueOf(value));
-                } else if ((DATA_SIZE_KEY + fontKey).equals(name)) {
-                    FontDataPerformed.setDataSize(Integer.valueOf(value));
-                } else if ((FIRST_CHAR_KEY + fontKey).equals(name)) {
-                    FontDataPerformed.setFirstChar(Integer.valueOf(value));
+                if (nonNull(name)) {
+                    if (name.startsWith(NUMBER_CHARS_KEY)) {
+                        FontDataPerformed.setNumberChars(Integer.valueOf(value));
+                    } else if (name.startsWith(CHAR_HEIGHT_KEY)) {
+                        FontDataPerformed.setCharHeight(Integer.valueOf(value));
+                    } else if (name.startsWith(BASE_LINE_KEY)) {
+                        FontDataPerformed.setBaseLine(Integer.valueOf(value));
+                    } else if (name.startsWith(DATA_SIZE_KEY)) {
+                        FontDataPerformed.setDataSize(Integer.valueOf(value));
+                    } else if (name.startsWith(FIRST_CHAR_KEY)) {
+                        FontDataPerformed.setFirstChar(Integer.valueOf(value));
+                    }
                 }
                 token = operatorWrap.getToken();
             } else {

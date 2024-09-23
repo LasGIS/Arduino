@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 22.09.2024
+  ~  @(#)pom.xml  last: 24.09.2024
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -115,6 +115,14 @@
                             <mainClass>com.lasgis.arduino.editfont.EditFontApplication</mainClass>
                         </manifest>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
         </plugins>

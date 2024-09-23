@@ -1,5 +1,5 @@
 /*
- *  @(#)CppLoader.java  last: 22.09.2024
+ *  @(#)CppLoader.java  last: 24.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,6 +9,7 @@
 package com.lasgis.arduino.editfont.load;
 
 import com.lasgis.arduino.editfont.data.FontDataAdapter;
+import com.lasgis.arduino.editfont.data.FontDataListener;
 import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.arduino.editfont.load.compile.ParseException;
 import com.lasgis.arduino.editfont.load.compile.TokenParser;
@@ -25,26 +26,27 @@ import java.io.File;
  */
 @Slf4j
 public class CppLoader extends TokenParser {
-    static final CppLoader CPP_LOADER = new CppLoader();
+
+    final FontDataListener fontDataListener = new FontDataAdapter() {
+        @Override
+        public boolean onChangeCFile(final File file) {
+            loadFile(file);
+            return true;
+        }
+
+        @Override
+        public boolean onChangeCSource(final StringBuilder stringBuilder) {
+            try {
+                parse(stringBuilder);
+            } catch (final ParseException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            return true;
+        }
+    };
 
     public CppLoader() {
         super();
-        FontDataPerformed.addListener(new FontDataAdapter() {
-            @Override
-            public void onChangeCFile(final File file) {
-                CPP_LOADER.loadFile(file);
-            }
-
-            @Override
-            public void onChangeCSource(final StringBuilder stringBuilder) {
-                super.onChangeCSource(stringBuilder);
-                try {
-                    CPP_LOADER.parse(stringBuilder);
-                } catch (final ParseException ex) {
-                    log.error(ex.getMessage(), ex);
-                }
-            }
-        });
     }
 
     private void loadFile(final File file) {

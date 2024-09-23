@@ -1,5 +1,5 @@
 /*
- *  @(#)MainFrame.java  last: 22.09.2024
+ *  @(#)MainFrame.java  last: 24.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -8,7 +8,6 @@
 
 package com.lasgis.arduino.editfont.panels;
 
-import com.lasgis.arduino.editfont.data.FontData;
 import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.component.StatusBar;
 import com.lasgis.util.SettingMenuItem;
@@ -100,10 +99,12 @@ public class MainFrame extends JFrame implements ComponentListener {
      * Construct the frame.
      */
     public MainFrame() {
-        this.mapPanel = new MapPanel(this);
-        this.configPanel = new ConfigPanel(this);
+        mapPanel = new MapPanel(this);
+        configPanel = new ConfigPanel();
+        FontDataPerformed.addListener(configPanel.fontDataListener, true);
+
         enableEvents(AWTEvent.WINDOW_EVENT_MASK);
-        final FontData fontData = FontDataPerformed.getFontData();
+//        final FontData fontData = FontDataPerformed.getFontData();
         try {
             final Dimension size = new Dimension(1450, 800);
             final JPanel contentPane = (JPanel) this.getContentPane();
@@ -130,13 +131,13 @@ public class MainFrame extends JFrame implements ComponentListener {
             final Font monoFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
             /* Показываем C File */
             cFileArea.setFont(monoFont);
-            cFileArea.append(fontData.getCSource().toString());
+//            cFileArea.append(fontData.getCSource().toString());
             final JScrollPane cFileScroll = new JScrollPane(cFileArea);
             cFileScroll.setViewportView(cFileArea);
 
             /* Показываем H File */
             hFileArea.setFont(monoFont);
-            hFileArea.append(fontData.getHSource().toString());
+//            hFileArea.append(fontData.getHSource().toString());
             final JScrollPane hFileScroll = new JScrollPane(hFileArea);
             hFileScroll.setViewportView(hFileArea);
 

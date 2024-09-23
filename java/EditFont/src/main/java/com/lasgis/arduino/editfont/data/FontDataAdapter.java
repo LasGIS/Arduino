@@ -1,5 +1,5 @@
 /*
- *  @(#)FontDataAdapter.java  last: 22.09.2024
+ *  @(#)FontDataAdapter.java  last: 23.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -18,42 +18,52 @@ import java.io.File;
  */
 public abstract class FontDataAdapter implements FontDataListener {
     @Override
-    public void onChangeCFile(final File file) {
+    public boolean onChangeCFile(final File file) {
+        return false;
     }
 
     @Override
-    public void onChangeHFile(final File file) {
+    public boolean onChangeHFile(final File file) {
+        return false;
     }
 
     @Override
-    public void onChangeCSource(final StringBuilder stringBuilder) {
+    public boolean onChangeCSource(final StringBuilder stringBuilder) {
+        return false;
     }
 
     @Override
-    public void onChangeHSource(final StringBuilder stringBuilder) {
+    public boolean onChangeHSource(final StringBuilder stringBuilder) {
+        return false;
     }
 
     @Override
-    public void onChangeWidthChar(Integer value) {
+    public boolean onChangeWidthChar(Integer value) {
+        return false;
     }
 
     @Override
-    public void onChangeNumberChars(Integer value) {
+    public boolean onChangeNumberChars(Integer value) {
+        return false;
     }
 
     @Override
-    public void onChangeCharHeight(Integer value) {
+    public boolean onChangeCharHeight(Integer value) {
+        return false;
     }
 
     @Override
-    public void onChangeBaseLine(Integer value) {
+    public boolean onChangeBaseLine(Integer value) {
+        return false;
     }
 
     @Override
-    public void onChangeDataSize(Integer value) {
+    public boolean onChangeDataSize(Integer value) {
+        return false;
     }
 
     @Override
-    public void onChangeFirstChar(Integer value) {
+    public boolean onChangeFirstChar(Integer value) {
+        return false;
     }
 }

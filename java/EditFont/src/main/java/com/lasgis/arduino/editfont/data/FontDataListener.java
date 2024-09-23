@@ -1,5 +1,5 @@
 /*
- *  @(#)FontDataListener.java  last: 22.09.2024
+ *  @(#)FontDataListener.java  last: 23.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -18,23 +18,23 @@ import java.util.EventListener;
  * @since 21.09.2024 : 11:54
  */
 public interface FontDataListener extends EventListener {
-    void onChangeCFile(final File file);
+    boolean onChangeCFile(final File file);
 
-    void onChangeHFile(final File file);
+    boolean onChangeHFile(final File file);
 
-    void onChangeCSource(final StringBuilder stringBuilder);
+    boolean onChangeCSource(final StringBuilder stringBuilder);
 
-    void onChangeHSource(final StringBuilder stringBuilder);
+    boolean onChangeHSource(final StringBuilder stringBuilder);
 
-    void onChangeWidthChar(final Integer value);
+    boolean onChangeWidthChar(final Integer value);
 
-    void onChangeNumberChars(final Integer value);
+    boolean onChangeNumberChars(final Integer value);
 
-    void onChangeCharHeight(final Integer value);
+    boolean onChangeCharHeight(final Integer value);
 
-    void onChangeBaseLine(final Integer value);
+    boolean onChangeBaseLine(final Integer value);
 
-    void onChangeDataSize(final Integer value);
+    boolean onChangeDataSize(final Integer value);
 
-    void onChangeFirstChar(final Integer value);
+    boolean onChangeFirstChar(final Integer value);
 }

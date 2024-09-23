@@ -1,5 +1,5 @@
 /*
- *  @(#)TestHelper.java  last: 22.09.2024
+ *  @(#)TestHelper.java  last: 24.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -32,31 +32,73 @@ public class TestHelper {
     private void showFontData() {
         FontDataPerformed.addListener(new FontDataAdapter() {
             @Override
-            public void onChangeCFile(File file) {
+            public boolean onChangeCFile(File file) {
                 log.info("\n Cpp FileName: \"{}\";\n", file.getAbsolutePath());
+                return true;
             }
 
             @Override
-            public void onChangeHFile(File file) {
+            public boolean onChangeHFile(File file) {
                 log.info("\n Header FileName: \"{}\";\n", file.getAbsolutePath());
+                return true;
             }
 
             @Override
-            public void onChangeCSource(StringBuilder stringBuilder) {
-                final String[] split = stringBuilder.toString().split("\n");
-                log.info("\n Cpp Source: \n");
-                for (final String str : split) {
-                    log.info(str);
-                }
+            public boolean onChangeCSource(StringBuilder stringBuilder) {
+                log.info("""
+
+                    -----------------------
+                       Cpp Source:
+                    -----------------------
+                    {}""", stringBuilder);
+                return true;
             }
 
             @Override
-            public void onChangeHSource(StringBuilder stringBuilder) {
-                final String[] split = stringBuilder.toString().split("\n");
-                log.info("\n Header Source: \n");
-                for (final String str : split) {
-                    log.info(str);
-                }
+            public boolean onChangeHSource(StringBuilder stringBuilder) {
+                log.info("""
+                                        
+                    -----------------------
+                        Header Source:
+                    -----------------------
+                    {}""", stringBuilder);
+                return true;
+            }
+
+            @Override
+            public boolean onChangeWidthChar(Integer value) {
+                log.info("widthChar: {}", value);
+                return true;
+            }
+
+            @Override
+            public boolean onChangeNumberChars(Integer value) {
+                log.info("numberChars: {}", value);
+                return true;
+            }
+
+            @Override
+            public boolean onChangeCharHeight(Integer value) {
+                log.info("charHeight: {}", value);
+                return true;
+            }
+
+            @Override
+            public boolean onChangeBaseLine(Integer value) {
+                log.info("baseLine: {}", value);
+                return true;
+            }
+
+            @Override
+            public boolean onChangeDataSize(Integer value) {
+                log.info("dataSize: {}", value);
+                return true;
+            }
+
+            @Override
+            public boolean onChangeFirstChar(Integer value) {
+                log.info("firstChar: {}", value);
+                return true;
             }
         });
     }

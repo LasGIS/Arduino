@@ -1,5 +1,5 @@
 /*
- *  @(#)ConfigPanel.java  last: 22.09.2024
+ *  @(#)ConfigPanel.java  last: 24.09.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -60,46 +60,90 @@ public class ConfigPanel extends JPanel {
     private final JTextField firstCharInput = new JTextField(8);
     private final JTextField widthCharInput = new JTextField(8);
 
-    /** ссылка на MainFrame. */
-    private final MainFrame mainFrame;
-
-    private final FontDataListener fontDataListener = new FontDataAdapter() {
+    final FontDataListener fontDataListener = new FontDataAdapter() {
 
         @Override
-        public void onChangeCFile(File file) {
+        public boolean onChangeCFile(File file) {
             cppFileInput.setFileName(file.getAbsolutePath());
+            return true;
         }
 
         @Override
-        public void onChangeHFile(File file) {
+        public boolean onChangeHFile(File file) {
             hppFileInput.setFileName(file.getAbsolutePath());
+            return true;
         }
 
         @Override
-        public void onChangeWidthChar(Integer value) {
+        public boolean onChangeWidthChar(Integer value) {
             widthCharInput.setText(value.toString());
+            return true;
         }
 
         @Override
-        public void onChangeNumberChars(Integer value) {
+        public boolean onChangeNumberChars(Integer value) {
             numberCharsInput.setText(value.toString());
+            return true;
         }
 
         @Override
-        public void onChangeCharHeight(Integer value) {
+        public boolean onChangeCharHeight(Integer value) {
             charHeightInput.setText(value.toString());
+            return true;
         }
 
         @Override
-        public void onChangeBaseLine(Integer value) {
+        public boolean onChangeBaseLine(Integer value) {
             baseLineInput.setText(value.toString());
+            return true;
         }
 
         @Override
-        public void onChangeFirstChar(Integer value) {
+        public boolean onChangeFirstChar(Integer value) {
             firstCharInput.setText(value.toString());
+            return true;
         }
     };
+
+    /** Конструктор. */
+    public ConfigPanel() {
+        super();
+        cppFileInput = new JFileChooserField(
+            new FileNameExtensionFilter("Файл CPP, содержащий шрифт", "c", "cpp"),
+            (file) -> {
+                log.debug("Изменили CPP File \"{}\"", file.getAbsolutePath());
+                FontDataPerformed.setCFile(file);
+            }
+        );
+        hppFileInput = new JFileChooserField(
+            new FileNameExtensionFilter("Файл HPP, содержащий описание шрифта", "h", "hpp"),
+            (file) -> {
+                log.debug("Изменили H File \"{}\"", file.getAbsolutePath());
+                FontDataPerformed.setHFile(file);
+            }
+        );
+
+        controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
+        fillParametersPanel();
+
+        /* панель для получения информации */
+        arealInfo.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        arealInfo.setLineWrap(true);
+        arealInfo.setWrapStyleWord(true);
+        final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
+        plantInfoScroll.setViewportView(arealInfo);
+
+        /* разделительная панелька */
+        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        splitPane.setContinuousLayout(true);
+        splitPane.add(controlPanel, JSplitPane.TOP);
+        splitPane.add(plantInfoScroll, JSplitPane.BOTTOM);
+        splitPane.setResizeWeight(0.0);
+
+        setLayout(new BorderLayout());
+        /* панель режима. */
+        add(splitPane, BorderLayout.CENTER);
+    }
 
     /** Создание доп атрибутов. */
     private void fillParametersPanel() {
@@ -181,7 +225,6 @@ public class ConfigPanel extends JPanel {
 
         @Override
         public void actionPerformed(final ActionEvent event) {
-//            log.info("actionPerformed({})", event);
             switch (command) {
                 case create: {
                     try {
@@ -209,49 +252,5 @@ public class ConfigPanel extends JPanel {
                 }
             }
         }
-    }
-
-    /**
-     * Конструктор.
-     */
-    public ConfigPanel(final MainFrame mainFrame) {
-        super();
-        this.mainFrame = mainFrame;
-        FontDataPerformed.addListener(fontDataListener);
-        cppFileInput = new JFileChooserField(
-            new FileNameExtensionFilter("Файл CPP, содержащий шрифт", "c", "cpp"),
-            (file) -> {
-                log.debug("Изменили CPP File \"{}\"", file.getAbsolutePath());
-                FontDataPerformed.setCFile(file);
-            }
-        );
-        hppFileInput = new JFileChooserField(
-            new FileNameExtensionFilter("Файл HPP, содержащий описание шрифта", "h", "hpp"),
-            (file) -> {
-                log.debug("Изменили H File \"{}\"", file.getAbsolutePath());
-                FontDataPerformed.setHFile(file);
-            }
-        );
-
-        controlPanel.setBackground(MapPanel.PANEL_GRAY_COLOR);
-        fillParametersPanel();
-
-        /* панель для получения информации */
-        arealInfo.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        arealInfo.setLineWrap(true);
-        arealInfo.setWrapStyleWord(true);
-        final JScrollPane plantInfoScroll = new JScrollPane(arealInfo);
-        plantInfoScroll.setViewportView(arealInfo);
-
-        /* разделительная панелька */
-        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        splitPane.setContinuousLayout(true);
-        splitPane.add(controlPanel, JSplitPane.TOP);
-        splitPane.add(plantInfoScroll, JSplitPane.BOTTOM);
-        splitPane.setResizeWeight(0.0);
-
-        setLayout(new BorderLayout());
-        /* панель режима. */
-        add(splitPane, BorderLayout.CENTER);
     }
 }
