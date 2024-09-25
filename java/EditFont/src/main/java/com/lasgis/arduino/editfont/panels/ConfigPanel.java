@@ -147,43 +147,47 @@ public class ConfigPanel extends JPanel {
 
     /** Создание доп атрибутов. */
     private void fillParametersPanel() {
-        final JPanel parametersPanel = new JPanel(new GridBagLayout());
+        final JPanel filePanel = new JPanel(new GridBagLayout());
         final GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
             CENTER, BOTH, new Insets(5, 5, 5, 5), 0, 0);
 
         gbc.gridy = 0;
         gbc.gridx = 0;
-        parametersPanel.add(new JLabel("Файл шрифта .c", JLabel.RIGHT), gbc);
+        gbc.weightx = 0;
+        filePanel.add(new JLabel("Файл шрифта .c", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         gbc.weightx = 1.0;
-        parametersPanel.add(cppFileInput, gbc);
+        filePanel.add(cppFileInput, gbc);
 
         gbc.gridy = 1;
         gbc.gridx = 0;
-        parametersPanel.add(new JLabel("Файл Описания .h", JLabel.RIGHT), gbc);
+        gbc.weightx = 0;
+        filePanel.add(new JLabel("Файл Описания .h", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         gbc.weightx = 1.0;
-        parametersPanel.add(hppFileInput, gbc);
+        filePanel.add(hppFileInput, gbc);
 
-        gbc.gridy = 2;
+        final JPanel parametersPanel = new JPanel(new GridBagLayout());
+        gbc.gridy = 0;
         gbc.gridx = 0;
+        gbc.weightx = 0;
         parametersPanel.add(new JLabel("Число знаков", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         parametersPanel.add(numberCharsInput, gbc);
 
-        gbc.gridy = 3;
+        gbc.gridy = 1;
         gbc.gridx = 0;
         parametersPanel.add(new JLabel("Высота знаков", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         parametersPanel.add(charHeightInput, gbc);
 
-        gbc.gridy = 4;
+        gbc.gridy = 2;
         gbc.gridx = 0;
         parametersPanel.add(new JLabel("Средняя линия", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         parametersPanel.add(baseLineInput, gbc);
 
-        gbc.gridy = 5;
+        gbc.gridy = 3;
         gbc.gridx = 0;
         parametersPanel.add(new JLabel("Ширина знака", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
@@ -200,6 +204,8 @@ public class ConfigPanel extends JPanel {
         gbc.gridx = 2;
         buttonPanel.add(createNavigationButton("Read", "userGuide.png", "Чтение блока", CommandType.read), gbc);
 
+
+        controlPanel.add(filePanel, BorderLayout.NORTH);
         controlPanel.add(parametersPanel, BorderLayout.CENTER);
         controlPanel.add(buttonPanel, BorderLayout.SOUTH);
     }
