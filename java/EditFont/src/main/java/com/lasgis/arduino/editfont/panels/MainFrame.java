@@ -8,6 +8,8 @@
 
 package com.lasgis.arduino.editfont.panels;
 
+import com.lasgis.arduino.editfont.data.FontDataAdapter;
+import com.lasgis.arduino.editfont.data.FontDataListener;
 import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import com.lasgis.component.StatusBar;
 import com.lasgis.util.SettingMenuItem;
@@ -95,11 +97,26 @@ public class MainFrame extends JFrame implements ComponentListener {
         )
     };
 
+    final FontDataListener fontDataListener = new FontDataAdapter() {
+        @Override
+        public boolean onChangeCSource(StringBuilder stringBuilder) {
+            cFileArea.setText(stringBuilder.toString());
+            return true;
+        }
+
+        @Override
+        public boolean onChangeHSource(StringBuilder stringBuilder) {
+            hFileArea.setText(stringBuilder.toString());
+            return true;
+        }
+    };
+
     /**
      * Construct the frame.
      */
     public MainFrame() {
         mapPanel = new MapPanel(this);
+        FontDataPerformed.addListener(mapPanel.fontDataListener, true);
         configPanel = new ConfigPanel();
         FontDataPerformed.addListener(configPanel.fontDataListener, true);
 
@@ -131,13 +148,11 @@ public class MainFrame extends JFrame implements ComponentListener {
             final Font monoFont = new Font(Font.MONOSPACED, Font.PLAIN, 12);
             /* Показываем C File */
             cFileArea.setFont(monoFont);
-//            cFileArea.append(fontData.getCSource().toString());
             final JScrollPane cFileScroll = new JScrollPane(cFileArea);
             cFileScroll.setViewportView(cFileArea);
 
             /* Показываем H File */
             hFileArea.setFont(monoFont);
-//            hFileArea.append(fontData.getHSource().toString());
             final JScrollPane hFileScroll = new JScrollPane(hFileArea);
             hFileScroll.setViewportView(hFileArea);
 

@@ -8,6 +8,7 @@
 
 package com.lasgis.arduino.editfont.panels;
 
+import com.lasgis.arduino.editfont.data.FontDataPerformed;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JFrame;
@@ -51,6 +52,7 @@ public final class ControlHelper {
         }
 
         final MainFrame frame = new MainFrame();
+        FontDataPerformed.addListener(frame.fontDataListener, true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         // Validate panels that have preset sizes

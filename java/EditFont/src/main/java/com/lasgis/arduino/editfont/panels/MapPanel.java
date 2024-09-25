@@ -8,6 +8,8 @@
 
 package com.lasgis.arduino.editfont.panels;
 
+import com.lasgis.arduino.editfont.data.FontDataAdapter;
+import com.lasgis.arduino.editfont.data.FontDataListener;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.BorderFactory;
@@ -71,6 +73,10 @@ public class MapPanel extends JPanel
 
     /** Признак, что панель в фокусе. */
     private boolean focused = false;
+
+    final FontDataListener fontDataListener = new FontDataAdapter() {
+
+    };
 
     /**
      * Конструктор.
