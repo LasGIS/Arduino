@@ -8,8 +8,6 @@
 
 package com.lasgis;
 
-import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +31,33 @@ public class TokenParser {
     private static final String DIGIT_CHARS = "0123456789";
 
     protected final StringBuilder sb;
+    protected final KeywordType keywordType;
+
+    /**
+     * Типовые знаки.
+     */
+    public enum CharType {
+        /** Буква, цифра, разделители, пробельные символы. */
+        letter, digit, delimitChars, space
+    }
+
+    /**
+     * Простой конструктор.
+     */
+    public TokenParser(KeywordType keywordType) {
+        this.keywordType = keywordType;
+        sb = new StringBuilder();
+    }
+
+    /**
+     * Конструктор с заполнением кода.
+     *
+     * @param prg код программы
+     */
+    public TokenParser(final KeywordType keywordType, final StringBuilder prg) {
+        this.keywordType = keywordType;
+        this.sb = prg;
+    }
 
     /**
      * Получаем очередной Token (отдельное слово, число или разделитель).
@@ -122,7 +147,7 @@ public class TokenParser {
                     break;
                 case name: {
                     final String str = token.getString();
-                    if (KeywordType.of(str) != null) {
+                    if (keywordType.of(str) != null) {
                         token.type = TokenType.keyword;
                     }
                     break;
@@ -146,64 +171,6 @@ public class TokenParser {
             }
         }
         return token;
-    }
-
-    /**
-     * Типы данных
-     */
-    @Getter
-    public enum KeywordType {
-        /** Структурные определители. */
-        INCLUDE("include"),
-        DEFINE("define"),
-        PROGMEM("PROGMEM"),
-        CONST("const"),
-        UNSIGNED("unsigned"),
-        CHAR("char"),
-        EXTERN("extern");
-
-        final String name;
-
-        KeywordType(final String name) {
-            this.name = name;
-        }
-
-        /**
-         * @param value значение
-         * @return получаем тип по значению
-         */
-        public static KeywordType of(final String value) {
-            for (KeywordType type : KeywordType.values()) {
-                if (type.getName().equals(value)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Типовые знаки.
-     */
-    public enum CharType {
-        /** Буква, цифра, разделители, пробельные символы. */
-        letter, digit, delimitChars, space
-    }
-
-    /**
-     * Простой конструктор.
-     */
-    public TokenParser() {
-        sb = new StringBuilder();
-    }
-
-    /**
-     * Конструктор с заполнением кода.
-     *
-     * @param prg код программы
-     */
-    public TokenParser(final StringBuilder prg) {
-        sb = new StringBuilder(prg);
     }
 
     /**

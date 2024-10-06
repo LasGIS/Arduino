@@ -46,7 +46,7 @@ public class CppLoader extends TokenParser {
     };
 
     public CppLoader() {
-        super();
+        super(KeywordTypeCpp.UNDEFINED);
     }
 
     private void loadFile(final File file) {

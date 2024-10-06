@@ -8,10 +8,10 @@
 
 package com.lasgis.arduino.eeprom.load;
 
-import com.lasgis.arduino.eeprom.load.compile.ParseException;
-import com.lasgis.arduino.eeprom.load.compile.Token;
-import com.lasgis.arduino.eeprom.load.compile.TokenParser;
-import com.lasgis.arduino.eeprom.load.compile.TokenWrapper;
+import com.lasgis.ParseException;
+import com.lasgis.Token;
+import com.lasgis.TokenParser;
+import com.lasgis.TokenWrapper;
 import com.lasgis.arduino.eeprom.memory.BatchMemory;
 import com.lasgis.arduino.eeprom.memory.MemoryRoms;
 import com.lasgis.arduino.eeprom.memory.RomADDRESS;
@@ -35,8 +35,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.lasgis.arduino.eeprom.load.compile.TokenParser.KeywordType.BATCH_MEMORY;
-import static com.lasgis.arduino.eeprom.load.compile.TokenParser.KeywordType.MEMORY_ROMS;
+import static com.lasgis.arduino.eeprom.load.KeywordTypeQuasiCpp.BATCH_MEMORY;
+import static com.lasgis.arduino.eeprom.load.KeywordTypeQuasiCpp.MEMORY_ROMS;
 import static com.lasgis.util.Util.parseHexByte;
 import static com.lasgis.util.Util.parseHexInt;
 import static com.lasgis.util.Util.parseHexShort;
@@ -44,8 +44,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * Загрузчик из *.data файла.
- * Это с-подобная структура.
+ * Загрузчик из *.data файла. Это с-подобная структура.
  *
  * @author Vladimir Laskin
  * @since 30.05.2018
@@ -59,7 +58,7 @@ class DataCppLoader extends TokenParser {
     }
 
     public DataCppLoader() {
-        super();
+        super(KeywordTypeQuasiCpp.UNDEFINED);
     }
 
     static MemoryRoms load(final File file) throws ParseException {
@@ -206,23 +205,23 @@ class DataCppLoader extends TokenParser {
 
     private TokenWrapper<RomData> getRomData(
         final int beg, final int end,
-        final KeywordType expectedType
+        final KeywordTypeQuasiCpp expectedType
     ) throws ParseException {
         Token token = nextToken(beg, end).SkipComment(end);
         if (token.is(TokenType.end)) {
             return TokenWrapper.of(RomEMPTY.of(), token);
         }
         /* тип основного RomData */
-        KeywordType type = expectedType;
+        KeywordTypeQuasiCpp type = expectedType;
         /* дополнительный тип для RomARRAY */
-        KeywordType arrayType = null;
+        KeywordTypeQuasiCpp arrayType = null;
         /* наименование основного RomData */
         String name = null;
         String refId = null;
 
         /* тип основного RomData (для RomOBJECT и RomARRAY пропускается) */
         if (token.is(TokenType.keyword)) {
-            type = KeywordType.of(token.getString());
+            type = (KeywordTypeQuasiCpp) keywordType.of(token.getString());
             token = token.next(end).SkipComment(end);
         }
         /* наименование основного RomData */
@@ -238,14 +237,14 @@ class DataCppLoader extends TokenParser {
         }
         /* дополнительный тип вложенных Rom для RomARRAY */
         if (token.is(TokenType.keyword)) {
-            arrayType = KeywordType.of(token.getString());
+            arrayType = (KeywordTypeQuasiCpp) keywordType.of(token.getString());
             token = token.next(end).SkipComment(end);
         }
         /* окончание описания и переход на заполнение значения */
         if (token.is(TokenType.delimit, ":")) {
             token = token.next(end);
         }
-        RomData data = RomEMPTY.of();
+        RomData data;
         if (type != null) {
             final Token[] tokens = {token};
             switch (type) {
@@ -366,7 +365,10 @@ class DataCppLoader extends TokenParser {
     }
 
     private RomARRAY extractRomDataArray(
-        final String name, final String refId, final Token arrToken, final KeywordType arrayType
+        final String name,
+        final String refId,
+        final Token arrToken,
+        final KeywordTypeQuasiCpp arrayType
     ) throws ParseException {
         final int beg = arrToken.beg + 1;
         final int end = arrToken.end - 1;

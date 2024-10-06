@@ -58,7 +58,7 @@ public class HeadLoader extends TokenParser {
     };
 
     public HeadLoader() {
-        super();
+        super(KeywordTypeCpp.UNDEFINED);
     }
 
     private void loadFile(final File file) {
@@ -109,13 +109,13 @@ public class HeadLoader extends TokenParser {
         final CppOperator cppOperator = CppOperator.of();
         if (token.is(TokenType.delimit, "#")) {
             token = token.next(end).SkipComment(end);
-            if (token.is(TokenType.keyword, KeywordType.INCLUDE.getName())) {
+            if (token.is(TokenType.keyword, KeywordTypeCpp.INCLUDE.getName())) {
                 cppOperator.setType(TypeOperator.include);
                 token = token.next(end).SkipComment(end).assertion(TokenType.block);
                 cppOperator.setValue(token.getString());
                 token = token.next(end).SkipComment(end);
                 return TokenWrapper.of(cppOperator, token);
-            } else if (token.is(TokenType.keyword, KeywordType.DEFINE.getName())) {
+            } else if (token.is(TokenType.keyword, KeywordTypeCpp.DEFINE.getName())) {
                 cppOperator.setType(TypeOperator.define);
                 token = token.next(end).SkipComment(end).assertion(TokenType.name);
                 cppOperator.setName(token.getString());
@@ -128,7 +128,7 @@ public class HeadLoader extends TokenParser {
                 throw new ParseException(token, "Ошибка разбора");
             }
 
-        } else if (token.is(TokenType.keyword, KeywordType.EXTERN.getName())) {
+        } else if (token.is(TokenType.keyword, KeywordTypeCpp.EXTERN.getName())) {
             token = skipPreDefine(token, end, cppOperator);
             cppOperator.setName(token.getString());
             token = token.next(end).SkipComment(end);
@@ -150,7 +150,7 @@ public class HeadLoader extends TokenParser {
         do {
             if (token.is(TokenType.keyword)) {
                 final String keyword = token.getString();
-                switch (Objects.requireNonNull(KeywordType.of(keyword))) {
+                switch (Objects.requireNonNull((KeywordTypeCpp) keywordType.of(keyword))) {
                     case PROGMEM: {
                         log.trace("PROGMEM");
                     }

@@ -8,6 +8,7 @@
 
 package com.lasgis.arduino.eeprom.load.compile;
 
+import com.lasgis.Token;
 import com.lasgis.arduino.eeprom.memory.RomData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
