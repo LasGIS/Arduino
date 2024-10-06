@@ -1,5 +1,5 @@
 /*
- *  @(#)TokenParser.java  last: 25.08.2024
+ *  @(#)TokenParser.java  last: 06.10.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -24,12 +24,12 @@ public class TokenParser {
 
     private static final String SPACE_CHARS = " \n\r\t";
     private static final String DELIMIT_CHARS = ".,;:=<>(){}[]+-*/!|\"'\\№&%?@#$%^";
-    private static final String START_BLOCK_CHARS = "({[";
+    private static final String START_BLOCK_CHARS = "({[<";
     private static final List<String> OPERATORS = Arrays.asList(
         "=", "+=", "-=", "*=", "/=", "+", "-", "*", "/", "&&", "||", ">=", "<", "<=", ">", ">=", "==", "!=", "!", "."
     );
     private static final String UNARY_DELIMIT = ",;:";
-    private static final Map<Character, Character> BLOCK_CHARS = Map.of('(', ')', '{', '}', '[', ']');
+    private static final Map<Character, Character> BLOCK_CHARS = Map.of('(', ')', '{', '}', '[', ']', '<', '>');
     private static final String DIGIT_CHARS = "0123456789";
 
     protected final StringBuilder sb;
@@ -83,228 +83,6 @@ public class TokenParser {
     }
 
     /**
-     * Типы токенов.
-     */
-    public enum TokenType {
-        /** Ошибка; ключевое слово; имя переменной или метода, ... */
-        error, keyword, name, delimit, string, oneChar, number, real, block, /*operator, */comment, start, end
-    }
-
-    /**
-     * Лексема разбираемого кода.
-     */
-    public class Token {
-
-        public TokenType type;
-        public int beg;
-        public int end;
-
-        /**
-         * Пустой конструктор.
-         */
-        public Token() {
-            this.beg = 0;
-            this.end = 0;
-            type = TokenType.start;
-        }
-
-        /**
-         * Передаем только область.
-         *
-         * @param beg начало области
-         * @param end конец области
-         */
-        public Token(final int beg, final int end) {
-            this.beg = beg;
-            this.end = end;
-            type = TokenType.start;
-        }
-
-        /**
-         * Полный конструктор.
-         *
-         * @param type тип области
-         * @param beg  начало области
-         * @param end  конец области
-         */
-        public Token(final TokenType type, final int beg, final int end) {
-            this.type = type;
-            this.beg = beg;
-            this.end = end;
-        }
-
-        public String getString() {
-            return sb.substring(beg, end + 1);
-        }
-
-        public StringBuilder getSb() {
-            return sb;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%1$d-%2$d(%3$s) \"%4$s\"", beg, end, type.name(), getString());
-        }
-
-        /**
-         * Получаем Token, следующий за этим.
-         *
-         * @param parsEnd конец разбора
-         * @return от порции с типом
-         */
-        public Token next(final int parsEnd) {
-            if (end >= parsEnd) {
-                final Token token = new Token(parsEnd, parsEnd);
-                token.type = TokenType.end;
-                return token;
-            }
-            return nextToken(end + 1, parsEnd);
-        }
-
-        /**
-         * Получаем первый Token внутри за этого.
-         *
-         * @param parsEnd конец разбора
-         * @return от порции с типом
-         */
-        public Token first(final int parsEnd) {
-            return nextToken(beg + 1, parsEnd);
-        }
-
-        /**
-         * Проверка на тип лексемы.
-         *
-         * @param chkType тип лексемы
-         * @return true если тип лексемы совпадает
-         */
-        public boolean is(final TokenType chkType) {
-            return this.type == chkType;
-        }
-
-        /**
-         * Проверка на тип лексемы.
-         *
-         * @param chkType тип лексемы
-         * @param values  удачное начало лексемы
-         * @return true если тип лексемы совпадает
-         */
-        public boolean is(final TokenType chkType, final String... values) {
-            if (this.type == chkType) {
-                for (final String val : values) {
-                    if (sb.indexOf(val, beg) == beg) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /**
-         * Пропускаем комментарий.
-         *
-         * @param chkEnd конец
-         * @return лексема без комментария
-         */
-        public Token SkipComment(final int chkEnd) {
-            return Skip(TokenType.comment, chkEnd);
-        }
-
-        /**
-         * Пропускаем такую лексему.
-         *
-         * @param aType  тип Пропускаемой лексемы
-         * @param chkEnd конец
-         * @return следующая лексема
-         */
-        public Token Skip(final TokenType aType, final int chkEnd) {
-            Token tokenOut = this;
-            while (tokenOut.type == aType) {
-                tokenOut = tokenOut.next(chkEnd);
-            }
-            return tokenOut;
-        }
-
-        /**
-         * Проверка на соответствие токена конкретному типу
-         *
-         * @param tokenType тип токена для проверки
-         * @return токен если все нормально
-         * @throws ParseException ошибка если тип токена не соответствует
-         */
-        public Token assertion(final TokenType tokenType) throws ParseException {
-            if (this.type != tokenType) {
-                throw new ParseException(this, "Expected TokenType == " + tokenType.name());
-            }
-            return this;
-        }
-
-        /**
-         * Проверка на соответствие токена конкретному типу
-         *
-         * @param tokenType тип токена для проверки
-         * @param values    дополнительные параметры для проверки
-         * @return токен если все нормально
-         * @throws ParseException ошибка если тип токена не соответствует
-         */
-        public Token assertion(final TokenType tokenType, final String... values) throws ParseException {
-            if (this.type == tokenType) {
-                for (String val : values) {
-                    if (sb.indexOf(val, beg) == beg) {
-                        return this;
-                    }
-                }
-            } else if (this.type == TokenType.end) {
-                return this;
-            }
-            final StringBuilder sbx = new StringBuilder("Expected TokenType == \"");
-            sbx.append(tokenType.name()).append("\"; with value == [\"");
-            for (String val : values) {
-                sbx.append(val).append("\", \"");
-            }
-            final int len = sbx.length();
-            sbx.delete(len - 3, len);
-            sbx.append("]");
-            throw new ParseException(this, sbx.toString());
-        }
-    }
-
-    /**
-     * Простой конструктор.
-     */
-    public TokenParser() {
-        sb = new StringBuilder();
-    }
-
-    /**
-     * Конструктор с заполнением кода.
-     *
-     * @param prg код программы
-     */
-    public TokenParser(final StringBuilder prg) {
-        sb = new StringBuilder(prg);
-    }
-
-    /**
-     * Один раз код программы надо добавить.
-     *
-     * @param programCode код программы
-     */
-    public void setProgramCode(final StringBuilder programCode) {
-        sb.append(programCode);
-    }
-
-    /**
-     * Получаем очередной Token (отдельное слово, число или разделитель).
-     *
-     * @param token token для получения начало разбора
-     * @param end   конец разбора
-     * @return от порции с типом
-     */
-    public Token nextToken(final Token token, final int end) {
-        return nextToken(token.end + 1, end);
-    }
-
-    /**
      * Получаем очередной Token (отдельное слово, число или разделитель).
      *
      * @param beg начало разбора
@@ -313,7 +91,7 @@ public class TokenParser {
      */
     public Token nextToken(final int beg, final int end) {
         int i = beg;
-        final Token token = new Token();
+        final Token token = new Token(this);
         Character start = null;
         loop:
         while (i <= end) {
@@ -418,6 +196,57 @@ public class TokenParser {
         return token;
     }
 
+    /**
+     * Простой конструктор.
+     */
+    public TokenParser() {
+        sb = new StringBuilder();
+    }
+
+    /**
+     * Конструктор с заполнением кода.
+     *
+     * @param prg код программы
+     */
+    public TokenParser(final StringBuilder prg) {
+        sb = new StringBuilder(prg);
+    }
+
+    /**
+     * Один раз код программы надо добавить.
+     *
+     * @param programCode код программы
+     */
+    public void setProgramCode(final StringBuilder programCode) {
+        sb.append(programCode);
+    }
+
+    /**
+     * Получаем очередной Token (отдельное слово, число или разделитель).
+     *
+     * @param token token для получения начало разбора
+     * @param end   конец разбора
+     * @return от порции с типом
+     */
+    public Token nextToken(final Token token, final int end) {
+        return nextToken(token.end + 1, end);
+    }
+
+    private Token getOuterComment(final Token token) {
+        int end = sb.indexOf("\r", token.beg);
+        final int endN = sb.indexOf("\n", token.beg);
+        if (end < 0 || (endN >= 0 && endN < end)) {
+            end = endN;
+        }
+        if (end < 0 || end > token.end) {
+            token.type = TokenType.error;
+        } else {
+            token.type = TokenType.comment;
+            token.end = end;
+        }
+        return token;
+    }
+
     private Token getInnerComment(final Token token) {
         final int end = sb.indexOf("*/", token.beg);
         if (end < 0 || end > token.end) {
@@ -429,19 +258,12 @@ public class TokenParser {
         return token;
     }
 
-    private Token getOuterComment(final Token token) {
-        int end = sb.indexOf("\r", token.beg);
-        final int endN = sb.indexOf("\n", token.beg);
-        if (end < 0 || (end >= 0 && endN >= 0 && endN < end)) {
-            end = endN;
-        }
-        if (end < 0 || end > token.end) {
-            token.type = TokenType.error;
-        } else {
-            token.type = TokenType.comment;
-            token.end = end;
-        }
-        return token;
+    /**
+     * Типы токенов.
+     */
+    public enum TokenType {
+        /** Ошибка; ключевое слово; имя переменной или метода, ... */
+        error, keyword, name, delimit, string, oneChar, number, real, block, operator, comment, start, end
     }
 
     private Token getBlock(final Token token) {

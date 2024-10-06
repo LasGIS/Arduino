@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 30.05.2018
+  ~  @(#)pom.xml  last: 06.10.2024
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
-  ~ Copyright (c) 2018, LasGIS Company. All Rights Reserved.
+  ~ Copyright (c) 2024, LasGIS Company. All Rights Reserved.
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -15,13 +15,13 @@
     <parent>
         <groupId>com.lasgis.arduino</groupId>
         <artifactId>parent</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+      <version>1.2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>serial-port</artifactId>
     <name>Serial Port</name>
     <description>LG Using Serial Port for Arduino</description>
+  <artifactId>serial-port</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

@@ -1,9 +1,9 @@
 /*
- *  @(#)ParseException.java  last: 13.04.2023
+ *  @(#)ParseException.java  last: 06.10.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
- * Copyright (c) 2023, LasGIS Company. All Rights Reserved.
+ * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
 package com.lasgis.arduino.eeprom.load.compile;
@@ -32,7 +32,7 @@ public class ParseException extends Exception {
      * @param token token
      * @param message описание ошибки
      */
-    public ParseException(final TokenParser.Token token, final String message) {
+    public ParseException(final Token token, final String message) {
         super(message);
         final StringBuilder sb = token.getSb();
         Line curLine = new Line();

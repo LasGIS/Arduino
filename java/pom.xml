@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~  @(#)pom.xml  last: 22.09.2024
+  ~  @(#)pom.xml  last: 06.10.2024
   ~
   ~ Title: LG Java for Arduino
   ~ Description: Program for support Arduino.
@@ -17,12 +17,13 @@
     <description>LG Java Parent Project for Arduino</description>
     <groupId>com.lasgis.arduino</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>Common</module>
         <module>FazeCastPort</module>
+      <module>TokenParser</module>
         <module>RobotControl</module>
         <module>EepromData</module>
         <module>EditFont</module>
@@ -37,9 +38,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.lasgis.arduino</groupId>
+              <groupId>com.lasgis</groupId>
                 <artifactId>common</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+              <version>1.2.0-SNAPSHOT</version>
+            </dependency>
+          <dependency>
+            <groupId>com.lasgis</groupId>
+            <artifactId>token-parser</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.lasgis.arduino</groupId>

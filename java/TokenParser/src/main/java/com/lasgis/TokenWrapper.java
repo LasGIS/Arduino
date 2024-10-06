@@ -1,12 +1,12 @@
 /*
- *  @(#)TokenWrapper.java  last: 05.09.2024
+ *  @(#)TokenWrapper.java  last: 06.10.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
  * Copyright (c) 2024, LasGIS Company. All Rights Reserved.
  */
 
-package com.lasgis.arduino.editfont.load.compile;
+package com.lasgis;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,5 +19,5 @@ import lombok.Getter;
 @AllArgsConstructor(staticName = "of")
 public class TokenWrapper<Type> {
     private Type data;
-    private TokenParser.Token token;
+    private Token token;
 }

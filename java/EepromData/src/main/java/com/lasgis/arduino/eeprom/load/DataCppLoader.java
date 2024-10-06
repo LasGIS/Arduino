@@ -1,5 +1,5 @@
 /*
- *  @(#)DataCppLoader.java  last: 22.09.2024
+ *  @(#)DataCppLoader.java  last: 06.10.2024
  *
  * Title: LG Java for Arduino
  * Description: Program for support Arduino.
@@ -9,6 +9,7 @@
 package com.lasgis.arduino.eeprom.load;
 
 import com.lasgis.arduino.eeprom.load.compile.ParseException;
+import com.lasgis.arduino.eeprom.load.compile.Token;
 import com.lasgis.arduino.eeprom.load.compile.TokenParser;
 import com.lasgis.arduino.eeprom.load.compile.TokenWrapper;
 import com.lasgis.arduino.eeprom.memory.BatchMemory;
