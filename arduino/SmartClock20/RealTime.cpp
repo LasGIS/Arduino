@@ -1,6 +1,7 @@
 #include "SmartClock20.h"
 
 DS3231 Clock;
+char * buf2Dig = (char*) "xx";
 char * bufTime = (char*) "xx:xx:xx";
 char * bufDate = (char*) "xx.xx.20xx";
 
@@ -35,24 +36,26 @@ const char* dayOfWeekName(const int dayOfWeek) {
 void printBigTime(DateTime * dateTime) {
   static uint8_t minLast  = 0xff;
   static uint8_t hourLast = 0xff;
-  uint8_t fontSize = isHorisontalOrientation() ? 4 : 3;
+  uint8_t fontSize = isHorisontalOrientation() ? 5 : 4;
   uint8_t hour = dateTime->hour();
   uint8_t min = dateTime->minute();
   uint8_t sec = dateTime->second();
 //  tft.setBackgroundColor(COLOR_GRAY);
   if (isRedraw || minLast != min || hourLast != hour) {
-    toTwoChar(hour, bufTime, 0);
-    toTwoChar(min, bufTime, 3);
-    toTwoChar(sec, bufTime, 6);
-    printTextPrec(ClockX0, ClockY0, 0, 0, fontSize, bufTime, COLOR_TOMATO);
+    toTwoChar(hour, buf2Dig, 0);
+    printTextPrec(ClockX0, ClockY0, 0, 0, fontSize, buf2Dig, COLOR_TOMATO);
+    toTwoChar(min, buf2Dig, 0);
+    printTextPrec(ClockX0 + ClockDX, ClockY0, 0, 0, fontSize, buf2Dig, COLOR_TOMATO);
+    toTwoChar(sec, buf2Dig, 0);
+    printTextPrec(ClockX0 + ClockDX * 2, ClockY0, 0, 0, fontSize, buf2Dig, COLOR_TOMATO);
     minLast = min;
     hourLast = hour;
   } else {
-    toTwoChar(sec, bufTime, 6);
+    toTwoChar(sec, buf2Dig, 0);
 #ifdef HAS_SERIAL
-    Serial.println(bufTime);
+    Serial.println(buf2Dig);
 #endif
-    printTextPrec(ClockX0, ClockY0, 6, 0, fontSize, bufTime + 6, COLOR_TOMATO);
+    printTextPrec(ClockX0 + ClockDX * 2, ClockY0, 0, 0, fontSize, buf2Dig, COLOR_TOMATO);
   }
 }
 

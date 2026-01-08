@@ -37,15 +37,17 @@
 #define BOXH_Y0 17
 #define BOXH_Y1 175
 
-#define BOXCLOCKV_X0 17
-#define BOXCLOCKV_X1 159
+#define BOXCLOCKV_X0 0
+#define BOXCLOCKV_DX 63
+#define BOXCLOCKV_X1 175
 #define BOXCLOCKV_Y0 29
 #define BOXCLOCKV_Y1 52
 
-#define BOXCLOCKH_X0 15
-#define BOXCLOCKH_X1 205
+#define BOXCLOCKH_X0 0
+#define BOXCLOCKH_DX 79
+#define BOXCLOCKH_X1 219
 #define BOXCLOCKH_Y0 29
-#define BOXCLOCKH_Y1 59
+#define BOXCLOCKH_Y1 68
 
 #define BOXV_CENTER_X 87
 #define BOXV_CENTER_Y 109
@@ -61,7 +63,7 @@ extern uint8_t isRedraw;
 extern uint8_t keySoundVolume;
 
 extern uint16_t X0, X1, Y0, Y1;
-extern uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
+extern uint16_t ClockDX, ClockX0, ClockX1, ClockY0, ClockY1;
 extern uint16_t boxCenterX;
 extern uint16_t boxCenterY;
 

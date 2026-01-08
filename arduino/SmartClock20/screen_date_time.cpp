@@ -12,7 +12,7 @@ void ScreenDateTime::showTime(DateTime * dateTime) {
 
 void ScreenDateTime::showEveryTime() {
 #ifdef ADXL345_ENABLED
-    accelUpdate();
+//    accelUpdate();
 #endif
 }
 
@@ -24,6 +24,21 @@ void ScreenDateTime::showOnce() {
   if (mode == ModeType::edit) {
     printText(5, 4, 2, ".  .", COLOR_TOMATO);
     printText(5, 5, 2, ":  :", COLOR_TOMATO);
+  } else {
+    uint8_t x1, x2, y1, fontSize;
+    if (isHorisontalOrientation()) {
+      fontSize = 5;
+      x1 = 54;
+      x2 = 134;
+      y1 = ClockY0;
+    } else {
+      fontSize = 4;
+      x1 = 43;
+      x2 = 107;
+      y1 = ClockY0;
+    }
+    printTextPrec(x1, y1, 0, 0, fontSize, ":  :", COLOR_TOMATO);
+    printTextPrec(x2, y1, 0, 0, fontSize, ":  :", COLOR_TOMATO);
   }
 }
 

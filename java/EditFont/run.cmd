@@ -1,1 +1,1 @@
-java -jar target/EditFont-0.0.1-SNAPSHOT.jar -properties test.properties test
+java -jar target/edit-font-0.1.0-SNAPSHOT.jar -properties Font.properties panel

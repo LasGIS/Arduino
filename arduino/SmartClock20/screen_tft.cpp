@@ -151,6 +151,7 @@ void ScreenTft::changeOrientation() {
     X1 = BOXH_X1;
     Y0 = BOXH_Y0;
     Y1 = BOXH_Y1;
+    ClockDX = BOXCLOCKH_DX;
     ClockX0 = BOXCLOCKH_X0;
     ClockX1 = BOXCLOCKH_X1;
     ClockY0 = BOXCLOCKH_Y0;
@@ -162,6 +163,7 @@ void ScreenTft::changeOrientation() {
     X1 = BOXV_X1;
     Y0 = BOXV_Y0;
     Y1 = BOXV_Y1;
+    ClockDX = BOXCLOCKV_DX;
     ClockX0 = BOXCLOCKV_X0;
     ClockX1 = BOXCLOCKV_X1;
     ClockY0 = BOXCLOCKV_Y0;
@@ -183,9 +185,7 @@ void ScreenTft::showEveryTime() {
 
 void ScreenTft::showOnce() {
   tft.fillRectangle(X0, Y0, X1, Y1, COLOR_BLACK);
-  tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
-//  tft.fillRectangle(ClockX0 - 3, ClockY0 - 3, ClockX1 + 3, ClockY1 + 3, COLOR_GRAY);
-//  tft.drawRectangle(ClockX0 - 3, ClockY0 - 3, ClockX1 + 3, ClockY1 + 3, COLOR_WHITE);
+  // tft.drawRectangle(X0, Y0, X1, Y1, COLOR_WHITE);
   //#ifdef ADXL345_ENABLED
   //  printText(0,  2, 1, "X=", COLOR_GRAY);
   //  printText(8,  2, 1, "Y=", COLOR_GRAY);

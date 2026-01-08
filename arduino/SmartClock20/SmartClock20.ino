@@ -12,7 +12,7 @@ char comBuffer[20];
 uint8_t isSerial = false;
 uint8_t isRedraw = true;
 uint16_t X0, X1, Y0, Y1;
-uint16_t ClockX0, ClockX1, ClockY0, ClockY1;
+uint16_t ClockDX, ClockX0, ClockX1, ClockY0, ClockY1;
 uint16_t boxCenterX;
 uint16_t boxCenterY;
 GravVector gravVector;
@@ -61,7 +61,6 @@ void printTextPrec (
  * @param color
  */
 void printText(uint8_t col, uint8_t row, uint8_t fontSize, const char* text, uint16_t color) {
-  printTextPrec (0, 0, col, row, fontSize, text, color  );
   uint8_t oldFontSize = tft.getFontSize();
   uint16_t x = col * fontSize * FONT_SPACE + 1,
            y = row * fontSize * FONT_Y + 1;

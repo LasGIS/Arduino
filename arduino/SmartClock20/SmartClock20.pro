@@ -71,6 +71,7 @@ HEADERS += \
     C:/Arduino/arduino/libraries/DS3231/DS3231.h \
     C:/Arduino/arduino/libraries/TFT_LG_ILI9225/src/TFT_LG_ILI9225.h \
     C:/Arduino/arduino/libraries/AT24C32/I2C_EEPROM.h \
+    Memory.h \
     SmartClock20.h \
     pitches.h \
     note.h \
@@ -97,4 +98,6 @@ DISTFILES += \
     C:/Arduino/arduino/libraries/AT24C32/keywords.txt \
     I2CMemory.data \
     I2CMemory.xml \
-    I2CMemory.hex
+    I2CMemory.hex \
+    Memory.hex \
+    Memory.xml
