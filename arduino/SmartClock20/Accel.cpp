@@ -166,7 +166,7 @@ GravVector accelReadVector() {
 }
 
 /**
- * @brief accelUpdate
+ * accelUpdate
  */
 void accelUpdate() {
 #ifdef HAS_SERIAL

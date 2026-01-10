@@ -2,31 +2,35 @@
 #define SMARTCLOCK20_H
 
 #include <Arduino.h>
-//#include <avr/pgmspace.h>
-#include <SerialBlock.h>
+// #include <avr/pgmspace.h>
+#include <DS3231.h>
+#include <IrControl.h>
 #include <LoadClassRef.h>
 #include <SPI.h>
-#include <DS3231.h>
-#include <Wire.h>
+#include <SerialBlock.h>
 #include <TFT_LG_ILI9225.h>
-#include <IrControl.h>
+#include <Wire.h>
+
 #include "Memory.h"
-#include "screen_tft.h"
 #include "screen_date_time.h"
-#include "screen_timer.h"
 #include "screen_dump.h"
+#include "screen_tft.h"
+#include "screen_timer.h"
 
 // включаем режим отладки
-//#define HAS_SERIAL
+// #define HAS_SERIAL
 
 #define DEVICE 0x57
 
 #define ADXL345_ENABLED
+#if defined(ADXL345_ENABLED)
+// #define HAS_DRAW_BOBBER
+#endif
 
 // пин для жужалки
 #define BUZZER_PIN 7
 
-//0.577 or 0.707
+// 0.577 or 0.707
 #define GRAVI_FACTOR 0.8
 #define BOXV_X0 0
 #define BOXV_X1 175
@@ -40,12 +44,16 @@
 #define BOXCLOCKV_X0 0
 #define BOXCLOCKV_DX 63
 #define BOXCLOCKV_X1 175
+#define BOXCLOCKV_X_COLON_0 43
+#define BOXCLOCKV_X_COLON_1 107
 #define BOXCLOCKV_Y0 29
 #define BOXCLOCKV_Y1 52
 
 #define BOXCLOCKH_X0 0
 #define BOXCLOCKH_DX 79
 #define BOXCLOCKH_X1 219
+#define BOXCLOCKH_X_COLON_0 54
+#define BOXCLOCKH_X_COLON_1 134
 #define BOXCLOCKH_Y0 29
 #define BOXCLOCKH_Y1 68
 
@@ -101,7 +109,9 @@ extern GravVector gravVector;
 #ifdef ADXL345_ENABLED
 extern void accelBegin();
 extern GravVector accelReadVector();
+#ifdef HAS_DRAW_BOBBER
 extern void accelUpdate();
+#endif
 #endif
 
 #endif // SMARTCLOCK20_H
