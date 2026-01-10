@@ -4,7 +4,19 @@
 			"path": "."
 		},
 		{
-			"path": "../libraries/TwoMotor"
+			"path": "../libraries/ADXL345"
+		},
+		{
+			"path": "../libraries/AT24C32"
+		},
+		{
+			"path": "../libraries/DS3231"
+		},
+		{
+			"path": "../libraries/TFT_LG_ILI9225"
+		},
+		{
+			"path": "../libraries/IrControl"
 		},
 		{
 			"path": "../libraries/MsTimer2"
