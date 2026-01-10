@@ -22,7 +22,9 @@
 			"path": "../libraries/MsTimer2"
 		}
 	],
-	"settings": {},
+	"settings": {
+		"files.encoding": "windows1251"
+	},
 	"extensions": {
 		"recommendations": [
 			"ms-vscode.cpptools"
